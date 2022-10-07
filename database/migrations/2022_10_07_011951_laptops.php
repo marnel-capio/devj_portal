@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('laptops', function (Blueprint $table) {
             $table->unsignedBigInteger('id', true)->comment( 'Auto increment');
             $table->unsignedBigInteger('approved_by')->nullable();
-            $table->unsignedTinyInteger('approved_status')->default(2)->nullable()->comment( '0: rejected, 1: approved, 2: pending for approval');
+            $table->unsignedTinyInteger('approved_status')->default(3)->nullable()->comment( '1: rejected, 2: approved, 3: pending for approval');
             $table->string('peza_form_number', 20)->nullable();
             $table->string('peza_permit_number', 20)->nullable();
             $table->string('tag_number', 80)->nullable();

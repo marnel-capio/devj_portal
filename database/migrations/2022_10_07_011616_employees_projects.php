@@ -19,7 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('employee_id');
             $table->dateTime('start_date');
             $table->dateTime('end_date')->nullable();
-            $table->unsignedTinyInteger('project_role_type')->comment( '1: Team Lead, 2: Programmer');
+            $table->unsignedTinyInteger('project_role_type')->comment( '1: Team Lead, 2: Programmer, 3:QA');
             $table->string('remarks', 1024)->nullable();
             $table->unsignedTinyInteger('onsite_flag')->default(0)->nullable()->comment( '1: onsite , 0: office');
             $table->json('update_data')->nullable();

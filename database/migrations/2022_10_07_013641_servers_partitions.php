@@ -17,8 +17,10 @@ return new class extends Migration
             $table->unsignedBigInteger('id', true)->comment( 'Auto increment');
             $table->decimal('hdd_partition');
             $table->decimal('hdd_used_size');
+            $table->unsignedTinyInteger('hdd_used_size_type')->comment( '1:B,2:KB,3:MB,4:GB,5:TB');
             $table->decimal('hdd_used_percentage');
             $table->decimal('hdd_free_size');
+            $table->unsignedTinyInteger('hdd_free_size_type')->comment( '1:B,2:KB,3:MB,4:GB,5:TB');
             $table->decimal('hdd_free_percentage');
             $table->decimal('hdd_total');
             $table->unsignedBigInteger('server_id');
