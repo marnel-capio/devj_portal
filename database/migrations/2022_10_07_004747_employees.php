@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('employees', function (Blueprint $table) {
             $table->unsignedBigInteger('id', true)->comment( 'Auto increment');
+            $table->unsignedBigInteger('approved_by')->nullable();
             $table->unsignedTinyInteger('approved_status')->default(3)->nullable()->comment( '1: rejected, 2: approved, 3: pending for approval');
             $table->string('first_name', 80);
             $table->string('last_name', 80);
