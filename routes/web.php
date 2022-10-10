@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +14,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('login', [LoginController::class, 'index'])->name('login');
+Route::post('login/execute', [LoginController::class, 'execute'])->name('login.execute');
+Route::get('forgotPassword', [LoginController::class, 'forgotPassword'])->name('login.forgotPassword');
+Route::post('forgotPassword/reset', [LoginController::class], 'resetPassword')->name('login.resetPassword');
+
+Route::get('/', function(){
+    return(dd("welcame to home page!"));
 });
