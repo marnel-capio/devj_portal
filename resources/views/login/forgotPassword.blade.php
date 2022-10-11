@@ -40,15 +40,15 @@
                                         @if ($errors->has('email_address'))
                                             <span class="text-danger">{{ $errors->first('email_address') }}</span>
                                         @endif
-                                        @if (isset($addtlError['email_address']))
-                                            <span class="text-danger">{{ $addtlError['email_address'] }}</span>
-                                        @endif
                                     </div>
                                     <div class="col-md-4">
                                         <button type="submit" class="btn btn-primary">
                                             Submit
                                         </button>
                                     </div>
+                                    @if (Session::has('successMsg'))
+                                        <span class="text-success">{{ Session::get('successMsg') }}</span>
+                                    @endif
                                 </div>
                                 <div class="form-group row" style="padding-top: 1rem">
                                     <div class="text-center">

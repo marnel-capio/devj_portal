@@ -11,7 +11,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
+use PhpParser\Node\Stmt\Return_;
 
 class LoginController extends Controller
 {
@@ -28,15 +30,17 @@ class LoginController extends Controller
         $request->validated();
         $credentials = [];
         $credentials['email'] = $request->input('email_address');
-        $credentials['passsword'] = $request->input('password');
+        $credentials['password'] = $request->input('password');
         
-        // $request->only(['email_address', 'password']);
-        
-        // dd( $credentials);
-        if(Auth::attempt($credentials)){
-            return redirect('/');
+        if(!Auth::validate($credentials)){
+            $request->flashExcept('password');
+            return Redirect::back()->withErrors(['password' => 'The username and password does not match.']);            
         }
-        
+        $user = Auth::getProvider()->retrieveByCredentials($credentials);
+
+        Auth::login($user);
+
+        return redirect('/');   //change to homepage
     }
 
 
@@ -73,7 +77,8 @@ class LoginController extends Controller
             'password' => $newPassword
         ];
         Mail::to($email)->send(new passwordResetMail($mailData));
-        dd('mail sent');
+        
+        return Redirect::back()->with('successMsg', 'Your new password has been sent to your email.');
     }
 
     
