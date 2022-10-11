@@ -14,11 +14,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('login', [LoginController::class, 'index'])->name('login');
-Route::post('login/execute', [LoginController::class, 'execute'])->name('login.execute');
-Route::get('forgotPassword', [LoginController::class, 'forgotPassword'])->name('login.forgotPassword');
-Route::post('forgotPassword/reset', [LoginController::class], 'resetPassword')->name('login.resetPassword');
+Route::match(['GET', 'POST'], 'login', [LoginController::class, 'index'])->name('login');
+Route::match(['GET', 'POST'], 'forgotPassword', [LoginController::class, 'forgotPassword'])->name('login.forgotPassword');
+
+
 
 Route::get('/', function(){
-    return(dd("welcame to home page!"));
+    return(dd("welcome to home page!"));
 });

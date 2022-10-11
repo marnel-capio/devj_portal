@@ -2,10 +2,14 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\AWSEmailAddress;
+use App\Rules\EmailExists;
 use Illuminate\Foundation\Http\FormRequest;
 
 class LoginRequest extends FormRequest
 {
+
+    // protected $redirect = route('login');
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -13,9 +17,22 @@ class LoginRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
+    /**
+     * Get custom attributes for validator errors.
+     *
+     * @return array
+     */
+    public function attributes()
+    {
+        $customAttributes = [];
+        if(strpos($this->header('referer'), route('login')) !== FALSE){
+            $customAttributes['email_address'] = 'username';
+        }
+        return $customAttributes;
+    }
     /**
      * Get the validation rules that apply to the request.
      *
@@ -23,8 +40,15 @@ class LoginRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            //
-        ];
+        $rules = [];
+        if($this->isMethod('POST')){
+            $rules = ['email_address' => ['required', 'email', 'max:80', 'min:15', new AWSEmailAddress()]];
+            if(strpos($this->header('referer'), route('login')) !== FALSE){
+                $rules['password'] = 'required|max:80|min:8';
+            }else{
+                $rules['email_address'][] = new EmailExists();
+            }
+        }
+        return $rules;
     }
 }
