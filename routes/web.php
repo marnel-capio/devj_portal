@@ -1,6 +1,10 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\LogoutController;
+use App\Http\Middleware\Authenticate;
+use App\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,11 +18,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::match(['GET', 'POST'], 'login', [LoginController::class, 'index'])->name('login');
-Route::match(['GET', 'POST'], 'forgotPassword', [LoginController::class, 'forgotPassword'])->name('login.forgotPassword');
+Route::match(['GET', 'POST'], 'login', [LoginController::class, 'index'])->name('login')->middleware(RedirectIfAuthenticated::class);
+Route::match(['GET', 'POST'], 'forgotPassword', [LoginController::class, 'forgotPassword'])->name('login.forgotPassword')->middleware(RedirectIfAuthenticated::class);
+Route::get('/logout', [LogoutController::class, 'execute'])->name('logout')->middleware(Authenticate::class);
 
 
 
-Route::get('/', function(){
-    return(dd("welcome to home page!"));
-});
+Route::get('/', [HomeController::class, 'index'])->name('home');

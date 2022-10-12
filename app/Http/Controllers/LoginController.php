@@ -40,7 +40,7 @@ class LoginController extends Controller
 
         Auth::login($user);
 
-        return redirect('/');   //change to homepage
+        return redirect(route('home'));
     }
 
 
@@ -77,7 +77,7 @@ class LoginController extends Controller
             'password' => $newPassword
         ];
         Mail::to($email)->send(new passwordResetMail($mailData));
-        
+        $request->flash();
         return Redirect::back()->with('successMsg', 'Your new password has been sent to your email.');
     }
 
