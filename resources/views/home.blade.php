@@ -1,7 +1,10 @@
+@include('header')
+
+@include('headerMenu')
 
 
-@if (Auth::check())
-    logined user:  {{ Auth::user() }}
-@else
-    not logined
-@endif
+"welcome home charot"
+
+{{ Auth::user() }}
+
+@include('footer')

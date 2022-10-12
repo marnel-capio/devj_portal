@@ -24,4 +24,4 @@ Route::get('/logout', [LogoutController::class, 'execute'])->name('logout')->mid
 
 
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home')->middleware(Authenticate::class);
