@@ -63,5 +63,14 @@ Route::middleware('auth')->group(function(){
         })->name('projects.create');
     });
 
+    Route::prefix('/servers')->group(function(){
+        Route::get('/', function(){
+            return 'Welcome to Servers List'; //dummy
+        })->name('servers');
+        Route::get('/create', function(){
+            return 'You can add server data here'; //dummy
+        })->name('servers.create');
+    });
+
 });
 
