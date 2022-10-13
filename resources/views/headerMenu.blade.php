@@ -55,10 +55,9 @@
                     </li>
                 @endif
             </ul>
-            <div class="d-flex text-lg-end">
-                <ul class="navbar-nav mb-2 mb-lg-0">
+            <ul class="navbar-nav mb-2 mb-lg-0">
                 <li class="nav-item dropdown">
-                    <a href="#" class="nav-link text-white "  role="button"><i class="bi bi-person-fill"> </i>{{ $userInfo->last_name .', ' .$userInfo->first_name }}</a>
+                    <a href="#" class="nav-link text-white text-nowrap"  role="button"><i class="bi bi-person-fill"> </i>{{ $userInfo->last_name .', ' .$userInfo->first_name }}</a>
                     <ul class="dropdown-menu">
                         <li><a href="{{ route('employees.details', ['id' => $userInfo->id]) }}" class="dropdown-item small text-white">My Details</a></li>
                         <li><hr class="dropdown-divider"></li>
@@ -66,8 +65,6 @@
                     </ul>
                 </li>
             </ul>
-            </div>
-
         </div>
     </div>
 </nav>
