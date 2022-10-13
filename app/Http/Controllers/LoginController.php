@@ -33,7 +33,7 @@ class LoginController extends Controller
         $credentials['password'] = $request->input('password');
         
         if(!Auth::validate($credentials)){
-            $request->flashExcept('password');
+            $request->flash();
             return Redirect::back()->withErrors(['password' => 'The username and password does not match.']);            
         }
         $user = Auth::getProvider()->retrieveByCredentials($credentials);
@@ -86,9 +86,9 @@ class LoginController extends Controller
         
         $length = 8; //password length
         $sets = [];
-        $sets[] = str_split('ABCDEFGHJKLMNPQRSTUVWXYZ');
-        $sets[] = str_split('abcdefghjkmnpqrstuvwxyz');
-        $sets[] = str_split('23456789');
+        $sets[] = str_split('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+        $sets[] = str_split('abcdefghijklmnopqrstuvwxyz');
+        $sets[] = str_split('0123456789');
         $sets[] = str_split('!@#$%&*_');
         $password = '';
         
