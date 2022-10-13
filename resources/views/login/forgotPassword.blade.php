@@ -22,7 +22,7 @@
                     @endif
                 </div>
                 <div class="col-12 text-center">
-                    <a href="{{ route('login') }}">Go back to login page</a>
+                    <a class="small" href="{{ route('login') }}" style="text-decoration:none">Go back to login page</a>
                 </div>
             </form>
     </div>

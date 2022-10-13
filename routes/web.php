@@ -18,10 +18,50 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::match(['GET', 'POST'], 'login', [LoginController::class, 'index'])->name('login')->middleware(RedirectIfAuthenticated::class);
-Route::match(['GET', 'POST'], 'forgotPassword', [LoginController::class, 'forgotPassword'])->name('login.forgotPassword')->middleware(RedirectIfAuthenticated::class);
-Route::get('/logout', [LogoutController::class, 'execute'])->name('logout')->middleware(Authenticate::class);
+Route::middleware('guest')->controller(LoginController::class)->group(function(){
+    Route::match(['GET', 'POST'], 'login', 'index')->name('login');
+    Route::match(['GET', 'POST'], 'forgotPassword', 'forgotPassword')->name('login.forgotPassword');
+});
 
+Route::middleware('auth')->group(function(){
+    Route::get('logout', [LogoutController::class, 'execute'])->name('logout');
+    Route::get('/', [HomeController::class, 'index'])->name('home');
 
+    Route::prefix('/employees')->group(function(){
+        Route::get('/', function(){
+            return 'Welcome to employees List'; //dummy
+        })->name('employees');
+        Route::get('/{id}', function($id){
+            return "Details of user with id={$id} is displayed here.";  //dummy
+        })->name('employees.details')->whereNumber('id');
+    });
 
-Route::get('/', [HomeController::class, 'index'])->name('home')->middleware(Authenticate::class);
+    Route::prefix('/laptops')->group(function(){
+        Route::get('/', function(){
+            return 'Welcome to Laptop List';
+        })->name('laptops');
+        Route::get('/create', function(){
+            return 'You can add laptop data here'; //dummy
+        })->name('laptops.create');
+    });
+
+    Route::prefix('/softwares')->group(function(){
+        Route::get('/', function(){
+            return 'Welcome to Softwares List'; //dummy
+        })->name('softwares');
+        Route::get('/create', function(){
+            return 'You can add software data here'; //dummy
+        })->name('softwares.create');
+    });
+
+    Route::prefix('/projects')->group(function(){
+        Route::get('/', function(){
+            return 'Welcome to Softwares List'; //dummy
+        })->name('projects');
+        Route::get('/create', function(){
+            return 'You can add software data here'; //dummy
+        })->name('projects.create');
+    });
+
+});
+

@@ -1,9 +1,5 @@
 @php
     $userInfo = Auth::user();
-    $displayFlag = false;
-    if(in_array($userInfo->roles, config('constants.ADMIN_ROLES'))){
-        $displayFlag = true;
-    }
 @endphp
 
 <nav class="navbar navbar-expand-md mt-2" style="background-color:#1746A2">
@@ -17,50 +13,36 @@
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link text-white"  role="button">Employees</a>
                     <ul class="dropdown-menu">
-                        @if ($displayFlag)
-                            <li><a href="#" class="dropdown-item small text-white">View Request</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                        @endif
-                        <li><a href="#" class="dropdown-item small text-white">View List</a></li>            
+                        <li><a href="{{ route('employees') }}" class="dropdown-item small text-white">View List</a></li>            
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link text-white"  role="button">Laptops</a>
                     <ul class="dropdown-menu">
-                        @if ($displayFlag)
-                            <li><a href="#" class="dropdown-item small text-white">View Request</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a href="#" class="dropdown-item small text-white">View Request Link</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                        @endif
-                        <li><a href="#" class="dropdown-item small text-white">View List</a></li>
+                        <li><a href="{{ route('laptops') }}" class="dropdown-item small text-white">View List</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a href="#" class="dropdown-item small text-white">Create Laptop</a></li>
+                        <li><a href="{{ route('laptops.create') }}" class="dropdown-item small text-white">Create Laptop</a></li>
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link text-white"  role="button">Softwares</a>
                     <ul class="dropdown-menu">
-                        @if ($displayFlag)
-                            <li><a href="#" class="dropdown-item small text-white">View Request</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                        @endif
-                        <li><a href="#" class="dropdown-item small text-white">View List</a></li>
+                        <li><a href="{{ route('softwares') }}" class="dropdown-item small text-white">View List</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a href="#" class="dropdown-item small text-white">Create Software</a></li>
+                        <li><a href="{{ route('softwares.create') }}" class="dropdown-item small text-white">Create Software</a></li>
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link text-white"  role="button">Projects</a>
                     <ul class="dropdown-menu">
-                        <li><a href="#" class="dropdown-item small text-white">View Projects</a></li>
-                        @if ($displayFlag)
+                        <li><a href="{{ route('projects') }}" class="dropdown-item small text-white">View Projects</a></li>
+                        @if (in_array($userInfo->roles, [config('constants.ADMIN_ROLE_VALUE'), config('constants.MANAGER_ROLE_VALUE')]))
                             <li><hr class="dropdown-divider"></li>
-                            <li><a href="#" class="dropdown-item small text-white">Create Project</a></li>
+                            <li><a href="{{ route('projects.create') }}" class="dropdown-item small text-white">Create Project</a></li>
                         @endif
                     </ul>
                 </li>
-                @if ($displayFlag)
+                @if ($userInfo->server_manage_flag)
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link text-white"  role="button">Servers</a>
                         <ul class="dropdown-menu">
@@ -76,7 +58,7 @@
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link text-white "  role="button">{{ $userInfo->last_name .', ' .$userInfo->first_name }}</a>
                     <ul class="dropdown-menu">
-                        <li><a href="#" class="dropdown-item small text-white">My Details</a></li>
+                        <li><a href="{{ route('employees.details', ['id' => $userInfo->id]) }}" class="dropdown-item small text-white">My Details</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a href="{{ route('logout') }}" class="dropdown-item small text-white">Logout</a></li>
                     </ul>

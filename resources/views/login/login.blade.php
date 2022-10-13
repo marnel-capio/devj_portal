@@ -23,7 +23,7 @@
                         @endif
                     </div>
                 </div>
-                <p class="small  text-center"><a class="text-primary" href="{{ route('login.forgotPassword') }}">Forgot password?</a></p>
+                <p class="small  text-center"><a class="text-primary" href="{{ route('login.forgotPassword') }}" style="text-decoration:none">forgot password?</a></p>
                 <div class="col-12 text-end">
                     <button class="btn btn-primary" type="submit">Login</button>
                 </div>
