@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Rules\AWSEmailAddress;
-use App\Rules\EmailExists;
+use App\Rules\AccountStatus;
 use Illuminate\Foundation\Http\FormRequest;
 
 class LoginRequest extends FormRequest
@@ -42,11 +42,9 @@ class LoginRequest extends FormRequest
     {
         $rules = [];
         if($this->isMethod('POST')){
-            $rules = ['email_address' => ['required', 'email', 'max:80', 'min:15', new AWSEmailAddress()]];
+            $rules = ['email_address' => ['required', 'email', 'max:80', 'min:15', new AWSEmailAddress(), new AccountStatus()]];
             if(strpos($this->header('referer'), route('login')) !== FALSE){
                 $rules['password'] = 'required|max:80|min:8';
-            }else{
-                $rules['email_address'][] = new EmailExists();
             }
         }
         return $rules;

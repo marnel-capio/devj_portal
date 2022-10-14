@@ -28,9 +28,10 @@ class LoginController extends Controller
             return view('login.login');
         }
         $request->validated();
-        $credentials = [];
-        $credentials['email'] = $request->input('email_address');
-        $credentials['password'] = $request->input('password');
+        $credentials = [
+            'email' => $request->input('email_address'),
+            'password' => $request->input('password'),
+        ];
         
         if(!Auth::validate($credentials)){
             $request->flash();
