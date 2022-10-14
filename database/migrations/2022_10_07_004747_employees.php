@@ -42,6 +42,7 @@ return new class extends Migration
             $table->json('update_data')->nullable();
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
+            $table->rememberToken();
             $table->dateTime('create_time')->nullable();
             $table->dateTime('update_time')->nullable();
         });

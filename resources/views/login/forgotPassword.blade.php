@@ -1,7 +1,7 @@
 @include('header')
 
 <div class="vh-100 d-flex justify-content-center align-items-center">
-    <div class="col-lg-4 col-sm-6 col-8 p-4 shadow-sm border rounded-4 border-secondary">
+    <div class="col-lg-4 col-sm-6 col-8 p-4 shadow-sm border rounded-4 border-secondary" style="background-color: #F9F9F9">
         <h5 class="text-start header_text fw-bold mb-4">Please enter your AWS email address</h5>
             <form action="{{ route('login.forgotPassword') }}" method="POST">
                 @csrf

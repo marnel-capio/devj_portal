@@ -56,10 +56,10 @@ Route::middleware('auth')->group(function(){
 
     Route::prefix('/projects')->group(function(){
         Route::get('/', function(){
-            return 'Welcome to Softwares List'; //dummy
+            return 'Welcome to projects List'; //dummy
         })->name('projects');
         Route::get('/create', function(){
-            return 'You can add software data here'; //dummy
+            return 'You can add projects data here'; //dummy
         })->name('projects.create');
     });
 
