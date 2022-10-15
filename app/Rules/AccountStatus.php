@@ -27,26 +27,27 @@ class AccountStatus implements Rule
      */
     public function passes($attribute, $value)
     {
-        $employee = Employees::where('email', $value)
-                                ->first();
-            if(!$employee['active_status']){
-                switch ($employee['approved_status']){
-                    case 3:
-                        $this->message = 'Your account is still pending for approval';
-                        break;
-                    case 1:
-                        $this->message = 'Your account has been rejected. Please check your email for more information.';
-                        break;
-                    default:
-                    dd("hello");
+        $employee = Employees::where('email', $value)->first();
 
-                        $this->message = 'The account doesnot exists.';
-                }
-
+        if(!$employee['active_status']){
+            switch ($employee['approved_status']){
+                case 1:     //rejected registration
+                    $this->message = 'Your account has been rejected. Please check your email for more info.';
+                    break;
+                case 3:     //pending registration
+                    $this->message = 'Your account is still pending for approval.';
+                    break;
+                default:    //account has been deactivated 
+                    $this->message = 'Your account has been deactivated. Please check it with your manager or admin.';
+            }
+            return false;
+        }else{
+            if($employee['approved_status'] === 1 || $employee['approved_status'] === 3){
+                $this->message = 'Your account is not available. Please check it with your manager or admin.';
             }else{
                 return true;
             }
-        return !empty($employee);
+        }
     }
 
     /**
