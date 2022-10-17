@@ -31,10 +31,10 @@ class AccountStatus implements Rule
 
         if(!$employee['active_status']){
             switch ($employee['approved_status']){
-                case 1:     //rejected registration
+                case config('constants.APPROVED_STATUS_REJECTED'):     //rejected registration
                     $this->message = 'Your account has been rejected. Please check your email for more info.';
                     break;
-                case 3:     //pending registration
+                case config('constants.APPROVED_STATUS_PENDING'):     //pending registration
                     $this->message = 'Your account is still pending for approval.';
                     break;
                 default:    //account has been deactivated 
@@ -42,13 +42,13 @@ class AccountStatus implements Rule
             }
             return false;
         }else{
-            if($employee['approved_status'] === 1 || $employee['approved_status'] === 3){
+            if($employee['approved_status'] === config('constants.APPROVED_STATUS_REJECTED') || $employee['approved_status'] === config('constants.APPROVED_STATUS_PENDING')){
                 $this->message = 'Your account is not available. Please check it with your manager or admin.';
             }else{
-                return true;
+                return true;    
             }
         }
-    }
+    }  
 
     /**
      * Get the validation error message.
