@@ -24,12 +24,8 @@
                     </div>
                 </div>
                 <div class="row  ps-2 pe-2">
-                        <div class="row ms-1 mb-4">
-                            <div class="form-check col-6 text-start">
-                                <input type="checkbox" id="remember" name="remember" class="form-check-input" {{ old('remember') === 'on' ?'checked' : '' }}>
-                                <label for="remember" class="small form-check-label" >Remember me</label>
-                            </div>
-                            <div class="small col-6 text-end ">
+                        <div class="row mb-4">
+                            <div class="small text-center ">
                                 <a class="text-primary" href="{{ route('login.forgotPassword') }}" style="text-decoration:none">forgot password?</a>
                             </div>
                         </div>
