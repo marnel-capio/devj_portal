@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('project_id');
             $table->unsignedBigInteger('employee_id');
             $table->unsignedBigInteger('approved_by')->nullable();
-            $table->unsignedTinyInteger('approved_status')->default(3)->nullable()->comment( '1: rejected, 2: approved, 3: pending for approval');
+            $table->unsignedTinyInteger('approved_status')->default(3)->nullable()->comment( '1: rejected, 2: approved, 3: pending for approval, 4: pending for update approval');
             $table->dateTime('start_date');
             $table->dateTime('end_date')->nullable();
             $table->unsignedTinyInteger('project_role_type')->comment( '1: Team Lead, 2: Programmer, 3:QA');
