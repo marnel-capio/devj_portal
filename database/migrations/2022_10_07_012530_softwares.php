@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id', true)->comment( 'Auto increment');
             $table->unsignedBigInteger('requested_by');
             $table->unsignedTinyInteger('approved_by')->nullable();
-            $table->unsignedTinyInteger('approved_status')->default(3)->nullable()->comment( '1: rejected, 2: approved, 3: pending for approval');
+            $table->unsignedTinyInteger('approved_status')->default(3)->nullable()->comment( '1: rejected, 2: approved, 3: pending for approval, 4: pending for update approval');
             $table->unsignedTinyInteger('type')->comment( '1: Productivity Tools, 2: Messaging/Collaboration, 3: Browser, 4: System Utilities, 5: Project Specific Softwares, 6: Phone Drivers');
             $table->string('software_name', 512);
             $table->string('remarks', 1024)->nullable();
