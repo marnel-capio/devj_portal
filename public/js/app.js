@@ -32,15 +32,43 @@ $(document).ready(function () {
 	});
 
 
-	//employee registration
+	//start for employee registration
+
+	//disable submit button if not all required fields have value
+	checkRequiredFields();
+
+	$(":input[required]").change(function(){
+		checkRequiredFields();
+	});
+
 
 	//password check
 	$("#emp-confirm-password").keyup(function(){
 		if($(this).val() != $("#emp-password").val()){
 			$("#confirm-pass-text").html("Password does not match.").css("color", "red");
+			$("#emp-reg-submit").prop('disabled', true);
 		}else{
 			$("#confirm-pass-text").html("");
+			checkRequiredFields();
 		}
 	});
+
+	function checkRequiredFields(){
+		var empty = false;
+		$(":input[required]").each(function(){
+			if($(this).val() == ''){
+				empty = true;
+			}
+		})
+		if(empty){
+			$("#emp-reg-submit").prop('disabled', true);
+		}else{
+			$("#emp-reg-submit").prop('disabled', false);
+		}
+	}
+
+	//end for employee registration
+
+
 });
 

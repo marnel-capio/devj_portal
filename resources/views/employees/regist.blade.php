@@ -15,14 +15,14 @@
                         @endif
                     </div>
                     <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="middle_name" id="middle_name" placeholder="Middle Name" value="{{ old('middle_name') }}" rrequired>
+                        <input type="text" class="form-control" name="middle_name" id="middle_name" placeholder="Middle Name" value="{{ old('middle_name') }}" required>
                         <label  class="text-center" for="middle_name">Middle Name</label>
                         @if ($errors->has('first_name'))
                         <span class="text-danger">{{ $errors->first('middle_name') }}</span>
                         @endif
                     </div>
                     <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="last_name" id="last_name" placeholder="Last Name" value="{{ old('last_name') }}" rrequired>
+                        <input type="text" class="form-control" name="last_name" id="last_name" placeholder="Last Name" value="{{ old('last_name') }}" required>
                         <label  class="text-center" for="last_name">Last Name</label>
                         @if ($errors->has('last_name'))
                         <span class="text-danger">{{ $errors->first('last_name') }}</span>
@@ -192,7 +192,7 @@
                 </div>
             </div>
             <div class="text-center p-2">
-                <button class="btn btn-primary btn-lg mb-5" type="submit">Submit</button>
+                <button class="btn btn-primary btn-lg mb-5" id="emp-reg-submit" type="submit">Submit</button>
             </div>
         </form>
     </div>
