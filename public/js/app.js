@@ -30,5 +30,17 @@ $(document).ready(function () {
 		"stateSave": true,
 		"pageLength": 10
 	});
+
+
+	//employee registration
+
+	//password check
+	$("#emp-confirm-password").keyup(function(){
+		if($(this).val() != $("#emp-password").val()){
+			$("#confirm-pass-text").html("Password does not match.").css("color", "red");
+		}else{
+			$("#confirm-pass-text").html("");
+		}
+	});
 });
 

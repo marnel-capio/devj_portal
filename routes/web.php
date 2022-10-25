@@ -1,11 +1,14 @@
 <?php
 
+use App\Http\Controllers\Employees;
+use App\Http\Controllers\EmployeesController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Support\Facades\Route;
+use PhpParser\Node\Expr\FuncCall;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,6 +24,10 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('guest')->controller(LoginController::class)->group(function(){
     Route::match(['GET', 'POST'], 'login', 'index')->name('login');
     Route::match(['GET', 'POST'], 'forgotPassword', 'forgotPassword')->name('login.forgotPassword');
+});
+
+Route::middleware('guest')->controller(EmployeesController::class)->group(function(){
+    Route::match(['GET', 'POST'], 'employees/regist', 'regist')->name('employees.regist');
 });
 
 Route::middleware('auth')->group(function(){

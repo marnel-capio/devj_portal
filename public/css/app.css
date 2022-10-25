@@ -23,3 +23,12 @@
 .tbl-header-name{
 	width: 30%;
 }
+
+/* employee registration */
+.emp-regist-category{
+    background-color: #F2F2F2;
+}
+
+.text-danger{
+    text-align: left;
+}
