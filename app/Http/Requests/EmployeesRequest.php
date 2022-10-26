@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Employees;
 use App\Rules\AWSEmailAddress;
 use App\Rules\Password;
 use Illuminate\Foundation\Http\FormRequest;
@@ -34,6 +35,7 @@ class EmployeesRequest extends FormRequest
             'permanent_address_town' => 'town or city',
             'permanent_address_province' => 'province or region',
             'permanent_address_postal_code' => 'postal code',
+            'email' => 'email address',
         ];
     }
 
@@ -53,19 +55,36 @@ class EmployeesRequest extends FormRequest
                 'birthdate' => 'required|date',
                 'gender' => 'required|in:0,1',
                 'position' => 'required|in:1,2,3,4,5,6,7,8,9',
-                'email_address' => ['required', 'email', 'max:80', 'min:15', new AWSEmailAddress()],
-                'contact_number' => 'required|numeric',
-                'other_contact_number' => 'required|numeric',
+                'email' => ['required', 'email', 'max:80', 'min:15', new AWSEmailAddress()],
+                'cellphone_number' => 'required|phone',
                 'password' => ['required', 'min:8', 'max:16', new Password()],
                 'current_address_street' => 'required',
-                'current_address_town' => 'required',
+                'current_address_city' => 'required',
                 'current_address_province' => 'required',
-                'current_address_postal_code' =>'required|numeric',
+                'current_address_postalcode' =>'required|numeric',
                 'permanent_address_street' => 'required',
-                'permanent_address_town' => 'required',
+                'permanent_address_city' => 'required',
                 'permanent_address_province' => 'required',
-                'permanent_address_postal_code' =>'required|numeric',
+                'permanent_address_postalcode' =>'required|numeric',
             ];
+
+            if(!empty($this->input('other_contact_number'))){
+                $rules['other_contact_number'] = 'phone';
+            }
+
+            if(strpos($this->header('referer'), route('employees.regist')) !== FALSE){
+                $rules['email'] = ['required', 
+                                    'email', 
+                                    'max:80', 
+                                    'min:15', 
+                                    new AWSEmailAddress(), 
+                                    function($attribute, $value, $fail){
+                                        $duplicateEmail = Employees::where('email', $value);
+                                        if(!empty($duplicateEmail)){
+                                            $fail("The email address is already registered.");
+                                        }
+                                    }];
+            }
         }
         return $rules;
     }

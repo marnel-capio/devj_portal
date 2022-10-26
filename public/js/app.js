@@ -43,8 +43,8 @@ $(document).ready(function () {
 
 
 	//password check
-	$("#emp-confirm-password").keyup(function(){
-		if($(this).val() != $("#emp-password").val()){
+	$("#emp-confirm-password, #emp-password").keyup(function(){
+		if($('#emp-confirm-password').val() != $("#emp-password").val()){
 			$("#confirm-pass-text").html("Password does not match.").css("color", "red");
 			$("#emp-reg-submit").prop('disabled', true);
 		}else{
@@ -66,6 +66,11 @@ $(document).ready(function () {
 			$("#emp-reg-submit").prop('disabled', false);
 		}
 	}
+
+	$('.btn-prevent-multiple-submit').on('submit', function($e){
+		e.preventDefault()
+		$('.btn-prevent-multiple-submit').prop('disabled', true);
+	});
 
 	//end for employee registration
 

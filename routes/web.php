@@ -26,11 +26,14 @@ Route::middleware('guest')->controller(LoginController::class)->group(function()
     Route::match(['GET', 'POST'], 'forgotPassword', 'forgotPassword')->name('login.forgotPassword');
 });
 
-Route::middleware('guest')->controller(EmployeesController::class)->group(function(){
+Route::middleware(['guest', 'web'])->controller(EmployeesController::class)->group(function(){
     Route::match(['GET', 'POST'], 'employees/regist', 'regist')->name('employees.regist');
+    Route::get('/employees/regist/complete', function(){
+        return view('employees.complete');
+    })->name('employees.regist.complete');
 });
 
-Route::middleware('auth')->group(function(){
+Route::middleware(['auth', 'web'])->group(function(){
     Route::get('logout', [LogoutController::class, 'execute'])->name('logout');
     Route::get('/', [HomeController::class, 'index'])->name('home');
 

@@ -37,10 +37,10 @@
                         <span class="text-danger">{{ $errors->first('birthdate') }}</span>
                         @endif
                     </div>
-                    <div class="col-lg-4 col-8 g-3 form-floating text-start">
-                        <div class="form-control ">
+                    <div class="col-lg-4 col-8 g-3 text-start">
+                        <div class="form-control d-flex align-items-center" style="height: 100%">
                             <div class="d-inline">
-                                Gender:&nbsp
+                                Gender:&nbsp&nbsp
                             </div>
                             <div class="d-inline">
                                 <div class="form-check form-check-inline">
@@ -83,19 +83,19 @@
                 <h4 class="text-start">Contact Details</h4>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="email_address" id="email" placeholder="Email" required value="{{ old('email_address') }}">
+                        <input type="text" class="form-control" name="email" id="email" placeholder="Email" required value="{{ old('email') }}">
                         <label for="email" class="text-center">Email Address</label>
-                        @if ($errors->has('email_address'))
-                        <span class="text-danger">{{ $errors->first('email_address') }}</span>
+                        @if ($errors->has('email'))
+                        <span class="text-danger">{{ $errors->first('email') }}</span>
                         @endif
                     </div>
                 </div>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="contact_number" id="contact" placeholder="Contact Number" required value="{{ old('contact_number') }}">
+                        <input type="text" class="form-control" name="cellphone_number" id="contact" placeholder="Contact Number" required value="{{ old('cellphone_number') }}">
                         <label for="contact" class="text-center">Contact Number</label>
-                        @if ($errors->has('contact_number'))
-                        <span class="text-danger">{{ $errors->first('contact_number') }}</span>
+                        @if ($errors->has('cellphone_number'))
+                        <span class="text-danger">{{ $errors->first('cellphone_number') }}</span>
                         @endif
                     </div>
                     <div class="col-4 g-3 form-floating">
@@ -134,10 +134,10 @@
                 </div>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="current_address_town" id="cur-add-town" placeholder="Town" required value="{{ old('current_address_town') }}">
+                        <input type="text" class="form-control" name="current_address_city" id="cur-add-town" placeholder="Town" required value="{{ old('current_address_city') }}">
                         <label for="cur-add-town" class="text-center">Town/City</label>
-                        @if ($errors->has('current_address_town'))
-                        <span class="text-danger">{{ $errors->first('current_address_town') }}</span>
+                        @if ($errors->has('current_address_city'))
+                        <span class="text-danger">{{ $errors->first('current_address_city') }}</span>
                         @endif
                     </div>
                     <div class="col-4 g-3 form-floating">
@@ -148,10 +148,10 @@
                         @endif
                     </div>
                     <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="current_address_postal_code" id="cur-add-postal" placeholder="Postal Code" required value="{{ old('current_address_postal_code') }}">
+                        <input type="text" class="form-control" name="current_address_postalcode" id="cur-add-postal" placeholder="Postal Code" required value="{{ old('current_address_postalcode') }}">
                         <label for="cur-add-postal" class="text-center">Postal Code</label>
-                        @if ($errors->has('current_address_postal_code'))
-                        <span class="text-danger">{{ $errors->first('current_address_postal_code') }}</span>
+                        @if ($errors->has('current_address_postalcode'))
+                        <span class="text-danger">{{ $errors->first('current_address_postalcode') }}</span>
                         @endif
                     </div>
                 </div>
@@ -169,10 +169,10 @@
                 </div>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="permanent_address_town" id="perm-add-town" placeholder="Town" required value="{{ old('permanent_address_town') }}">
+                        <input type="text" class="form-control" name="permanent_address_city" id="perm-add-town" placeholder="Town" required value="{{ old('permanent_address_city') }}">
                         <label for="perm-add-town" class="text-center">Town/City</label>
-                        @if ($errors->has('permanent_address_town'))
-                        <span class="text-danger">{{ $errors->first('permanent_address_town') }}</span>
+                        @if ($errors->has('permanent_address_city'))
+                        <span class="text-danger">{{ $errors->first('permanent_address_city') }}</span>
                         @endif
                     </div>
                     <div class="col-4 g-3 form-floating">
@@ -183,16 +183,16 @@
                         @endif
                     </div>
                     <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="permanent_address_postal_code" id="perm-add-postal" placeholder="Postal Code" required value="{{ old('permanent_address_postal_code') }}">
+                        <input type="text" class="form-control" name="permanent_address_postalcode" id="perm-add-postal" placeholder="Postal Code" required value="{{ old('permanent_address_postalcode') }}">
                         <label for="perm-add-postal" class="text-center">Postal Code</label>
-                        @if ($errors->has('permanent_address_postal_code'))
-                        <span class="text-danger">{{ $errors->first('permanent_address_postal_code') }}</span>
+                        @if ($errors->has('permanent_address_postalcode'))
+                        <span class="text-danger">{{ $errors->first('permanent_address_postalcode') }}</span>
                         @endif
                     </div>
                 </div>
             </div>
             <div class="text-center p-2">
-                <button class="btn btn-primary btn-lg mb-5" id="emp-reg-submit" type="submit">Submit</button>
+                <button class="btn btn-primary btn-lg mb-5 btn-prevent-multiple-submit" id="emp-reg-submit" type="submit">Submit</button>
             </div>
         </form>
     </div>
