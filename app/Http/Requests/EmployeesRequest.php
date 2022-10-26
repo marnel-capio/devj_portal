@@ -56,7 +56,7 @@ class EmployeesRequest extends FormRequest
                 'gender' => 'required|in:0,1',
                 'position' => 'required|in:1,2,3,4,5,6,7,8,9',
                 'email' => ['required', 'email', 'max:80', 'min:15', new AWSEmailAddress()],
-                'cellphone_number' => 'required|phone',
+                'cellphone_number' => 'required|numeric|digits:10',
                 'password' => ['required', 'min:8', 'max:16', new Password()],
                 'current_address_street' => 'required',
                 'current_address_city' => 'required',
@@ -69,7 +69,7 @@ class EmployeesRequest extends FormRequest
             ];
 
             if(!empty($this->input('other_contact_number'))){
-                $rules['other_contact_number'] = 'phone';
+                $rules['other_contact_number'] = 'numeric|digits:10';
             }
 
             if(strpos($this->header('referer'), route('employees.regist')) !== FALSE){
