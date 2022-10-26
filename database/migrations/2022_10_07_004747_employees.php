@@ -37,7 +37,7 @@ return new class extends Migration
             $table->string('permanent_address_province', 80)->nullable();
             $table->string('permanent_address_postalcode', 80);
             $table->unsignedTinyInteger('server_manage_flag')->default(0)->nullable();
-            $table->unsignedTinyInteger('active_status')->default(1)->nullable()->comment( '1: Active, 0: Inactive');
+            $table->unsignedTinyInteger('active_status')->default(0)->nullable()->comment( '1: Active, 0: Inactive');
             $table->string('reasons', 1024)->nullable();
             $table->json('update_data')->nullable();
             $table->unsignedBigInteger('created_by')->nullable();

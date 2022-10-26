@@ -79,7 +79,7 @@ class EmployeesRequest extends FormRequest
                                     'min:15', 
                                     new AWSEmailAddress(), 
                                     function($attribute, $value, $fail){
-                                        $duplicateEmail = Employees::where('email', $value);
+                                        $duplicateEmail = Employees::where('email', $value)->get()->toArray();
                                         if(!empty($duplicateEmail)){
                                             $fail("The email address is already registered.");
                                         }

@@ -27,7 +27,7 @@ Route::middleware('guest')->controller(LoginController::class)->group(function()
 });
 
 Route::middleware(['guest', 'web'])->controller(EmployeesController::class)->group(function(){
-    Route::match(['GET', 'POST'], 'employees/regist', 'regist')->name('employees.regist');
+    Route::match(['GET', 'POST'], '/employees/regist', 'regist')->name('employees.regist');
     Route::get('/employees/regist/complete', function(){
         return view('employees.complete');
     })->name('employees.regist.complete');
