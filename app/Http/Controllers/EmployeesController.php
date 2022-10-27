@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ChangePassword;
 use App\Http\Requests\EmployeesRequest;
 use App\Mail\Employee;
 use App\Models\Employees;
@@ -41,6 +42,81 @@ class EmployeesController extends Controller
         $this->sendMail($recipients, $mailData, config('constants.MAIL_NEW_REGISTRATION_REQUEST'));
         
         return redirect(route('employees.regist.complete'));
+    }
+
+    public function detail($id){
+        // dd('detail');   
+        $employeeDetails = Employees::where('id', $id)->first();
+
+        $laptopInfo = '';
+        $projectInfo = '';
+        return view('employees.details')
+                    ->with([
+                        'readOnly' => true,
+                        'detailOnly' => true,
+                        'detailNote' => $this->getAccountStatus($employeeDetails),
+                        'employee' => $employeeDetails,
+                        'project' => $projectInfo,
+                        'laptop' => $laptopInfo,
+                    ]);
+    }
+
+    public function edit($id){
+        dd('edit page');
+    }
+
+    public function request($id){
+        return view('employees.details')
+        ->with([
+            'readOnly' => true,
+            'detailOnly' => false,
+            // 'employee' => $employeeDetails,
+            // 'project' => $projectInfo,
+            // 'laptop' => $laptopInfo,
+        ]);
+    }
+
+    public function changePassword(ChangePassword $request){
+        
+        $request->validated();
+        $data = $request->only(['id', 'new_password']);
+
+        //save new password
+        Employees::where('id', $data['id'])
+        ->update(['password' => password_hash($data['new_password'], PASSWORD_BCRYPT)]);
+
+        return response()->json(['success' => true], 200);
+    }
+
+    /**
+     * note on employee's account status in detail screen
+     *
+     * @param Employees $employee
+     * @return void
+     */
+    private function getAccountStatus($employee){
+        $note = '';
+        if(!$employee['active_status']){
+            switch ($employee['approved_status']){
+                case config('constants.APPROVED_STATUS_REJECTED'):     //rejected registration
+                    $note = 'Account was rejected';
+                    break;
+                case config('constants.APPROVED_STATUS_PENDING'):     //pending registration
+                    $note = 'Account is still pending for approval';
+                    break;
+                default:    //account has been deactivated 
+                    $note = 'Account has been deactivated';
+            }
+            return false;
+        }else{
+            if($employee['approved_status'] === config('constants.APPROVED_STATUS_REJECTED') || $employee['approved_status'] === config('constants.APPROVED_STATUS_PENDING')){
+                $note = 'Account is invalid';
+            }elseif($employee['approved_status'] === config('constants.APPROVED_STATUS_PENDING-APPROVAL_FOR_UPDATE')){
+                $note = 'Update is still pending';
+            }
+        }
+
+        return $note;
     }
 
     /**

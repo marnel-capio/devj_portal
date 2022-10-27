@@ -31,19 +31,25 @@ Route::middleware(['guest', 'web'])->controller(EmployeesController::class)->gro
     Route::get('/employees/regist/complete', function(){
         return view('employees.complete');
     })->name('employees.regist.complete');
+    
 });
+
+Route::middleware('api')->group(function(){
+    Route::post('/employees/changePassword', [EmployeesController::class, 'changePassword'])->name('employees.changePassword');
+});
+
 
 Route::middleware(['auth', 'web'])->group(function(){
     Route::get('logout', [LogoutController::class, 'execute'])->name('logout');
     Route::get('/', [HomeController::class, 'index'])->name('home');
 
-    Route::prefix('/employees')->group(function(){
+    Route::prefix('/employees')->controller(EmployeesController::class)->group(function(){
         Route::get('/', function(){
             return 'Welcome to employees List'; //dummy
         })->name('employees');
-        Route::get('/{id}', function($id){
-            return "Details of user with id={$id} is displayed here.";  //dummy
-        })->name('employees.details')->whereNumber('id');
+        Route::get('/{id}', 'detail')->name('employees.details')->whereNumber('id');
+        Route::get('/{id}/edit', 'edit')->name('employees.edit')->whereNumber('id');
+        Route::get('/{id}/request', 'request')->name('employees.request')->whereNumber('id');
     });
 
     Route::prefix('/laptops')->group(function(){
