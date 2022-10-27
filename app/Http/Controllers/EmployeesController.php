@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ChangePassword;
 use App\Http\Requests\EmployeesRequest;
 use App\Mail\Employee;
 use App\Models\Employees;
+use App\Models\EmployeesLaptops;
+use App\Models\EmployeesProjects;
+use App\Models\Laptops;
+use App\Models\Projects;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -47,19 +50,31 @@ class EmployeesController extends Controller
     public function detail($id){
         // dd('detail');   
         $employeeDetails = Employees::where('id', $id)->first();
+        if(empty($employeeDetails)){
+            abort(404);
+        }
 
-        $laptopInfo = '';
-        $projectInfo = '';
+        //check if allowed to edit
+        $allowedToEdit = false;
+        if(Auth::user()->id == $employeeDetails->id || in_array($employeeDetails->roles, [config('constants.ADMIN_ROLE_VALUE'), config('constants.MANAGER_ROLE_VALUE')])){
+            $allowedToEdit = true;
+        }
+
         return view('employees.details')
                     ->with([
+                        'allowedToEdit' => $allowedToEdit,
                         'readOnly' => true,
                         'detailOnly' => true,
                         'detailNote' => $this->getAccountStatus($employeeDetails),
                         'employee' => $employeeDetails,
-                        'project' => $projectInfo,
-                        'laptop' => $laptopInfo,
+                        'empLaptop' => EmployeesLaptops::getOwnedLaptopByEmployee($id),
+                        'empProject' => EmployeesProjects::getProjectsByEmployee($id),
+                        'laptopList' => Laptops::getLaptopDropdown(),
+                        'projectList' => Projects::getProjectDropdownPerEmployee($id)
                     ]);
     }
+
+
 
     public function edit($id){
         dd('edit page');
@@ -76,17 +91,8 @@ class EmployeesController extends Controller
         ]);
     }
 
-    public function changePassword(ChangePassword $request){
-        
-        $request->validated();
-        $data = $request->only(['id', 'new_password']);
 
-        //save new password
-        Employees::where('id', $data['id'])
-        ->update(['password' => password_hash($data['new_password'], PASSWORD_BCRYPT)]);
 
-        return response()->json(['success' => true], 200);
-    }
 
     /**
      * note on employee's account status in detail screen

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Employees;
 use App\Http\Controllers\EmployeesController;
 use App\Http\Controllers\HomeController;
@@ -34,8 +35,10 @@ Route::middleware(['guest', 'web'])->controller(EmployeesController::class)->gro
     
 });
 
-Route::middleware('api')->group(function(){
-    Route::post('/employees/changePassword', [EmployeesController::class, 'changePassword'])->name('employees.changePassword');
+Route::middleware('api')->controller(ApiController::class)->prefix('/api')->group(function(){
+    Route::post('/changePassword', 'changePassword')->name('api.changePassword');
+    Route::post('/linkLaptop', 'linkLaptop')->name('api.linkLaptop');
+    Route::post('/linkProject', 'linkProject')->name('api.linkProject');
 });
 
 
@@ -59,6 +62,9 @@ Route::middleware(['auth', 'web'])->group(function(){
         Route::get('/create', function(){
             return 'You can add laptop data here'; //dummy
         })->name('laptops.create');
+        Route::get('/{id}', function(){
+            return 'laptop details ';
+         })->name('laptop.details');
     });
 
     Route::prefix('/softwares')->group(function(){
@@ -74,6 +80,10 @@ Route::middleware(['auth', 'web'])->group(function(){
         Route::get('/', function(){
             return 'Welcome to projects List'; //dummy
         })->name('projects');
+        Route::get('/{id}', function(){
+           return 'project details ';
+        })->name('project.details');
+
         Route::get('/create', function(){
             return 'You can add projects data here'; //dummy
         })->name('projects.create');

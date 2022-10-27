@@ -42,3 +42,7 @@ input[readonly] {
 .rqst-btn {
     width: 110px;
 }
+
+table#laptop-tbl  > thead > tr > th{
+    width:20%;
+}

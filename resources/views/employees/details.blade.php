@@ -1,18 +1,26 @@
+@php
+    $userInfo = Auth::user();
+@endphp
+
 @include('header')
 @include('headerMenu')
 
-<div class="container text-center ps-3 pe-3 pt-5">
+<div class="container text-center ps-md-3 pe-md-3 pt-5">
+    @if ($allowedToEdit)
     <div class="d-flex justify-content-between mb-2">
         <div class="text-primary d-flex align-items-center">
             @if ($detailOnly && !empty($detailNote))
             <i class="bi bi-info-circle-fill"></i>&nbsp;{{ $detailNote }}
             @endif
         </div>
+        @if($userInfo->id == $employee->id)
         <div class="">
             <a class="btn btn-primary  me-1" type="button">Edit</a>
             <button type="button" class="btn btn-success  ms-1" data-bs-toggle="modal" data-bs-target="#changePasswordModal" >Change Password</button>
         </div>
+        @endif
     </div>
+    @if($userInfo->id == $employee->id)
     <div class="modal fade" tabindex="-1" id="changePasswordModal">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -22,7 +30,6 @@
                 <div class="modal-body">
                     <div class="p-2">
                         <div id="cp-success-msg">
-
                         </div>
                         <form action="#" id="changePasswordForm">
                             @csrf
@@ -54,7 +61,6 @@
                                     <span id="confirm-pass-text"></span>
                                 </div>
                             </div>
-
                         </form>
                     </div>
                 </div>
@@ -65,6 +71,8 @@
             </div>
         </div>
     </div>
+    @endif
+    @endif
 
 
 
@@ -72,7 +80,7 @@
         <form action="{{ route('employees.regist') }}" method="POST">
             @csrf
             <div class="emp-regist-category p-3 mb-4 rounded-3">
-                <h4 class="text-start">Employee Details</h4>
+                <h4 class="text-start">Employee </h4>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-4 g-3 form-floating">
                         <input type="text" class="form-control" name="first_name" id="first_name" placeholder="First Name" value="{{ $employee->first_name }}" required @readonly($readOnly)>
@@ -181,7 +189,7 @@
                 </div>
             </div>
             <div class="emp-regist-category mb-4 p-3 rounded-3">
-                <h4 class="text-start">Contact Details</h4>
+                <h4 class="text-start">Contact </h4>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-4 g-3 form-floating">
                         <input type="text" class="form-control" name="email" id="email" placeholder="Email" required value="{{ $employee->email }}" readonly>
@@ -288,14 +296,180 @@
                     </div>
                 </div>
             </div>
-            <div class="text-center p-4">
-                @if (!$detailOnly)
+            @if (!$detailOnly)
+                <div class="text-center p-4">
                     <button class="btn btn-success btn-lg mb-5 me-4 rqst-btn" type="">Approve</button>
                     <button class="btn btn-danger btn-lg mb-5 ms-4 rqst-btn"  type="">Reject</button>
-                @endif
-            </div>
+                </div>
+            @endif
         </form>
     </div>
+    <div class="emp-regist-category mb-4 p-3 rounded-3">
+        <div class="d-flex justify-content-between">
+            <h4 class="text-start">Projects</h4>
+            <button class="btn btn-primary" data-bs-target="#linkProjectModal" data-bs-toggle="modal">Add</button>
+        </div>
+        <table class="table table-bordered border-secondary mt-3" id="project-tbl">
+            <thead class="bg-primary text-white fw-bold">
+                <tr>
+                    <th style="width:50%">NAME</th>
+                    <th style="width:30%">DATE</th>
+                    <th style="">STATUS</th>
+                </tr>
+            </thead>
+            <tbody class="">
+                @foreach ($empProject as $project)
+                    <tr>
+                        <td><a href="{{ route('project.details', ['id' => $project['project_id']]) }}" class="text-decoration-none">{{ $project['name'] }}</a></td>
+                        <td>{{ date("Y/m/d", strtotime($project['start_date']))  }} - {{ $project['end_date'] ? date("Y/m/d", strtotime($project['end_date'])) : '' }}</td>
+                        <td>{{ $project['project_status'] }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+    <div class="emp-regist-category mb-4 p-3 rounded-3">
+        <div class="d-flex justify-content-between">
+            <h4 class="text-start">Laptops</h4>
+            <button class="btn btn-primary" data-bs-target="#linkLaptopModal" data-bs-toggle="modal">Add</button>
+        </div>
+        <table class="table table-bordered border-secondary mt-3" id="laptop-tbl">
+            <thead class="bg-primary text-white fw-bold">
+                <tr>
+                    <th>TAG NUMBER</th>
+                    <th>OFFICE PC BROUGHT HOME</th>
+                    <th>LAPTOP MAKE</th>
+                    <th>LAPTOP MODEL</th>
+                    <th>VPN ACCESS</th>
+                </tr>
+            </thead>
+            <tbody class="">
+                @foreach ($empLaptop as $laptop)
+                <tr>
+                    <td><a href="{{ route('laptop.details', ['id' => $laptop['id']]) }}" class="text-decoration-none">{{ $laptop['tag_number'] }}</a></td>
+                    <td>{{ $laptop['brought_home'] }}</td>
+                    <td>{{ $laptop['laptop_make'] }}</td>
+                    <td>{{ $laptop['laptop_model'] }}</td>
+                    <td>{{ $laptop['use_vpn'] }}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+    <div class="modal fade" tabindex="-1" id="linkProjectModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-start">Link Project</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="p-2">
+                        <form action="#" id="linkProjectForm">
+                            @csrf
+                            <input type="text" hidden name="lp_employee_id" value="{{ $employee->id }}">
+                            <div class="row mb-2">
+                                <div class="col-12 g-3 form-floating">
+                                    <select name="project_id" class="form-select" id="projectList" required>
+                                        @foreach ( $projectList as $project )
+                                            <option value="{{ $project['id'] }}">{{ $project['name'] }}</option>
+                                        @endforeach
+                                    </select>
+                                    <label for="projectList" class="text-center">Project Name</label>
+                                    <span id="error-lp-proj-name"></span>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-6 g-3 form-floating">
+                                    <input type="date" name="project_start_date" class="form-control" id="project-start" required>
+                                    <label for="project-start" class="text-center">Start Date</label>
+                                    <span id="error-lp-proj-start"></span>
+                                </div>
+                                <div class="col-6 g-3 form-floating">
+                                    <input type="date" name="project_end_date" class="form-control" id="project-end" required>
+                                    <label for="project-end" class="text-center">Start Date</label>
+                                    <span id="error-lp-proj-end"></span>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-12 g-3 form-floating">
+                                    <select name="project_role" id="projectRoleList" class="form-select" required>
+                                        <option value="{{ config('constants.PROJECT_ROLE_TEAM_LEAD') }}">Team Lead</option>
+                                        <option value="{{ config('constants.PROJECT_ROLE_PROGRAMMER') }}">Programmer</option>
+                                        <option value="{{ config('constants.PROJECT_ROLE_QA') }}">QA</option>
+                                    </select>
+                                    <label for="projectRoleList" class="text-center">Role</label>
+                                    <span id="error-lp-proj-role"></span>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button class="btn btn-primary" type="submit" id="lp-submit-btn">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" id="linkLaptopModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-start">Link Laptop</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="p-2">
+                        <form action="#" id="linkLaptopForm">
+                            @csrf
+                            <input type="text" hidden name="ll_employee_id" value="{{ $employee->id }}">
+                            <div class="row mb-2">
+                                <div class="col-6 g-3 form-floating">
+                                    <select name="laptop_id" id="laptopList" class="form-select" required>
+                                        @foreach ($laptopList as $laptop)
+                                            <option value="{{ $laptop['id'] }}">{{ $laptop['tag_number'] }}</option>
+                                        @endforeach
+                                    </select>
+                                    <label for="laptopList" class="text-center">Tag Number</label>
+                                </div>
+                            </div>
+                            <div class="row mb-2 text-start">
+                                <div class="col-6 g-3">
+                                    <div class="form-check">
+                                        <label for="ll-brought-home" class="form-check-label">Brought Home?</label>
+                                        <input type="checkbox" class="form-check-input" name="laptop_brought_home" id="ll-brought-home">
+                                    </div>  
+                                </div>
+                                <div class="col-6 g-3">
+                                    <div class="form-check">
+                                        <label for="ll-vpn" class="form-check-label">VPN Access?</label>
+                                        <input type="checkbox" class="form-check-input" name="laptop_vpn" id="ll-vpn">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-6 g-3 text-start">
+                                    <div class="form-check">
+                                        <label for="ll-surrender" class="form-check-label">Surrender?</label>
+                                        <input type="checkbox" class="form-check-input" name="laptop_surrender" id="ll-surrender">
+                                    </div>
+                                </div>
+                                <div class="col-6 g-3 form-floating">
+                                    <input type="date" class="form-control" id="ll-surrender-date">
+                                    <label for="ll-surrender-date" class="text-center">Surrender Date</label>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button class="btn btn-primary" type="submit" id="ll-submit-btn">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 @include('footer')

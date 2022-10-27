@@ -26,6 +26,10 @@
 // }
 
 $(document).ready(function () {
+	const CHANGE_PASSWORD_LINK = '/devj_portal/public/api/changePassword';
+	const LINK_LAPTOP_LINK = '/devj_portal/public/api/linkLaptop';
+	const LINK_PROJECT_LINK = '/devj_portal/public/api/linkProject'
+
     $("#employee-request").DataTable({
 		"stateSave": true,
 		"pageLength": 10
@@ -96,7 +100,7 @@ $(document).ready(function () {
 		
 		$.ajax({
 			type: "POST",
-			url: "/devj_portal/public/employees/changePassword",	//update later
+			url: CHANGE_PASSWORD_LINK,	//update later
 			data: postData,
 			dataType: "json",
 			encode: true,
@@ -115,6 +119,8 @@ $(document).ready(function () {
 				}
 			}else{
 				$("#changePasswordForm").trigger('reset');
+				$("#current-pass-error").empty();
+				$("#new-pass-error").empty();
 				$("#cp-success-msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;You have successfully changed your account password.').addClass("text-success mb-4 text-start");
 			}
 
@@ -125,7 +131,59 @@ $(document).ready(function () {
 		e.preventDefault();
 	});
 
+	//link project
+	$("#lp-submit-btn").click(function(e){
+		var postData = {
+			_token: $("#linkProjectForm > input[name=_token]").val(),
+			employee_id: $("#linkProjectForm > input[name=lp_employee_id]").val(),
+			project_id: $("#projectList > option:selected").val(),
+			project_start: $("#project-start").val(),
+			project_end: $("#project-end").val(),
+			project_role: $("#projectRoleList > option:selected").val(),
+		};
 
+		$.ajax({
+			type: "POST",
+			url: LINK_PROJECT_LINK,
+			data: postData,
+			dataType: "json",
+			encode: true,
+		}).done(function(data){
+			console.log(data)
+		}).fail(function(){
+			console.log('error');
+		});
+		
+		e.preventDefault();
+	});
+
+	//link laptop
+	$("#ll-submit-btn").click(function(e){
+		var postData = {
+			_token: $("#linkLaptopForm > input[name=_token]").val(),
+			employee_id: $("#linkLaptopForm > input[name=ll_employee_id]").val(),
+			laptop_id: $("#laptopList > option:selected").val(),
+			brought_home_flag: $("#ll-brought-home").val(),
+			vpn_access_flag: $("#ll-vpn").val(),
+			surrender_flag: $("#ll-surrender").val(),
+			surrender_date: $("#ll-surrender-date").val(),
+		};
+
+
+		$.ajax({
+			type: "POST",
+			url: LINK_LAPTOP_LINK,
+			data: postData,
+			dataType: "json",
+			encode: true,
+		}).done(function(data){
+			console.log(data);
+		}).fail(function(){
+			console.log('error');
+		});
+		
+		e.preventDefault();
+	});
 
 	//end for employee details
 

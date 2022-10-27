@@ -6,6 +6,11 @@ return [
     'MANAGER_ROLE_VALUE' => 2,
     'ENGINEER_ROLE_VALUE' => 3,
 
+    //project role
+    'PROJECT_ROLE_TEAM_LEAD' => 1,
+    'PROJECT_ROLE_PROGRAMMER' => 2,
+    'PROJECT_ROLE_QA' => 3,
+
     //Employee table - approved_status
     'APPROVED_STATUS_REJECTED' => 1,
     'APPROVED_STATUS_APPROVED' => 2,
