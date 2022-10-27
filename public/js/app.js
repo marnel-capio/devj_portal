@@ -30,5 +30,6 @@ $(document).ready(function () {
 		"stateSave": true,
 		"pageLength": 10
 	});
+    
 });
 

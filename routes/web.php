@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
 use App\Http\Middleware\Authenticate;
@@ -28,12 +29,12 @@ Route::middleware('auth')->group(function(){
     Route::get('/', [HomeController::class, 'index'])->name('home');
 
     Route::prefix('/employees')->group(function(){
-        Route::get('/', function(){
-            return 'Welcome to employees List'; //dummy
-        })->name('employees');
+        Route::get('/',  [EmployeeController::class, 'index'])->name('employees');
         Route::get('/{id}', function($id){
             return "Details of user with id={$id} is displayed here.";  //dummy
         })->name('employees.details')->whereNumber('id');
+        Route::get('/sendNotification',  [EmployeeController::class, 'sendNotification'])->name('employees.sendNotification');
+        Route::post('/download',  [EmployeeController::class, 'download'])->name('employees.download');
     });
 
     Route::prefix('/laptops')->group(function(){

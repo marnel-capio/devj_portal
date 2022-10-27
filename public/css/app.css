@@ -23,3 +23,20 @@
 .tbl-header-name{
 	width: 30%;
 }
+
+.container-list-table {
+	margin-left: 10px;
+	padding-top: 10px;
+}
+
+.row-list{
+	padding-top: 10px;
+}
+
+.search-input-text{
+	width: 50%
+}
+
+.download-btn {
+	 
+}
