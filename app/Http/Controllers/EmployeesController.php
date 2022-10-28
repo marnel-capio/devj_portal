@@ -48,11 +48,9 @@ class EmployeesController extends Controller
     }
 
     public function detail($id){
-        // dd('detail');   
         $employeeDetails = Employees::where('id', $id)->first();
-        if(empty($employeeDetails)){
-            abort(404);
-        }
+
+        abort_if(empty($employeeDetails), 404); //employee does not exist
 
         //check if allowed to edit
         $allowedToEdit = false;
