@@ -31,7 +31,7 @@ return [
     'POSITION_1_NAME' => 'Junior Research and Development',
     'POSITION_2_NAME' => 'Assistant Research and Development',
     'POSITION_3_NAME' => 'Senior Assistant Research and Development',
-    'POSITION_4_NAME' => 'Assiociate Research and Development',
+    'POSITION_4_NAME' => 'Associate Research and Development',
     'POSITION_5_NAME' => 'Senior Associate Research and Development',
     'POSITION_6_NAME' => 'Supervisor',
     'POSITION_7_NAME' => 'Adviser',

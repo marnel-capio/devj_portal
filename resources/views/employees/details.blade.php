@@ -15,7 +15,7 @@
         </div>
         @if($userInfo->id == $employee->id)
         <div class="">
-            <a class="btn btn-primary  me-1" type="button">Edit</a>
+            <a href="{{ route('employees.edit', ['id' => $employee->id]) }}" class="btn btn-primary  me-1" type="button">Edit</a>
             <button type="button" class="btn btn-success  ms-1" data-bs-toggle="modal" data-bs-target="#changePasswordModal" >Change Password</button>
         </div>
         @endif
@@ -296,18 +296,14 @@
                     </div>
                 </div>
             </div>
-            @if (!$detailOnly)
-                <div class="text-center p-4">
-                    <button class="btn btn-success btn-lg mb-5 me-4 rqst-btn" type="">Approve</button>
-                    <button class="btn btn-danger btn-lg mb-5 ms-4 rqst-btn"  type="">Reject</button>
-                </div>
-            @endif
         </form>
     </div>
     <div class="emp-regist-category mb-4 p-3 rounded-3">
         <div class="d-flex justify-content-between">
             <h4 class="text-start">Projects</h4>
+            @if ($detailOnly)
             <button class="btn btn-primary" data-bs-target="#linkProjectModal" data-bs-toggle="modal">Add</button>
+            @endif
         </div>
         <table class="table table-bordered border-secondary mt-3" id="project-tbl">
             <thead class="bg-primary text-white fw-bold">
@@ -331,7 +327,9 @@
     <div class="emp-regist-category mb-4 p-3 rounded-3">
         <div class="d-flex justify-content-between">
             <h4 class="text-start">Laptops</h4>
+            @if ($detailOnly)
             <button class="btn btn-primary" data-bs-target="#linkLaptopModal" data-bs-toggle="modal">Add</button>
+            @endif
         </div>
         <table class="table table-bordered border-secondary mt-3" id="laptop-tbl">
             <thead class="bg-primary text-white fw-bold">
@@ -356,6 +354,41 @@
             </tbody>
         </table>
     </div>
+
+    @if (!$detailOnly)
+    <div class="text-center p-4">
+        <button class="btn btn-danger btn-lg mb-5 me-4 rqst-btn"  data-bs-target="#rejectRequestModal" data-bs-toggle="modal" id="reject-request">Reject</button>
+        <button class="btn btn-success btn-lg mb-5 ms-4 rqst-btn" id="approve-request"  form="approve-request-form">Approve</button>
+        <form action="{{ route('employees.store') }}" method="POST" id="approve-request-form">
+            @csrf
+            <input type="text" name="id" hidden value="{{ $employee->id }}">
+        </form>
+    </div>
+    <div class="modal fade" tabindex="-1" id="rejectRequestModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="p-2">
+                        <div id="ll-success-msg"></div>
+                        <form action="{{ route('employees.reject') }}" method="POST" id="reject-request-form">
+                            @csrf
+                            <input type="text" name="id" value="{{ $employee->id }}" hidden>
+                            <div class="mb-2">
+                                <textarea class="form-control" name="reason" placeholder="Reason" rows="3" required></textarea>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button class="btn btn-danger" type="submit" form="reject-request-form">Reject</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    @if ($detailOnly)
     <div class="modal fade" tabindex="-1" id="linkProjectModal">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -364,6 +397,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="p-2">
+                        <div id="lp-success-msg"></div>
                         <form action="#" id="linkProjectForm">
                             @csrf
                             <input type="text" hidden name="lp_employee_id" value="{{ $employee->id }}">
@@ -428,6 +462,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="p-2">
+                        <div id="ll-success-msg"></div>
                         <form action="#" id="linkLaptopForm">
                             @csrf
                             <input type="text" hidden name="ll_employee_id" value="{{ $employee->id }}">
@@ -479,6 +514,7 @@
             </div>
         </div>
     </div>
+    @endif
 
 </div>
 

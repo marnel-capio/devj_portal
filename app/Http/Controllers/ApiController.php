@@ -64,7 +64,9 @@ class ApiController extends Controller
 
             //notify the managers of the request
             $mailData = [
-                'link' => "/employees/{$data['employee_id']}/request",
+                'link' => "/",  //update link
+                'requestor' => Auth::user()->first_name .' ' .Auth::user()->last_name,
+
             ];
 
             $this->sendMailForEmployeeUpdate(Employees::getEmailOfManagers(), $mailData, config('constants.MAIL_EMPLOYEE_LAPTOP_LINK_REQUEST'));
@@ -112,11 +114,11 @@ class ApiController extends Controller
 
             //notify the managers of the request
             $mailData = [
-                'link' => "/employees/{$data['employee_id']}/request",
+                'link' => "/",  //update link
+                'requestor' => Auth::user()->first_name .' ' .Auth::user()->last_name,
             ];
 
             $this->sendMailForEmployeeUpdate(Employees::getEmailOfManagers(), $mailData, config('constants.MAIL_EMPLOYEE_PROJECT_LINK_REQUEST'));
-
         }
 
         

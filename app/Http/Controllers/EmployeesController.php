@@ -10,6 +10,7 @@ use App\Models\EmployeesLaptops;
 use App\Models\EmployeesProjects;
 use App\Models\Laptops;
 use App\Models\Projects;
+use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -17,19 +18,41 @@ use Illuminate\Support\Facades\Mail;
 class EmployeesController extends Controller
 {
     
-    public function regist(EmployeesRequest $request){
-        if($request->isMethod('GET')){
-            return view('employees.regist');
+    public function create($rejectCode = ""){
+        $employee = '';
+        if($rejectCode){
+            $employee = Employee::where('rejectCode', $rejectCode)
+            ->where('approved_status', config('constants.APPROVED_STATUS_REJECTED'))
+            ->where('active_status', 0)
+            ->first();
+
+            abort_if(empty($employee), 404);
         }
 
+        return view('employees.regist')->with(['employee' => $employee]);
+    }
+
+    public function regist(EmployeesRequest $request){
         $request->validated();
 
         $insertData = $this->getEmployeeData($request);
+        
+        if($insertData['id']){
+            //update data only
+            $id = $insertData['id'];
+            unset($insertData['id']);
+            unset($insertData['created_by']);
 
-        $id = Employees::create($insertData)->id;
-        //update created_by/updated_by
-        Employees::where('id', $id)
-                    ->update(['updated_by' => $id, 'created_by' => $id]);
+            Employees::where('id', $id)
+                        ->update($insertData);
+
+        }else{
+            //insert new entry
+            $id = Employees::create($insertData)->id;
+            //update created_by/updated_by
+            Employees::where('id', $id)
+                        ->update(['updated_by' => $id, 'created_by' => $id]);
+        }
 
         //send mail to managers
         $recipients = Employees::getEmailOfManagers();
@@ -47,9 +70,15 @@ class EmployeesController extends Controller
 
         abort_if(empty($employeeDetails), 404); //employee does not exist
 
+        //if the account is still pending for update, redirect to request page
+        if(!$employeeDetails->active_status && $employeeDetails->approved_status == config('constants.APPROVED_STATUS_PENDING')){
+            return redirect(route('employees.request', ['id' => $id]));
+        }
+
         //check if allowed to edit
         $allowedToEdit = false;
-        if(Auth::user()->id == $employeeDetails->id || in_array($employeeDetails->roles, [config('constants.ADMIN_ROLE_VALUE'), config('constants.MANAGER_ROLE_VALUE')])){
+        if((Auth::user()->id == $employeeDetails->id && $employeeDetails->approved_status = config('constants.APPROVED_STATUS_APPROVED'))
+                || in_array(Auth::user()->roles, [config('constants.ADMIN_ROLE_VALUE'), config('constants.MANAGER_ROLE_VALUE')])){
             $allowedToEdit = true;
         }
 
@@ -70,21 +99,238 @@ class EmployeesController extends Controller
 
 
     public function edit($id){
-        dd('edit page');
+        //check if user is allow to access the edit page
+        abort_if(Auth::user()->id != $id && !in_array(Auth::user()->roles, [config('constants.ADMIN_ROLE_VALUE'), config('constants.MANAGER_ROLE_VALUE')]), 403);
+
+        $employee = Employees::where('id', $id)->first();
+
+        return view('employees.edit')->with([
+                                        'employee' => $employee,
+                                        'manager_admin' => in_array(Auth::user()->roles, [config('constants.ADMIN_ROLE_VALUE'), config('constants.MANAGER_ROLE_VALUE')])
+                                    ]);
+
+    }
+
+    public function update(EmployeesRequest $request){
+        $request->validated();
+
+        $updateData = $this->getEmployeeData($request);
+        $id = $updateData['id'];
+        unset($updateData['id']);
+        unset($updateData['created_by']);
+
+        //check logined employee role
+        if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
+            //save directly in DB in db
+            Employees::where('id', $id)
+                ->update($updateData);
+
+            //notify the employee
+            $mailData = [
+                'link' => route('employees.details', ['id' => $id]),  
+                'updater' => Auth::user()->first_name .' ' .Auth::user()->last_name,
+            ];
+
+            $this->sendMailForEmployeeUpdate($updateData['email'], $mailData, config('constants.MAIL_EMPLOYEE_UPDATE_BY_MANAGER'));
+ 
+        }else{
+            //if an employee edits his own data and is not the manager
+            Employees::where('id', $id)
+                        ->update([
+                            'updated_by' => Auth::user()->id,
+                            'update_data' => json_encode($updateData, true),
+                            'approved_status' => config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')
+                        ]);
+
+            //notify the managers of the request
+            $mailData = [
+                'link' => "/",  //update link
+                'requestor' => Auth::user()->first_name .' ' .Auth::user()->last_name,
+            ];
+
+            $this->sendMailForEmployeeUpdate(Employees::getEmailOfManagers(), $mailData, config('constants.MAIL_EMPLOYEE_UPDATE_REQUEST'));
+ 
+        }
+        
+        return redirect(route('employees.regist.complete'));    //check if need palitan
     }
 
     public function request($id){
+
+        $employeeDetails = Employees::where('id', $id)->first();
+
+        abort_if(empty($employeeDetails), 404); //employee does not exist
+
+        //check if employee has pending request
+        
+        if($employeeDetails->active_status && $employeeDetails->approved_status == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')){
+            //display employee's update
+            $updateData = json_decode($employeeDetails->update_data, true);
+            foreach($updateData as $key => $val){
+                $employeeDetails->$key = $val;
+            }
+        }elseif(!(!$employeeDetails->active_status && $employeeDetails->approved_status == config('constants.APPROVED_STATUS_PENDING'))){
+            abort(404);
+        }
+
         return view('employees.details')
         ->with([
+            'allowedToEdit' => false,
             'readOnly' => true,
             'detailOnly' => false,
-            // 'employee' => $employeeDetails,
-            // 'project' => $projectInfo,
-            // 'laptop' => $laptopInfo,
+            'showRejectCodeModal' => 1,
+            'employee' => $employeeDetails,
+            'empLaptop' => EmployeesLaptops::getOwnedLaptopByEmployee($id),
+            'empProject' => EmployeesProjects::getProjectsByEmployee($id),
+            'laptopList' => Laptops::getLaptopDropdown(),
+            'projectList' => Projects::getProjectDropdownPerEmployee($id)
         ]);
     }
 
+    public function store(Request $request){
+        $id = $request->input('id');
 
+        $error = $this->validateRequest($id);
+        if($error){
+            //id is not included in the request, show error page
+            return view('error.requestError')
+                        ->with([
+                            'error' => $error
+                        ]);
+        }
+
+        $employee = Employees::where('id',$id)->first();
+        
+        //if no error, update employee details
+        if(!$employee->active_status && $employee->approved_status == config('constants.APPROVED_STATUS_PENDING')){
+            //if new registration
+            Employees::where('id', $employee['id'])
+                ->update([
+                    'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
+                    'updated_by' => Auth::user()->id,
+                ]);
+
+            //send mail
+            $this->sendMail($employee->email, ['first_name' => $employee->first_name], config('constants.MAIL_NEW_REGISTRATION_APPROVAL'));
+
+        }else{
+            //update only
+            $employeeUpdate = json_decode($employee->update_data, true);
+            $employeeUpdate['updated_by'] = Auth::user()->id;
+            $employeeUpdate['update_data'] = NULL;
+            $employeeUpdate['approved_status'] = config('constants.APPROVED_STATUS_APPROVED');
+
+            Employees::where('id', $employee['id'])->update($employeeUpdate);
+            
+            //send mail
+            $this->sendMail($employee->email, ['first_name' => $employee->first_name], config('constants.MAIL_EMPLOYEE_UPDATE_APPROVAL'));
+        }
+
+        return redirect(route('home'));
+    }
+
+    public function reject(Request $request){
+        $id = $request->input('id');
+
+        $error = $this->validateRequest($id);
+        if($error){
+            //id is not included in the request, show error page
+            return view('error.requestError')
+                        ->with([
+                            'error' => $error
+                        ]);
+        }
+
+        $employee = Employees::where('id',$id)->first();
+
+        if(!$employee->active_status && $employee->approved_status == config('constants.APPROVED_STATUS_PENDING')){
+            //if new registration
+            $rejectCode = $this->generateRejectCode();
+            Employees::where('id', $employee['id'])
+                ->update([
+                    'approved_status' => config('constants.MAIL_NEW_REGISTRATION_REJECTION'),
+                    'reasons' => $request->input('reason'),
+                    'reject_code' => $rejectCode,
+                    'updated_by' => Auth::user()->id,
+                ]);
+            
+            //send mail
+            $mailData = [
+                'first_name' => $employee->first_name,
+                'reasons' => $request->input('reason'),
+                'reject_code' => $rejectCode,
+                'link' => route('employees.regist', ['rejectCode', $rejectCode]),
+            ];
+            $this->sendMail($employee->email, $mailData, config('constants.MAIL_NEW_REGISTRATION_REJECTION'));
+
+        }else{
+            Employees::where('id', $employee['id'])
+                ->update([
+                    'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
+                    'reasons' => $request->input('reason'),
+                    'update_data' => NULL,
+                    'updated_by' => Auth::user()->id,
+                ]);
+
+            
+            //send mail
+            $mailData = [
+                'first_name' => $employee->first_name,
+                'reasons' => $request->input('reason'),
+            ];
+            $this->sendMail($employee->email, ['first_name' => $employee->first_name], config('constants.MAIL_EMPLOYEE_UPDATE_REJECTION'));
+        }
+
+        return redirect(route('home'));
+    }
+
+    /**
+     * Validates employee's request before updating/rejecting
+     *
+     * @param [type] $id
+     * @return void
+     */
+    private function validateRequest($id){
+        if(empty($id)){
+            //id is not included in the request, show error page
+            return 'Invalid request.';
+        }
+        
+        $employee = Employees::where('id', $id)->first();
+        
+        if(empty($employee)){
+            return 'Employee does not exists.';
+        }
+
+        //check if employee needs to be approved
+        if(!(!$employee->active_status && $employee->approved_status == config('constants.APPROVED_STATUS_PENDING'))    //pending for new registration
+            && !($employee->active_status && $employee->approved_status == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE'))){    //pending for update
+                return 'Employee has no pending request.';
+            }
+
+        return ''; 
+    }
+
+    private function generateRejectCode(){
+        $length = 8; 
+        $sets = [];
+        $sets[] = str_split('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+        $sets[] = str_split('abcdefghijklmnopqrstuvwxyz');
+        $sets[] = str_split('0123456789');
+        $code = '';
+        
+        //get 1 character from each set
+        foreach($sets as $set){
+            $code .= $set[array_rand($set)];
+        }
+
+        while(strlen($code) < $length){
+            $randomSet = $sets[array_rand($sets)];
+            $code .= $randomSet[array_rand($randomSet)];
+        }
+
+        return str_shuffle($code);
+    }
 
 
     /**

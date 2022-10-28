@@ -46,9 +46,9 @@
 						</td>
 		                <td>
 		                @if ($user['approved_status'] == 3) 	
-		                	<a href="/employees/{{$user['id']}}/request" alt="View"><i class="bi bi-eye"></i>View</a>
+		                	<a href="{{ url("/employees/{$user['id']}/request") }}" alt="View"><i class="bi bi-eye"></i>View</a>
 		               	@else
-		               		<a href="/employees/{{$user['id']}}" alt="View"><i class="bi bi-eye"></i>View</a>
+		               		<a href="{{ url("/employees/{$user['id']}") }}" alt="View"><i class="bi bi-eye"></i>View</a>
 		               	@endif
 		                </td>
 		            </tr>

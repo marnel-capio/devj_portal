@@ -27,9 +27,10 @@ Route::middleware('guest')->controller(LoginController::class)->group(function()
     Route::match(['GET', 'POST'], 'forgotPassword', 'forgotPassword')->name('login.forgotPassword');
 });
 
-Route::middleware(['guest', 'web'])->controller(EmployeesController::class)->group(function(){
-    Route::match(['GET', 'POST'], '/employees/regist', 'regist')->name('employees.regist');
-    Route::get('/employees/regist/complete', function(){
+Route::middleware(['guest', 'web'])->controller(EmployeesController::class)->prefix('/employees')->group(function(){
+    Route::post('/regist', 'regist')->name('employees.regist');
+    Route::get('/create/{rejectCode?}', 'create')->name('employee.create');
+    Route::get('/regist/complete', function(){
         return view('employees.complete');
     })->name('employees.regist.complete');
     
@@ -53,6 +54,9 @@ Route::middleware(['auth', 'web'])->group(function(){
         Route::get('/{id}', 'detail')->name('employees.details')->whereNumber('id');
         Route::get('/{id}/edit', 'edit')->name('employees.edit')->whereNumber('id');
         Route::get('/{id}/request', 'request')->name('employees.request')->whereNumber('id');
+        Route::post('/store', 'store')->name('employees.store');
+        Route::post('/reject', 'reject')->name('employees.reject');
+        Route::post('/update', 'store')->name('employees.update');
     });
 
     Route::prefix('/laptops')->group(function(){

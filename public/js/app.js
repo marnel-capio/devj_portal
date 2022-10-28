@@ -179,8 +179,8 @@ $(document).ready(function () {
 				$("#error-lp-proj-role").empty();
 				$("#error-lp-proj-start").empty();
 				$("#error-lp-proj-end").empty();
-
-				$("#lp-success-msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;You\'re request has been sent.').addClass("text-success mb-4 text-start");
+				$("#projectList > option[value=" + postData.project_id);
+				$("#lp-success-msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;Your request has been sent.').addClass("text-success mb-4 text-start");
 			}
 		}).fail(function(){
 			console.log('error');
@@ -225,7 +225,8 @@ $(document).ready(function () {
 				$("#linkLaptopForm").trigger('reset');
 				$("#error-laptop-id").empty();
 				$("#error-surrender-date").empty();
-				$("#ll-success-msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;You\'re request has been sent.').addClass("text-success mb-4 text-start");
+				$("#laptopList > option[value=" + postData.laptop_id);
+				$("#ll-success-msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;Your request has been sent.').addClass("text-success mb-4 text-start");
 			}
 		}).fail(function(){
 			console.log('error');
