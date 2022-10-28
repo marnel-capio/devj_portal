@@ -10,6 +10,7 @@ class EmployeesProjects extends Model
     use HasFactory;
 
     protected $table = 'employees_projects';
+    protected $guarded = [];
     
     const UPDATED_AT = 'update_time';
     const CREATED_AT = 'create_time';

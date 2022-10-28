@@ -31,7 +31,16 @@
 
 @elseif ($mailType == config('constants.MAIL_EMPLOYEE_PROJECT_LINK_REQUEST'))
 
+There has been a request for employee to link on a project. Check the details on the link below:<br>
+<br>
+<a href="{{ url($mailData['link']) }}">Request Link</a>
+
 @elseif ($mailType == config('constants.MAIL_EMPLOYEE_LAPTOP_LINK_REQUEST'))
+
+There has been a request for employee to link on a laptop. Check the details on the link below:<br>
+<br>
+<a href="{{ url($mailData['link']) }}">Request Link</a>
+
     
 @endif
 <br>

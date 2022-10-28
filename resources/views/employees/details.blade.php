@@ -386,7 +386,7 @@
                                 </div>
                                 <div class="col-6 g-3 form-floating">
                                     <input type="date" name="project_end_date" class="form-control" id="project-end" required>
-                                    <label for="project-end" class="text-center">Start Date</label>
+                                    <label for="project-end" class="text-center">End Date</label>
                                     <span id="error-lp-proj-end"></span>
                                 </div>
                             </div>
@@ -401,12 +401,20 @@
                                     <span id="error-lp-proj-role"></span>
                                 </div>
                             </div>
+                            <div class="row mb-2">
+                                <div class="col-6 g-3 text-start">
+                                    <div class="form-check">
+                                        <label for="proect-onsite" class="form-check-label">Onsite</label>
+                                        <input type="checkbox" class="form-check-input" name="project_onsite" id="project-onsite">
+                                    </div>  
+                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button class="btn btn-primary" type="submit" id="lp-submit-btn">Submit</button>
+                    <button class="btn btn-primary" type="submit" id="lp-submit-btn">Link</button>
                 </div>
             </div>
         </div>
@@ -431,6 +439,7 @@
                                         @endforeach
                                     </select>
                                     <label for="laptopList" class="text-center">Tag Number</label>
+                                    <span id="error-laptop-id"></span>
                                 </div>
                             </div>
                             <div class="row mb-2 text-start">
@@ -457,6 +466,7 @@
                                 <div class="col-6 g-3 form-floating">
                                     <input type="date" class="form-control" id="ll-surrender-date">
                                     <label for="ll-surrender-date" class="text-center">Surrender Date</label>
+                                    <span id="error-surrender-date"></span>
                                 </div>
                             </div>
                         </form>
@@ -464,7 +474,7 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button class="btn btn-primary" type="submit" id="ll-submit-btn">Submit</button>
+                    <button class="btn btn-primary" type="submit" id="ll-submit-btn">Link</button>
                 </div>
             </div>
         </div>

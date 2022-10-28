@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Laptops;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -18,6 +19,18 @@ class LinkLaptop extends FormRequest
         return true;
     }
 
+    /**
+     * Get custom attributes for validator errors.
+     *
+     * @return array
+     */
+    public function attributes()
+    {
+        return [
+            'laptop_id' => 'laptop',
+        ];
+    }
+    
     /**
      * Returns error in json json format
      *
@@ -39,8 +52,18 @@ class LinkLaptop extends FormRequest
      */
     public function rules()
     {
-        return [
-            //
+        $validation = [
+            'laptop_id' => ['required', function($attribute, $value, $fail){
+                if(empty(Laptops::getLaptopEmployeeDetails($value))){
+                    $fail('The selected laptop in invalid, please select again.');
+                }
+            }],
+            'surrender_date' =>'required_if:surrender_flag,1',
         ];
+        
+        if($this->filled('surrender_date')){
+            $validation['surrender_date'] = 'date';
+        }
+        return  $validation;
     }
 }

@@ -32,12 +32,7 @@ class EmployeesController extends Controller
                     ->update(['updated_by' => $id, 'created_by' => $id]);
 
         //send mail to managers
-        $recipients = Employees::select('email')
-                            ->where('roles', config('constants.MANAGER_ROLE_VALUE'))
-                            ->where('active_status', 1)
-                            ->get()
-                            ->toArray();
-
+        $recipients = Employees::getEmailOfManagers();
 
         $mailData = [
             'link' => "/employees/{$id}/request",
@@ -115,7 +110,7 @@ class EmployeesController extends Controller
         }else{
             if($employee['approved_status'] === config('constants.APPROVED_STATUS_REJECTED') || $employee['approved_status'] === config('constants.APPROVED_STATUS_PENDING')){
                 $note = 'Account is invalid';
-            }elseif($employee['approved_status'] === config('constants.APPROVED_STATUS_PENDING-APPROVAL_FOR_UPDATE')){
+            }elseif($employee['approved_status'] === config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')){
                 $note = 'Update is still pending';
             }
         }

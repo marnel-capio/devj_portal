@@ -109,12 +109,12 @@ $(document).ready(function () {
 			if(!data.success){
 				//display error
 				var currentPasswordErrors = data.data.current_password;
-				if(currentPasswordErrors.length > 0 ){
+				if(currentPasswordErrors && currentPasswordErrors.length > 0 ){
 					$("#current-pass-error").html(currentPasswordErrors[0]).css('color', 'red');
 				}
 
 				var newPasswordErrors = data.data.new_password;
-				if(newPasswordErrors.length > 0 ){
+				if(newPasswordErrors && newPasswordErrors.length > 0 ){
 					$("#new-pass-error").html(newPasswordErrors[0]).css('color', 'red');
 				}
 			}else{
@@ -140,6 +140,7 @@ $(document).ready(function () {
 			project_start: $("#project-start").val(),
 			project_end: $("#project-end").val(),
 			project_role: $("#projectRoleList > option:selected").val(),
+			project_onsite: $("#project-onsite").is(':checked') ? 1 : 0,
 		};
 
 		$.ajax({
@@ -149,7 +150,38 @@ $(document).ready(function () {
 			dataType: "json",
 			encode: true,
 		}).done(function(data){
-			console.log(data)
+			// console.log(data);
+
+			// display error
+			if(!data.success){
+				var projectError = data.data.project_id;
+				if(projectError && projectError.length > 0 ){
+					$("#error-lp-proj-name").html(projectError[0]).css('color', 'red');
+				}
+
+				var projectRoleError = data.data.project_role;
+				if(projectRoleError && projectRoleError.length > 0 ){
+					$("#error-lp-proj-role").html(projectRoleError[0]).css('color', 'red');
+				}
+
+				var projectStartError = data.data.project_start;
+				if(projectStartError && projectStartError.length > 0 ){
+					$("#error-lp-proj-start").html(projectStartError[0]).css('color', 'red');
+				}
+
+				var projectEndError = data.data.project_end;
+				if(projectEndError && projectEndError.length > 0 ){
+					$("#error-lp-proj-end").html(projectEndError[0]).css('color', 'red');
+				}
+			}else{
+				$("#linkProjectForm").trigger('reset');
+				$("#error-lp-proj-name").empty();
+				$("#error-lp-proj-role").empty();
+				$("#error-lp-proj-start").empty();
+				$("#error-lp-proj-end").empty();
+
+				$("#lp-success-msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;You\'re request has been sent.').addClass("text-success mb-4 text-start");
+			}
 		}).fail(function(){
 			console.log('error');
 		});
@@ -163,9 +195,9 @@ $(document).ready(function () {
 			_token: $("#linkLaptopForm > input[name=_token]").val(),
 			employee_id: $("#linkLaptopForm > input[name=ll_employee_id]").val(),
 			laptop_id: $("#laptopList > option:selected").val(),
-			brought_home_flag: $("#ll-brought-home").val(),
-			vpn_access_flag: $("#ll-vpn").val(),
-			surrender_flag: $("#ll-surrender").val(),
+			brought_home_flag: $("#ll-brought-home").is(':checked') ? 1 : 0,
+			vpn_access_flag: $("#ll-vpn").is(':checked') ? 1 : 0,
+			surrender_flag: $("#ll-surrender").is(':checked') ? 1 : 0,
 			surrender_date: $("#ll-surrender-date").val(),
 		};
 
@@ -177,7 +209,24 @@ $(document).ready(function () {
 			dataType: "json",
 			encode: true,
 		}).done(function(data){
-			console.log(data);
+			// console.log(data);
+			if(!data.success){
+				//display error
+				var laptopIdError = data.data.laptop_id;
+				if(laptopIdError && laptopIdError.length > 0 ){
+					$("#error-laptop-id").html(laptopIdError[0]).css('color', 'red');
+				}
+
+				var surrenderDateError = data.data.surrender_date;
+				if(surrenderDateError && surrenderDateError.length > 0 ){
+					$("#error-surrender-date").html(surrenderDateError[0]).css('color', 'red');
+				}
+			}else{
+				$("#linkLaptopForm").trigger('reset');
+				$("#error-laptop-id").empty();
+				$("#error-surrender-date").empty();
+				$("#ll-success-msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;You\'re request has been sent.').addClass("text-success mb-4 text-start");
+			}
 		}).fail(function(){
 			console.log('error');
 		});

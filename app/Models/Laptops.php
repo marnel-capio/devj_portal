@@ -25,4 +25,16 @@ class Laptops extends Model
                 ->toArray();
                 
     }
+
+    static function getLaptopEmployeeDetails($id){
+        return self::where('status', 1)
+                    ->where('id', $id)
+                    ->whereNotIn('id', function($query){
+                        $query->select('laptop_id')
+                                ->from('employees_laptops')
+                                ->where('surrender_flag', 0);
+                    })
+            ->get()
+            ->toArray();
+    }
 }

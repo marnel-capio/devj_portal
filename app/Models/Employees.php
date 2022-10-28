@@ -47,4 +47,13 @@ class Employees extends Authenticatable
     //     'active_status',
     //     'reasons',
     // ];
+
+    static function getEmailOfManagers(){
+        return self::select('email')
+                            ->where('roles', config('constants.MANAGER_ROLE_VALUE'))
+                            ->where('active_status', 1)
+                            ->get()
+                            ->toArray();
+        
+    }
 }
