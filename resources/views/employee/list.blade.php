@@ -1,19 +1,22 @@
 @include('header')
 <script src="{{ asset('js/employee.js') }}"></script>
 @include('headerMenu')
-@if (isset($success))
-	@if ($success) 
-		<div class="alert alert-success" role="alert">
-		  {{$message}}
-		</div>
-	@endif
+@if (session('success')) 
+	<div class="alert alert-success " role="alert">
+	  {{session('message')}}
+	</div>
 @endif
 <div class="container container-list-table">
 	<h5> Employee List </h5>
 	@if(auth()->user()->roles != 3)
 	<div class="row row-list">
 		<div class="col">
-			<a href='{!! url("/employees/sendNotification"); !!}' class="btn btn-primary float-end ">Send Notification</a>
+			<a href='{!! url("/employees/sendNotification"); !!}' class="btn btn-primary float-end " id='send-notif'>
+				<div class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+  					<span class="sr-only"></span>
+				</div>
+				Send Notification
+			</a>
 		</div>
 	</div>
 	@endif

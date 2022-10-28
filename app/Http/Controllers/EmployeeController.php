@@ -3,20 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+
 use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Auth;
-use App\Models\Employees;
-use PhpParser\Node\Stmt\Return_;
-use App\Mail\updateContactDetailsNotification;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+
+use App\Models\Employees;
+
+use PhpParser\Node\Stmt\Return_;
+use App\Mail\updateContactDetailsMail;
+
 use Excel;
 use App\Exports\EmployeesExport;
 
 
 class EmployeeController extends Controller
 {
-    public function index(){
+    public function index(Request $request){
     	$employee_request = $this->getEmployee();
+
+        // $message = isset($request['message']) ? $request['message'] : "";
+        // $success = isset($request['success']) ? $request['success'] : 0;
 
         return view('employee/list', ['employee_request' => $employee_request]);
     }
@@ -42,24 +51,21 @@ class EmployeeController extends Controller
                     ->orWhere(function($query) {
                         $query->where('approved_status', 2)
                             ->orWhere('approved_status', 4);
-                    })->get();
+                    })
+                    ->where('email',"!=",'devjpotal@awsys-i.com')->get();
 
         foreach ($employee as $key => $detail) {
-            $email =  $detail['email'];
+            $email = $detail['email'];
             //send mail
             $mailData = [
                 'email' => $email,
                 'first_name' => $detail['first_name'],
             ];
-
-            if(Mail::to($email)->send(new updateContactDetailsNotification($mailData))){
-                // insert DB
-            } else {
-                // insert DB
-            }
-            # code...
+            if (!empty($email)) {
+                Mail::to($email)->send(new updateContactDetailsMail($mailData));
+            } 
         }
-        return view('employee/list', ['success' => 1, "message" => "Successfully sent notificications to all active employee."]);
+        return redirect()->route('employees')->with(['success' => 1, "message" => "Successfully sent notifications to all active employee."]);
     }
 
     public function download(Request $request) {

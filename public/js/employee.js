@@ -47,5 +47,10 @@ $(document).ready(function () {
             	});
             }
        });
-    })
+    });
+
+    $("#send-notif").on("click", function() {
+        $(".spinner-border").show();
+
+    });
 });
