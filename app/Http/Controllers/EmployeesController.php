@@ -21,7 +21,7 @@ class EmployeesController extends Controller
     public function create($rejectCode = ""){
         $employee = '';
         if($rejectCode){
-            $employee = Employee::where('rejectCode', $rejectCode)
+            $employee = Employees::where('reject_code', $rejectCode)
             ->where('approved_status', config('constants.APPROVED_STATUS_REJECTED'))
             ->where('active_status', 0)
             ->first();
@@ -37,11 +37,19 @@ class EmployeesController extends Controller
 
         $insertData = $this->getEmployeeData($request);
         
-        if($insertData['id']){
+        if(isset($insertData['id'])){
             //update data only
             $id = $insertData['id'];
             unset($insertData['id']);
             unset($insertData['created_by']);
+
+            $additionalData = [
+                'approved_status' => config('constants.APPROVED_STATUS_PENDING'),
+                'reasons' => NULL,
+                'reject_code' => NULL,
+            ];
+
+            $insertData = array_merge($insertData, $additionalData);
 
             Employees::where('id', $id)
                         ->update($insertData);
@@ -70,8 +78,9 @@ class EmployeesController extends Controller
 
         abort_if(empty($employeeDetails), 404); //employee does not exist
 
-        //if the account is still pending for update, redirect to request page
-        if(!$employeeDetails->active_status && $employeeDetails->approved_status == config('constants.APPROVED_STATUS_PENDING')){
+        //check if employee has pending update, or if employee's account is not yet activated
+        if(($employeeDetails->active_status && $employeeDetails->approved_status == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE'))
+            || (!$employeeDetails->active_status && $employeeDetails->approved_status == config('constants.APPROVED_STATUS_PENDING'))){
             return redirect(route('employees.request', ['id' => $id]));
         }
 
@@ -103,6 +112,12 @@ class EmployeesController extends Controller
         abort_if(Auth::user()->id != $id && !in_array(Auth::user()->roles, [config('constants.ADMIN_ROLE_VALUE'), config('constants.MANAGER_ROLE_VALUE')]), 403);
 
         $employee = Employees::where('id', $id)->first();
+
+        //check if employee has pending update, or if employee's account is not yet activated
+        if(($employee->active_status && $employee->approved_status == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE'))
+            || (!$employee->active_status && $employee->approved_status == config('constants.APPROVED_STATUS_PENDING'))){
+            return redirect(route('employees.request', ['id' => $id]));
+        }
 
         return view('employees.edit')->with([
                                         'employee' => $employee,
@@ -207,6 +222,7 @@ class EmployeesController extends Controller
             Employees::where('id', $employee['id'])
                 ->update([
                     'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
+                    'active_status' => 1,
                     'updated_by' => Auth::user()->id,
                 ]);
 
@@ -248,7 +264,7 @@ class EmployeesController extends Controller
             $rejectCode = $this->generateRejectCode();
             Employees::where('id', $employee['id'])
                 ->update([
-                    'approved_status' => config('constants.MAIL_NEW_REGISTRATION_REJECTION'),
+                    'approved_status' => config('constants.APPROVED_STATUS_REJECTED'),
                     'reasons' => $request->input('reason'),
                     'reject_code' => $rejectCode,
                     'updated_by' => Auth::user()->id,
@@ -258,8 +274,7 @@ class EmployeesController extends Controller
             $mailData = [
                 'first_name' => $employee->first_name,
                 'reasons' => $request->input('reason'),
-                'reject_code' => $rejectCode,
-                'link' => route('employees.regist', ['rejectCode', $rejectCode]),
+                'link' => route('employees.create') ."/{$rejectCode}",
             ];
             $this->sendMail($employee->email, $mailData, config('constants.MAIL_NEW_REGISTRATION_REJECTION'));
 

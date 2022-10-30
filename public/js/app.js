@@ -78,7 +78,7 @@ $(document).ready(function () {
 
 	//end for employee registration
 
-	//start for employee details
+	//start for employee details/request
 
 	//change password
 	$("#cp-confirm-pw, #cp-new-pw").keyup(function(){
@@ -235,8 +235,17 @@ $(document).ready(function () {
 		e.preventDefault();
 	});
 
-	//end for employee details
+	//reject modal
+	$("#reject-request-form").submit(function(){
+		if($("#reject-reason").val() == ""){
+			console.log("hello");
+			$("#reject-reason-error").html('The reason field is required.').addClass("text-danger text-start");
+			return false;
+		}
+	});
 
+
+	//end for employee details/request
 
 });
 

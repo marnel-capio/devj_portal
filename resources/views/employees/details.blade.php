@@ -314,13 +314,19 @@
                 </tr>
             </thead>
             <tbody class="">
-                @foreach ($empProject as $project)
+                @if(!empty($empProject))
+                    @foreach ($empProject as $project)
+                        <tr>
+                            <td><a href="{{ route('project.details', ['id' => $project['project_id']]) }}" class="text-decoration-none">{{ $project['name'] }}</a></td>
+                            <td>{{ date("Y/m/d", strtotime($project['start_date']))  }} - {{ $project['end_date'] ? date("Y/m/d", strtotime($project['end_date'])) : '' }}</td>
+                            <td>{{ $project['project_status'] }}</td>
+                        </tr>
+                    @endforeach
+                @else
                     <tr>
-                        <td><a href="{{ route('project.details', ['id' => $project['project_id']]) }}" class="text-decoration-none">{{ $project['name'] }}</a></td>
-                        <td>{{ date("Y/m/d", strtotime($project['start_date']))  }} - {{ $project['end_date'] ? date("Y/m/d", strtotime($project['end_date'])) : '' }}</td>
-                        <td>{{ $project['project_status'] }}</td>
+                        <td colspan="3">- No Data -</td>
                     </tr>
-                @endforeach
+                @endif
             </tbody>
         </table>
     </div>
@@ -342,15 +348,21 @@
                 </tr>
             </thead>
             <tbody class="">
-                @foreach ($empLaptop as $laptop)
-                <tr>
-                    <td><a href="{{ route('laptop.details', ['id' => $laptop['id']]) }}" class="text-decoration-none">{{ $laptop['tag_number'] }}</a></td>
-                    <td>{{ $laptop['brought_home'] }}</td>
-                    <td>{{ $laptop['laptop_make'] }}</td>
-                    <td>{{ $laptop['laptop_model'] }}</td>
-                    <td>{{ $laptop['use_vpn'] }}</td>
-                </tr>
-                @endforeach
+                @if (!empty($empLaptop))
+                    @foreach ($empLaptop as $laptop)
+                    <tr>
+                        <td><a href="{{ route('laptop.details', ['id' => $laptop['id']]) }}" class="text-decoration-none">{{ $laptop['tag_number'] }}</a></td>
+                        <td>{{ $laptop['brought_home'] }}</td>
+                        <td>{{ $laptop['laptop_make'] }}</td>
+                        <td>{{ $laptop['laptop_model'] }}</td>
+                        <td>{{ $laptop['use_vpn'] }}</td>
+                    </tr>
+                    @endforeach
+                @else
+                    <tr>
+                        <td colspan="5">- No Data -</td>
+                    </tr>
+                @endif
             </tbody>
         </table>
     </div>
@@ -369,13 +381,13 @@
             <div class="modal-content">
                 <div class="modal-body">
                     <div class="p-2">
-                        <div id="ll-success-msg"></div>
                         <form action="{{ route('employees.reject') }}" method="POST" id="reject-request-form">
                             @csrf
                             <input type="text" name="id" value="{{ $employee->id }}" hidden>
                             <div class="mb-2">
-                                <textarea class="form-control" name="reason" placeholder="Reason" rows="3" required></textarea>
+                                <textarea class="form-control" name="reason" placeholder="Reason" rows="3" id="reject-reason" required></textarea>
                             </div>
+                            <p id="reject-reason-error"></p>
                         </form>
                     </div>
                 </div>

@@ -29,7 +29,7 @@ Route::middleware('guest')->controller(LoginController::class)->group(function()
 
 Route::middleware(['guest', 'web'])->controller(EmployeesController::class)->prefix('/employees')->group(function(){
     Route::post('/regist', 'regist')->name('employees.regist');
-    Route::get('/create/{rejectCode?}', 'create')->name('employee.create');
+    Route::get('/create/{rejectCode?}', 'create')->name('employees.create');
     Route::get('/regist/complete', function(){
         return view('employees.complete');
     })->name('employees.regist.complete');

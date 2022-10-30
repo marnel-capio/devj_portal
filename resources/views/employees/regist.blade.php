@@ -4,6 +4,7 @@
     <div class="pt-4">
         <form action="{{ route('employees.regist') }}" method="POST">
             @csrf
+            <input type="text" name="id" value="{{ isset($employee->id) ? $employee->id : '' }}" hidden >
             <div class="emp-regist-category p-3 mb-4 rounded-3">
                 <h4 class="text-start">Employee Details</h4>
                 <div class="row mb-2 ps-3 pe-3">
