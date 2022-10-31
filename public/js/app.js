@@ -49,7 +49,7 @@ $(document).ready(function () {
 	//password check
 	$("#emp-confirm-password, #emp-password").keyup(function(){
 		if($('#emp-confirm-password').val() != $("#emp-password").val()){
-			$("#confirm-pass-text").html("Password does not match.").css("color", "red");
+			$("#confirm-pass-text").html("Password does not match.").addClass('text-danger text-start');
 			$("#emp-reg-submit").prop('disabled', true);
 		}else{
 			$("#confirm-pass-text").html("");
@@ -83,7 +83,7 @@ $(document).ready(function () {
 	//change password
 	$("#cp-confirm-pw, #cp-new-pw").keyup(function(){
 		if($('#cp-confirm-pw').val() != $("#cp-new-pw").val()){
-			$("#confirm-pass-text").html("Password does not match.").css({"color": "red", "text-align": "left"});
+			$("#confirm-pass-text").html("Password does not match.").addClass('text-danger text-start');
 			$("#ecp-submit-btn").prop('disabled', true);
 		}else{
 			$("#confirm-pass-text").html("");
@@ -110,12 +110,12 @@ $(document).ready(function () {
 				//display error
 				var currentPasswordErrors = data.data.current_password;
 				if(currentPasswordErrors && currentPasswordErrors.length > 0 ){
-					$("#current-pass-error").html(currentPasswordErrors[0]).css('color', 'red');
+					$("#current-pass-error").html(currentPasswordErrors[0]).addClass('text-danger text-start');
 				}
 
 				var newPasswordErrors = data.data.new_password;
 				if(newPasswordErrors && newPasswordErrors.length > 0 ){
-					$("#new-pass-error").html(newPasswordErrors[0]).css('color', 'red');
+					$("#new-pass-error").html(newPasswordErrors[0]).addClass('text-danger text-start');
 				}
 			}else{
 				$("#changePasswordForm").trigger('reset');
@@ -156,22 +156,22 @@ $(document).ready(function () {
 			if(!data.success){
 				var projectError = data.data.project_id;
 				if(projectError && projectError.length > 0 ){
-					$("#error-lp-proj-name").html(projectError[0]).css('color', 'red');
+					$("#error-lp-proj-name").html(projectError[0]).addClass('text-danger text-start');
 				}
 
 				var projectRoleError = data.data.project_role;
 				if(projectRoleError && projectRoleError.length > 0 ){
-					$("#error-lp-proj-role").html(projectRoleError[0]).css('color', 'red');
+					$("#error-lp-proj-role").html(projectRoleError[0]).addClass('text-danger text-start');
 				}
 
 				var projectStartError = data.data.project_start;
 				if(projectStartError && projectStartError.length > 0 ){
-					$("#error-lp-proj-start").html(projectStartError[0]).css('color', 'red');
+					$("#error-lp-proj-start").html(projectStartError[0]).addClass('text-danger text-start');
 				}
 
 				var projectEndError = data.data.project_end;
 				if(projectEndError && projectEndError.length > 0 ){
-					$("#error-lp-proj-end").html(projectEndError[0]).css('color', 'red');
+					$("#error-lp-proj-end").html(projectEndError[0]).addClass('text-danger text-start');
 				}
 			}else{
 				$("#linkProjectForm").trigger('reset');
@@ -214,12 +214,12 @@ $(document).ready(function () {
 				//display error
 				var laptopIdError = data.data.laptop_id;
 				if(laptopIdError && laptopIdError.length > 0 ){
-					$("#error-laptop-id").html(laptopIdError[0]).css('color', 'red');
+					$("#error-laptop-id").html(laptopIdError[0]).addClass('text-danger text-start');
 				}
 
 				var surrenderDateError = data.data.surrender_date;
 				if(surrenderDateError && surrenderDateError.length > 0 ){
-					$("#error-surrender-date").html(surrenderDateError[0]).css('color', 'red');
+					$("#error-surrender-date").html(surrenderDateError[0]).addClass('text-danger text-start');
 				}
 			}else{
 				$("#linkLaptopForm").trigger('reset');

@@ -17,21 +17,21 @@
                         <input type="text" class="form-control" name="first_name" id="first_name" placeholder="First Name" value="{{ old('first_name', $employee->first_name) }}" required>
                         <label class="text-center" for="first_name">First Name</label>
                         @if ($errors->has('first_name'))
-                        <span class="text-danger">{{ $errors->first('first_name') }}</span>
+                        <p class="text-danger">{{ $errors->first('first_name') }}</p>
                         @endif
                     </div>
                     <div class="col-4 g-3 form-floating">
                         <input type="text" class="form-control" name="middle_name" id="middle_name" placeholder="Middle Name" value="{{ old('middle_name', $employee->middle_name) }}" required>
                         <label  class="text-center" for="middle_name">Middle Name</label>
                         @if ($errors->has('first_name'))
-                        <span class="text-danger">{{ $errors->first('middle_name') }}</span>
+                        <p class="text-danger">{{ $errors->first('middle_name') }}</p>
                         @endif
                     </div>
                     <div class="col-4 g-3 form-floating">
                         <input type="text" class="form-control" name="last_name" id="last_name" placeholder="Last Name" value="{{ old('last_name', $employee->last_name) }}" required>
                         <label  class="text-center" for="last_name">Last Name</label>
                         @if ($errors->has('last_name'))
-                        <span class="text-danger">{{ $errors->first('last_name') }}</span>
+                        <p class="text-danger">{{ $errors->first('last_name') }}</p>
                         @endif
                     </div>
                 </div>
@@ -40,7 +40,7 @@
                         <input type="date" class="form-control" name="birthdate" id="birthdate" placeholder="birthdate" value="{{ old('birthdate', $employee->birthdate) }}" pattern="\d{4}-\d{2}-\d{2}" required>
                         <label  class="text-center" for="birthdate">Birth Date</label>
                         @if ($errors->has('birthdate'))
-                        <span class="text-danger">{{ $errors->first('birthdate') }}</span>
+                        <p class="text-danger">{{ $errors->first('birthdate') }}</p>
                         @endif
                     </div>
                     <div class="col-lg-4 col-8 g-3 text-start">
@@ -59,7 +59,7 @@
                                 </div>
                             </div>
                             @if ($errors->has('gender'))
-                            <span class="text-danger">{{ $errors->first('gender') }}</span>
+                            <p class="text-danger">{{ $errors->first('gender') }}</p>
                             @endif
                         </div>
                     </div>
@@ -79,7 +79,7 @@
                         </select>
                         <label  class="text-center" for="position">Position</label>
                         @if ($errors->has('position'))
-                        <span class="text-danger">{{ $errors->first('position') }}</span>
+                        <p class="text-danger">{{ $errors->first('position') }}</p>
                         @endif
                     </div>
                     <div class="col-4 g-3 form-floating">
@@ -90,7 +90,7 @@
                         </select>
                         <label for="roles" class="text-center">Role</label>
                         @if ($errors->has('roles'))
-                        <span class="text-danger">{{ $errors->first('roles') }}</span>
+                        <p class="text-danger">{{ $errors->first('roles') }}</p>
                         @endif
                     </div>
                 </div>
@@ -102,7 +102,7 @@
                                 <input type="checkBox" class="form-check-input" name="active_status" id="active-status" value="0" {{ old('active_status', $employee->active_status) == 1 ? "checked" : "" }} {{ !$manager_admin ? 'disabled' : '' }}>
                             </div>
                             @if ($errors->has('active_status'))
-                            <span class="text-danger">{{ $errors->first('active_status') }}</span>
+                            <p class="text-danger">{{ $errors->first('active_status') }}</p>
                             @endif
                         </div>
                     </div>
@@ -113,7 +113,7 @@
                                 <input type="checkBox" class="form-check-input" name="server_manage_flag" id="server-manage-flag" value="0" {{ old('server_manage_flag', $employee->server_manage_flag) == 1 ? "checked" : "" }} {{ !$manager_admin ? 'disabled' : '' }}>
                             </div>
                             @if ($errors->has('server_manage_flag'))
-                            <span class="text-danger">{{ $errors->first('server_manage_flag') }}</span>
+                            <p class="text-danger">{{ $errors->first('server_manage_flag') }}</p>
                             @endif
                         </div>
                     </div>
@@ -126,7 +126,7 @@
                         <input type="text" class="form-control" name="email" id="email" placeholder="Email" required value="{{ old('email', $employee->email) }}" readonly>
                         <label for="email" class="text-center">Email Address</label>
                         @if ($errors->has('email'))
-                        <span class="text-danger">{{ $errors->first('email') }}</span>
+                        <p class="text-danger">{{ $errors->first('email') }}</p>
                         @endif
                     </div>
                 </div>
@@ -139,7 +139,7 @@
                                 <label for="contact" class="text-center">Contact Number</label>
                             </div>
                             @if ($errors->has('cellphone_number'))
-                            <span class="text-danger">{{ $errors->first('cellphone_number') }}</span>
+                            <p class="text-danger">{{ $errors->first('cellphone_number') }}</p>
                             @endif
                         </div>
                     </div>
@@ -151,7 +151,7 @@
                                 <label for="other_contact" class="text-center">Other Contact Number (optional)</label>
                             </div>
                             @if ($errors->has('other_contact_number'))
-                            <span class="text-danger">{{ $errors->first('other_contact_number') }}</span>
+                            <p class="text-danger">{{ $errors->first('other_contact_number') }}</p>
                             @endif
                         </div>
                     </div>
@@ -164,7 +164,7 @@
                         <input type="text" class="form-control" name="current_address_street" id="cur-add-strt" placeholder="Street" required value="{{ old('current_address_street', $employee->current_address_street) }}">
                         <label for="cur-add-strt" class="text-center">Street</label>
                         @if ($errors->has('current_address_street'))
-                        <span class="text-danger">{{ $errors->first('current_address_street') }}</span>
+                        <p class="text-danger">{{ $errors->first('current_address_street') }}</p>
                         @endif
                     </div>
                 </div>
@@ -173,21 +173,21 @@
                         <input type="text" class="form-control" name="current_address_city" id="cur-add-town" placeholder="Town" required value="{{ old('current_address_city', $employee->current_address_city) }}">
                         <label for="cur-add-town" class="text-center">Town/City</label>
                         @if ($errors->has('current_address_city'))
-                        <span class="text-danger">{{ $errors->first('current_address_city') }}</span>
+                        <p class="text-danger">{{ $errors->first('current_address_city') }}</p>
                         @endif
                     </div>
                     <div class="col-4 g-3 form-floating">
                         <input type="text" class="form-control" name="current_address_province" id="cur-add-prov" placeholder="Province" required value="{{ old('current_address_province', $employee->current_address_province) }}">
                         <label for="cur-add-prov" class="text-center">Province/Region</label>
                         @if ($errors->has('current_address_province'))
-                        <span class="text-danger">{{ $errors->first('current_address_province') }}</span>
+                        <p class="text-danger">{{ $errors->first('current_address_province') }}</p>
                         @endif
                     </div>
                     <div class="col-4 g-3 form-floating">
                         <input type="text" class="form-control" name="current_address_postalcode" id="cur-add-postal" placeholder="Postal Code" required value="{{ old('current_address_postalcode', $employee->current_address_postalcode) }}">
                         <label for="cur-add-postal" class="text-center">Postal Code</label>
                         @if ($errors->has('current_address_postalcode'))
-                        <span class="text-danger">{{ $errors->first('current_address_postalcode') }}</span>
+                        <p class="text-danger">{{ $errors->first('current_address_postalcode') }}</p>
                         @endif
                     </div>
                 </div>
@@ -199,7 +199,7 @@
                         <input type="text" class="form-control" name="permanent_address_street" id="perm-add-strt" placeholder="Street" required value="{{ old('permanent_address_street', $employee->permanent_address_street) }}">
                         <label for="perm-add-strt" class="text-center">Street</label>
                         @if ($errors->has('permanent_address_street'))
-                        <span class="text-danger">{{ $errors->first('permanent_address_street') }}</span>
+                        <p class="text-danger">{{ $errors->first('permanent_address_street') }}</p>
                         @endif
                     </div>
                 </div>
@@ -208,21 +208,21 @@
                         <input type="text" class="form-control" name="permanent_address_city" id="perm-add-town" placeholder="Town" required value="{{ old('permanent_address_city', $employee->permanent_address_city) }}">
                         <label for="perm-add-town" class="text-center">Town/City</label>
                         @if ($errors->has('permanent_address_city'))
-                        <span class="text-danger">{{ $errors->first('permanent_address_city') }}</span>
+                        <p class="text-danger">{{ $errors->first('permanent_address_city') }}</p>
                         @endif
                     </div>
                     <div class="col-4 g-3 form-floating">
                         <input type="text" class="form-control" name="permanent_address_province" id="perm-add-prov" placeholder="Province" required value="{{ old('permanent_address_province', $employee->permanent_address_province) }}">
                         <label for="perm-add-prov" class="text-center">Province/Region</label>
                         @if ($errors->has('permanent_address_province'))
-                        <span class="text-danger">{{ $errors->first('permanent_address_province') }}</span>
+                        <p class="text-danger">{{ $errors->first('permanent_address_province') }}</p>
                         @endif
                     </div>
                     <div class="col-4 g-3 form-floating">
                         <input type="text" class="form-control" name="permanent_address_postalcode" id="perm-add-postal" placeholder="Postal Code" required value="{{ old('permanent_address_postalcode', $employee->permanent_address_postalcode) }}">
                         <label for="perm-add-postal" class="text-center">Postal Code</label>
                         @if ($errors->has('permanent_address_postalcode'))
-                        <span class="text-danger">{{ $errors->first('permanent_address_postalcode') }}</span>
+                        <p class="text-danger">{{ $errors->first('permanent_address_postalcode') }}</p>
                         @endif
                     </div>
                 </div>

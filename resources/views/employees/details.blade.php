@@ -40,7 +40,7 @@
                                 </div>
                                 <div class="col-7">
                                     <input name="cp_current_pw" type="password" class="form-control" id="cp-current-pw" required>
-                                    <span id="current-pass-error"></span>
+                                    <p id="current-pass-error"></p>
                                 </div>
                             </div>
                             <div class="row mb-3">
@@ -49,7 +49,7 @@
                                 </div>
                                 <div class="col-7">
                                     <input name="cp_new_pw" type="password" class="form-control" id="cp-new-pw" required>
-                                    <span id="new-pass-error"></span>
+                                    <p id="new-pass-error"></p>
                                 </div>
                             </div>
                             <div class="row mb-3">
@@ -58,7 +58,7 @@
                                 </div>
                                 <div class="col-7">
                                     <input name="cp_confirm_pw" type="password" class="form-control" id="cp-confirm-pw" required>
-                                    <span id="confirm-pass-text"></span>
+                                    <p id="confirm-pass-text"></p>
                                 </div>
                             </div>
                         </form>
@@ -86,21 +86,21 @@
                         <input type="text" class="form-control" name="first_name" id="first_name" placeholder="First Name" value="{{ $employee->first_name }}" required @readonly($readOnly)>
                         <label class="text-center" for="first_name">First Name</label>
                         @if ($errors->has('first_name'))
-                        <span class="text-danger">{{ $errors->first('first_name') }}</span>
+                        <p class="text-danger">{{ $errors->first('first_name') }}</p>
                         @endif
                     </div>
                     <div class="col-4 g-3 form-floating">
                         <input type="text" class="form-control" name="middle_name" id="middle_name" placeholder="Middle Name" value="{{ $employee->middle_name }}" required @readonly($readOnly)>
                         <label  class="text-center" for="middle_name">Middle Name</label>
                         @if ($errors->has('first_name'))
-                        <span class="text-danger">{{ $errors->first('middle_name') }}</span>
+                        <p class="text-danger">{{ $errors->first('middle_name') }}</p>
                         @endif
                     </div>
                     <div class="col-4 g-3 form-floating">
                         <input type="text" class="form-control" name="last_name" id="last_name" placeholder="Last Name" value="{{ $employee->last_name }}" required @readonly($readOnly)>
                         <label  class="text-center" for="last_name">Last Name</label>
                         @if ($errors->has('last_name'))
-                        <span class="text-danger">{{ $errors->first('last_name') }}</span>
+                        <p class="text-danger">{{ $errors->first('last_name') }}</p>
                         @endif
                     </div>
                 </div>
@@ -109,7 +109,7 @@
                         <input type="date" class="form-control" name="birthdate" id="birthdate" placeholder="birthdate" value="{{ old('birthdate') ?: $employee->birthdate }}" pattern="\d{4}-\d{2}-\d{2}" required @readonly($readOnly)>
                         <label  class="text-center" for="birthdate">Birth Date</label>
                         @if ($errors->has('birthdate'))
-                        <span class="text-danger">{{ $errors->first('birthdate') }}</span>
+                        <p class="text-danger">{{ $errors->first('birthdate') }}</p>
                         @endif
                     </div>
                     <div class="col-lg-4 col-8 g-3 text-start">
@@ -128,7 +128,7 @@
                                 </div>
                             </div>
                             @if ($errors->has('gender'))
-                            <span class="text-danger">{{ $errors->first('gender') }}</span>
+                            <p class="text-danger">{{ $errors->first('gender') }}</p>
                             @endif
                         </div>
                     </div>
@@ -148,7 +148,7 @@
                         </select>
                         <label  class="text-center" for="position">Position</label>
                         @if ($errors->has('position'))
-                        <span class="text-danger">{{ $errors->first('position') }}</span>
+                        <p class="text-danger">{{ $errors->first('position') }}</p>
                         @endif
                     </div>
                     <div class="col-4 g-3 form-floating">
@@ -159,7 +159,7 @@
                         </select>
                         <label for="roles" class="text-center">Role</label>
                         @if ($errors->has('roles'))
-                        <span class="text-danger">{{ $errors->first('roles') }}</span>
+                        <p class="text-danger">{{ $errors->first('roles') }}</p>
                         @endif
                     </div>
                 </div>
@@ -171,7 +171,7 @@
                                 <input type="checkBox" class="form-check-input" name="active_status" id="active-status" value="0" {{ $employee->active_status == 1 ? "checked" : "" }} {{ $readOnly ? 'disabled' : '' }}>
                             </div>
                             @if ($errors->has('active_status'))
-                            <span class="text-danger">{{ $errors->first('active_status') }}</span>
+                            <p class="text-danger">{{ $errors->first('active_status') }}</p>
                             @endif
                         </div>
                     </div>
@@ -182,7 +182,7 @@
                                 <input type="checkBox" class="form-check-input" name="server_manage_flag" id="server-manage-flag" value="0" {{ $employee->server_manage_flag == 1 ? "checked" : "" }} {{ $readOnly ? 'disabled' : '' }}>
                             </div>
                             @if ($errors->has('server_manage_flag'))
-                            <span class="text-danger">{{ $errors->first('server_manage_flag') }}</span>
+                            <p class="text-danger">{{ $errors->first('server_manage_flag') }}</p>
                             @endif
                         </div>
                     </div>
@@ -195,7 +195,7 @@
                         <input type="text" class="form-control" name="email" id="email" placeholder="Email" required value="{{ $employee->email }}" readonly>
                         <label for="email" class="text-center">Email Address</label>
                         @if ($errors->has('email'))
-                        <span class="text-danger">{{ $errors->first('email') }}</span>
+                        <p class="text-danger">{{ $errors->first('email') }}</p>
                         @endif
                     </div>
                 </div>
@@ -208,7 +208,7 @@
                                 <label for="contact" class="text-center">Contact Number</label>
                             </div>
                             @if ($errors->has('cellphone_number'))
-                            <span class="text-danger">{{ $errors->first('cellphone_number') }}</span>
+                            <p class="text-danger">{{ $errors->first('cellphone_number') }}</p>
                             @endif
                         </div>
                     </div>
@@ -220,7 +220,7 @@
                                 <label for="other_contact" class="text-center">Other Contact Number (optional)</label>
                             </div>
                             @if ($errors->has('other_contact_number'))
-                            <span class="text-danger">{{ $errors->first('other_contact_number') }}</span>
+                            <p class="text-danger">{{ $errors->first('other_contact_number') }}</p>
                             @endif
                         </div>
                     </div>
@@ -233,7 +233,7 @@
                         <input type="text" class="form-control" name="current_address_street" id="cur-add-strt" placeholder="Street" required value="{{ $employee->current_address_street }}" @readonly($readOnly)>
                         <label for="cur-add-strt" class="text-center">Street</label>
                         @if ($errors->has('current_address_street'))
-                        <span class="text-danger">{{ $errors->first('current_address_street') }}</span>
+                        <p class="text-danger">{{ $errors->first('current_address_street') }}</p>
                         @endif
                     </div>
                 </div>
@@ -242,21 +242,21 @@
                         <input type="text" class="form-control" name="current_address_city" id="cur-add-town" placeholder="Town" required value="{{ $employee->current_address_city }}" @readonly($readOnly)>
                         <label for="cur-add-town" class="text-center">Town/City</label>
                         @if ($errors->has('current_address_city'))
-                        <span class="text-danger">{{ $errors->first('current_address_city') }}</span>
+                        <p class="text-danger">{{ $errors->first('current_address_city') }}</p>
                         @endif
                     </div>
                     <div class="col-4 g-3 form-floating">
                         <input type="text" class="form-control" name="current_address_province" id="cur-add-prov" placeholder="Province" required value="{{ $employee->current_address_province }}" @readonly($readOnly)>
                         <label for="cur-add-prov" class="text-center">Province/Region</label>
                         @if ($errors->has('current_address_province'))
-                        <span class="text-danger">{{ $errors->first('current_address_province') }}</span>
+                        <p class="text-danger">{{ $errors->first('current_address_province') }}</p>
                         @endif
                     </div>
                     <div class="col-4 g-3 form-floating">
                         <input type="text" class="form-control" name="current_address_postalcode" id="cur-add-postal" placeholder="Postal Code" required value="{{ $employee->current_address_postalcode }}" @readonly($readOnly)>
                         <label for="cur-add-postal" class="text-center">Postal Code</label>
                         @if ($errors->has('current_address_postalcode'))
-                        <span class="text-danger">{{ $errors->first('current_address_postalcode') }}</span>
+                        <p class="text-danger">{{ $errors->first('current_address_postalcode') }}</p>
                         @endif
                     </div>
                 </div>
@@ -268,7 +268,7 @@
                         <input type="text" class="form-control" name="permanent_address_street" id="perm-add-strt" placeholder="Street" required value="{{ $employee->permanent_address_street }}" @readonly($readOnly)>
                         <label for="perm-add-strt" class="text-center">Street</label>
                         @if ($errors->has('permanent_address_street'))
-                        <span class="text-danger">{{ $errors->first('permanent_address_street') }}</span>
+                        <p class="text-danger">{{ $errors->first('permanent_address_street') }}</p>
                         @endif
                     </div>
                 </div>
@@ -277,21 +277,21 @@
                         <input type="text" class="form-control" name="permanent_address_city" id="perm-add-town" placeholder="Town" required value="{{ $employee->permanent_address_city }}" @readonly($readOnly)>
                         <label for="perm-add-town" class="text-center">Town/City</label>
                         @if ($errors->has('permanent_address_city'))
-                        <span class="text-danger">{{ $errors->first('permanent_address_city') }}</span>
+                        <p class="text-danger">{{ $errors->first('permanent_address_city') }}</p>
                         @endif
                     </div>
                     <div class="col-4 g-3 form-floating">
                         <input type="text" class="form-control" name="permanent_address_province" id="perm-add-prov" placeholder="Province" required value="{{ $employee->permanent_address_province }}" @readonly($readOnly)>
                         <label for="perm-add-prov" class="text-center">Province/Region</label>
                         @if ($errors->has('permanent_address_province'))
-                        <span class="text-danger">{{ $errors->first('permanent_address_province') }}</span>
+                        <p class="text-danger">{{ $errors->first('permanent_address_province') }}</p>
                         @endif
                     </div>
                     <div class="col-4 g-3 form-floating">
                         <input type="text" class="form-control" name="permanent_address_postalcode" id="perm-add-postal" placeholder="Postal Code" required value="{{ $employee->permanent_address_postalcode }}" @readonly($readOnly)>
                         <label for="perm-add-postal" class="text-center">Postal Code</label>
                         @if ($errors->has('permanent_address_postalcode'))
-                        <span class="text-danger">{{ $errors->first('permanent_address_postalcode') }}</span>
+                        <p class="text-danger">{{ $errors->first('permanent_address_postalcode') }}</p>
                         @endif
                     </div>
                 </div>
@@ -421,19 +421,19 @@
                                         @endforeach
                                     </select>
                                     <label for="projectList" class="text-center">Project Name</label>
-                                    <span id="error-lp-proj-name"></span>
+                                    <p id="error-lp-proj-name"></p>
                                 </div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-6 g-3 form-floating">
                                     <input type="date" name="project_start_date" class="form-control" id="project-start" required>
                                     <label for="project-start" class="text-center">Start Date</label>
-                                    <span id="error-lp-proj-start"></span>
+                                    <p id="error-lp-proj-start"></p>
                                 </div>
                                 <div class="col-6 g-3 form-floating">
                                     <input type="date" name="project_end_date" class="form-control" id="project-end" required>
                                     <label for="project-end" class="text-center">End Date</label>
-                                    <span id="error-lp-proj-end"></span>
+                                    <p id="error-lp-proj-end"></p>
                                 </div>
                             </div>
                             <div class="row mb-2">
@@ -444,7 +444,7 @@
                                         <option value="{{ config('constants.PROJECT_ROLE_QA') }}">QA</option>
                                     </select>
                                     <label for="projectRoleList" class="text-center">Role</label>
-                                    <span id="error-lp-proj-role"></span>
+                                    <p id="error-lp-proj-role"></p>
                                 </div>
                             </div>
                             <div class="row mb-2">
@@ -486,7 +486,7 @@
                                         @endforeach
                                     </select>
                                     <label for="laptopList" class="text-center">Tag Number</label>
-                                    <span id="error-laptop-id"></span>
+                                    <p id="error-laptop-id"></p>
                                 </div>
                             </div>
                             <div class="row mb-2 text-start">
@@ -513,7 +513,7 @@
                                 <div class="col-6 g-3 form-floating">
                                     <input type="date" class="form-control" id="ll-surrender-date">
                                     <label for="ll-surrender-date" class="text-center">Surrender Date</label>
-                                    <span id="error-surrender-date"></span>
+                                    <p id="error-surrender-date"></p>
                                 </div>
                             </div>
                         </form>
