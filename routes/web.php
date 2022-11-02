@@ -4,6 +4,7 @@ use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Employees;
 use App\Http\Controllers\EmployeesController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
 use App\Http\Middleware\Authenticate;
@@ -40,6 +41,7 @@ Route::middleware('api')->controller(ApiController::class)->prefix('/api')->grou
     Route::post('/changePassword', 'changePassword')->name('api.changePassword');
     Route::post('/linkLaptop', 'linkLaptop')->name('api.linkLaptop');
     Route::post('/linkProject', 'linkProject')->name('api.linkProject');
+    Route::get('/employees/search', 'getEmployeeByFilter')->name('api.search');
 });
 
 
@@ -48,15 +50,15 @@ Route::middleware(['auth', 'web'])->group(function(){
     Route::get('/', [HomeController::class, 'index'])->name('home');
 
     Route::prefix('/employees')->controller(EmployeesController::class)->group(function(){
-        Route::get('/', function(){
-            return 'Welcome to employees List'; //dummy
-        })->name('employees');
+        Route::get('/',  'index')->name('employees');
         Route::get('/{id}', 'detail')->name('employees.details')->whereNumber('id');
         Route::get('/{id}/edit', 'edit')->name('employees.edit')->whereNumber('id');
         Route::get('/{id}/request', 'request')->name('employees.request')->whereNumber('id');
         Route::post('/store', 'store')->name('employees.store');
         Route::post('/reject', 'reject')->name('employees.reject');
         Route::post('/update', 'update')->name('employees.update');
+        Route::get('/sendNotification',  'sendNotification')->name('employees.sendNotification');
+        Route::post('/download',  'download')->name('employees.download');
     });
 
     Route::prefix('/laptops')->group(function(){

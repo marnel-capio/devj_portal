@@ -46,3 +46,20 @@ input[readonly] {
 table#laptop-tbl  > thead > tr > th{
     width:20%;
 }
+
+.container-list-table {
+    margin-left: 10px;
+    padding-top: 10px;
+}
+
+.row-list{
+    padding-top: 10px;
+}
+
+.search-input-text{
+    width: 50%
+}
+
+.download-btn {
+
+}
