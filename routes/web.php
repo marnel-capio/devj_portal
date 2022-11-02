@@ -56,7 +56,7 @@ Route::middleware(['auth', 'web'])->group(function(){
         Route::get('/{id}/request', 'request')->name('employees.request')->whereNumber('id');
         Route::post('/store', 'store')->name('employees.store');
         Route::post('/reject', 'reject')->name('employees.reject');
-        Route::post('/update', 'store')->name('employees.update');
+        Route::post('/update', 'update')->name('employees.update');
     });
 
     Route::prefix('/laptops')->group(function(){

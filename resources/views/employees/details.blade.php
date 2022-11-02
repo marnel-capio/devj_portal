@@ -6,20 +6,22 @@
 @include('headerMenu')
 
 <div class="container text-center ps-md-3 pe-md-3 pt-5">
-    @if ($allowedToEdit)
     <div class="d-flex justify-content-between mb-2">
         <div class="text-primary d-flex align-items-center">
             @if ($detailOnly && !empty($detailNote))
             <i class="bi bi-info-circle-fill"></i>&nbsp;{{ $detailNote }}
             @endif
         </div>
-        @if($userInfo->id == $employee->id)
+        @if ($allowedToEdit)
         <div class="">
             <a href="{{ route('employees.edit', ['id' => $employee->id]) }}" class="btn btn-primary  me-1" type="button">Edit</a>
+            @if($userInfo->id == $employee->id)
             <button type="button" class="btn btn-success  ms-1" data-bs-toggle="modal" data-bs-target="#changePasswordModal" >Change Password</button>
+            @endif
         </div>
         @endif
     </div>
+    @if ($allowedToEdit)
     @if($userInfo->id == $employee->id)
     <div class="modal fade" tabindex="-1" id="changePasswordModal">
         <div class="modal-dialog modal-dialog-centered">
@@ -179,7 +181,7 @@
                         <div class="d-flex align-items-center">
                             <div class="form-check ">
                                 <label class="form-check-label" for="server-manage-flag">Manage Server</label>
-                                <input type="checkBox" class="form-check-input" name="server_manage_flag" id="server-manage-flag" value="0" {{ $employee->server_manage_flag == 1 ? "checked" : "" }} {{ $readOnly ? 'disabled' : '' }}>
+                                <input type="checkBox" class="form-check-input" name="server_manage_flag" id="server-manage-flag" value="1" {{ $employee->server_manage_flag == 1 ? "checked" : "" }} {{ $readOnly ? 'disabled' : '' }}>
                             </div>
                             @if ($errors->has('server_manage_flag'))
                             <p class="text-danger">{{ $errors->first('server_manage_flag') }}</p>
@@ -207,10 +209,10 @@
                                 <input type="text" class="form-control" name="cellphone_number" id="contact" placeholder="Contact Number" required value="{{ $employee->cellphone_number }}" @readonly($readOnly)>
                                 <label for="contact" class="text-center">Contact Number</label>
                             </div>
-                            @if ($errors->has('cellphone_number'))
-                            <p class="text-danger">{{ $errors->first('cellphone_number') }}</p>
-                            @endif
                         </div>
+                        @if ($errors->has('cellphone_number'))
+                        <p class="text-danger">{{ $errors->first('cellphone_number') }}</p>
+                        @endif
                     </div>
                     <div class="col-4 g-3">
                         <div class="input-group">
@@ -219,10 +221,10 @@
                             <input type="text" class="form-control" name="other_contact_number" id="other_contact" placeholder="Other Contact Number" value="{{ $employee->other_contact_number }}" @readonly($readOnly)>
                                 <label for="other_contact" class="text-center">Other Contact Number (optional)</label>
                             </div>
-                            @if ($errors->has('other_contact_number'))
-                            <p class="text-danger">{{ $errors->first('other_contact_number') }}</p>
-                            @endif
                         </div>
+                        @if ($errors->has('other_contact_number'))
+                        <p class="text-danger">{{ $errors->first('other_contact_number') }}</p>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -450,8 +452,8 @@
                             <div class="row mb-2">
                                 <div class="col-6 g-3 text-start">
                                     <div class="form-check">
-                                        <label for="proect-onsite" class="form-check-label">Onsite</label>
-                                        <input type="checkbox" class="form-check-input" name="project_onsite" id="project-onsite">
+                                        <label for="project_onsite" class="form-check-label">Onsite</label>
+                                        <input type="checkbox" class="form-check-input" name="project_onsite" id="project-onsite" value="1">
                                     </div>  
                                 </div>
                             </div>
@@ -493,13 +495,13 @@
                                 <div class="col-6 g-3">
                                     <div class="form-check">
                                         <label for="ll-brought-home" class="form-check-label">Brought Home?</label>
-                                        <input type="checkbox" class="form-check-input" name="laptop_brought_home" id="ll-brought-home">
+                                        <input type="checkbox" class="form-check-input" name="laptop_brought_home" id="ll-brought-home" value="1">
                                     </div>  
                                 </div>
                                 <div class="col-6 g-3">
                                     <div class="form-check">
                                         <label for="ll-vpn" class="form-check-label">VPN Access?</label>
-                                        <input type="checkbox" class="form-check-input" name="laptop_vpn" id="ll-vpn">
+                                        <input type="checkbox" class="form-check-input" name="laptop_vpn" id="ll-vpn" value="1">
                                     </div>
                                 </div>
                             </div>
@@ -507,7 +509,7 @@
                                 <div class="col-6 g-3 text-start">
                                     <div class="form-check">
                                         <label for="ll-surrender" class="form-check-label">Surrender?</label>
-                                        <input type="checkbox" class="form-check-input" name="laptop_surrender" id="ll-surrender">
+                                        <input type="checkbox" class="form-check-input" name="laptop_surrender" id="ll-surrender" value="1">
                                     </div>
                                 </div>
                                 <div class="col-6 g-3 form-floating">

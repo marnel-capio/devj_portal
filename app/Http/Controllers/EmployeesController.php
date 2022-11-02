@@ -9,6 +9,7 @@ use App\Models\Employees;
 use App\Models\EmployeesLaptops;
 use App\Models\EmployeesProjects;
 use App\Models\Laptops;
+use App\Models\Logs;
 use App\Models\Projects;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
@@ -62,6 +63,9 @@ class EmployeesController extends Controller
                         ->update(['updated_by' => $id, 'created_by' => $id]);
         }
 
+        //create logs
+        Logs::createLog("Employee", 'Employee Registration');
+
         //send mail to managers
         $recipients = Employees::getEmailOfManagers();
 
@@ -78,15 +82,20 @@ class EmployeesController extends Controller
 
         abort_if(empty($employeeDetails), 404); //employee does not exist
 
+        abort_if((!$employeeDetails->active_status && in_array($employeeDetails->approved_status, [config('constants.APPROVED_STATUS_REJECTED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]))
+            || ($employeeDetails->active_status && in_array($employeeDetails->approved_status, [config('constants.APPROVED_STATUS_REJECTED'), config('constants.APPROVED_STATUS_PENDING')]))
+            , 403); //invalid combination of approved_status and active_status
+
         //check if employee has pending update, or if employee's account is not yet activated
-        if(($employeeDetails->active_status && $employeeDetails->approved_status == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE'))
-            || (!$employeeDetails->active_status && $employeeDetails->approved_status == config('constants.APPROVED_STATUS_PENDING'))){
+        if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE') &&
+            (($employeeDetails->active_status && $employeeDetails->approved_status == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE'))
+            || (!$employeeDetails->active_status && $employeeDetails->approved_status == config('constants.APPROVED_STATUS_PENDING')))){
             return redirect(route('employees.request', ['id' => $id]));
         }
 
         //check if allowed to edit
         $allowedToEdit = false;
-        if((Auth::user()->id == $employeeDetails->id && $employeeDetails->approved_status = config('constants.APPROVED_STATUS_APPROVED'))
+        if((Auth::user()->id == $employeeDetails->id && $employeeDetails->approved_status == config('constants.APPROVED_STATUS_APPROVED'))
                 || in_array(Auth::user()->roles, [config('constants.ADMIN_ROLE_VALUE'), config('constants.MANAGER_ROLE_VALUE')])){
             $allowedToEdit = true;
         }
@@ -116,7 +125,12 @@ class EmployeesController extends Controller
         //check if employee has pending update, or if employee's account is not yet activated
         if(($employee->active_status && $employee->approved_status == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE'))
             || (!$employee->active_status && $employee->approved_status == config('constants.APPROVED_STATUS_PENDING'))){
-            return redirect(route('employees.request', ['id' => $id]));
+
+            if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
+                return redirect(route('employees.request', ['id' => $id]));
+            }else{
+                abort(403);
+            }
         }
 
         return view('employees.edit')->with([
@@ -131,8 +145,10 @@ class EmployeesController extends Controller
 
         $updateData = $this->getEmployeeData($request);
         $id = $updateData['id'];
+        $originalData = Employees::where('id', $id)->first();
         unset($updateData['id']);
         unset($updateData['created_by']);
+        unset($updateData['password']);
 
         //check logined employee role
         if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
@@ -140,20 +156,40 @@ class EmployeesController extends Controller
             Employees::where('id', $id)
                 ->update($updateData);
 
-            //notify the employee
-            $mailData = [
-                'link' => route('employees.details', ['id' => $id]),  
-                'updater' => Auth::user()->first_name .' ' .Auth::user()->last_name,
-            ];
+            if(Auth::user()->id != $id){
+                //notify the employee
+                $mailData = [
+                    'link' => route('employees.details', ['id' => $id]),  
+                    'updater' => Auth::user()->first_name .' ' .Auth::user()->last_name,
+                    'first_name' => $originalData->first_name,
+                ];
 
-            $this->sendMailForEmployeeUpdate($updateData['email'], $mailData, config('constants.MAIL_EMPLOYEE_UPDATE_BY_MANAGER'));
- 
+                $this->sendMail($updateData['email'], $mailData, config('constants.MAIL_EMPLOYEE_UPDATE_BY_MANAGER'));
+            }
+
+            //format log
+            $log = "";
+            foreach($updateData as $key => $value){
+                if($value != $originalData[$key] && !in_array($key, ['updated_by', 'password'])){
+                    $log .= "{$key}: {$originalData[$key]} > {$value}, ";
+                }
+            }
+            $log = rtrim($log, ", ");
+
+            Logs::createLog("Employee", $log);
+
         }else{
             //if an employee edits his own data and is not the manager
+            $json = [];
+            foreach($updateData as $key => $value){
+                if($value != $originalData[$key] && !in_array($key, ['updated_by', 'password'])){
+                    $json[$key] = $value;
+                }
+            }
             Employees::where('id', $id)
                         ->update([
                             'updated_by' => Auth::user()->id,
-                            'update_data' => json_encode($updateData, true),
+                            'update_data' => json_encode($json, true),
                             'approved_status' => config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')
                         ]);
 
@@ -163,8 +199,9 @@ class EmployeesController extends Controller
                 'requestor' => Auth::user()->first_name .' ' .Auth::user()->last_name,
             ];
 
-            $this->sendMailForEmployeeUpdate(Employees::getEmailOfManagers(), $mailData, config('constants.MAIL_EMPLOYEE_UPDATE_REQUEST'));
+            $this->sendMail(Employees::getEmailOfManagers(), $mailData, config('constants.MAIL_EMPLOYEE_UPDATE_REQUEST'));
  
+            Logs::createLog("Employee", "{$originalData->email}: Employee Details Update: " .json_encode($updateData, true));
         }
         
         return redirect(route('employees.regist.complete'));    //check if need palitan
@@ -224,11 +261,14 @@ class EmployeesController extends Controller
                     'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
                     'active_status' => 1,
                     'updated_by' => Auth::user()->id,
+                    'first_name' => $employee->first_name,
                 ]);
 
             //send mail
             $this->sendMail($employee->email, ['first_name' => $employee->first_name], config('constants.MAIL_NEW_REGISTRATION_APPROVAL'));
 
+            Logs::createLog("Employee", "Approved the account registration of {$employee->first_name} {$employee->last_name}.");
+        
         }else{
             //update only
             $employeeUpdate = json_decode($employee->update_data, true);
@@ -240,6 +280,9 @@ class EmployeesController extends Controller
             
             //send mail
             $this->sendMail($employee->email, ['first_name' => $employee->first_name], config('constants.MAIL_EMPLOYEE_UPDATE_APPROVAL'));
+
+            //logs
+            Logs::createLog("Employee", "Approved the update details of {$employee->first_name} {$employee->last_name}");
         }
 
         return redirect(route('home'));
@@ -258,6 +301,8 @@ class EmployeesController extends Controller
         }
 
         $employee = Employees::where('id',$id)->first();
+        $reason = $request->input('reason');
+        $this->removeNewLine($reason);
 
         if(!$employee->active_status && $employee->approved_status == config('constants.APPROVED_STATUS_PENDING')){
             //if new registration
@@ -265,7 +310,7 @@ class EmployeesController extends Controller
             Employees::where('id', $employee['id'])
                 ->update([
                     'approved_status' => config('constants.APPROVED_STATUS_REJECTED'),
-                    'reasons' => $request->input('reason'),
+                    'reasons' => $reason,
                     'reject_code' => $rejectCode,
                     'updated_by' => Auth::user()->id,
                 ]);
@@ -273,16 +318,17 @@ class EmployeesController extends Controller
             //send mail
             $mailData = [
                 'first_name' => $employee->first_name,
-                'reasons' => $request->input('reason'),
+                'reasons' => $reason,
                 'link' => route('employees.create') ."/{$rejectCode}",
             ];
             $this->sendMail($employee->email, $mailData, config('constants.MAIL_NEW_REGISTRATION_REJECTION'));
 
+            Logs::createLog("Employee", "Rejected the employee registration of {$employee->first_name} {$employee->last_name} because of: {$reason}.");
         }else{
             Employees::where('id', $employee['id'])
                 ->update([
                     'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
-                    'reasons' => $request->input('reason'),
+                    'reasons' => $reason,
                     'update_data' => NULL,
                     'updated_by' => Auth::user()->id,
                 ]);
@@ -291,9 +337,12 @@ class EmployeesController extends Controller
             //send mail
             $mailData = [
                 'first_name' => $employee->first_name,
-                'reasons' => $request->input('reason'),
+                'reasons' => $reason,
             ];
-            $this->sendMail($employee->email, ['first_name' => $employee->first_name], config('constants.MAIL_EMPLOYEE_UPDATE_REJECTION'));
+            $this->sendMail($employee->email, $mailData, config('constants.MAIL_EMPLOYEE_UPDATE_REJECTION'));
+        
+            //logs
+            Logs::createLog("Employee", "Rejected the update details of {$employee->first_name} {$employee->last_name} because of: {$reason}");
         }
 
         return redirect(route('home'));
@@ -427,6 +476,10 @@ class EmployeesController extends Controller
                 $data[$key] = rtrim($convertedWord);
             }
         }
+    }
+
+    private function removeNewLine(&$string){
+        str_replace(["\n\r", "\n", "\r"], ' ', $string);
     }
 
 }

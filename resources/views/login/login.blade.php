@@ -3,12 +3,12 @@
 <div class="vh-100 d-flex justify-content-center align-items-center">
     <div class="col-xl-4 col-lg-5  col-md-7  col-sm-8 col-9 p-4 shadow-sm border rounded-4 border-secondary" style="background-color: #F9F9F9">
         <h4 class="text-center mb-4 fw-bold"> DEV J PORTAL</h4>
-            <form action="{{ route('login') }}" method="POST">
+            <form action="{{ route('login') }}" method="POST" id="login">
                 @csrf
                 <div class="row mb-2 ps-2 pe-2">
                     <label for="email_address" class="col-form-label fw-bold">Username:</label>
                     <div class="">
-                        <input type="text" class="form-control bg-info bg-opacity-10 border border-primary " id="email_address" name="email_address" value="{{ old('email_address') }}">
+                        <input type="text" class="form-control bg-info bg-opacity-10 border border-primary " id="email_address" name="email_address" value="{{ old('email_address') }}" required>
                         @if ($errors->has('email_address'))
                         <span class="text-danger">{{ $errors->first('email_address') }}</span>
                         @endif
@@ -17,7 +17,7 @@
                 <div class="row mb-3  ps-2 pe-2">
                     <label for="password" class="col-form-label fw-bold">Password:</label>
                     <div class="">
-                        <input type="password" class="form-control bg-info bg-opacity-10 border border-primary" id="password" name="password" value="{{ old('password') }}">
+                        <input type="password" class="form-control bg-info bg-opacity-10 border border-primary" id="password" name="password" value="{{ old('password') }}" required>
                         @if ($errors->has('password'))
                         <span class="text-danger">{{ $errors->first('password') }}</span>
                         @endif

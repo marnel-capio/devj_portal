@@ -24,30 +24,6 @@ class Employees extends Authenticatable
         'password',
     ];
     
-    // protected $fillable = [
-    //     'first_name',
-    //     'last_name',
-    //     'middle_name',
-    //     'birthdate',
-    //     'gender',
-    //     'cellphone_number',
-    //     'other_contact_number',
-    //     'position',
-    //     'roles',
-    //     'email',
-    //     'current_address_street',
-    //     'current_address_city',
-    //     'current_address_province',
-    //     'current_address_postalcode',
-    //     'permanent_address_street',
-    //     'permanent_address_city',
-    //     'permanent_address_province',
-    //     'permanent_address_postalcode',
-    //     'server_manage_flag',
-    //     'active_status',
-    //     'reasons',
-    // ];
-
     static function getEmailOfManagers(){
         return self::select('email')
                             ->where('roles', config('constants.MANAGER_ROLE_VALUE'))

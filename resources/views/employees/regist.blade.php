@@ -98,10 +98,10 @@
                                 <input type="text" class="form-control" name="cellphone_number" id="contact" placeholder="Contact Number" required value="{{ old('cellphone_number', $employee ? $employee->cellphone_number : '') }}">
                                 <label for="contact" class="text-center">Contact Number</label>
                             </div>
-                            @if ($errors->has('cellphone_number'))
-                            <p class="text-danger">{{ $errors->first('cellphone_number') }}</p>
-                            @endif
                         </div>
+                        @if ($errors->has('cellphone_number'))
+                        <p class="text-danger">{{ $errors->first('cellphone_number') }}</p>
+                        @endif
                     </div>
                     <div class="col-4 g-3">
                         <div class="input-group">
@@ -110,10 +110,10 @@
                                 <input type="text" class="form-control" name="other_contact_number" id="other_contact" placeholder="Other Contact Number" value="{{ old('other_contact_number', $employee ? $employee->other_contact_number : '') }}">
                                 <label for="other_contact" class="text-center">Other Contact Number (optional)</label>
                             </div>
-                            @if ($errors->has('other_contact_number'))
-                            <p class="text-danger">{{ $errors->first('other_contact_number') }}</p>
-                            @endif
                         </div>
+                        @if ($errors->has('other_contact_number'))
+                        <p class="text-danger">{{ $errors->first('other_contact_number') }}</p>
+                        @endif
                     </div>
                 </div>
                 <div class="row mb-2 ps-3 pe-3">

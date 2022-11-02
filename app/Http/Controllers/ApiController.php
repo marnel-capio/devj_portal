@@ -10,6 +10,9 @@ use App\Mail\Employee;
 use App\Models\Employees;
 use App\Models\EmployeesLaptops;
 use App\Models\EmployeesProjects;
+use App\Models\Laptops;
+use App\Models\Logs;
+use App\Models\Projects;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -24,6 +27,8 @@ class ApiController extends Controller
         //save new password
         Employees::where('id', $data['id'])
         ->update(['password' => password_hash($data['new_password'], PASSWORD_BCRYPT)]);
+
+        Logs::created("Employee", "Updated password");
 
         return response()->json(['success' => true], 200);
     }
@@ -44,6 +49,9 @@ class ApiController extends Controller
             'updated_by' => Auth::user()->id,
         ];
 
+        $employee = Employee::where('id', $data['employee_id'])->first();
+        $laptop = Laptops::where('id', $data['laptop_id'])->first();
+
         //check logined employee role
         if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
             //save directly in DB in db
@@ -52,9 +60,10 @@ class ApiController extends Controller
             EmployeesLaptops::create($insertData);
 
             if(Auth::user()->id != $data['employee_id']){
-                //if manager edits other employee's data, notify the employee
-                //==============SAB BD no email, confirm muna if need
-
+                $mailData = [
+                    'link' => route('employees.details', ['id' => $employee->id]),
+                ];
+                $this->sendMailForEmployeeUpdate($employee, $mailData, config('constants.MAIL_EMPLOYEE_LAPTOP_LINK_BY_MANAGER'));
             }
         }else{
             //if an employee edits his own data and is not the manager
@@ -72,6 +81,8 @@ class ApiController extends Controller
             $this->sendMailForEmployeeUpdate(Employees::getEmailOfManagers(), $mailData, config('constants.MAIL_EMPLOYEE_LAPTOP_LINK_REQUEST'));
 
         }
+
+        Logs::createLog("Employee", "Link {$employee->first_name} {$employee->last_name} to {$laptop->tag_number} laptop");
 
         return response()->json(['success' => true], 200);
     }
@@ -93,6 +104,9 @@ class ApiController extends Controller
             'updated_by' => Auth::user()->id,
         ];
 
+        $employee = Employee::where('id', $data['employee_id'])->first();
+        $project = Projects::where('id', $data['project_id'])->first();
+
         //check logined employee role
         if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
             //save directly in DB in db
@@ -102,9 +116,10 @@ class ApiController extends Controller
             EmployeesProjects::create($insertData);
 
             if(Auth::user()->id != $data['employee_id']){
-                //if manager edits other employee's data, notify the employee
-                //==============SAB BD no email, confirm munaif need
-
+                $mailData = [
+                    'link' => route('employees.details', ['id' => $employee->id]),
+                ];
+                $this->sendMailForEmployeeUpdate($employee, $mailData, config('constants.MAIL_EMPLOYEE_PROJECT_LINK_BY_MANAGER'));
             }
         }else{
             //if an employee edits his own data and is not the manager
@@ -120,6 +135,8 @@ class ApiController extends Controller
 
             $this->sendMailForEmployeeUpdate(Employees::getEmailOfManagers(), $mailData, config('constants.MAIL_EMPLOYEE_PROJECT_LINK_REQUEST'));
         }
+        
+        Logs::createLog("Employee", "Link {$employee->first_name} {$employee->last_name} to {$project->name}");
 
         
         return response()->json(['success' => true], 200);

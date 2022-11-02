@@ -10,6 +10,7 @@
     <div class="pt-4">
         <form action="{{ route('employees.update') }}" method="POST">
             @csrf
+            <input type="text" name="id" hidden value="{{ $employee->id }}">
             <div class="emp-regist-category p-3 mb-4 rounded-3">
                 <h4 class="text-start">Employee Details</h4>
                 <div class="row mb-2 ps-3 pe-3">
@@ -84,9 +85,9 @@
                     </div>
                     <div class="col-4 g-3 form-floating">
                         <select name="roles" id="roles" class="form-select form-control" {{ !$manager_admin ? 'disabled' : '' }}>
-                            <option {{ old('roles', $employee->roles) == config('constants.ADMIN_ROLE_VALUE') ? "selected" : "" }} value="config('constants.ADMIN_ROLE_VALUE')">Admin</option>
-                            <option {{ old('roles', $employee->roles) == config('constants.MANAGER_ROLE_VALUE') ? "selected" : "" }} value="config('constants.MANAGER_ROLE_VALUE')">Manager</option>
-                            <option {{ old('roles', $employee->roles) == config('constants.ENGINEER_ROLE_VALUE') ? "selected" : "" }} value="config('constants.ENGINEER_ROLE_VALUE')">Engineer</option>
+                            <option {{ old('roles', $employee->roles) == config('constants.ADMIN_ROLE_VALUE') ? "selected" : "" }} value="{{ config('constants.ADMIN_ROLE_VALUE') }}">Admin</option>
+                            <option {{ old('roles', $employee->roles) == config('constants.MANAGER_ROLE_VALUE') ? "selected" : "" }} value="{{ config('constants.MANAGER_ROLE_VALUE') }}">Manager</option>
+                            <option {{ old('roles', $employee->roles) == config('constants.ENGINEER_ROLE_VALUE') ? "selected" : "" }} value="{{ config('constants.ENGINEER_ROLE_VALUE') }}">Engineer</option>
                         </select>
                         <label for="roles" class="text-center">Role</label>
                         @if ($errors->has('roles'))
@@ -99,7 +100,7 @@
                         <div class="d-flex align-items-center">
                             <div class="form-check ">
                                 <label class="form-check-label" for="active-status">Active Status</label>
-                                <input type="checkBox" class="form-check-input" name="active_status" id="active-status" value="0" {{ old('active_status', $employee->active_status) == 1 ? "checked" : "" }} {{ !$manager_admin ? 'disabled' : '' }}>
+                                <input type="checkBox" class="form-check-input" name="active_status" id="active-status" value="1" {{ old('active_status', $employee->active_status) == 1 ? "checked" : "" }} {{ !$manager_admin ? 'disabled' : '' }}>
                             </div>
                             @if ($errors->has('active_status'))
                             <p class="text-danger">{{ $errors->first('active_status') }}</p>
@@ -110,7 +111,7 @@
                         <div class="d-flex align-items-center">
                             <div class="form-check ">
                                 <label class="form-check-label" for="server-manage-flag">Manage Server</label>
-                                <input type="checkBox" class="form-check-input" name="server_manage_flag" id="server-manage-flag" value="0" {{ old('server_manage_flag', $employee->server_manage_flag) == 1 ? "checked" : "" }} {{ !$manager_admin ? 'disabled' : '' }}>
+                                <input type="checkBox" class="form-check-input" name="server_manage_flag" id="server-manage-flag" value="1" {{ old('server_manage_flag', $employee->server_manage_flag) == 1 ? "checked" : "" }} {{ !$manager_admin ? 'disabled' : '' }}>
                             </div>
                             @if ($errors->has('server_manage_flag'))
                             <p class="text-danger">{{ $errors->first('server_manage_flag') }}</p>
@@ -138,10 +139,10 @@
                                 <input type="text" class="form-control" name="cellphone_number" id="contact" placeholder="Contact Number" required value="{{ old('cellphone_number', $employee->cellphone_number) }}">
                                 <label for="contact" class="text-center">Contact Number</label>
                             </div>
-                            @if ($errors->has('cellphone_number'))
-                            <p class="text-danger">{{ $errors->first('cellphone_number') }}</p>
-                            @endif
                         </div>
+                        @if ($errors->has('cellphone_number'))
+                        <p class="text-danger">{{ $errors->first('cellphone_number') }}</p>
+                        @endif
                     </div>
                     <div class="col-4 g-3">
                         <div class="input-group">
@@ -150,10 +151,10 @@
                                 <input type="text" class="form-control" name="other_contact_number" id="other_contact" placeholder="Other Contact Number" value="{{ old('other_contact_number', $employee->other_contact_number) }}">
                                 <label for="other_contact" class="text-center">Other Contact Number (optional)</label>
                             </div>
-                            @if ($errors->has('other_contact_number'))
-                            <p class="text-danger">{{ $errors->first('other_contact_number') }}</p>
-                            @endif
                         </div>
+                        @if ($errors->has('other_contact_number'))
+                        <p class="text-danger">{{ $errors->first('other_contact_number') }}</p>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -228,7 +229,7 @@
                 </div>
             </div>
             <div class="text-center p-2">
-                <button class="btn btn-primary btn-lg mb-5 btn-prevent-multiple-submit" id="emp-reg-submit" type="submit">Update</button>
+                <button class="btn btn-primary btn-lg mb-5 btn-prevent-multiple-submit" id="emp-update-submit" type="submit">Update</button>
             </div>
         </form>
     </div>

@@ -57,7 +57,6 @@ class EmployeesRequest extends FormRequest
                 'position' => 'required|in:1,2,3,4,5,6,7,8,9',
                 'email' => ['required', 'email', 'max:80', 'min:15', new AWSEmailAddress()],
                 'cellphone_number' => 'required|numeric|digits:10',
-                'password' => ['required', 'min:8', 'max:16', new Password()],
                 'current_address_street' => 'required',
                 'current_address_city' => 'required',
                 'current_address_province' => 'required',
@@ -73,6 +72,7 @@ class EmployeesRequest extends FormRequest
             }
 
             if(strpos($this->header('referer'), route('employees.regist')) !== FALSE){
+                $rules['password'] = ['required', 'min:8', 'max:16', new Password()];
                 $rules['email'] = ['required', 
                                     'email', 
                                     'max:80', 

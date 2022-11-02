@@ -50,7 +50,7 @@
 
 @elseif ($mailType == config('constants.MAIL_EMPLOYEE_UPDATE_BY_MANAGER'))
 
-    Your details in Dev J Portal has been updated by {{ $updater }}.<br>
+    Your details in Dev J Portal has been updated by {{ $mailData['updater'] }}.<br>
     <br>
     Check the details on the link below:<br>
     <a href="{{ url($mailData['link']) }}">Details Link</a>
@@ -68,6 +68,17 @@
     <br>
     Requestor: {{ $mailData['requestor'] }}<br>
     <a href="{{ url($mailData['link']) }}">Request Link</a>
+
+@elseif ($mailType == config('constants.MAIL_EMPLOYEE_PROJECT_LINK_BY_MANAGER'))
+
+    The manager has linked a project to your account. <br>
+    Check the details below <a href="{{ url($mailData['link']) }}">here</a>.
+
+
+@elseif ($mailType == config('constants.MAIL_EMPLOYEE_LAPTOP_LINK_BY_MANAGER'))
+
+    The manager has linked a laptop to your account. <br>
+    Check the details below <a href="{{ url($mailData['link']) }}">here</a>.
 
     
 @endif
