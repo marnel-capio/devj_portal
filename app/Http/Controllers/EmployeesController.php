@@ -306,7 +306,7 @@ class EmployeesController extends Controller
 
         if(!$employee->active_status && $employee->approved_status == config('constants.APPROVED_STATUS_PENDING')){
             //if new registration
-            $rejectCode = $this->generateRejectCode();
+            $rejectCode = uniqid();
             Employees::where('id', $employee['id'])
                 ->update([
                     'approved_status' => config('constants.APPROVED_STATUS_REJECTED'),
@@ -373,27 +373,6 @@ class EmployeesController extends Controller
             }
 
         return ''; 
-    }
-
-    private function generateRejectCode(){
-        $length = 8; 
-        $sets = [];
-        $sets[] = str_split('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
-        $sets[] = str_split('abcdefghijklmnopqrstuvwxyz');
-        $sets[] = str_split('0123456789');
-        $code = '';
-        
-        //get 1 character from each set
-        foreach($sets as $set){
-            $code .= $set[array_rand($set)];
-        }
-
-        while(strlen($code) < $length){
-            $randomSet = $sets[array_rand($sets)];
-            $code .= $randomSet[array_rand($randomSet)];
-        }
-
-        return str_shuffle($code);
     }
 
 
