@@ -24,9 +24,6 @@ class EmployeeController extends Controller
     public function index(Request $request){
     	$employee_request = $this->getEmployee();
 
-        // $message = isset($request['message']) ? $request['message'] : "";
-        // $success = isset($request['success']) ? $request['success'] : 0;
-
         return view('employee/list', ['employee_request' => $employee_request]);
     }
 
@@ -52,7 +49,7 @@ class EmployeeController extends Controller
                         $query->where('approved_status', 2)
                             ->orWhere('approved_status', 4);
                     })
-                    ->where('email',"!=",'devjpotal@awsys-i.com')->get();
+                    ->where('email',"!=",'devjportal@awsys-i.com')->get();
 
         foreach ($employee as $key => $detail) {
             $email = $detail['email'];
@@ -60,6 +57,8 @@ class EmployeeController extends Controller
             $mailData = [
                 'email' => $email,
                 'first_name' => $detail['first_name'],
+                'currentUserId' => Auth::user()->id,
+                'module' => "Employee",
             ];
             if (!empty($email)) {
                 Mail::to($email)->send(new updateContactDetailsMail($mailData));
