@@ -19,7 +19,7 @@ use Excel;
 use App\Exports\EmployeesExport;
 
 
-class EmployeeController extends Controller
+class EmployeesController extends Controller
 {
     public function index(Request $request){
     	$employee_request = $this->getEmployee();
