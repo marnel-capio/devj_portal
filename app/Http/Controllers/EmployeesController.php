@@ -469,7 +469,7 @@ class EmployeesController extends Controller
     public function index(Request $request){
         $employee_request = $this->getEmployee();
 
-        return view('employee/list', ['employee_request' => $employee_request]);
+        return view('employees/list', ['employee_request' => $employee_request]);
     }
 
     private function getEmployee() {

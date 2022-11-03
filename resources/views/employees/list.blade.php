@@ -67,7 +67,7 @@
 		        	@foreach ($employee_request as $user)
 		        	<?php $id = $user["id"]; ?>
 		            <tr>
-		                <td><a href='{!! url("/employees/$id"); !!}'>{{$user['last_name']}}, {{$user['first_name']}}</a></td>
+		                <td><a href='{!! url("/employees/$id"); !!}'>{{$user['last_name']}}, {{$user['first_name']}} ({{$user['middle_name']}})</a></td>
 		                <td>{{$user['email']}}</td>
 		                <td>{{$user['cellphone_number']}}</td>
 		                <td>{{$user['current_address_city']}}</td>
