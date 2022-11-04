@@ -30,6 +30,18 @@ class LinkLaptop extends FormRequest
             'laptop_id' => 'laptop',
         ];
     }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'surrender_date.required_if' => "The surrender date is required when the surrender flag is checked.",
+        ];
+    }
     
     /**
      * Returns error in json json format

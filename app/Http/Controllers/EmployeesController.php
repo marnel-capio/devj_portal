@@ -216,6 +216,8 @@ class EmployeesController extends Controller
 
         $employeeDetails = Employees::where('id', $id)->first();
 
+        abort_if($employeeDetails->roles != config('constants.MANAGER_ROLE_VALUE'), 403);   //can only be accessed by manager
+
         abort_if(empty($employeeDetails), 404); //employee does not exist
 
         //check if employee has pending request

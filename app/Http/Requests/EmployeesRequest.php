@@ -36,6 +36,7 @@ class EmployeesRequest extends FormRequest
             'permanent_address_province' => 'province or region',
             'permanent_address_postal_code' => 'postal code',
             'email' => 'email address',
+            'roles' => 'role',
         ];
     }
 
@@ -84,6 +85,10 @@ class EmployeesRequest extends FormRequest
                                             $fail("The email address is already registered.");
                                         }
                                     }];
+            }
+
+            if(strpos($this->header('referer'), route('employees.update')) !== FALSE){
+                $rules['roles'] = 'required|in:1,2,3';
             }
         }
         return $rules;
