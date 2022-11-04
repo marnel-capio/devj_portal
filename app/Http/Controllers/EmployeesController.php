@@ -400,7 +400,6 @@ class EmployeesController extends Controller
                 default:    //account has been deactivated 
                     $note = 'Account has been deactivated';
             }
-            return false;
         }else{
             if($employee['approved_status'] === config('constants.APPROVED_STATUS_REJECTED') || $employee['approved_status'] === config('constants.APPROVED_STATUS_PENDING')){
                 $note = 'Account is invalid';
