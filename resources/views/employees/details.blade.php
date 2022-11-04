@@ -300,12 +300,12 @@
             </div>
         </form>
     </div>
+
+    @if($detailOnly)
     <div class="emp-regist-category mb-4 p-3 rounded-3">
         <div class="d-flex justify-content-between">
             <h4 class="text-start">Projects</h4>
-            @if ($detailOnly)
             <button class="btn btn-primary" data-bs-target="#linkProjectModal" data-bs-toggle="modal">Add</button>
-            @endif
         </div>
         <table class="table table-bordered border-secondary mt-3" id="project-tbl">
             <thead class="bg-primary text-white fw-bold">
@@ -335,9 +335,7 @@
     <div class="emp-regist-category mb-4 p-3 rounded-3">
         <div class="d-flex justify-content-between">
             <h4 class="text-start">Laptops</h4>
-            @if ($detailOnly)
             <button class="btn btn-primary" data-bs-target="#linkLaptopModal" data-bs-toggle="modal">Add</button>
-            @endif
         </div>
         <table class="table table-bordered border-secondary mt-3" id="laptop-tbl">
             <thead class="bg-primary text-white fw-bold">
@@ -368,6 +366,7 @@
             </tbody>
         </table>
     </div>
+    @endif
 
     @if (!$detailOnly)
     <div class="text-center p-4">
