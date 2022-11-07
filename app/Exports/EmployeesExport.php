@@ -15,10 +15,11 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithEvent
 {
     use Exportable;
 
-    public function __construct($keyword,$filter)
+    public function __construct($keyword,$filter,$status)
     {
         $this->keyword = $keyword;
         $this->filter = $filter;
+        $this->status = $status;
     }
 
     public function headings(): array
@@ -58,59 +59,45 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithEvent
 
     public function query()
     {	
-    	$keyword = $this->keyword;
+        $keyword = $this->keyword;
+        $status = $this->status;
 
-        if (!empty($keyword)) {
-        	if ($this->filter == 1) {
-                return Employees::query()->where(function($query) {
+        $employee = Employees::query()->where(function($query) {
                         $query->where('active_status', 0)
                         ->where('approved_status',2);
                     })
                     ->orWhere(function($query) {
                         $query->where('active_status', 1)
                         ->whereIn('approved_status',[2,4]);
-                    })
-                    ->where(function($query) use ($keyword) {
+                    });
+
+        if (!empty($keyword)) {
+
+        	if ($this->filter == 1) {
+
+                $employee = $employee->where(function($query) use ($keyword) {
                         $query->where('first_name','LIKE','%'.$keyword.'%')
                                 ->orWhere('last_name','LIKE','%'.$keyword.'%')
                                 ->orWhere('middle_name','LIKE','%'.$keyword.'%');
-                    })
-                    ->orderBy('last_name', 'ASC');
+                    });
+
             } else if ($this->filter == 2) {
-                return Employees::query()->where(function($query) {
-                        $query->where('active_status', 0)
-                        ->where('approved_status',2);
-                    })
-                    ->orWhere(function($query) {
-                        $query->where('active_status', 1)
-                        ->whereIn('approved_status',[2,4]);
-                    })
-                    ->where('current_address_city','LIKE','%'.$keyword.'%')
-                    ->orderBy('last_name', 'ASC');
+
+                $employee = $employee->where('current_address_city','LIKE','%'.$keyword.'%');
+
             } else if ($this->filter == 3) {
-                return Employees::query()->where(function($query) {
-                        $query->where('active_status', 0)
-                        ->where('approved_status',2);
-                    })
-                    ->orWhere(function($query) {
-                        $query->where('active_status', 1)
-                        ->whereIn('approved_status',[2,4]);
-                    })
-                    ->where('current_address_province','LIKE','%'.$keyword.'%')
-                    ->orderBy('last_name', 'ASC');
+
+                $employee = $employee->where('current_address_province','LIKE','%'.$keyword.'%');
+
             }
-        } else {
-        	return Employees::query()->where(function($query) {
-                        $query->where('active_status', 0)
-                        ->where('approved_status',2);
-                    })
-                    ->orWhere(function($query) {
-                        $query->where('active_status', 1)
-                        ->whereIn('approved_status',[2,4]);
-                    })
-                ->orderBy('last_name', 'ASC');
         }
 
-        
+        if ($status != 1) {
+            $employeeStatus = $status == 2 ? 1 : 0;
+            $employee = $employee->where('active_status', $employeeStatus);
+        }
+
+        $employee = $employee->orderBy('last_name', 'ASC');
+        return $employee;
     }
 }

@@ -542,9 +542,9 @@ class EmployeesController extends Controller
         Logs::createLog("Employee", "Downloaded list of employee");
         // determine excel type
         if (Auth::user()->roles != 3) {
-            return (new EmployeesExport($request['searchInput'],$request['searchFilter']))->download('DevJ Contact Details.xlsx');
+            return (new EmployeesExport($request['searchInput'],$request['searchFilter'],$request['employeeStatus']))->download('DevJ Contact Details.xlsx');
         } else {
-            return (new EmployeesExport($request['searchInput'],$request['searchFilter']))->download('DevJ Contact Details.pdf');
+            return (new EmployeesExport($request['searchInput'],$request['searchFilter'],$request['employeeStatus']))->download('DevJ Contact Details.pdf');
         }
 
     }
