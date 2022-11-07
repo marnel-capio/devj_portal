@@ -156,59 +156,40 @@ class ApiController extends Controller
         $searchFilter = [
             'keyword' => $request->get('keyword'),
             'filter' => $request->get('filter'),
+            'status' => $request->get('status'),
         ];
         // DB::enableQueryLog();
         $employee = Employees::where(function($query) {
-            $query->where('approved_status', '!=' ,3)
-                    ->orWhere(function($query) {
                         $query->where('active_status', 0)
-                                ->where('approved_status', '!=', 1);
+                        ->where('approved_status',2);
+                    })
+                    ->orWhere(function($query) {
+                        $query->where('active_status', 1)
+                        ->whereIn('approved_status',[2,4]);
                     });
-                })
-                ->orderBy('last_name', 'ASC')
-                ->get();
 
        // get employees
         if (!empty($searchFilter['keyword'])) {
             if ($searchFilter['filter'] == 1) {
-                $employee = Employees::where(function($query) {
-                    $query->where('approved_status', '!=' ,3)
-                            ->orWhere(function($query) {
-                                $query->where('active_status', 0)
-                                        ->where('approved_status', '!=', 1);
-                            });
-                    })
-                    ->where(function($query) use ($searchFilter) {
+                $employee = $employee->where(function($query) use ($searchFilter) {
                         $query->where('first_name','LIKE','%'.$searchFilter['keyword'].'%')
                                 ->orWhere('last_name','LIKE','%'.$searchFilter['keyword'].'%')
                                 ->orWhere('middle_name','LIKE','%'.$searchFilter['keyword'].'%');
-                    })
-                    ->orderBy('last_name', 'ASC')
-                    ->get();
+                    });
             } else if ($searchFilter['filter'] == 2) {
-                $employee = Employees::where(function($query) {
-                    $query->where('approved_status', '!=' ,3)
-                            ->orWhere(function($query) {
-                                $query->where('active_status', 0)
-                                        ->where('approved_status', '!=', 1);
-                            });
-                    })
-                    ->where('current_address_city','LIKE','%'.$searchFilter['keyword'].'%')
-                    ->orderBy('last_name', 'ASC')
-                    ->get();
+                $employee = $employee->where('current_address_city','LIKE','%'.$searchFilter['keyword'].'%');
             } else if ($searchFilter['filter'] == 3) {
-                $employee = Employees::where(function($query) {
-                    $query->where('approved_status', '!=' ,3)
-                            ->orWhere(function($query) {
-                                $query->where('active_status', 0)
-                                        ->where('approved_status', '!=', 1);
-                            });
-                    })
-                    ->where('current_address_province','LIKE','%'.$searchFilter['keyword'].'%')
-                    ->orderBy('last_name', 'ASC')
-                    ->get();
+                $employee = $employee->where('current_address_province','LIKE','%'.$searchFilter['keyword'].'%');
             }
         }
+
+        if ($searchFilter['status'] != 1) {
+            $status = $searchFilter['status'] == 2 ? 1 : 0;
+            $employee = $employee->where('active_status', $status);
+        }
+
+        $employee = $employee->orderBy('last_name', 'ASC')
+                ->get();
 
         return json_encode($employee);
     }

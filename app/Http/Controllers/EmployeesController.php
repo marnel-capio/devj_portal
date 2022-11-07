@@ -495,12 +495,13 @@ class EmployeesController extends Controller
 
     private function getEmployee() {
         $employee = Employees::where(function($query) {
-                    $query->where('approved_status', '!=' ,3)
-                    ->orWhere(function($query) {
                         $query->where('active_status', 0)
-                                ->where('approved_status', '!=', 1);
-                    });
-                })
+                        ->where('approved_status',2);
+                    })
+                    ->orWhere(function($query) {
+                        $query->where('active_status', 1)
+                        ->whereIn('approved_status',[2,4]);
+                    })
                 ->orderBy('last_name', 'ASC')
                 ->get();
 

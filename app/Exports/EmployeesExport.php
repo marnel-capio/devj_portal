@@ -34,7 +34,7 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithEvent
 
         return [
             date("Y-m-d",strtotime($employee->update_time)),
-            $employee->last_name.", ". $employee->first_name,
+            $employee->last_name.", ". $employee->first_name." (". $employee->middle_name.")",
             $employee->cellphone_number,
             $employee->other_contact_number,
             $employee->current_address_street. ", ". $employee->current_address_city. ", ". $employee->current_address_province . " " . $employee->current_address_postalcode,
@@ -63,11 +63,12 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithEvent
         if (!empty($keyword)) {
         	if ($this->filter == 1) {
                 return Employees::query()->where(function($query) {
-                    $query->where('approved_status', '!=' ,3)
-                            ->orWhere(function($query) {
-                                $query->where('active_status', 0)
-                                        ->where('approved_status', '!=', 1);
-                            });
+                        $query->where('active_status', 0)
+                        ->where('approved_status',2);
+                    })
+                    ->orWhere(function($query) {
+                        $query->where('active_status', 1)
+                        ->whereIn('approved_status',[2,4]);
                     })
                     ->where(function($query) use ($keyword) {
                         $query->where('first_name','LIKE','%'.$keyword.'%')
@@ -77,33 +78,36 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithEvent
                     ->orderBy('last_name', 'ASC');
             } else if ($this->filter == 2) {
                 return Employees::query()->where(function($query) {
-                    $query->where('approved_status', '!=' ,3)
-                            ->orWhere(function($query) {
-                                $query->where('active_status', 0)
-                                        ->where('approved_status', '!=', 1);
-                            });
+                        $query->where('active_status', 0)
+                        ->where('approved_status',2);
+                    })
+                    ->orWhere(function($query) {
+                        $query->where('active_status', 1)
+                        ->whereIn('approved_status',[2,4]);
                     })
                     ->where('current_address_city','LIKE','%'.$keyword.'%')
                     ->orderBy('last_name', 'ASC');
             } else if ($this->filter == 3) {
                 return Employees::query()->where(function($query) {
-                    $query->where('approved_status', '!=' ,3)
-                            ->orWhere(function($query) {
-                                $query->where('active_status', 0)
-                                        ->where('approved_status', '!=', 1);
-                            });
+                        $query->where('active_status', 0)
+                        ->where('approved_status',2);
+                    })
+                    ->orWhere(function($query) {
+                        $query->where('active_status', 1)
+                        ->whereIn('approved_status',[2,4]);
                     })
                     ->where('current_address_province','LIKE','%'.$keyword.'%')
                     ->orderBy('last_name', 'ASC');
             }
         } else {
         	return Employees::query()->where(function($query) {
-            $query->where('approved_status', '!=' ,3)
-                    ->orWhere(function($query) {
                         $query->where('active_status', 0)
-                                ->where('approved_status', '!=', 1);
-                    });
-                })
+                        ->where('approved_status',2);
+                    })
+                    ->orWhere(function($query) {
+                        $query->where('active_status', 1)
+                        ->whereIn('approved_status',[2,4]);
+                    })
                 ->orderBy('last_name', 'ASC');
         }
 

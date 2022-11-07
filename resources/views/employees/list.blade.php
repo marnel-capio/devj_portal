@@ -1,5 +1,6 @@
 @include('header')
 <script src="{{ asset('js/employee.js') }}"></script>
+        <link rel="stylesheet" href="{{ asset('css/employee.css') }}"/>
 @include('headerMenu')
 @if (session('success')) 
 	<div class="alert alert-success " role="alert">
@@ -22,7 +23,31 @@
 	@endif
 	<form action='{!! url("/employees/download"); !!}' method="POST">
                 @csrf
+        <div class="row row-list">
+        	<div class="col-1 filter-employee">
+				Status: 
+			</div>
+			<div class="col-11">
+				<input class="search-status-rdb-input" type="radio" name="employeeStatus" id="status-all" value="1" checked>
+				<label class="search-status-rdb-label" for="status-all">
+				    All
+				</label>
+				&nbsp;&nbsp;
+				<input class="search-status-rdb-input" type="radio" name="employeeStatus" id="status-active" value="2" >
+				<label class="search-status-rdb-label" for="status-active">
+				    Active
+				</label>
+				&nbsp;&nbsp;
+				<input class="search-status-rdb-input" type="radio" name="employeeStatus" id="status-deactivated" value="3" >
+				<label class="search-status-rdb-label" for="status-deactivatede">
+				    Deactivated
+				</label>
+			</div>
+		</div>
 		<div class="row row-list">
+        	<div class="col-1 filter-employee">
+				Filter: 
+			</div>
 			<div class="col">
 				<input class="search-filter-rdb-input" type="radio" name="searchFilter" id="filter-name" value="1" checked>
 				<label class="search-filter-rdb-label" for="filter-name">

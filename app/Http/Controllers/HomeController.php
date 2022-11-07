@@ -22,8 +22,14 @@ class HomeController extends Controller
 
     private function getEmployeeRequest() {
     	$employee = Employees::select('id','first_name','last_name','email','position','approved_status')
-    				->where('approved_status', 3)
-    				->orWhere('approved_status', 4)
+                    ->where(function($query) {
+                        $query->where('active_status', 0)
+                            ->where('approved_status', 3);
+                    })
+                    ->orWhere(function($query) {
+                        $query->where('active_status', 1)
+                            ->where('approved_status', 4);
+                    })
     				->orderBy('last_name', 'ASC')
     				->get();
 
