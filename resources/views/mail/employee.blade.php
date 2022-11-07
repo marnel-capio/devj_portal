@@ -72,13 +72,13 @@
 @elseif ($mailType == config('constants.MAIL_EMPLOYEE_PROJECT_LINK_BY_MANAGER'))
 
     The manager has linked a project to your account. <br>
-    Check the details below <a href="{{ url($mailData['link']) }}">here</a>.
+    Check the details <a href="{{ url($mailData['link']) }}">here</a>.
 
 
 @elseif ($mailType == config('constants.MAIL_EMPLOYEE_LAPTOP_LINK_BY_MANAGER'))
 
     The manager has linked a laptop to your account. <br>
-    Check the details below <a href="{{ url($mailData['link']) }}">here</a>.
+    Check the details <a href="{{ url($mailData['link']) }}">here</a>.
 
     
 @endif
