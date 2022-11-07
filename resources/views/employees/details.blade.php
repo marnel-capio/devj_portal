@@ -8,7 +8,7 @@
 <div class="container text-center ps-md-3 pe-md-3 pt-5">
     <div class="d-flex justify-content-between mb-2">
         <div class="text-primary d-flex align-items-center">
-            @if ($detailOnly && !empty($detailNote))
+            @if (!empty($detailNote))
             <i class="bi bi-info-circle-fill"></i>&nbsp;{{ $detailNote }}
             @endif
         </div>

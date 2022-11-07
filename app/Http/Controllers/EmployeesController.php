@@ -222,7 +222,7 @@ class EmployeesController extends Controller
 
         $employeeDetails = Employees::where('id', $id)->first();
 
-        abort_if($employeeDetails->roles != config('constants.MANAGER_ROLE_VALUE'), 403);   //can only be accessed by manager
+        abort_if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE'), 403);   //can only be accessed by manager
 
         abort_if(empty($employeeDetails), 404); //employee does not exist
 
@@ -231,8 +231,10 @@ class EmployeesController extends Controller
         if($employeeDetails->active_status && $employeeDetails->approved_status == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')){
             //display employee's update
             $updateData = json_decode($employeeDetails->update_data, true);
-            foreach($updateData as $key => $val){
-                $employeeDetails->$key = $val;
+            if(!empty($updateData)){
+                foreach($updateData as $key => $val){
+                    $employeeDetails->$key = $val;
+                }
             }
         }elseif(!(!$employeeDetails->active_status && $employeeDetails->approved_status == config('constants.APPROVED_STATUS_PENDING'))){
             abort(404);
@@ -243,6 +245,7 @@ class EmployeesController extends Controller
             'allowedToEdit' => false,
             'readOnly' => true,
             'detailOnly' => false,
+            'detailNote' => $this->getAccountStatus($employeeDetails),
             'showRejectCodeModal' => 1,
             'employee' => $employeeDetails,
             'empLaptop' => EmployeesLaptops::getOwnedLaptopByEmployee($id),

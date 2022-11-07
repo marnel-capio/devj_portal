@@ -72,7 +72,7 @@ class EmployeesRequest extends FormRequest
                 $rules['other_contact_number'] = 'numeric|digits:10';
             }
 
-            if(strpos($this->header('referer'), route('employees.regist')) !== FALSE){
+            if(strpos($this->header('referer'), route('employees.create')) !== FALSE){
                 $rules['password'] = ['required', 'min:8', 'max:16', new Password()];
                 $rules['email'] = ['required', 
                                     'email', 
@@ -87,7 +87,7 @@ class EmployeesRequest extends FormRequest
                                     }];
             }
 
-            if(strpos($this->header('referer'), route('employees.update')) !== FALSE){
+            if(strpos($this->header('referer'), '/edit') !== FALSE){
                 $rules['roles'] = 'required|in:1,2,3';
             }
         }
