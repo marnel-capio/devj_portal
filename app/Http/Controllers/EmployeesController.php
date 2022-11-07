@@ -76,6 +76,8 @@ class EmployeesController extends Controller
 
         $mailData = [
             'link' => "/employees/{$id}/request",
+            'currentUserId' => $id,
+            'module' => "Employee",
         ];
         $this->sendMail($recipients, $mailData, config('constants.MAIL_NEW_REGISTRATION_REQUEST'));
         
@@ -167,6 +169,8 @@ class EmployeesController extends Controller
                     'link' => route('employees.details', ['id' => $id]),  
                     'updater' => Auth::user()->first_name .' ' .Auth::user()->last_name,
                     'first_name' => $originalData->first_name,
+                    'currentUserId' => Auth::user()->id,
+                    'module' => "Employee",
                 ];
 
                 $this->sendMail($updateData['email'], $mailData, config('constants.MAIL_EMPLOYEE_UPDATE_BY_MANAGER'));
@@ -202,6 +206,8 @@ class EmployeesController extends Controller
             $mailData = [
                 'link' => "/",  //update link
                 'requestor' => Auth::user()->first_name .' ' .Auth::user()->last_name,
+                'currentUserId' => Auth::user()->id,
+                'module' => "Employee",
             ];
 
             $this->sendMail(Employees::getEmailOfManagers(), $mailData, config('constants.MAIL_EMPLOYEE_UPDATE_REQUEST'));
@@ -272,7 +278,9 @@ class EmployeesController extends Controller
                 ]);
 
             //send mail
-            $this->sendMail($employee->email, ['first_name' => $employee->first_name], config('constants.MAIL_NEW_REGISTRATION_APPROVAL'));
+            $this->sendMail($employee->email, ['first_name' => $employee->first_name,
+                'currentUserId' => Auth::user()->id,
+                'module' => "Employee",], config('constants.MAIL_NEW_REGISTRATION_APPROVAL'));
 
             Logs::createLog("Employee", "Approved the account registration of {$employee->first_name} {$employee->last_name}.");
         
@@ -286,7 +294,9 @@ class EmployeesController extends Controller
             Employees::where('id', $employee['id'])->update($employeeUpdate);
             
             //send mail
-            $this->sendMail($employee->email, ['first_name' => $employee->first_name], config('constants.MAIL_EMPLOYEE_UPDATE_APPROVAL'));
+            $this->sendMail($employee->email, ['first_name' => $employee->first_name,
+                'currentUserId' => Auth::user()->id,
+                'module' => "Employee",], config('constants.MAIL_EMPLOYEE_UPDATE_APPROVAL'));
 
             //logs
             Logs::createLog("Employee", "Approved the update details of {$employee->first_name} {$employee->last_name}");
@@ -327,6 +337,8 @@ class EmployeesController extends Controller
                 'first_name' => $employee->first_name,
                 'reasons' => $reason,
                 'link' => route('employees.create') ."/{$rejectCode}",
+                'currentUserId' => Auth::user()->id,
+                'module' => "Employee",
             ];
             $this->sendMail($employee->email, $mailData, config('constants.MAIL_NEW_REGISTRATION_REJECTION'));
 
@@ -345,6 +357,8 @@ class EmployeesController extends Controller
             $mailData = [
                 'first_name' => $employee->first_name,
                 'reasons' => $reason,
+                'currentUserId' => Auth::user()->id,
+                'module' => "Employee",
             ];
             $this->sendMail($employee->email, $mailData, config('constants.MAIL_EMPLOYEE_UPDATE_REJECTION'));
         
@@ -440,7 +454,10 @@ class EmployeesController extends Controller
      * @return void
      */
     private function sendMail($recipients, $mailData, $mailType){
-        Mail::to($recipients)->send(new Employee($mailData, $mailType));
+        if (!empty($recipients)) {
+            Mail::to($recipients)->send(new Employee($mailData, $mailType));
+        } 
+        
     }
 
     /**
