@@ -244,6 +244,16 @@ $(document).ready(function () {
 		}
 	});
 
+	// edit submit
+	$("#emp-update-form").submit(function(){
+		if($("#active-status").is(':checked')){
+			$("#active-status-hidden").prop('disabled', true);
+		}
+		if($("#server-manage-flag").is(':checked')){
+			$("#server-manage-flag-hidden").prop('disabled', true);
+		}
+	});
+
 
 	//end for employee details/request
 

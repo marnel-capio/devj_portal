@@ -6,6 +6,7 @@ use App\Models\Employees;
 use App\Rules\AWSEmailAddress;
 use App\Rules\Password;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class EmployeesRequest extends FormRequest
 {
@@ -88,7 +89,32 @@ class EmployeesRequest extends FormRequest
             }
 
             if(strpos($this->header('referer'), '/edit') !== FALSE){
-                $rules['roles'] = 'required|in:1,2,3';
+                $rules['roles'] = [function($attribute, $value, $fail){
+                    $employee = Employees::where('id', $this->input('id'))->first();
+                    if($value != $employee->roles && !in_array(Auth::user()->roles, [config('constants.MANAGER_ROLE_VALUE'), config('constants.ADMIN_ROLE_VALUE')])){
+                        $fail('Role can only be update by an Admin or a Manager.');
+                    }
+                }];
+                if(in_array(Auth::user()->roles, [config('constants.MANAGER_ROLE_VALUE'), config('constants.ADMIN_ROLE_VALUE')])){
+                    $rules['roles'] = 'required|in:1,2,3';
+                }
+                $rules['active_status'] = [function($attribute, $value, $fail){
+                    $employee = Employees::where('id', $this->input('id'))->first();
+                    if($value != $employee->active_status && !in_array(Auth::user()->roles, [config('constants.MANAGER_ROLE_VALUE'), config('constants.ADMIN_ROLE_VALUE')])){
+                        $fail('Active Status can only be update by an Admin or a Manager.');
+                    }
+                }];
+                $rules['server_manage_flag'] = [function($attribute, $value, $fail){
+                    $employee = Employees::where('id', $this->input('id'))->first();
+                    if($value != $employee->server_manage_flag && !in_array(Auth::user()->roles, [config('constants.MANAGER_ROLE_VALUE'), config('constants.ADMIN_ROLE_VALUE')])){
+                        $fail('Manage Server Flag can only be update by an Admin or a Manager.');
+                    }
+                }];
+                $rules['id'] = [function($attribute, $value, $fail){
+                    if(Auth::user()->id != $value  && !in_array(Auth::user()->roles, [config('constants.MANAGER_ROLE_VALUE'), config('constants.ADMIN_ROLE_VALUE')])){
+                        $fail('An Employee with an Engineer role can not update the details of other employees.');
+                    }
+                }];
             }
         }
         return $rules;

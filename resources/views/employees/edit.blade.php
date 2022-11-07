@@ -8,7 +8,7 @@
 <div class="container text-center ps-3 pe-3 pt-5">
     <h3 class="text-start">Account Update</h3>
     <div class="pt-4">
-        <form action="{{ route('employees.update') }}" method="POST">
+        <form action="{{ route('employees.update') }}" method="POST" id="emp-update-form">
             @csrf
             <input type="text" name="id" hidden value="{{ $employee->id }}">
             <div class="emp-regist-category p-3 mb-4 rounded-3">
@@ -101,6 +101,7 @@
                             <div class="form-check ">
                                 <label class="form-check-label" for="active-status">Active Status</label>
                                 <input type="checkBox" class="form-check-input" name="active_status" id="active-status" value="1" {{ old('active_status', $employee->active_status) == 1 ? "checked" : "" }} {{ !$manager_admin ? 'disabled' : '' }}>
+                                <input type="text" hidden value="0" name="active_status" id="active-status-hidden">
                             </div>
                             @if ($errors->has('active_status'))
                             <p class="text-danger">{{ $errors->first('active_status') }}</p>
@@ -112,6 +113,7 @@
                             <div class="form-check ">
                                 <label class="form-check-label" for="server-manage-flag">Manage Server</label>
                                 <input type="checkBox" class="form-check-input" name="server_manage_flag" id="server-manage-flag" value="1" {{ old('server_manage_flag', $employee->server_manage_flag) == 1 ? "checked" : "" }} {{ !$manager_admin ? 'disabled' : '' }}>
+                                <input type="text" hidden value="0" name="server_manage_flag" id="server-manage-flag-hidden">
                             </div>
                             @if ($errors->has('server_manage_flag'))
                             <p class="text-danger">{{ $errors->first('server_manage_flag') }}</p>
