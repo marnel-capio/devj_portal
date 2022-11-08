@@ -49,7 +49,7 @@ class ApiController extends Controller
             'updated_by' => Auth::user()->id,
         ];
 
-        $employee = Employee::where('id', $data['employee_id'])->first();
+        $employee = Employees::where('id', $data['employee_id'])->first();
         $laptop = Laptops::where('id', $data['laptop_id'])->first();
 
         //check logined employee role
@@ -75,11 +75,11 @@ class ApiController extends Controller
             $mailData = [
                 'link' => "/",  //update link
                 'requestor' => Auth::user()->first_name .' ' .Auth::user()->last_name,
-
+                'currentUserId' => Auth::user()->id,
+                'module' => "Employee",
             ];
 
             $this->sendMailForEmployeeUpdate(Employees::getEmailOfManagers(), $mailData, config('constants.MAIL_EMPLOYEE_LAPTOP_LINK_REQUEST'));
-
         }
 
         Logs::createLog("Employee", "Link {$employee->first_name} {$employee->last_name} to {$laptop->tag_number} laptop");
@@ -104,7 +104,7 @@ class ApiController extends Controller
             'updated_by' => Auth::user()->id,
         ];
 
-        $employee = Employee::where('id', $data['employee_id'])->first();
+        $employee = Employees::where('id', $data['employee_id'])->first();
         $project = Projects::where('id', $data['project_id'])->first();
 
         //check logined employee role
@@ -131,6 +131,8 @@ class ApiController extends Controller
             $mailData = [
                 'link' => "/",  //update link
                 'requestor' => Auth::user()->first_name .' ' .Auth::user()->last_name,
+                'currentUserId' => Auth::user()->id,
+                'module' => "Employee",
             ];
 
             $this->sendMailForEmployeeUpdate(Employees::getEmailOfManagers(), $mailData, config('constants.MAIL_EMPLOYEE_PROJECT_LINK_REQUEST'));
