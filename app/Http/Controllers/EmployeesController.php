@@ -277,7 +277,6 @@ class EmployeesController extends Controller
                     'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
                     'active_status' => 1,
                     'updated_by' => Auth::user()->id,
-                    'first_name' => $employee->first_name,
                 ]);
 
             //send mail

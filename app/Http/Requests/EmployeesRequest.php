@@ -75,17 +75,29 @@ class EmployeesRequest extends FormRequest
 
             if(strpos($this->header('referer'), route('employees.create')) !== FALSE){
                 $rules['password'] = ['required', 'min:8', 'max:16', new Password()];
-                $rules['email'] = ['required', 
-                                    'email', 
-                                    'max:80', 
-                                    'min:15', 
-                                    new AWSEmailAddress(), 
-                                    function($attribute, $value, $fail){
-                                        $duplicateEmail = Employees::where('email', $value)->get()->toArray();
-                                        if(!empty($duplicateEmail)){
-                                            $fail("The email address is already registered.");
-                                        }
-                                    }];
+
+                if(!empty($this->input('id'))){
+                    $rules['email'] = ['required', 
+                                        'email', 
+                                        'max:80', 
+                                        'min:15', 
+                                        new AWSEmailAddress(), 
+                                        ];
+
+                }else{
+                    $rules['email'] = ['required',
+                    'email', 
+                    'max:80', 
+                    'min:15', 
+                    new AWSEmailAddress(), 
+                    function($attribute, $value, $fail){
+                        $duplicateEmail = Employees::where('email', $value)->get()->toArray();
+                        if(!empty($duplicateEmail)){
+                            $fail("The email address is already registered.");
+                        }
+                    }];
+                }
+                
             }
 
             if(strpos($this->header('referer'), '/edit') !== FALSE){
