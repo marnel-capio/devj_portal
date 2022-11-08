@@ -37,14 +37,6 @@ Route::middleware(['guest', 'web'])->controller(EmployeesController::class)->pre
     
 });
 
-Route::middleware('api')->controller(ApiController::class)->prefix('/api')->group(function(){
-    Route::post('/changePassword', 'changePassword')->name('api.changePassword');
-    Route::post('/linkLaptop', 'linkLaptop')->name('api.linkLaptop');
-    Route::post('/linkProject', 'linkProject')->name('api.linkProject');
-    Route::get('/employees/search', 'getEmployeeByFilter')->name('api.search');
-});
-
-
 Route::middleware(['auth', 'web'])->group(function(){
     Route::get('logout', [LogoutController::class, 'execute'])->name('logout');
     Route::get('/', [HomeController::class, 'index'])->name('home');

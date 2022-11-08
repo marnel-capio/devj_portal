@@ -17,15 +17,9 @@ use App\Http\Controllers\ApiController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:sanctum')->controller(ApiController::class)->group(function(){
+    Route::post('/changePassword', 'changePassword')->name('api.changePassword');
+    Route::post('/linkLaptop', 'linkLaptop')->name('api.linkLaptop');
+    Route::post('/linkProject', 'linkProject')->name('api.linkProject');
+    Route::get('/employees/search', 'getEmployeeByFilter')->name('api.search');
 });
-
-
-// Route::middleware('api')->controller(ApiController::class)->prefix('/api')->group(function(){
-//     Route::post('/changePassword', 'changePassword')->name('api.changePassword');
-//     Route::post('/linkLaptop', 'linkLaptop')->name('api.linkLaptop');
-//     Route::post('/linkProject', 'linkProject')->name('api.linkProject');
-// });
-
- // Route::get('/employees/search', [ApiController::class, 'getEmployeeByFilter'])->name('api');
