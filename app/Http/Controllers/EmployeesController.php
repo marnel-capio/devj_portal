@@ -277,6 +277,7 @@ class EmployeesController extends Controller
                     'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
                     'active_status' => 1,
                     'updated_by' => Auth::user()->id,
+                    'approved_by' => Auth::user()->id,
                 ]);
 
             //send mail
@@ -290,6 +291,7 @@ class EmployeesController extends Controller
             //update only
             $employeeUpdate = json_decode($employee->update_data, true);
             $employeeUpdate['updated_by'] = Auth::user()->id;
+            $employeeUpdate['approved_by'] = Auth::user()->id;
             $employeeUpdate['update_data'] = NULL;
             $employeeUpdate['approved_status'] = config('constants.APPROVED_STATUS_APPROVED');
 

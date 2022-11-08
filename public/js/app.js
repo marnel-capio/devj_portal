@@ -179,7 +179,7 @@ $(document).ready(function () {
 				$("#error-lp-proj-role").empty();
 				$("#error-lp-proj-start").empty();
 				$("#error-lp-proj-end").empty();
-				$("#projectList > option[value=" + postData.project_id);
+				$("#projectList > option[value=" + postData.project_id + "]").remove();
 				$("#lp-success-msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;Your request has been sent.').addClass("text-success mb-4 text-start");
 			}
 		}).fail(function(){
@@ -225,7 +225,7 @@ $(document).ready(function () {
 				$("#linkLaptopForm").trigger('reset');
 				$("#error-laptop-id").empty();
 				$("#error-surrender-date").empty();
-				$("#laptopList > option[value=" + postData.laptop_id);
+				$("#laptopList > option[value=" + postData.laptop_id + "]").remove();
 				$("#ll-success-msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;Your request has been sent.').addClass("text-success mb-4 text-start");
 			}
 		}).fail(function(){

@@ -17,7 +17,11 @@ class Projects extends Model
     static function getProjectDropdownPerEmployee($id){
 
         return self::select('id', 'name', )
-                ->where('end_date', 0)
+                ->where(function($query){
+                    $query->where('end_date', 0)
+                            ->orWhere('end_date', NULL)
+                            ->orWhere('end_date', '');
+                })
                 ->whereNotIn('id', function($query) use ($id){
                                         $query->select('project_id')
                                                 ->from('employees_projects')
