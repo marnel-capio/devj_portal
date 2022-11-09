@@ -237,7 +237,7 @@ $(document).ready(function () {
 					sDate = new Date(project.start_date);
 					spanStart = sDate.getFullYear() + '/' + sDate.getMonth() + '/' + sDate.getDate() + ' - ';
 					spanEnd = '';
-					if(project.end_date != '' && project.end_date != NULL){
+					if(project.end_date != '' && project.end_date != null){
 						eDate = new Date(project.end_date);
 						spanEnd = eDate.getFullYear() + '/' + eDate.getMonth() + '/' + eDate.getDate();
 					}
