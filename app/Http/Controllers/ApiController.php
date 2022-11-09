@@ -89,7 +89,10 @@ class ApiController extends Controller
 
         Logs::createLog("Employee", "Link {$employee->first_name} {$employee->last_name} to {$laptop->tag_number} laptop");
 
-        return response()->json(['success' => true, 'message' => $message], 200);
+        return response()->json(['success' => true, 
+                                    'message' => $message, 
+                                    'update' => EmployeesLaptops::getOwnedLaptopByEmployee($data['employee_id'])]
+                                , 200);
     }
 
     public function linkProject(LinkProject $request){
@@ -150,8 +153,11 @@ class ApiController extends Controller
         
         Logs::createLog("Employee", "Link {$employee->first_name} {$employee->last_name} to {$project->name}");
 
-        
-        return response()->json(['success' => true, 'message' => $message], 200);
+        $updatedData =  EmployeesProjects::getProjectsByEmployee($data['employee_id']);
+        return response()->json(['success' => true, 
+                                    'message' => $message, 
+                                    'update' => EmployeesProjects::getProjectsByEmployee($data['employee_id'])]
+                                , 200);
     }
 
     /**

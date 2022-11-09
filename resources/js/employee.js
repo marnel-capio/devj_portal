@@ -168,6 +168,17 @@ $(document).ready(function () {
 	});
 
 	//link project
+
+	var projectTable = $("#project-tbl").DataTable({
+		"stateSave": true,
+		"bFilter": false,
+		"bPaginate": false,
+		"bInfo": false,
+		"oLanguage": {
+	        "sEmptyTable": "No Data"
+	    }
+	});
+
 	$("#lp-submit-btn").click(function(e){
 		var postData = {
 			_token: $("#linkProjectForm > input[name=_token]").val(),
@@ -217,6 +228,26 @@ $(document).ready(function () {
 				$("#error-lp-proj-end").empty();
 				$("#projectList > option[value=" + postData.project_id + "]").remove();
 				$("#lp-success-msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;' + data.message + '.').addClass("text-success mb-4 text-start");
+
+				//update projects table
+				projectTable.clear().draw();
+				data.update.forEach(function(project){
+					let url = window.location.origin + '/devj_portal/projects/' + project.project_id;
+					console.log(project);
+					sDate = new Date(project.start_date);
+					spanStart = sDate.getFullYear() + '/' + sDate.getMonth() + '/' + sDate.getDate() + ' - ';
+					spanEnd = '';
+					if(project.end_date != '' && project.end_date != NULL){
+						eDate = new Date(project.end_date);
+						spanEnd = eDate.getFullYear() + '/' + eDate.getMonth() + '/' + eDate.getDate();
+					}
+					projectTable.row.add([
+						'<a href="' + url + '" class="text-decoration-none">' + project.name + '</a>',
+						spanStart + spanEnd,
+						project.project_status
+					])
+					.draw(false);
+				});
 			}
 		}).fail(function(){
 			console.log('error');
@@ -226,6 +257,17 @@ $(document).ready(function () {
 	});
 
 	//link laptop
+
+	var laptopTable = $("#laptop-tbl").DataTable({
+		"stateSave": true,
+		"bFilter": false,
+		"bPaginate": false,
+		"bInfo": false,
+		"oLanguage": {
+	        "sEmptyTable": "No Data"
+	    }
+	});
+
 	$("#ll-submit-btn").click(function(e){
 		var postData = {
 			_token: $("#linkLaptopForm > input[name=_token]").val(),
@@ -263,6 +305,20 @@ $(document).ready(function () {
 				$("#error-surrender-date").empty();
 				$("#laptopList > option[value=" + postData.laptop_id + "]").remove();
 				$("#ll-success-msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;' + data.message + '.').addClass("text-success mb-4 text-start");
+
+				//update laptops table
+				laptopTable.clear().draw();
+				data.update.forEach(function(laptop){
+					let url = window.location.origin + '/devj_portal/laptops/' + laptop.id;
+					laptopTable.row.add([
+						'<a href="' + url + '" class="text-decoration-none">' + laptop.tag_number + '</a>',
+						laptop.brought_home,
+						laptop.laptop_make,
+						laptop.laptop_model,
+						laptop.use_vpn
+					])
+					.draw(false);
+				});
 			}
 		}).fail(function(){
 			console.log('error');
@@ -289,6 +345,15 @@ $(document).ready(function () {
 			$("#server-manage-flag-hidden").prop('disabled', true);
 		}
 	});
+
+	$('linkProjectModal').on('hidden.bs.modal', function(){
+		$("#lp-success-msg").remove();
+	});
+
+	$('#linkLaptopModal').on('hidden.bs.modal', function(){
+		$("#ll-success-msg").remove();
+	})
+	
 
 
 	//end for employee details/request

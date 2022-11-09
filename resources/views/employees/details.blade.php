@@ -325,10 +325,6 @@
                             <td>{{ $project['project_status'] }}</td>
                         </tr>
                     @endforeach
-                @else
-                    <tr>
-                        <td colspan="3">- No Data -</td>
-                    </tr>
                 @endif
             </tbody>
         </table>
@@ -359,10 +355,6 @@
                         <td>{{ $laptop['use_vpn'] }}</td>
                     </tr>
                     @endforeach
-                @else
-                    <tr>
-                        <td colspan="5">- No Data -</td>
-                    </tr>
                 @endif
             </tbody>
         </table>
