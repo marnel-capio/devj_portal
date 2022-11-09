@@ -62,6 +62,7 @@ class EmployeesController extends Controller
 
         }else{
             //insert new entry
+            $insertData['roles'] = $this->getRoleBasedOnPosition($insertData['position']);
             $id = Employees::create($insertData)->id;
             //update created_by/updated_by
             Employees::where('id', $id)
@@ -447,6 +448,14 @@ class EmployeesController extends Controller
             $data['updated_by'] = Auth::user()->id;
         }
         return $data;
+    }
+
+    private function getRoleBasedOnPosition($position){
+        if(in_array($position, [config('constants.POSITION_MANAGER_VALUE'), config('constants.POSITION_ASSSITANT_MANAGER_VALUE')])){
+            return config('constants.MANAGER_ROLE_VALUE');
+        }else{
+            return config('constants.ENGINEER_ROLE_VALUE');
+        }
     }
 
     /**
