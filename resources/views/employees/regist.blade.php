@@ -1,5 +1,6 @@
 @include('header')
-@vite(['resources/js/employee.js'])
+<link rel="stylesheet" href="{{ asset(mix('css/employee.min.css')) }}">
+<script src="{{ asset(mix('js/employee.min.js')) }}" defer></script>
 <div class="container text-center ps-3 pe-3 pt-5">
     <h3 class="text-start">Account Registration</h3>
     <div class="pt-4">

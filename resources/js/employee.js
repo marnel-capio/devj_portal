@@ -1,4 +1,3 @@
-import '../css/employee.css'; 
 
 $(document).ready(function () {
 

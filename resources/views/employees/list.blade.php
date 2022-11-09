@@ -1,5 +1,6 @@
 @include('header')
-@vite(['resources/js/employee.js'])
+<link rel="stylesheet" href="{{ asset(mix('css/employee.min.css')) }}">
+<script src="{{ asset(mix('js/employee.min.js')) }}" defer></script>
 @include('headerMenu')
 @if (session('success')) 
 	<div class="alert alert-success " role="alert">

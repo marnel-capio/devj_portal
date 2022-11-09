@@ -16,7 +16,8 @@
         <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js" ></script>
         <script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js" ></script>
 
-        @vite(['resources/js/app.js'])
+        <link rel="stylesheet" href="{{ asset(mix('css/app.min.css')) }}">
+        <script src="{{ asset(mix('js/app.min.js')) }}" defer></script>
 
     </head>
     <body>

@@ -3,7 +3,8 @@
 @endphp
 
 @include('header')
-@vite(['resources/js/employee.js'])
+<link rel="stylesheet" href="{{ asset(mix('css/employee.min.css')) }}">
+<script src="{{ asset(mix('js/employee.min.js')) }}" defer></script>
 @include('headerMenu')
 
 <div class="container text-center ps-md-3 pe-md-3 pt-5">
