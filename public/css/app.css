@@ -24,28 +24,6 @@
 	width: 30%;
 }
 
-/* employee registration */
-.emp-regist-category{
-    background-color: #F2F2F2;
-}
-
-.text-danger{
-    text-align: left;
-}
-
-/* employee details */
-input[readonly] {
-    background-color: #e9ecef;
-    opacity: 1;
-}
-
-.rqst-btn {
-    width: 110px;
-}
-
-table#laptop-tbl  > thead > tr > th{
-    width:20%;
-}
 
 .container-list-table {
     margin-left: 10px;
@@ -58,8 +36,4 @@ table#laptop-tbl  > thead > tr > th{
 
 .search-input-text{
     width: 50%
-}
-
-.download-btn {
-
 }

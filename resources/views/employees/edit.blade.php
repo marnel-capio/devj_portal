@@ -3,6 +3,7 @@
 @endphp
 
 @include('header')
+@vite(['resources/js/employee.js'])
 @include('headerMenu')
 
 <div class="container text-center ps-3 pe-3 pt-5">

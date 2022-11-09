@@ -16,10 +16,7 @@
         <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js" ></script>
         <script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js" ></script>
 
-
-        <script src="{{ asset('js/app.js') }}"></script>
-        <link rel="stylesheet" style="text/css" href="{{ asset('css/app.css') }}">
-
+        @vite(['resources/js/app.js'])
 
     </head>
     <body>

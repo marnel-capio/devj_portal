@@ -1,4 +1,5 @@
 @include('header')
+@vite(['resources/js/employee.js'])
 <div class="container text-center ps-3 pe-3 pt-5">
     <h3 class="text-start">Account Registration</h3>
     <div class="pt-4">
