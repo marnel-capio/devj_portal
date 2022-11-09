@@ -33,7 +33,8 @@ class Laptops extends Model
                     ->whereNotIn('id', function($query){
                         $query->select('laptop_id')
                                 ->from('employees_laptops')
-                                ->where('surrender_flag', 0);
+                                ->where('surrender_flag', 0)
+                                ->where('approved_status', 2);
                     })
             ->get()
             ->toArray();
