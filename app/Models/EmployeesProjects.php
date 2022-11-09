@@ -21,11 +21,11 @@ class EmployeesProjects extends Model
                                 ,employees_projects.end_date
                                 ,projects.name
                                 ,projects.id as project_id
-                                ,case when projects.end_date = ?
+                                ,case when isnull(projects.end_date) 
                                     then "Ongoing" 
                                     else "Ended"
                                     end as project_status'
-                                , [0])
+                                )
 
                     ->leftJoin('projects', 'projects.id',  'employees_projects.project_id')
                     ->where('employees_projects.employee_id', $id)
@@ -35,5 +35,18 @@ class EmployeesProjects extends Model
                     ->get()
                     ->toArray();
                     
+    }
+
+    static function checkIfProjectIsOngoing($projectId, $employeeId){
+        $detail = self::where('project_id', $projectId)
+                        ->where('employee_id', $employeeId)
+                        ->where(function($query){
+                            $query->whereNull('end_date')
+                                ->orWhere('end_date', '0')
+                                ->orWhere('end_date', '0000-00-00 00:00:00');
+                            })
+                            ->get()
+                            ->toArray();
+        return !empty($detail);
     }
 }

@@ -62,9 +62,13 @@ class ApiController extends Controller
             if(Auth::user()->id != $data['employee_id']){
                 $mailData = [
                     'link' => route('employees.details', ['id' => $employee->id]),
+                    'first_name' => $employee->first_name,
+                    'currentUserId' => Auth::user()->id,
+                    'module' => "Employee",
                 ];
-                $this->sendMailForEmployeeUpdate($employee, $mailData, config('constants.MAIL_EMPLOYEE_LAPTOP_LINK_BY_MANAGER'));
+                $this->sendMailForEmployeeUpdate($employee->email, $mailData, config('constants.MAIL_EMPLOYEE_LAPTOP_LINK_BY_MANAGER'));
             }
+            $message = 'Added Successfully';
         }else{
             //if an employee edits his own data and is not the manager
             $insertData['approved_status'] = config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE');
@@ -80,11 +84,12 @@ class ApiController extends Controller
             ];
 
             $this->sendMailForEmployeeUpdate(Employees::getEmailOfManagers(), $mailData, config('constants.MAIL_EMPLOYEE_LAPTOP_LINK_REQUEST'));
+            $message = 'Your request has been sent';
         }
 
         Logs::createLog("Employee", "Link {$employee->first_name} {$employee->last_name} to {$laptop->tag_number} laptop");
 
-        return response()->json(['success' => true], 200);
+        return response()->json(['success' => true, 'message' => $message], 200);
     }
 
     public function linkProject(LinkProject $request){
@@ -118,9 +123,13 @@ class ApiController extends Controller
             if(Auth::user()->id != $data['employee_id']){
                 $mailData = [
                     'link' => route('employees.details', ['id' => $employee->id]),
+                    'first_name' => $employee->first_name,
+                    'currentUserId' => Auth::user()->id,
+                    'module' => "Employee",
                 ];
-                $this->sendMailForEmployeeUpdate($employee, $mailData, config('constants.MAIL_EMPLOYEE_PROJECT_LINK_BY_MANAGER'));
+                $this->sendMailForEmployeeUpdate($employee->email, $mailData, config('constants.MAIL_EMPLOYEE_PROJECT_LINK_BY_MANAGER'));
             }
+            $message = 'Added Successfully';
         }else{
             //if an employee edits his own data and is not the manager
             $insertData['approved_status'] = config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE');
@@ -136,12 +145,13 @@ class ApiController extends Controller
             ];
 
             $this->sendMailForEmployeeUpdate(Employees::getEmailOfManagers(), $mailData, config('constants.MAIL_EMPLOYEE_PROJECT_LINK_REQUEST'));
+            $message = 'Your request has been sent';
         }
         
         Logs::createLog("Employee", "Link {$employee->first_name} {$employee->last_name} to {$project->name}");
 
         
-        return response()->json(['success' => true], 200);
+        return response()->json(['success' => true, 'message' => $message], 200);
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\EmployeesProjects;
 use App\Models\Projects;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
@@ -67,10 +68,16 @@ class LinkProject extends FormRequest
      * @return array<string, mixed>
      */
     public function rules()
-    {
+    {   
+        $employeeId = $this->input('employee_id');
         $projectDetails = Projects::where('id', $this->input('project_id'))->first();
         $rules = [
-            'project_id' => 'required|exists:projects,id',
+            'project_id' =>['required', 'exists:projects,id', function($atribute, $value, $fail) use ($employeeId) {
+                if(EmployeesProjects::checkIfProjectIsOngoing($value, $employeeId)){
+                    $fail('Employee is already a member of the selected project.');
+                }
+            }],
+
             'project_role' => 'required|in:1,2,3'
         ];
 

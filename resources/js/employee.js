@@ -217,7 +217,7 @@ $(document).ready(function () {
 				$("#error-lp-proj-start").empty();
 				$("#error-lp-proj-end").empty();
 				$("#projectList > option[value=" + postData.project_id + "]").remove();
-				$("#lp-success-msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;Your request has been sent.').addClass("text-success mb-4 text-start");
+				$("#lp-success-msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;' + data.message + '.').addClass("text-success mb-4 text-start");
 			}
 		}).fail(function(){
 			console.log('error');
@@ -263,7 +263,7 @@ $(document).ready(function () {
 				$("#error-laptop-id").empty();
 				$("#error-surrender-date").empty();
 				$("#laptopList > option[value=" + postData.laptop_id + "]").remove();
-				$("#ll-success-msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;Your request has been sent.').addClass("text-success mb-4 text-start");
+				$("#ll-success-msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;' + data.message + '.').addClass("text-success mb-4 text-start");
 			}
 		}).fail(function(){
 			console.log('error');

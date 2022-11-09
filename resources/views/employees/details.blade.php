@@ -4,7 +4,6 @@
 
 @include('header')
 @vite(['resources/js/employee.js'])
-{{-- <script src="{{ asset('js/employee.js') }}"></script> --}}
 @include('headerMenu')
 
 <div class="container text-center ps-md-3 pe-md-3 pt-5">
