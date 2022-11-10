@@ -42,6 +42,7 @@ class EmployeesController extends Controller
         $request->validated();
 
         $insertData = $this->getEmployeeData($request);
+        $insertData['roles'] = $this->getRoleBasedOnPosition($insertData['position']);
         
         if(isset($insertData['id'])){
             //update data only
@@ -62,7 +63,6 @@ class EmployeesController extends Controller
 
         }else{
             //insert new entry
-            $insertData['roles'] = $this->getRoleBasedOnPosition($insertData['position']);
             $id = Employees::create($insertData)->id;
             //update created_by/updated_by
             Employees::where('id', $id)
