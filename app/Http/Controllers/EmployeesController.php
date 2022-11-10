@@ -104,7 +104,7 @@ class EmployeesController extends Controller
         //check if allowed to edit
         $allowedToEdit = false;
         if((Auth::user()->id == $employeeDetails->id && $employeeDetails->approved_status == config('constants.APPROVED_STATUS_APPROVED'))
-                || in_array(Auth::user()->roles, [config('constants.ADMIN_ROLE_VALUE'), config('constants.MANAGER_ROLE_VALUE')])){
+                || (in_array(Auth::user()->roles, [config('constants.ADMIN_ROLE_VALUE'), config('constants.MANAGER_ROLE_VALUE')]) && $employeeDetails->approved_status == config('constants.APPROVED_STATUS_APPROVED') )){
             $allowedToEdit = true;
         }
 
