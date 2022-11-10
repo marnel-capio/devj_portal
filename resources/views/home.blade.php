@@ -2,7 +2,7 @@
 
 @include('headerMenu')
 <div class="container container-req-table">
-  @if(auth()->user()->roles != 3)
+  @if(auth()->user()->roles == 2)
 
 	<div class="row-req-table row">
 	    <div class="col">
