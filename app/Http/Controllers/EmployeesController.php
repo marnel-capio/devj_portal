@@ -188,6 +188,12 @@ class EmployeesController extends Controller
 
             Logs::createLog("Employee", $log);
 
+            if(Auth::user()->id != $id){
+                return redirect(route('employees.details', ['id' => $id]));
+            }else{
+                return redirect(route('employees.update.complete')); 
+            }
+
         }else{
             //if an employee edits his own data and is not the manager
             $json = [];
@@ -214,9 +220,10 @@ class EmployeesController extends Controller
             $this->sendMail(Employees::getEmailOfManagers(), $mailData, config('constants.MAIL_EMPLOYEE_UPDATE_REQUEST'));
  
             Logs::createLog("Employee", "{$originalData->email}: Employee Details Update: " .json_encode($updateData, true));
+            return redirect(route('employees.update.complete'));
         }
         
-        return redirect(route('employees.regist.complete'));    //check if need palitan
+        
     }
 
     public function request($id){

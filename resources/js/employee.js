@@ -354,6 +354,9 @@ $(document).ready(function () {
 		$("#ll-success-msg").remove();
 	})
 	
+	$('#changePasswordModal').on('hidden.bs.modal', function(){
+		$("#cp-success-msg").remove();
+	})
 
 
 	//end for employee details/request

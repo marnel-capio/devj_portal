@@ -28,7 +28,7 @@ class ApiController extends Controller
         Employees::where('id', $data['id'])
         ->update(['password' => password_hash($data['new_password'], PASSWORD_BCRYPT)]);
 
-        Logs::created("Employee", "Updated password");
+        Logs::createLog("Employee", "Updated password");
 
         return response()->json(['success' => true], 200);
     }

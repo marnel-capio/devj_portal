@@ -14,16 +14,18 @@
             <i class="bi bi-info-circle-fill"></i>&nbsp;{{ $detailNote }}
             @endif
         </div>
-        @if ($allowedToEdit)
+        
         <div class="">
+            @if ($allowedToEdit)
             <a href="{{ route('employees.edit', ['id' => $employee->id]) }}" class="btn btn-primary  me-1" type="button">Edit</a>
-            @if($userInfo->id == $employee->id)
+            @endif
+            @if($detailOnly && $userInfo->id == $employee->id)
             <button type="button" class="btn btn-success  ms-1" data-bs-toggle="modal" data-bs-target="#changePasswordModal" >Change Password</button>
             @endif
         </div>
-        @endif
+        
     </div>
-    @if ($allowedToEdit)
+    @if ($detailOnly)
     @if($userInfo->id == $employee->id)
     <div class="modal fade" tabindex="-1" id="changePasswordModal">
         <div class="modal-dialog modal-dialog-centered">

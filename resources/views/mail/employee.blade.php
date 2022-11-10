@@ -26,7 +26,7 @@
     Please see the reason below:<br>
     {{ $mailData['reasons'] }}<br>
     <br>
-    Use the this <a href="{{ url($mailData['link']) }}">link</a> to update your account details.
+    Use this <a href="{{ url($mailData['link']) }}">link</a> to update your account details.
 
 
 @elseif ($mailType == config('constants.MAIL_EMPLOYEE_UPDATE_REQUEST'))

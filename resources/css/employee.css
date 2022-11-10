@@ -23,6 +23,11 @@ input[readonly] {
 
 table#laptop-tbl  > thead > tr > th{
     width:20%;
+    text-align: center;
+}
+
+table#project-tbl  > thead > tr > th{
+    text-align: center;
 }
 
 

@@ -51,6 +51,9 @@ Route::middleware(['auth', 'web'])->group(function(){
         Route::post('/update', 'update')->name('employees.update');
         Route::get('/sendNotification',  'sendNotification')->name('employees.sendNotification');
         Route::post('/download',  'download')->name('employees.download');
+        Route::get('/update/complete', function(){
+            return view('employees.complete');
+        })->name('employees.update.complete');
     });
 
     Route::prefix('/laptops')->group(function(){
