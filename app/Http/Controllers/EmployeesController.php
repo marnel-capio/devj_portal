@@ -125,10 +125,16 @@ class EmployeesController extends Controller
 
 
     public function edit($id){
+        $employee = Employees::where('id', $id)->first();
+
+        abort_if(empty($employee), 404); //employee does not exist
+
+        abort_if((!$employee->active_status && in_array($employee->approved_status, [config('constants.APPROVED_STATUS_REJECTED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]))
+            || ($employee->active_status && in_array($employee->approved_status, [config('constants.APPROVED_STATUS_REJECTED'), config('constants.APPROVED_STATUS_PENDING')]))
+            , 403); //invalid combination of approved_status and active_status
+
         //check if user is allow to access the edit page
         abort_if(Auth::user()->id != $id && !in_array(Auth::user()->roles, [config('constants.ADMIN_ROLE_VALUE'), config('constants.MANAGER_ROLE_VALUE')]), 403);
-
-        $employee = Employees::where('id', $id)->first();
 
         //check if employee has pending update, or if employee's account is not yet activated
         if(($employee->active_status && $employee->approved_status == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE'))
@@ -188,7 +194,7 @@ class EmployeesController extends Controller
 
             Logs::createLog("Employee", $log);
 
-            if(Auth::user()->id != $id){
+            if(Auth::user()->id == $id){
                 return redirect(route('employees.details', ['id' => $id]));
             }else{
                 return redirect(route('employees.update.complete')); 

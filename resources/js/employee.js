@@ -143,6 +143,7 @@ $(document).ready(function () {
 		}).done(function(data){
 	
 			if(!data.success){
+				$("#cp-success-msg").remove();
 				//display error
 				var currentPasswordErrors = data.data.current_password;
 				if(currentPasswordErrors && currentPasswordErrors.length > 0 ){
@@ -201,6 +202,7 @@ $(document).ready(function () {
 
 			// display error
 			if(!data.success){
+				$("#lp-success-msg").remove();
 				var projectError = data.data.project_id;
 				if(projectError && projectError.length > 0 ){
 					$("#error-lp-proj-name").html(projectError[0]).addClass('text-danger text-start');
@@ -227,7 +229,7 @@ $(document).ready(function () {
 				$("#error-lp-proj-start").empty();
 				$("#error-lp-proj-end").empty();
 				$("#projectList > option[value=" + postData.project_id + "]").remove();
-				$("#lp-success-msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;' + data.message + '.').addClass("text-success mb-4 text-start");
+				$("#lp-success-msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;' + data.message + '.').addClass("text-success mb-2 text-start");
 
 				//update projects table
 				projectTable.clear().draw();
@@ -290,6 +292,7 @@ $(document).ready(function () {
 			// console.log(data);
 			if(!data.success){
 				//display error
+				$("#ll-success-msg").remove();
 				var laptopIdError = data.data.laptop_id;
 				if(laptopIdError && laptopIdError.length > 0 ){
 					$("#error-laptop-id").html(laptopIdError[0]).addClass('text-danger text-start');
@@ -304,7 +307,7 @@ $(document).ready(function () {
 				$("#error-laptop-id").empty();
 				$("#error-surrender-date").empty();
 				$("#laptopList > option[value=" + postData.laptop_id + "]").remove();
-				$("#ll-success-msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;' + data.message + '.').addClass("text-success mb-4 text-start");
+				$("#ll-success-msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;' + data.message + '.').addClass("text-success mb-2 text-start");
 
 				//update laptops table
 				laptopTable.clear().draw();

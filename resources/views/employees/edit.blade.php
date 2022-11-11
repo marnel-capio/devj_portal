@@ -26,7 +26,7 @@
                     <div class="col-4 g-3 form-floating">
                         <input type="text" class="form-control" name="middle_name" id="middle_name" placeholder="Middle Name" value="{{ old('middle_name', $employee->middle_name) }}" required>
                         <label  class="text-center" for="middle_name">Middle Name</label>
-                        @if ($errors->has('first_name'))
+                        @if ($errors->has('middle_name'))
                         <p class="text-danger">{{ $errors->first('middle_name') }}</p>
                         @endif
                     </div>
@@ -61,10 +61,10 @@
                                     <label class="form-check-label" for="maleRadio">Male</label>
                                 </div>
                             </div>
-                            @if ($errors->has('gender'))
-                            <p class="text-danger">{{ $errors->first('gender') }}</p>
-                            @endif
                         </div>
+                        @if ($errors->has('gender'))
+                        <p class="text-danger">{{ $errors->first('gender') }}</p>
+                        @endif
                     </div>
                 </div>
                 <div class="row mb-2 ps-3 pe-3">

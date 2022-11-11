@@ -29,15 +29,18 @@ class EmployeesRequest extends FormRequest
     {
         return [
             'current_address_street' => 'street',
-            'current_address_town' => 'town or city',
+            'current_address_city' => 'town or city',
             'current_address_province' => 'province or region',
             'current_address_postal_code' => 'postal code',
             'permanent_address_street' => 'street',
-            'permanent_address_town' => 'town or city',
+            'permanent_address_city' => 'town or city',
             'permanent_address_province' => 'province or region',
             'permanent_address_postal_code' => 'postal code',
             'email' => 'email address',
             'roles' => 'role',
+            'cellphone_number' => 'contact number',
+            'current_address_postalcode' => 'postal code',
+            'permanent_address_postalcode' => 'postal code',
         ];
     }
 

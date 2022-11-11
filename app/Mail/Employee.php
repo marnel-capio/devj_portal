@@ -21,7 +21,7 @@ class Employee extends Mailable
     const MAIL_4 = '【DEV J PORTAL】Employee Update Request';
     const MAIL_5 = '【DEV J PORTAL】Approved Employee Update ';
     const MAIL_6 = '【DEV J PORTAL】Employee Update Rejected';
-    const MAIL_7 = '【DEV J PORTAL】Employee Update Approval';
+    const MAIL_7 = '【DEV J PORTAL】Employee Detail Updated';
     const MAIL_8 = '【DEV J PORTAL】Employee Linking to a Project Request';
     const MAIL_9 = '【DEV J PORTAL】Employee Linking to a Laptop Request';
     const MAIL_10 = '【DEV J PORTAL】Project Linked';
