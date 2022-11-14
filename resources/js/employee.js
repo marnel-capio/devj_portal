@@ -277,8 +277,8 @@ $(document).ready(function () {
 			laptop_id: $("#laptopList > option:selected").val(),
 			brought_home_flag: $("#ll-brought-home").is(':checked') ? 1 : 0,
 			vpn_access_flag: $("#ll-vpn").is(':checked') ? 1 : 0,
-			surrender_flag: $("#ll-surrender").is(':checked') ? 1 : 0,
-			surrender_date: $("#ll-surrender-date").val(),
+			// surrender_flag: $("#ll-surrender").is(':checked') ? 1 : 0,
+			// surrender_date: $("#ll-surrender-date").val(),
 		};
 
 
@@ -298,14 +298,14 @@ $(document).ready(function () {
 					$("#error-laptop-id").html(laptopIdError[0]).addClass('text-danger text-start');
 				}
 
-				var surrenderDateError = data.data.surrender_date;
-				if(surrenderDateError && surrenderDateError.length > 0 ){
-					$("#error-surrender-date").html(surrenderDateError[0]).addClass('text-danger text-start');
-				}
+				// var surrenderDateError = data.data.surrender_date;
+				// if(surrenderDateError && surrenderDateError.length > 0 ){
+				// 	$("#error-surrender-date").html(surrenderDateError[0]).addClass('text-danger text-start');
+				// }
 			}else{
 				$("#linkLaptopForm").trigger('reset');
 				$("#error-laptop-id").empty();
-				$("#error-surrender-date").empty();
+				// $("#error-surrender-date").empty();
 				$("#laptopList > option[value=" + postData.laptop_id + "]").remove();
 				$("#ll-success-msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;' + data.message + '.').addClass("text-success mb-2 text-start");
 

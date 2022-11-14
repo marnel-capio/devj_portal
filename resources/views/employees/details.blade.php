@@ -500,7 +500,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row mb-2">
+                            {{-- <div class="row mb-2">
                                 <div class="col-6 g-3 text-start">
                                     <div class="form-check">
                                         <label for="ll-surrender" class="form-check-label">Surrender?</label>
@@ -512,7 +512,7 @@
                                     <label for="ll-surrender-date" class="text-center">Surrender Date</label>
                                     <p id="error-surrender-date"></p>
                                 </div>
-                            </div>
+                            </div> --}}
                         </form>
                     </div>
                 </div>

@@ -43,8 +43,6 @@ class ApiController extends Controller
             'employee_id' => $data['employee_id'],
             'brought_home_flag' => $data['brought_home_flag'] ? 1 : 0,
             'vpn_flag' => $data['vpn_access_flag'] ? 1 : 0,
-            'surrender_flag' => $data['surrender_flag'] ? 1 : 0,
-            'surrender_date' => $request->filled('surrender_date') ? $data['surrender_date']: NULL,
             'created_by' => Auth::user()->id,
             'updated_by' => Auth::user()->id,
         ];

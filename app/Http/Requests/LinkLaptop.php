@@ -30,18 +30,6 @@ class LinkLaptop extends FormRequest
             'laptop_id' => 'laptop',
         ];
     }
-
-    /**
-     * Get the error messages for the defined validation rules.
-     *
-     * @return array
-     */
-    public function messages()
-    {
-        return [
-            'surrender_date.required_if' => "The surrender date is required when the surrender flag is checked.",
-        ];
-    }
     
     /**
      * Returns error in json json format
@@ -70,12 +58,7 @@ class LinkLaptop extends FormRequest
                     $fail('The selected laptop in invalid, please select again.');
                 }
             }],
-            'surrender_date' =>'required_if:surrender_flag,1',
         ];
-        
-        if($this->filled('surrender_date')){
-            $validation['surrender_date'] = 'date';
-        }
         return  $validation;
     }
 }
