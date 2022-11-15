@@ -90,13 +90,13 @@ class EmployeesController extends Controller
 
         abort_if(empty($employeeDetails), 404); //employee does not exist
 
-        abort_if((!$employeeDetails->active_status && in_array($employeeDetails->approved_status, [config('constants.APPROVED_STATUS_REJECTED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]))
+        abort_if((!$employeeDetails->active_status && $employeeDetails->approved_status == config('constants.APPROVED_STATUS_REJECTED'))
             || ($employeeDetails->active_status && in_array($employeeDetails->approved_status, [config('constants.APPROVED_STATUS_REJECTED'), config('constants.APPROVED_STATUS_PENDING')]))
             , 403); //invalid combination of approved_status and active_status
 
         //check if employee has pending update, or if employee's account is not yet activated
         if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE') &&
-            (($employeeDetails->active_status && $employeeDetails->approved_status == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE'))
+            ($employeeDetails->approved_status == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')
             || (!$employeeDetails->active_status && $employeeDetails->approved_status == config('constants.APPROVED_STATUS_PENDING')))){
             return redirect(route('employees.request', ['id' => $id]));
         }
@@ -129,7 +129,7 @@ class EmployeesController extends Controller
 
         abort_if(empty($employee), 404); //employee does not exist
 
-        abort_if((!$employee->active_status && in_array($employee->approved_status, [config('constants.APPROVED_STATUS_REJECTED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]))
+        abort_if((!$employee->active_status && $employee->approved_status == config('constants.APPROVED_STATUS_REJECTED'))
             || ($employee->active_status && in_array($employee->approved_status, [config('constants.APPROVED_STATUS_REJECTED'), config('constants.APPROVED_STATUS_PENDING')]))
             , 403); //invalid combination of approved_status and active_status
 
@@ -139,7 +139,6 @@ class EmployeesController extends Controller
         //check if employee has pending update, or if employee's account is not yet activated
         if(($employee->active_status && $employee->approved_status == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE'))
             || (!$employee->active_status && $employee->approved_status == config('constants.APPROVED_STATUS_PENDING'))){
-
             if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
                 return redirect(route('employees.request', ['id' => $id]));
             }else{
@@ -225,7 +224,7 @@ class EmployeesController extends Controller
 
             $this->sendMail(Employees::getEmailOfManagers(), $mailData, config('constants.MAIL_EMPLOYEE_UPDATE_REQUEST'));
  
-            Logs::createLog("Employee", "{$originalData->email}: Employee Details Update: " .json_encode($updateData, true));
+            Logs::createLog("Employee", "{$originalData->email}: Employee Details Update: " .json_encode($json, true));
             return redirect(route('employees.update.complete'));
         }
         
@@ -240,9 +239,17 @@ class EmployeesController extends Controller
 
         abort_if(empty($employeeDetails), 404); //employee does not exist
 
+        $detailNote = $this->getAccountStatus($employeeDetails);
+
+        if($employeeDetails->approved_status == config('constants.APPROVED_STATUS_PENDING')){
+            $detailNote = 'Account is still pending for approval';
+        }elseif($employeeDetails->approved_status == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')){
+            $detailNote = 'Update is still pending';
+        }
+
         //check if employee has pending request
-        
-        if($employeeDetails->active_status && $employeeDetails->approved_status == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')){
+
+        if($employeeDetails->approved_status == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')){
             //display employee's update
             $updateData = json_decode($employeeDetails->update_data, true);
             if(!empty($updateData)){
@@ -259,7 +266,7 @@ class EmployeesController extends Controller
             'allowedToEdit' => false,
             'readOnly' => true,
             'detailOnly' => false,
-            'detailNote' => $this->getAccountStatus($employeeDetails),
+            'detailNote' => $detailNote,
             'showRejectCodeModal' => 1,
             'employee' => $employeeDetails,
             'empLaptop' => EmployeesLaptops::getOwnedLaptopByEmployee($id),
@@ -407,7 +414,7 @@ class EmployeesController extends Controller
 
         //check if employee needs to be approved
         if(!(!$employee->active_status && $employee->approved_status == config('constants.APPROVED_STATUS_PENDING'))    //pending for new registration
-            && !($employee->active_status && $employee->approved_status == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE'))){    //pending for update
+            && !$employee->approved_status == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')){    //pending for update
                 return 'Employee has no pending request.';
             }
 
@@ -519,7 +526,7 @@ class EmployeesController extends Controller
     private function getEmployee() {
         $employee = Employees::where(function($query) {
                         $query->where('active_status', 0)
-                        ->where('approved_status',2);
+                        ->whereIn('approved_status',[2,4]);
                     })
                     ->orWhere(function($query) {
                         $query->where('active_status', 1)

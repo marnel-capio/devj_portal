@@ -26,10 +26,7 @@ class HomeController extends Controller
                         $query->where('active_status', 0)
                             ->where('approved_status', 3);
                     })
-                    ->orWhere(function($query) {
-                        $query->where('active_status', 1)
-                            ->where('approved_status', 4);
-                    })
+                    ->orWhere('approved_status', 4)
     				->orderBy('last_name', 'ASC')
     				->get();
 

@@ -10,6 +10,9 @@
 <div class="container text-center ps-3 pe-3 pt-5">
     <h3 class="text-start">Account Update</h3>
     <div class="pt-4">
+        @if ($errors->has('id'))
+        <p class="text-danger mb-2">{{ $errors->first('id') }}</p>
+        @endif
         <form action="{{ route('employees.update') }}" method="POST" id="emp-update-form">
             @csrf
             <input type="text" name="id" hidden value="{{ $employee->id }}">
@@ -105,10 +108,10 @@
                                 <input type="checkBox" class="form-check-input" name="active_status" id="active-status" value="1" {{ old('active_status', $employee->active_status) == 1 ? "checked" : "" }} {{ !$manager_admin ? 'disabled' : '' }}>
                                 <input type="text" hidden value="0" name="active_status" id="active-status-hidden">
                             </div>
-                            @if ($errors->has('active_status'))
-                            <p class="text-danger">{{ $errors->first('active_status') }}</p>
-                            @endif
                         </div>
+                        @if ($errors->has('active_status'))
+                        <p class="text-danger">{{ $errors->first('active_status') }}</p>
+                        @endif
                     </div>
                     <div class="col-lg-2 col-md-4 col-6 g-3 ps-1">
                         <div class="d-flex align-items-center">
@@ -117,10 +120,10 @@
                                 <input type="checkBox" class="form-check-input" name="server_manage_flag" id="server-manage-flag" value="1" {{ old('server_manage_flag', $employee->server_manage_flag) == 1 ? "checked" : "" }} {{ !$manager_admin ? 'disabled' : '' }}>
                                 <input type="text" hidden value="0" name="server_manage_flag" id="server-manage-flag-hidden">
                             </div>
-                            @if ($errors->has('server_manage_flag'))
-                            <p class="text-danger">{{ $errors->first('server_manage_flag') }}</p>
-                            @endif
                         </div>
+                        @if ($errors->has('server_manage_flag'))
+                        <p class="text-danger">{{ $errors->first('server_manage_flag') }}</p>
+                        @endif
                     </div>
                 </div>
             </div>

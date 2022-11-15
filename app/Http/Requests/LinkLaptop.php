@@ -32,7 +32,7 @@ class LinkLaptop extends FormRequest
     }
     
     /**
-     * Returns error in json json format
+     * Returns error in json format
      *
      * @param Validator $validator
      * @return void
@@ -55,7 +55,7 @@ class LinkLaptop extends FormRequest
         $validation = [
             'laptop_id' => ['required', function($attribute, $value, $fail){
                 if(empty(Laptops::getLaptopEmployeeDetails($value))){
-                    $fail('The selected laptop in invalid, please select again.');
+                    $fail('The selected laptop is invalid, please select again.');
                 }
             }],
         ];

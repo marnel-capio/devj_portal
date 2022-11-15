@@ -44,12 +44,8 @@
 		                	-
 		                @endif
 						</td>
-		                <td>
-		                @if ($user['approved_status'] == 3) 	
+		                <td>	
 		                	<a href="{{ url("/employees/{$user['id']}/request") }}" alt="View"><i class="bi bi-eye"></i>View</a>
-		               	@else
-		               		<a href="{{ url("/employees/{$user['id']}") }}" alt="View"><i class="bi bi-eye"></i>View</a>
-		               	@endif
 		                </td>
 		            </tr>
 		            @endforeach

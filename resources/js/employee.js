@@ -144,6 +144,8 @@ $(document).ready(function () {
 	
 			if(!data.success){
 				$("#cp-success-msg").remove();
+				$("#current-pass-error").empty();
+				$("#new-pass-error").empty();
 				//display error
 				var currentPasswordErrors = data.data.current_password;
 				if(currentPasswordErrors && currentPasswordErrors.length > 0 ){
@@ -203,6 +205,10 @@ $(document).ready(function () {
 			// display error
 			if(!data.success){
 				$("#lp-success-msg").remove();
+				$("#error-lp-proj-name").empty();
+				$("#error-lp-proj-role").empty();
+				$("#error-lp-proj-start").empty();
+				$("#error-lp-proj-end").empty();
 				var projectError = data.data.project_id;
 				if(projectError && projectError.length > 0 ){
 					$("#error-lp-proj-name").html(projectError[0]).addClass('text-danger text-start');
@@ -293,6 +299,7 @@ $(document).ready(function () {
 			if(!data.success){
 				//display error
 				$("#ll-success-msg").remove();
+				$("#error-laptop-id").empty();
 				var laptopIdError = data.data.laptop_id;
 				if(laptopIdError && laptopIdError.length > 0 ){
 					$("#error-laptop-id").html(laptopIdError[0]).addClass('text-danger text-start');

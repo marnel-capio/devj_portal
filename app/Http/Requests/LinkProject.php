@@ -49,7 +49,7 @@ class LinkProject extends FormRequest
         ];
     }
     /**
-     * Returns error in json json format
+     * Returns error in json format
      *
      * @param Validator $validator
      * @return void
@@ -81,17 +81,10 @@ class LinkProject extends FormRequest
             'project_role' => 'required|in:1,2,3'
         ];
 
-        if(!empty($projectDetails)){
-            $rules['project_start'] = "required|date|after_or_equal:{$projectDetails->start_date}";
-
+        if(!empty($projectDetails) && !empty($projectDetails->end_date) && $projectDetails->end_date != "0000-00-00 00:00:00"){
+            $rules['project_start'] = "required|date|after_or_equal:{$projectDetails->start_date}|before:{$projectDetails->end_date}";
             if($this->filled('project_end')){
-                if($projectDetails->end_date != "0000-00-00 00:00:00"){
-                    $rules['project_end'] = "required|date|after:{$projectDetails->start_date}|before_or_equal:{$projectDetails->end_date}";
-                }else{
-                    $today = now();
-                    $rules['project_end'] ="before_or_equal:{$today}";
-                    $rules['project_start'] = "required|date|after_or_equal:{$projectDetails->start_date}|before:{$projectDetails->end_date}";
-                }
+                $rules['project_end'] = "required|date|after:{$projectDetails->start_date}|before_or_equal:{$projectDetails->end_date}";
             }
         }
 
