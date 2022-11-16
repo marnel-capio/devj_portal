@@ -564,7 +564,7 @@ class EmployeesController extends Controller
             } 
         }
         Logs::createLog("Employee", "Send notification to the active employee to remind them to update their contact details");
-        return redirect()->route('employees')->with(['success' => 1, "message" => "Successfully sent notifications to all active employee."]);
+        return redirect()->route('employees')->with(['success' => 1, "message" => "Successfully sent notifications to all active employees."]);
     }
 
     public function download(Request $request) {

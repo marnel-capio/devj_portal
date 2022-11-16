@@ -21,7 +21,7 @@ return new class extends Migration
             $table->unsignedTinyInteger('approved_status')->default(3)->nullable()->comment( '1: rejected, 2: approved, 3: pending for approval, 4: pending for update approval');
             $table->unsignedTinyInteger('brought_home_flag')->default(0)->nullable()->comment( '0: PC is used inside the office only, 1: PC is also used outside the office');
             $table->unsignedTinyInteger('vpn_flag')->default(0)->nullable()->comment( '0: no access 1: has access');
-            $table->unsignedTinyInteger('surrender_flag')->nullable();
+            $table->unsignedTinyInteger('surrender_flag')->default(0);
             $table->dateTime('surrender_date')->nullable();
             $table->string('remarks', 1024)->nullable();
             $table->string('reasons', 1024)->nullable();

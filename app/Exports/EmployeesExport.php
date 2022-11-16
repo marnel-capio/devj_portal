@@ -62,14 +62,7 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithEvent
         $keyword = $this->keyword;
         $status = $this->status;
 
-        $employee = Employees::query()->where(function($query) {
-                        $query->where('active_status', 0)
-                        ->where('approved_status',2);
-                    })
-                    ->orWhere(function($query) {
-                        $query->where('active_status', 1)
-                        ->whereIn('approved_status',[2,4]);
-                    });
+        $employee = Employees::whereIn('approved_status', [2,4]);
 
         if (!empty($keyword)) {
 

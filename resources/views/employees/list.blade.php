@@ -7,8 +7,8 @@
 	  {{session('message')}}
 	</div>
 @endif
-<div class="container container-list-table">
-	<h5> Employee List </h5>
+<div class="container container-list-table mt-3 ms-4 mb-5">
+	<h3> Employee List </h3>
 	@if(auth()->user()->roles != 3)
 	<div class="row row-list">
 		<div class="col">
@@ -119,4 +119,6 @@
 		        </tbody>
 		    </table>
 	    </div>
+	</div>
+</div>
 @include('footer')

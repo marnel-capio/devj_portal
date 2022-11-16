@@ -175,15 +175,8 @@ class ApiController extends Controller
             'status' => $request->get('status'),
         ];
         // DB::enableQueryLog();
-        $employee = Employees::where(function($query) {
-                        $query->where('active_status', 0)
-                        ->where('approved_status',2);
-                    })
-                    ->orWhere(function($query) {
-                        $query->where('active_status', 1)
-                        ->whereIn('approved_status',[2,4]);
-                    });
-
+        $employee = Employees::whereIn('approved_status', [2,4]);
+                    
        // get employees
         if (!empty($searchFilter['keyword'])) {
             if ($searchFilter['filter'] == 1) {
