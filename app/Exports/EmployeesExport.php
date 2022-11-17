@@ -10,22 +10,63 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
 use App\Models\Employees;
+use Maatwebsite\Excel\Concerns\WithColumnWidths;
+use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border as StyleBorder;
+use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup as WorksheetPageSetup;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithEvents, ShouldAutoSize
+class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithEvents, ShouldAutoSize, WithColumnWidths, WithStyles
 {
     use Exportable;
 
-    public function __construct($keyword,$filter,$status)
+    private $maxRow = 100;
+
+    public function __construct($keyword,$filter,$status,$fileType = "")
     {
         $this->keyword = $keyword;
         $this->filter = $filter;
         $this->status = $status;
+        $this->fileType = $fileType;
     }
 
     public function headings(): array
     {
         return ["Date updated", "Full Name", "Cellphone Number", "Other Contact Details (if any)", "Current Address", "Permanent Address"];
     }	
+
+    public function columnWidths(): array
+    {
+        if($this->fileType == 'pdf'){
+            return [
+                'A' => 12,
+                'B' => 25,
+                'C' => 15,
+                'D' => 15,
+                'E' => 40,
+                'F' => 40,
+            ];
+        }else{
+            return [];
+        }
+    }
+
+    public function styles(Worksheet $sheet)
+    {
+        return [
+
+            'A:F' => [
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_LEFT,
+                ],
+            ],
+
+            1 => ['font' => [
+                'bold' => true
+            ]],
+        ];
+    }
 
     /**
     * @var Employees $employee
@@ -48,13 +89,30 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithEvent
      */
     public function registerEvents(): array
     {
-        return [
-            AfterSheet::class => function(AfterSheet $event) {
-                $event->sheet
-				    ->getPageSetup()
-				    ->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
-            },
-        ];
+
+
+        if($this->fileType == 'pdf'){
+            $setting = [
+                AfterSheet::class => function(AfterSheet $event) {
+                    $event->sheet
+                        ->getPageSetup()
+                        ->setOrientation(WorksheetPageSetup::ORIENTATION_LANDSCAPE)
+                        ->setPaperSizeDefault(WorksheetPageSetup::PAPERSIZE_A4);
+                },
+            ];
+
+        }else{
+            $setting = [
+                AfterSheet::class => function(AfterSheet $event) {
+                    $event->sheet
+                        ->getPageSetup()
+                        ->setOrientation(WorksheetPageSetup::ORIENTATION_LANDSCAPE);
+                },
+            ];
+        }
+
+
+        return $setting;
     }
 
     public function query()

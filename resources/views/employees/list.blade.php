@@ -29,17 +29,17 @@
 			</div>
 			<div class="col-11">
 				<input class="search-status-rdb-input" type="radio" name="employeeStatus" id="status-all" value="1" checked>
-				<label class="search-status-rdb-label" for="status-all">
+				<label class="search-status-rdb-label  form-check-label" for="status-all">
 				    All
 				</label>
 				&nbsp;&nbsp;
 				<input class="search-status-rdb-input" type="radio" name="employeeStatus" id="status-active" value="2" >
-				<label class="search-status-rdb-label" for="status-active">
+				<label class="search-status-rdb-label form-check-label" for="status-active">
 				    Active
 				</label>
 				&nbsp;&nbsp;
 				<input class="search-status-rdb-input" type="radio" name="employeeStatus" id="status-deactivated" value="3" >
-				<label class="search-status-rdb-label" for="status-deactivatede">
+				<label class="search-status-rdb-label form-check-label" for="status-deactivated">
 				    Deactivated
 				</label>
 			</div>
@@ -50,17 +50,17 @@
 			</div>
 			<div class="col">
 				<input class="search-filter-rdb-input" type="radio" name="searchFilter" id="filter-name" value="1" checked>
-				<label class="search-filter-rdb-label" for="filter-name">
+				<label class="search-filter-rdb-label  form-check-label" for="filter-name">
 				    Name
 				</label>
 				&nbsp;&nbsp;
 				<input class="search-filter-rdb-input" type="radio" name="searchFilter" id="filter-city" value="2" >
-				<label class="search-filter-rdb-label" for="filter-city">
+				<label class="search-filter-rdb-label  form-check-label" for="filter-city">
 				    City
 				</label>
 				&nbsp;&nbsp;
 				<input class="search-filter-rdb-input" type="radio" name="searchFilter" id="filter-province" value="3" >
-				<label class="search-filter-rdb-label" for="filter-province">
+				<label class="search-filter-rdb-label  form-check-label" for="filter-province">
 				    Province
 				</label>
 			</div>

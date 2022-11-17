@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\DB;
 use App\Mail\updateContactDetailsMail;
 use Excel;
 use App\Exports\EmployeesExport;
-
+use PhpOffice\PhpSpreadsheet\Writer\Pdf;
 
 class EmployeesController extends Controller
 {
@@ -574,7 +574,7 @@ class EmployeesController extends Controller
         if (Auth::user()->roles != 3) {
             return (new EmployeesExport($request['searchInput'],$request['searchFilter'],$request['employeeStatus']))->download('DevJ Contact Details.xlsx');
         } else {
-            return (new EmployeesExport($request['searchInput'],$request['searchFilter'],$request['employeeStatus']))->download('DevJ Contact Details.pdf');
+            return (new EmployeesExport($request['searchInput'],$request['searchFilter'],$request['employeeStatus'], 'pdf'))->download('DevJ Contact Details.pdf');
         }
 
     }

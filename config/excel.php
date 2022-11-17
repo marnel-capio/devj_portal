@@ -60,9 +60,9 @@ return [
         |
         */
         'properties'             => [
-            'creator'        => '',
+            'creator'        => 'Dev J Portal Administrator',
             'lastModifiedBy' => '',
-            'title'          => '',
+            'title'          => 'Dev J Portal Details',
             'description'    => '',
             'subject'        => '',
             'keywords'       => '',

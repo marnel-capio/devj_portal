@@ -1,12 +1,12 @@
 @include('header')
 
 @include('headerMenu')
-<div class="container container-req-table">
+<div class="container container-req-table  mt-3 ms-4 mb-5">
   @if(auth()->user()->roles == 2)
 
 	<div class="row-req-table row">
 	    <div class="col">
-	      <h5> Employee Request </h5>
+	      <h3 class="mb-4"> Employee Request </h3>
 			<table id="employee-request" class="table table-striped request-table" >
 		        <thead>
 		            <tr>
