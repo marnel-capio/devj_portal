@@ -194,7 +194,7 @@ class EmployeesController extends Controller
             Logs::createLog("Employee", $log);
 
             if(Auth::user()->id == $id){
-                return redirect(route('employees.details', ['id' => $id]));
+                return redirect(route('employees.details', ['id' => $id]))->with(['success' => 1, "message" => "Details are updated successfully."]);
             }else{
                 return redirect(route('employees.update.complete')); 
             }
@@ -541,7 +541,7 @@ class EmployeesController extends Controller
     public function sendNotification(){
         // get all active employee
         // DB::enableQueryLog();
-        $employee = Employees::select('email','first_name')
+        $employee = Employees::select('id', 'email','first_name')
                     ->where('active_status',1)
                     ->where(function($query) {
                         $query->where('approved_status', 2)
@@ -558,6 +558,7 @@ class EmployeesController extends Controller
                 'first_name' => $detail['first_name'],
                 'currentUserId' => Auth::user()->id,
                 'module' => "Employee",
+                'detailLink' => route('employees.details', ['id' => $detail['id']]),
             ];
             if (!empty($email)) {
                 Mail::to($email)->send(new updateContactDetailsMail($mailData));

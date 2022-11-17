@@ -7,6 +7,12 @@
 <script src="{{ asset(mix('js/employee.min.js')) }}" defer></script>
 @include('headerMenu')
 
+@if (session('success')) 
+	<div class="alert alert-success" role="alert">
+        <span class="ms-2">{{ session('message') }}</span>
+	</div>
+@endif
+
 <div class="container text-center ps-md-3 pe-md-3 pt-5">
     <div class="d-flex justify-content-between mb-2">
         <div class="text-primary d-flex align-items-center">
