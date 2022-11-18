@@ -90,16 +90,16 @@ class EmployeesController extends Controller
 
         abort_if(empty($employeeDetails), 404); //employee does not exist
 
-        abort_if((!$employeeDetails->active_status && $employeeDetails->approved_status == config('constants.APPROVED_STATUS_REJECTED'))
-            || ($employeeDetails->active_status && in_array($employeeDetails->approved_status, [config('constants.APPROVED_STATUS_REJECTED'), config('constants.APPROVED_STATUS_PENDING')]))
-            , 403); //invalid combination of approved_status and active_status
-
         //check if employee has pending update, or if employee's account is not yet activated
         if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE') &&
             ($employeeDetails->approved_status == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')
             || (!$employeeDetails->active_status && $employeeDetails->approved_status == config('constants.APPROVED_STATUS_PENDING')))){
             return redirect(route('employees.request', ['id' => $id]));
         }
+
+        abort_if((!$employeeDetails->active_status && in_array($employeeDetails->approved_status, [config('constants.APPROVED_STATUS_REJECTED'), config('constants.APPROVED_STATUS_PENDING')]))
+            || ($employeeDetails->active_status && in_array($employeeDetails->approved_status, [config('constants.APPROVED_STATUS_REJECTED'), config('constants.APPROVED_STATUS_PENDING')]))
+            , 403); //invalid combination of approved_status and active_status
 
         //check if allowed to edit
         $allowedToEdit = false;
@@ -129,15 +129,11 @@ class EmployeesController extends Controller
 
         abort_if(empty($employee), 404); //employee does not exist
 
-        abort_if((!$employee->active_status && $employee->approved_status == config('constants.APPROVED_STATUS_REJECTED'))
-            || ($employee->active_status && in_array($employee->approved_status, [config('constants.APPROVED_STATUS_REJECTED'), config('constants.APPROVED_STATUS_PENDING')]))
-            , 403); //invalid combination of approved_status and active_status
-
         //check if user is allow to access the edit page
         abort_if(Auth::user()->id != $id && !in_array(Auth::user()->roles, [config('constants.ADMIN_ROLE_VALUE'), config('constants.MANAGER_ROLE_VALUE')]), 403);
 
         //check if employee has pending update, or if employee's account is not yet activated
-        if(($employee->active_status && $employee->approved_status == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE'))
+        if($employee->approved_status == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')
             || (!$employee->active_status && $employee->approved_status == config('constants.APPROVED_STATUS_PENDING'))){
             if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
                 return redirect(route('employees.request', ['id' => $id]));
@@ -145,6 +141,10 @@ class EmployeesController extends Controller
                 abort(403);
             }
         }
+
+        abort_if((!$employee->active_status && $employee->approved_status == config('constants.APPROVED_STATUS_REJECTED'))
+            || ($employee->active_status && in_array($employee->approved_status, [config('constants.APPROVED_STATUS_REJECTED'), config('constants.APPROVED_STATUS_PENDING')]))
+            , 403); //invalid combination of approved_status and active_status
 
         return view('employees.edit')->with([
                                         'employee' => $employee,

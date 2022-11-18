@@ -78,7 +78,8 @@ class LinkProject extends FormRequest
                 }
             }],
 
-            'project_role' => 'required|in:1,2,3'
+            'project_role' => 'required|in:1,2,3',
+            'project_start' => 'required|date'
         ];
 
         if(!empty($projectDetails) && !empty($projectDetails->end_date) && $projectDetails->end_date != "0000-00-00 00:00:00"){

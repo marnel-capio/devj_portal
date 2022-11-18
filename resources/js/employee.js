@@ -183,6 +183,7 @@ $(document).ready(function () {
 	});
 
 	$("#lp-submit-btn").click(function(e){
+		$('#lp-submit-btn').prop('disabled', true);
 		var postData = {
 			_token: $("#linkProjectForm > input[name=_token]").val(),
 			employee_id: $("#linkProjectForm > input[name=lp_employee_id]").val(),
@@ -257,6 +258,7 @@ $(document).ready(function () {
 					.draw(false);
 				});
 			}
+			$('#lp-submit-btn').prop('disabled', false);
 		}).fail(function(){
 			console.log('error');
 		});
@@ -277,6 +279,7 @@ $(document).ready(function () {
 	});
 
 	$("#ll-submit-btn").click(function(e){
+		$('#ll-submit-btn').prop('disabled', true);
 		var postData = {
 			_token: $("#linkLaptopForm > input[name=_token]").val(),
 			employee_id: $("#linkLaptopForm > input[name=ll_employee_id]").val(),
@@ -330,6 +333,7 @@ $(document).ready(function () {
 					.draw(false);
 				});
 			}
+		$('#ll-submit-btn').prop('disabled', false);
 		}).fail(function(){
 			console.log('error');
 		});
@@ -343,8 +347,15 @@ $(document).ready(function () {
 			console.log("hello");
 			$("#reject-reason-error").html('The reason field is required.').addClass("text-danger text-start");
 			return false;
+		}else{
+			$('#reject-sub').prop('disabled', true);
 		}
 	});
+
+	//approve
+	$("#approve-request-form").submit(function(){
+		$('#approve-request').prop('disabled', true);
+	})
 
 	// edit submit
 	$("#emp-update-form").submit(function(){
@@ -354,6 +365,7 @@ $(document).ready(function () {
 		if($("#server-manage-flag").is(':checked')){
 			$("#server-manage-flag-hidden").prop('disabled', true);
 		}
+		$('#emp-update-submit').prop('disabled', true);
 	});
 
 	$('linkProjectModal').on('hidden.bs.modal', function(){

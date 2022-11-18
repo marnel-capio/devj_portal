@@ -396,7 +396,7 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button class="btn btn-danger" type="submit" form="reject-request-form">Reject</button>
+                    <button class="btn btn-danger" id="reject-sub" type="submit" form="reject-request-form">Reject</button>
                 </div>
             </div>
         </div>

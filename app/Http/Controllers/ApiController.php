@@ -151,7 +151,6 @@ class ApiController extends Controller
         
         Logs::createLog("Employee", "Link {$employee->first_name} {$employee->last_name} to {$project->name}");
 
-        $updatedData =  EmployeesProjects::getProjectsByEmployee($data['employee_id']);
         return response()->json(['success' => true, 
                                     'message' => $message, 
                                     'update' => EmployeesProjects::getProjectsByEmployee($data['employee_id'])]
