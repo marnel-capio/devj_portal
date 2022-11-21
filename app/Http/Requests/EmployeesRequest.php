@@ -133,7 +133,7 @@ class EmployeesRequest extends FormRequest
                 }];
                 $rules['id'] = [function($attribute, $value, $fail){
                     if(Auth::user()->id != $value  && !in_array(Auth::user()->roles, [config('constants.MANAGER_ROLE_VALUE'), config('constants.ADMIN_ROLE_VALUE')])){
-                        $fail('An Employee with an Engineer role is anot allowed to update the details of other employees.');
+                        $fail('An Employee with an Engineer role is not allowed to update the details of other employees.');
                     }
                 }];
             }

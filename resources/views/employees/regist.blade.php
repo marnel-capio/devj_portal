@@ -204,7 +204,7 @@
                 </div>
             </div>
             <div class="text-center p-2">
-                <button class="btn btn-primary btn-lg mb-5 btn-prevent-multiple-submit" id="emp-reg-submit" type="submit">Submit</button>
+                <button class="btn btn-primary btn-lg mb-5 btn-prevent-multiple-submit" id="emp-reg-submit" type="submit">Register</button>
             </div>
         </form>
     </div>

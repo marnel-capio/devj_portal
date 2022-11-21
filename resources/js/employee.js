@@ -143,7 +143,7 @@ $(document).ready(function () {
 		}).done(function(data){
 	
 			if(!data.success){
-				$("#cp-success-msg").remove();
+				$("#cp-success-msg").empty();
 				$("#current-pass-error").empty();
 				$("#new-pass-error").empty();
 				//display error
@@ -201,11 +201,9 @@ $(document).ready(function () {
 			dataType: "json",
 			encode: true,
 		}).done(function(data){
-			// console.log(data);
-
 			// display error
 			if(!data.success){
-				$("#lp-success-msg").remove();
+				$("#lp-success-msg").empty();
 				$("#error-lp-proj-name").empty();
 				$("#error-lp-proj-role").empty();
 				$("#error-lp-proj-start").empty();
@@ -298,10 +296,9 @@ $(document).ready(function () {
 			dataType: "json",
 			encode: true,
 		}).done(function(data){
-			// console.log(data);
 			if(!data.success){
 				//display error
-				$("#ll-success-msg").remove();
+				$("#ll-success-msg").empty();
 				$("#error-laptop-id").empty();
 				var laptopIdError = data.data.laptop_id;
 				if(laptopIdError && laptopIdError.length > 0 ){
@@ -347,7 +344,10 @@ $(document).ready(function () {
 			console.log("hello");
 			$("#reject-reason-error").html('The reason field is required.').addClass("text-danger text-start");
 			return false;
-		}else{
+		}else if($("#reject-reason").val().length > 1024){
+			$("#reject-reason-error").html('The reason must not be greater than 1024 characters.').addClass("text-danger text-start");
+			return false;
+		}else {
 			$('#reject-sub').prop('disabled', true);
 		}
 	});
@@ -369,15 +369,15 @@ $(document).ready(function () {
 	});
 
 	$('linkProjectModal').on('hidden.bs.modal', function(){
-		$("#lp-success-msg").remove();
+		$("#lp-success-msg").empty();
 	});
 
 	$('#linkLaptopModal').on('hidden.bs.modal', function(){
-		$("#ll-success-msg").remove();
+		$("#ll-success-msg").empty();
 	})
 	
 	$('#changePasswordModal').on('hidden.bs.modal', function(){
-		$("#cp-success-msg").remove();
+		$("#cp-success-msg").empty();
 	})
 
 

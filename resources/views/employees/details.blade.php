@@ -388,7 +388,7 @@
                             @csrf
                             <input type="text" name="id" value="{{ $employee->id }}" hidden>
                             <div class="mb-2">
-                                <textarea class="form-control" name="reason" placeholder="Reason" rows="3" id="reject-reason" required></textarea>
+                                <textarea class="form-control" name="reason" placeholder="Reason" rows="5" id="reject-reason" required></textarea>
                             </div>
                             <p id="reject-reason-error"></p>
                         </form>
