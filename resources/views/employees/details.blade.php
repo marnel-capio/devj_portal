@@ -163,16 +163,13 @@
                         <p class="text-danger">{{ $errors->first('position') }}</p>
                         @endif
                     </div>
-                    <div class="col-4 g-3 form-floating">
-                        <select name="roles" id="roles" class="form-select form-control" {{ $readOnly ? 'disabled' : '' }}>
-                            <option {{ $employee->roles == config('constants.ADMIN_ROLE_VALUE') ? "selected" : "" }} value="config('constants.ADMIN_ROLE_VALUE')">Admin</option>
-                            <option {{ $employee->roles == config('constants.MANAGER_ROLE_VALUE') ? "selected" : "" }} value="config('constants.MANAGER_ROLE_VALUE')">Manager</option>
-                            <option {{ $employee->roles == config('constants.ENGINEER_ROLE_VALUE') ? "selected" : "" }} value="config('constants.ENGINEER_ROLE_VALUE')">Engineer</option>
-                        </select>
-                        <label for="roles" class="text-center">Role</label>
-                        @if ($errors->has('roles'))
-                        <p class="text-danger">{{ $errors->first('roles') }}</p>
-                        @endif
+                    <div class="col-lg-2 col-4 g-3 ps-3" id="admin-detail">
+                        <div class="d-flex align-items-center" style="height: 100%">
+                            <div class="form-check ">
+                                <label class="form-check-label" for="is-admin-detail">Admin</label>
+                                <input type="checkBox" class="form-check-input" name="is_admin" id="is-admin-detail" value="0" {{ $employee->roles == config('constants.ADMIN_ROLE_VALUE') ? "checked" : "" }} {{ $readOnly ? 'disabled' : '' }}>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="row mb-2 ps-3 pe-3">

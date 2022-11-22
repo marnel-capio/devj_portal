@@ -159,6 +159,13 @@ class EmployeesController extends Controller
         $updateData = $this->getEmployeeData($request);
         $id = $updateData['id'];
         $originalData = Employees::where('id', $id)->first();
+
+        //set value of role
+        $updateData['roles'] = $this->getRoleBasedOnPosition($updateData['position']);
+        if($request->input('is_admin', 0) && $updateData['roles'] != config('constants.MANAGER_ROLE_VALUE')){
+            $updateData['roles'] = config('constants.ADMIN_ROLE_VALUE');
+        }
+       
         unset($updateData['id']);
         unset($updateData['created_by']);
         unset($updateData['password']);
@@ -459,7 +466,7 @@ class EmployeesController extends Controller
      * @return array
      */
     private function getEmployeeData(EmployeesRequest $request){
-        $data = $request->except(['_token', 'confirm_password', 'password']);
+        $data = $request->except(['_token', 'confirm_password', 'password', 'is_admin']);
         $this->changeStringCase($data, ['email', 'password']);
         $data['password'] =  password_hash($request->input('password'), PASSWORD_BCRYPT);
         if(Auth::check()){

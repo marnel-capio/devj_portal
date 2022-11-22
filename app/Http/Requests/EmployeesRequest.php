@@ -110,15 +110,15 @@ class EmployeesRequest extends FormRequest
             }
 
             if(strpos($this->header('referer'), '/edit') !== FALSE){
-                $rules['roles'] = [function($attribute, $value, $fail){
-                    $employee = Employees::where('id', $this->input('id'))->first();
-                    if($value != $employee->roles && !in_array(Auth::user()->roles, [config('constants.MANAGER_ROLE_VALUE'), config('constants.ADMIN_ROLE_VALUE')])){
-                        $fail('Role can only be update by an Admin or a Manager.');
-                    }
-                }];
-                if(in_array(Auth::user()->roles, [config('constants.MANAGER_ROLE_VALUE'), config('constants.ADMIN_ROLE_VALUE')])){
-                    $rules['roles'] = 'required|in:1,2,3';
-                }
+                // $rules['roles'] = [function($attribute, $value, $fail){
+                //     $employee = Employees::where('id', $this->input('id'))->first();
+                //     if($value != $employee->roles && !in_array(Auth::user()->roles, [config('constants.MANAGER_ROLE_VALUE'), config('constants.ADMIN_ROLE_VALUE')])){
+                //         $fail('Role can only be update by an Admin or a Manager.');
+                //     }
+                // }];
+                // if(in_array(Auth::user()->roles, [config('constants.MANAGER_ROLE_VALUE'), config('constants.ADMIN_ROLE_VALUE')])){
+                //     $rules['roles'] = 'required|in:1,2,3';
+                // }
                 $rules['active_status'] = [function($attribute, $value, $fail){
                     $employee = Employees::where('id', $this->input('id'))->first();
                     if($value != $employee->active_status && !in_array(Auth::user()->roles, [config('constants.MANAGER_ROLE_VALUE'), config('constants.ADMIN_ROLE_VALUE')])){

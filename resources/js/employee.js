@@ -381,5 +381,22 @@ $(document).ready(function () {
 	})
 
 
+	hideAdminCheck();
+	$('#position').change(function(){
+		hideAdminCheck();
+	});
+
+	function hideAdminCheck(){
+		if($('#position').val() == 8 || $('#position').val() == 9){
+			$('#admin-check').hide();
+			$('#admin-detail').hide();
+			$('#is-admin').prop('disabled', true);
+		}else{
+			$('#admin-check').show();
+			$('#admin-detail').show();
+			$('#is-admin').prop('disabled', false);
+		}
+	}
+
 	//end for employee details/request
 });

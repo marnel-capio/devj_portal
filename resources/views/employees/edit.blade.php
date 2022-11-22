@@ -88,17 +88,31 @@
                         <p class="text-danger">{{ $errors->first('position') }}</p>
                         @endif
                     </div>
-                    <div class="col-4 g-3 form-floating">
-                        <select name="roles" id="roles" class="form-select form-control" {{ !$manager_admin ? 'disabled' : '' }}>
-                            <option {{ old('roles', $employee->roles) == config('constants.ADMIN_ROLE_VALUE') ? "selected" : "" }} value="{{ config('constants.ADMIN_ROLE_VALUE') }}">Admin</option>
-                            <option {{ old('roles', $employee->roles) == config('constants.MANAGER_ROLE_VALUE') ? "selected" : "" }} value="{{ config('constants.MANAGER_ROLE_VALUE') }}">Manager</option>
-                            <option {{ old('roles', $employee->roles) == config('constants.ENGINEER_ROLE_VALUE') ? "selected" : "" }} value="{{ config('constants.ENGINEER_ROLE_VALUE') }}">Engineer</option>
-                        </select>
-                        <label for="roles" class="text-center">Role</label>
-                        @if ($errors->has('roles'))
-                        <p class="text-danger">{{ $errors->first('roles') }}</p>
-                        @endif
+                    @if ($manager_admin)
+                    <div class="col-lg-2 col-4 g-3 ps-3" id="admin-check">
+                        <div class="d-flex align-items-center" style="height: 100%">
+                            <div class="form-check ">
+                                <label class="form-check-label" for="is-admin">Admin</label>
+                                <input type="checkBox" class="form-check-input" name="is_admin" id="is-admin" value="1" {{ old('is_admin', $employee->roles) == 1 ? "checked" : "" }}>
+                            </div>
+                            @if ($errors->has('is-admin'))
+                            <p class="text-danger">{{ $errors->first('is-admin') }}</p>
+                            @endif
+                        </div>
                     </div>
+                    @else
+                    <div class="col-lg-2 col-4 g-3 ps-3">
+                        <div class="d-flex align-items-center" style="height: 100%">
+                            <div class="form-check ">
+                                <label class="form-check-label" for="is-admin-detail">Admin</label>
+                                <input type="checkBox" class="form-check-input" name="is_admin" id="is-admin-detail" value="1" {{ $employee->roles == config('constants.ADMIN_ROLE_VALUE') ? "checked" : "" }} disabled>
+                            </div>
+                            @if ($errors->has('is-admin'))
+                            <p class="text-danger">{{ $errors->first('is-admin') }}</p>
+                            @endif
+                        </div>
+                    </div>
+                    @endif
                 </div>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-lg-2 col-md-4 col-6 g-3 ps-1">
