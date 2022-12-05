@@ -11,6 +11,7 @@ class Laptops extends Model
 
     const UPDATED_AT = 'update_time';
     const CREATED_AT = 'create_time';
+    protected $guarded = [];
 
     static function getLaptopDropdown(){
 

@@ -5,6 +5,7 @@ use App\Http\Controllers\Employees;
 use App\Http\Controllers\EmployeesController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\LaptopsController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
 use App\Http\Middleware\Authenticate;
@@ -56,16 +57,18 @@ Route::middleware(['auth', 'web'])->group(function(){
         })->name('employees.update.complete');
     });
 
-    Route::prefix('/laptops')->group(function(){
+    Route::prefix('/laptops')->controller(LaptopsController::class)->group(function(){
         Route::get('/', function(){
             return 'Welcome to Laptop List';
         })->name('laptops');
-        Route::get('/create', function(){
-            return 'You can add laptop data here'; //dummy
-        })->name('laptops.create');
+        Route::get('/create/{rejectCode?}', 'create')->name('laptops.create');
+        Route::post('/regist', 'regist')->name('laptops.regist');
         Route::get('/{id}', function(){
             return 'laptop details ';
          })->name('laptop.details');
+         Route::get('/regist/complete', function(){
+            return view('laptops.complete');
+        })->name('laptops.regist.complete');
     });
 
     Route::prefix('/softwares')->group(function(){
