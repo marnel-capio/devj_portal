@@ -202,4 +202,15 @@ class ApiController extends Controller
         return json_encode($employee);
     }
 
+    public function filterLaptopList(Request $request){
+        $data = $request->all();
+
+        $laptopList = Laptops::getLaptopList($data['keyword'], $data['availability'], $data['status']);
+
+        return response()->json([
+                                'success' => true,
+                                'update' => $laptopList
+        ]);
+    }
+
 }

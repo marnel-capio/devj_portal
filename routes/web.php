@@ -58,9 +58,8 @@ Route::middleware(['auth', 'web'])->group(function(){
     });
 
     Route::prefix('/laptops')->controller(LaptopsController::class)->group(function(){
-        Route::get('/', function(){
-            return 'Welcome to Laptop List';
-        })->name('laptops');
+        Route::get('/', 'index')->name('laptops.index');
+        Route::get('/download', 'download')->name('laptops.download');
         Route::get('/create/{rejectCode?}', 'create')->name('laptops.create');
         Route::post('/regist', 'regist')->name('laptops.regist');
         Route::get('/{id}', function(){

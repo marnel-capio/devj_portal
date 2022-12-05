@@ -240,7 +240,7 @@ $(document).ready(function () {
 				projectTable.clear().draw();
 				data.update.forEach(function(project){
 					let url = window.location.origin + '/devj_portal/projects/' + project.project_id;
-					console.log(project);
+					// console.log(project);
 					sDate = new Date(project.start_date);
 					spanStart = sDate.getFullYear() + '/' + sDate.getMonth() + '/' + sDate.getDate() + ' - ';
 					spanEnd = '';

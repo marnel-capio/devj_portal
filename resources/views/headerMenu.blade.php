@@ -19,7 +19,7 @@
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link text-white"  role="button">Laptops</a>
                     <ul class="dropdown-menu">
-                        <li><a href="{{ route('laptops') }}" class="dropdown-item small text-white">View List</a></li>
+                        <li><a href="{{ route('laptops.index') }}" class="dropdown-item small text-white">View List</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a href="{{ route('laptops.create') }}" class="dropdown-item small text-white">Create Laptop</a></li>
                     </ul>

@@ -21,5 +21,6 @@ Route::middleware('auth:sanctum')->controller(ApiController::class)->group(funct
     Route::post('/changePassword', 'changePassword')->name('api.changePassword');
     Route::post('/linkLaptop', 'linkLaptop')->name('api.linkLaptop');
     Route::post('/linkProject', 'linkProject')->name('api.linkProject');
-    Route::get('/employees/search', 'getEmployeeByFilter')->name('api.search');
+    Route::get('/employees/search', 'getEmployeeByFilter')->name('api.filterEmployee');
+    Route::get('/laptops/search', 'filterLaptopList')->name('api.filterLaptop');
 });

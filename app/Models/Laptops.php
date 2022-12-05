@@ -40,4 +40,55 @@ class Laptops extends Model
             ->get()
             ->toArray();
     }
+
+    static function getLaptopList($keyword = '', $availability = '', $status = ''){
+        $query = self::selectRaw('
+                            id
+                            ,tag_number
+                            ,peza_form_number
+                            ,peza_permit_number
+                            ,laptop_make
+                            ,laptop_model
+                            ,CASE  WHEN status = 1 THEN "Active" ELSE "Inactive" END AS status');
+
+        if(!empty($status)){
+            if($status == 2){
+                $query->where('status', 1);
+            }elseif($status == 3){
+                $query->where('status', 0);
+            }
+        }
+
+        if(!empty($availability)){
+            if($availability == 2){
+                $query->whereIn('id', function($query){
+                    $query->select('laptop_id')
+                    ->from('employees_laptops')
+                    ->where('surrender_flag', 0)
+                    ->where('approved_status', config('constants.APPROVED_STATUS_APPROVED'));
+                });
+            }elseif($availability == 3){
+                $query->whereNotIn('id', function($query){
+                    $query->select('laptop_id')
+                    ->from('employees_laptops')
+                    ->where('surrender_flag', 0)
+                    ->where('approved_status', config('constants.APPROVED_STATUS_APPROVED'));
+                });
+            }
+        }
+
+        if(!empty($keyword)){
+            $query->where(function($query) use ($keyword){
+                $query->where('tag_number', 'LIKE', "%{$keyword}%")
+                        ->orWhere('peza_form_number', 'LIKE', "%{$keyword}%")
+                        ->orWhere('peza_permit_number', 'LIKE', "%{$keyword}%")
+                        ->orWhere('laptop_make', 'LIKE', "%{$keyword}%")
+                        ->orWhere('laptop_model', 'LIKE', "%{$keyword}%");
+            });
+        }
+
+        $query->orderBy('tag_number', 'asc');
+
+        return $query->get()->toArray();
+    }
 }

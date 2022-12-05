@@ -1,10 +1,12 @@
 {
     "/js/app.js": "/js/app.js",
     "/js/employee.js": "/js/employee.js",
+    "/js/laptop.js": "/js/laptop.js",
     "/css/employee.css": "/css/employee.css",
     "/css/app.css": "/css/app.css",
     "/js/app.min.js": "/js/app.min.js",
     "/css/app.min.css": "/css/app.min.css",
     "/js/employee.min.js": "/js/employee.min.js",
-    "/css/employee.min.css": "/css/employee.min.css"
+    "/css/employee.min.css": "/css/employee.min.css",
+    "/js/laptop.min.js": "/js/laptop.min.js"
 }

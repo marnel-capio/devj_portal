@@ -14,6 +14,17 @@ use Illuminate\Support\Facades\Mail;
 
 class LaptopsController extends Controller
 {
+    public function index(){
+
+        $laptops = Laptops::getLaptopList();
+
+        return view('laptops.index')->with(['laptopList' => $laptops]);
+    }
+
+    public function download(){
+        dd("coming soon . . .");
+    }
+
     public function create($rejectCode = ""){
         $laptop = '';
         if($rejectCode){
