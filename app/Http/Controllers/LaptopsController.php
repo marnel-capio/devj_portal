@@ -90,4 +90,33 @@ class LaptopsController extends Controller
         
         return redirect(route('laptops.regist.complete'));
     }
+
+    public function details($id){
+
+        $laptopDetails = Laptops::where('id', $id)->first();
+        abort_if(empty($laptopDetails), 404);
+        abort_if(!in_array($laptopDetails['approved_status'], [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]), 403);
+
+        return view('laptops.details')->with(['detail' => $laptopDetails,
+                                            'detailOnly' => true,
+                                            'detailNote' => $this->getDetailNote($laptopDetails),
+                                            'owned' => 1,   //update
+                                        ]);
+
+    }
+
+    private function getDetailNote($details){
+        $note = '';
+        if($details['status']){
+            if($details['approved_status'] == config('constants.APPROVED_STATUS_PENDING')){
+                $note = 'Registration is still pending';
+            }elseif($details['approved_status'] == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')){
+                $note = 'Update is still pending';
+            }
+        }else{
+            $note = 'Laptop is inactive';
+        }
+
+        return $note;
+    }
 }

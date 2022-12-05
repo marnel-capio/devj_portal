@@ -86,7 +86,7 @@
                     @if (!empty($laptopList))
                         @foreach ($laptopList as $laptop)
                         <tr>
-                            <td><a href="{{ route('laptop.details', ['id' => $laptop['id']]) }}">{{ $laptop['tag_number'] }}</a></td>
+                            <td><a href="{{ route('laptops.details', ['id' => $laptop['id']]) }}">{{ $laptop['tag_number'] }}</a></td>
                             <td>{{ $laptop['peza_form_number'] }}</td>
                             <td>{{ $laptop['peza_permit_number'] }}</td>
                             <td>{{ $laptop['laptop_make'] }}</td>
