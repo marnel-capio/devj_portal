@@ -353,7 +353,7 @@
                 @if (!empty($empLaptop))
                     @foreach ($empLaptop as $laptop)
                     <tr>
-                        <td><a href="{{ route('laptop.details', ['id' => $laptop['id']]) }}" class="text-decoration-none">{{ $laptop['tag_number'] }}</a></td>
+                        <td><a href="{{ route('laptops.details', ['id' => $laptop['id']]) }}" class="text-decoration-none">{{ $laptop['tag_number'] }}</a></td>
                         <td>{{ $laptop['brought_home'] }}</td>
                         <td>{{ $laptop['laptop_make'] }}</td>
                         <td>{{ $laptop['laptop_model'] }}</td>

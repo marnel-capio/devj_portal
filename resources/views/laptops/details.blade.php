@@ -86,29 +86,46 @@
     <div class="group-category mb-4 p-3 rounded-3">
         <div class="d-flex justify-content-between">
             <h4 class="text-start">Employee History</h4>
-            @if ($owned)
-                @if ($isLinkageUpdatable)
-                    <button class="btn btn-secondary" data-bs-target="#linkProjectModal" data-bs-toggle="modal">Update</button>
+            @if (!empty($linkageData))
+                @if ($linkageData['approved_status'] == config('constants.APPROVED_STATUS_APPROVED'))
+                    <button class="btn btn-success" data-bs-target="#updateLinkageModal" data-bs-toggle="modal">Update</button>
                 @endif
-            @endif
             @else
-                <button class="btn btn-primary" data-bs-target="#linkProjectModal" data-bs-toggle="modal">Link</button>
+                <button class="btn btn-primary" data-bs-target="#newLinkageModal" data-bs-toggle="modal">Link</button>
             @endif
         </div>
-        </div>
-        <table class="table table-bordered border-secondary mt-3" id="project-tbl">
-            <thead class="bg-primary text-white fw-bold">
-                <tr>
-                    <th style="width:50%">NAME</th>
-                    <th style="width:30%">DATE</th>
-                    <th style="">STATUS</th>
-                </tr>
-            </thead>
-            <tbody class="">
-                @if(!empty($history))
 
-                @endif
-            </tbody>
-        </table>
+        <div class="ms-3">
+            @if (!empty($linkageData) && $linkageData['approved_status'] == config('constants.APPROVED_STATUS_APPROVED'))
+            <div class="text-primary d-flex align-items-center">
+                <i class="bi bi-info-circle-fill"></i>&nbsp;Only the laptop details of the current owner can be updated
+            </div>
+            @endif
+            <table class="table table-bordered border-secondary mt-3" id="project-tbl">
+                <thead class="bg-primary text-white fw-bold">
+                    <tr>
+                        <th>Member</th>
+                        <th>VPN Access?</th>
+                        <th>Brought Home?</th>
+                        <th>Remarks</th>
+                        <th>Surrender Date</th>
+                    </tr>
+                </thead>
+                <tbody class="">
+                    @if(!empty($history))
+                        @foreach ($history as $data)
+                            <tr>
+                                <td id="name-col">{{ $data['employee_name'] }}</td>
+                                <td id="vpn-col">{{ $data['vpn_flag'] }}</td>
+                                <td id="bhf-col">{{ $data['brought_home_flag'] }}</td>
+                                <td id="remarks-col">{{ $data['remarks'] }}</td>
+                                <td id="sdate-col">{{ $data['surrender_date'] }}</td>
+                            </tr>
+                        @endforeach
+                    @endif
+                </tbody>
+            </table>
+        </div>
+
     </div>
 </div>

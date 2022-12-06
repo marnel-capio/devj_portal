@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\LaptopsRequest;
 use App\Mail\Laptops as MailLaptops;
 use App\Models\Employees;
+use App\Models\EmployeesLaptops;
 use App\Models\Laptops;
 use App\Models\Logs;
 use Illuminate\Http\Request;
@@ -93,14 +94,21 @@ class LaptopsController extends Controller
 
     public function details($id){
 
-        $laptopDetails = Laptops::where('id', $id)->first();
+        $laptopDetails = Laptops::where('id', $id)
+                                    ->whereIn('approved_status', [2,4])
+                                    ->first();
+
         abort_if(empty($laptopDetails), 404);
         abort_if(!in_array($laptopDetails['approved_status'], [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]), 403);
+
+        $linkageData = EmployeesLaptops::getLinkageData($id);
 
         return view('laptops.details')->with(['detail' => $laptopDetails,
                                             'detailOnly' => true,
                                             'detailNote' => $this->getDetailNote($laptopDetails),
-                                            'owned' => 1,   //update
+                                            'linkageData' => $linkageData,
+                                            'history' => EmployeesLaptops::getLaptopHistory($id),
+                                            
                                         ]);
 
     }
