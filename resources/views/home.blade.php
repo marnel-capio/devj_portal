@@ -1,10 +1,10 @@
 @include('header')
 
 @include('headerMenu')
-<div class="container container-req-table  mt-3 ms-4 mb-5">
+<div class="container container-req-table  mt-4 ms-4 mb-4">
   @if(auth()->user()->roles == 2)
 
-	<div class="row-req-table row">
+	<div class="row-req-table row group-category-home p-2">
 	    <div class="col">
 	      <h3 class="mb-4"> Employee Request </h3>
 			<table id="employee-request" class="table table-striped request-table" >
@@ -54,22 +54,19 @@
 	    </div>
 	</div>
 	@endif
-
-</div>
-<div class="container container-req-table  mt-3 ms-4 mb-5">
-	<div class="row-req-table row">
+	<div class="row-req-table row group-category-home p-2"> 
 		<div class="col">
 		  <h3 class="mb-4"> Laptop Request </h3>
 			<table id="laptop-request" class="table table-striped request-table" >
 				<thead>
 					<tr>
-						<th>Tag Number</th>
-						<th>PEZA Form Number</th>
-						<th>PEZA Permit Number</th>
-						<th>Make</th>
-						<th>Model</th>
-						<th>Status</th>
-						<th>Action</th>
+						<th style="width:18%">Tag Number</th>
+						<th style="width:18%">PEZA Form Number</th>
+						<th style="width:18%">PEZA Permit Number</th>
+						<th style="width:12%">Make</th>
+						<th style="width:12%">Model</th>
+						<th style="width:11%">Status</th>
+						<th style="width:11%">Action</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -88,20 +85,17 @@
 			</table>
 		</div>
 	</div>
-</div>
-
-<div class="container container-req-table  mt-3 ms-4 mb-5">
-	<div class="row-req-table row">
+	<div class="row-req-table row group-category-home p-2">
 		<div class="col">
 		  <h3 class="mb-4"> Laptop Link Request </h3>
 			<table id="laptop-link-request" class="table table-striped request-table" >
 				<thead>
 					<tr>
-						<th>Employee Name</th>
-						<th>Tag Number</th>
-						<th>Make</th>
-						<th>Model</th>
-						<th>Action</th>
+						<th style="width:26%">Employee Name</th>
+						<th style="width:21%">Tag Number</th>
+						<th style="width:21%">Make</th>
+						<th style="width:21%">Model</th>
+						<th style="width:11%">Action</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -119,7 +113,6 @@
 		</div>
 	</div>
 </div>
-
 
 
 @include('footer')
