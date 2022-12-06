@@ -63,7 +63,7 @@ Route::middleware(['auth', 'web'])->group(function(){
         Route::get('/create/{rejectCode?}', 'create')->name('laptops.create');
         Route::post('/regist', 'regist')->name('laptops.regist');
         Route::get('/{id}', 'details')->name('laptops.details');
-        Route::get('/{id}/edit', 'edit')->name('laptops.edit');
+        Route::get('/{id}/request', 'request')->name('laptops.request');
 
          Route::get('/regist/complete', function(){
             return view('laptops.complete');

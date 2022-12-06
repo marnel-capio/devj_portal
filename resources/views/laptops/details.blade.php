@@ -16,7 +16,7 @@
         </div>
         <div class="">
             @if ($detailOnly && !empty($detail) && $detail['approved_status'] == config('constants.APPROVED_STATUS_APPROVED'))
-            <a href="{{ route('laptops.edit', ['id' => $detail->id]) }}" class="btn btn-primary  me-1" type="button">Edit</a>
+            <button class="btn btn-primary  me-1" type="button">Edit</button>
             @endif
         </div>
     </div>

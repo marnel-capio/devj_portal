@@ -113,6 +113,10 @@ class LaptopsController extends Controller
 
     }
 
+    public function request($id){
+        dd("request page for " .$id);
+    }
+
     private function getDetailNote($details){
         $note = '';
         if($details['status']){

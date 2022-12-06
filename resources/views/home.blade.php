@@ -52,8 +52,74 @@
 		        </tbody>
 		    </table>
 	    </div>
+	</div>
 	@endif
+
 </div>
+<div class="container container-req-table  mt-3 ms-4 mb-5">
+	<div class="row-req-table row">
+		<div class="col">
+		  <h3 class="mb-4"> Laptop Request </h3>
+			<table id="laptop-request" class="table table-striped request-table" >
+				<thead>
+					<tr>
+						<th>Tag Number</th>
+						<th>PEZA Form Number</th>
+						<th>PEZA Permit Number</th>
+						<th>Make</th>
+						<th>Model</th>
+						<th>Status</th>
+						<th>Action</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach ($laptopRequest as $request)
+						<tr>
+							<td>{{ $request['tag_number'] }}</a></td>
+							<td>{{ $request['peza_form_number'] }}</td>
+							<td>{{ $request['peza_permit_number'] }}</td>
+							<td>{{ $request['laptop_make'] }}</td>
+							<td>{{ $request['laptop_model'] }}</td>
+							<td>{{ $request['status'] }}</td>
+							<td><a href="{{ route('laptops.request', ['id' => $request['id']]) }}"><i class="bi bi-eye"></i>View</a></td>
+						</tr>
+					@endforeach
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<div class="container container-req-table  mt-3 ms-4 mb-5">
+	<div class="row-req-table row">
+		<div class="col">
+		  <h3 class="mb-4"> Laptop Link Request </h3>
+			<table id="laptop-link-request" class="table table-striped request-table" >
+				<thead>
+					<tr>
+						<th>Employee Name</th>
+						<th>Tag Number</th>
+						<th>Make</th>
+						<th>Model</th>
+						<th>Action</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach ($laptopLinkRequest as $request)
+						<tr>
+							<td>{{ $request['employee_name'] }}</a></td>
+							<td>{{ $request['tag_number'] }}</a></td>
+							<td>{{ $request['laptop_make'] }}</td>
+							<td>{{ $request['laptop_model'] }}</td>
+							<td><a href="{{ route('laptops.details', ['id' => $request['laptop_id']]) }}"><i class="bi bi-eye"></i>View</a></td>
+						</tr>
+					@endforeach
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
 
 
 @include('footer')

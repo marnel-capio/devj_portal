@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class EmployeesLaptops extends Model
 {
@@ -74,5 +75,31 @@ class EmployeesLaptops extends Model
 						->orderBy('employees_laptops.surrender_date', 'asc')
 						->get()
 						->toArray();
+    }
+
+    static function getLinkLaptopRequest(){
+        $query = self::selectRaw('
+                                employees.id as employee_id,
+                                concat(employees.last_name, ", ", employees.first_name) as employee_name,
+                                laptops.id as laptop_id,
+                                laptops.tag_number,
+                                laptops.laptop_make,
+                                laptops.laptop_model,
+                                employees_laptops.id
+                            ')
+                        ->leftJoin('laptops', 'laptops.id', 'employees_laptops.laptop_id')
+                        ->leftJoin('employees', 'employees.id', 'employees_laptops.employee_id')
+                        ->where('laptops.approved_status', config('constants.APPROVED_STATUS_APPROVED'))
+                        ->where('laptops.status', 1)
+                        ->where('employees.active_status', 1)
+                        ->whereIn('employees_laptops.approved_status', [config('constants.APPROVED_STATUS_PENDING'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+                        ->whereIn('employees.approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
+
+        if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE')){
+            //get all laptop request and laptop linkage requests of the current user only
+            $query->where('employees_laptops.employee_id', Auth::user()->id);
+        }
+
+        return $query->get()->toArray();
     }
 }

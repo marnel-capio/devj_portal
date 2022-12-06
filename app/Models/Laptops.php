@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Laptops extends Model
 {
@@ -86,8 +87,30 @@ class Laptops extends Model
                         ->orWhere('laptop_model', 'LIKE', "%{$keyword}%");
             });
         }
+        
+        $query->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+                ->orderBy('tag_number', 'asc');
 
-        $query->orderBy('tag_number', 'asc');
+        return $query->get()->toArray();
+    }
+
+    static function getLaptopRequest(){
+        $query = self::selectRaw('
+                                id,
+                                tag_number,
+                                peza_form_number,
+                                peza_permit_number,
+                                laptop_make,
+                                laptop_model,
+                                CASE WHEN status=1 THEN "Active" ELSE "Inactive" END as status
+                            ')
+                        ->whereIn('approved_status', [config('constants.APPROVED_STATUS_PENDING'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
+
+
+        if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE')){
+            //get all laptop request and laptop linkage requests of the current user only
+            $query->where('updated_by', Auth::user()->id);
+        }
 
         return $query->get()->toArray();
     }
