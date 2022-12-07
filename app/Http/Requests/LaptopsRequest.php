@@ -3,7 +3,9 @@
 namespace App\Http\Requests;
 
 use App\Models\Laptops;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class LaptopsRequest extends FormRequest
 {
@@ -41,6 +43,24 @@ class LaptopsRequest extends FormRequest
             'tag_number.unique' => "The tag number is already registered.",
         ];
     }
+
+    /**
+     * Returns error in json format
+     * For laptop detail update
+     *
+     * @param Validator $validator
+     * @return void
+     */
+    public function failedValidation(Validator $validator){
+        if($this->has('isUpdate') && $this->input('isUpdate')){
+            throw new HttpResponseException(response()->json([
+                'success' => false,
+                'message' => 'Validation errors',
+                'data' => $validator->errors()
+            ]));
+        }
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -49,7 +69,6 @@ class LaptopsRequest extends FormRequest
     public function rules()
     {   
         $rules = [
-            'tag_number' => 'required|unique:laptops,tag_number',
             'peza_form_number' => 'required',
             'peza_permit_number' => 'required',
             'laptop_make' => 'required',
@@ -60,26 +79,34 @@ class LaptopsRequest extends FormRequest
             'remarks' => 'max:1024',
         ];
 
-        if(strpos($this->header('referer'), route('laptops.create')) !== FALSE && !empty($this->input('id'))){
-            $referer = $this->header('referer');
-            $rejectCode = substr($referer, strripos($referer, '/') + 1);
-            $rules['tag_number'] = ['required', 
-                function($attribute, $value, $fail) use ($rejectCode){
-                    $detail = Laptops::where('tag_number', $value)->get()->toArray();
-                    if(!empty($detail) && $detail[0]['reject_code'] != $rejectCode){
-                        $fail("The tag number is already registered.");
+        if(strpos($this->header('referer'), route('laptops.create')) !== FALSE){
+
+            $rules['tag_number'] = 'required|unique:laptops,tag_number';
+
+            if(!empty($this->input('id'))){
+                $referer = $this->header('referer');
+                $rejectCode = substr($referer, strripos($referer, '/') + 1);
+                $rules['tag_number'] = ['required', 
+                    function($attribute, $value, $fail) use ($rejectCode){
+                        $detail = Laptops::where('tag_number', $value)->get()->toArray();
+                        if(!empty($detail) && $detail[0]['reject_code'] != $rejectCode){
+                            $fail("The tag number is already registered.");
+                        }
                     }
-                }
-            ];
-            $rules['id'] = [
-                function($attribute, $value, $fail) use ($rejectCode){
-                    $detail = Laptops::where('id', $value)->get()->toArray();
-                    if(!empty($detail) && $detail[0]['reject_code'] != $rejectCode){
-                        $fail("Reject code does not match the laptop id.");
+                ];
+                
+                $rules['id'] = [
+                    function($attribute, $value, $fail) use ($rejectCode){
+                        $detail = Laptops::where('id', $value)->get()->toArray();
+                        if(!empty($detail) && $detail[0]['reject_code'] != $rejectCode){
+                            $fail("Reject code does not match the laptop id.");
+                        }
                     }
-                }
-            ];
+                ];
+            }
         }
+
+
 
         return $rules;
     }

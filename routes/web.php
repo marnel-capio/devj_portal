@@ -65,7 +65,7 @@ Route::middleware(['auth', 'web'])->group(function(){
         Route::get('/{id}', 'details')->name('laptops.details');
         Route::get('/{id}/request', 'request')->name('laptops.request');
 
-         Route::get('/regist/complete', function(){
+        Route::get('/regist/complete', function(){
             return view('laptops.complete');
         })->name('laptops.regist.complete');
     });

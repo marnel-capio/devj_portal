@@ -32,7 +32,7 @@
                 <div class="row mb-2 ps-5 pe-3">
                     <div class="col-md-3 col-6 g-3 form-floating">
                         <input type="text" name="peza_permit_number" class="form-control" id="permit-number" placeholder="Permit Number" value="{{ old('peza_permit_number', !empty($laptop) ? $laptop->peza_permit_number : '') }}" required>
-                        <label for="form-number" class="text-center">Permit Number</label>
+                        <label for="permit-number" class="text-center">Permit Number</label>
                         @if ($errors->has('peza_permit_number'))
                         <p class="text-danger">{{ $errors->first('peza_permit_number') }}</p>
                         @endif
@@ -87,6 +87,9 @@
                     <div class="col-md-6 g-3">
                         <textarea class="form-control" name="remarks"  rows="3" id="remarks" required>{{ old('remarks', !empty($laptop) ? $laptop->remarks : '') }}</textarea>
                     </div>
+                    @if ($errors->has('remarks'))
+                    <p class="text-danger">{{ $errors->first('remarks') }}</p>
+                    @endif
                 </div>
             </div>
             <div class="text-center p-2">

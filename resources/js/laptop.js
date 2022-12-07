@@ -1,4 +1,5 @@
 const FILTER_LAPTOP_LINK = '/devj_portal/public/api/laptops/search';
+const VALIDATE_UPDATE_LINK = '/devj_portal/public/api/laptops/update';
 
 $(document).ready(function(){
 
@@ -56,4 +57,57 @@ $(document).ready(function(){
             console.log('error');
         });
     }
+
+    $("#edit-form").submit(function(e){
+        var formData = $("#edit-form").serializeArray();
+        var arrData = [];
+        formData.forEach(function(data){
+            arrData[data['name']] = data['value'];
+        });
+        // delete arrData['_token'];
+        var jsonData = JSON.stringify(Object.assign({}, arrData));
+        jsonData = JSON.parse(jsonData);
+
+        console.log(jsonData);
+        
+        $.ajax({
+            type: "POST",
+            url: VALIDATE_UPDATE_LINK,
+            data: jsonData,
+            dataType: "json",
+            encode: true,
+        })
+        .done(function(data){
+            for(var key in jsonData){
+                $("#" + key + "-error").empty();
+            }
+            if(!data.success){
+                //display errors
+                errors = data.data;
+                for(var key in errors){
+                    console.log("#" + key + "-error")
+                    $("#" + key + "-error").html(errors[key]);
+                }
+            }else{
+                location.reload();
+            }
+
+        }).fail(function(){
+            console.log('error');
+        })
+
+
+		e.preventDefault();
+        
+    });
+
+    var linkRequestTable = $("#link-req-tbl").DataTable({
+		"stateSave": true,
+		"pageLength": 10
+	});
+
+	var employeeHistoryTable = $("#emp-hist-tbl").DataTable({
+		"stateSave": true,
+		"pageLength": 10
+	});
 });

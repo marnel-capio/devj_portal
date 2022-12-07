@@ -14,6 +14,7 @@ class Laptops extends Mailable
     protected $mailType;
     protected $mailData;
     const MAIL_1 = '【DEV J PORTAL】Laptop Registation';
+    const MAIL_4 = '【DEV J PORTAL】Laptop Detail Update';
 
 
     

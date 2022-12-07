@@ -113,6 +113,11 @@ class LaptopsController extends Controller
 
     }
 
+        
+    public function update(Request $request){
+        dd($request);
+    }
+
     public function request($id){
         dd("request page for " .$id);
     }

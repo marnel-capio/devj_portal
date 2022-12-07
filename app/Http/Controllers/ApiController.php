@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ChangePassword;
+use App\Http\Requests\LaptopsRequest;
 use App\Http\Requests\LinkLaptop;
 use App\Http\Requests\LinkProject;
 use App\Mail\Employee;
+use App\Mail\Laptops as MailLaptops;
 use App\Models\Employees;
 use App\Models\EmployeesLaptops;
 use App\Models\EmployeesProjects;
@@ -211,6 +213,77 @@ class ApiController extends Controller
                                 'success' => true,
                                 'update' => $laptopList
         ]);
+    }
+
+    public function updateLaptopDetails(LaptopsRequest $request){
+        $request->validated();
+
+        $updateData = $request->except(['_token', 'isUpdate', 'edit_id']);
+        if(!isset($updateData)){
+            $updateData['status'] = 0;
+        }
+        $id = $request->input('edit_id');
+        $originalData = Laptops::where('id', $id)->first();
+        $dbReadyData = [];
+        foreach($updateData as $key => $val){
+            if($originalData[$key] != $val){
+                $dbReadyData[$key] = $val;
+            }
+        }
+        if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
+
+            //update data in DB
+            $dbReadyData['updated_by'] = Auth::user()->id;
+            $dbReadyData['approved_status'] = config('constants.APPROVED_STATUS_APPROVED');
+            $dbReadyData['approved_by'] = Auth::user()->id;
+            Laptops::where('id', $id)
+                    ->update($dbReadyData);
+
+            //format log
+            $log = '';
+            foreach($dbReadyData as $key => $val){
+                $log .= "{$key}: {$originalData[$key]} > {$val}, ";
+            }
+            $log = rtrim($log, ", ");
+
+            Logs::createLog('Laptop', $log);
+
+            session(['l_alert'=> 'Updated successfully.']);
+        }else{
+            Laptops::where('id', $id)
+                    ->update([
+                        'approved_status' => config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE'),
+                        'update_data' => json_encode($dbReadyData, true),
+                        'updated_by' => Auth::user()->id
+                    ]);
+            Logs::createLog('Laptop', 'Laptop Update: ' .json_encode($dbReadyData));
+
+            //send mail
+            $recipients = Employees::getEmailOfManagers();
+
+            $mailData = [
+                'link' => "/laptops/{$id}/request",
+                'currentUserId' => Auth::user()->id,
+                'module' => "Laptop",
+            ];
+
+            $this->sendMailForLaptop($recipients, $mailData, config('constants.MAIL_LAPTOP_DETAIL_UPDATE_REQUEST'));
+
+            session(['l_alert'=> 'Request for Laptop Detail Update has been sent.']);
+        }
+        return response()->json([
+            'success' => true,
+        ]);
+    }
+
+    /**
+     * send email
+     * @param array $mailData
+     * @param int $mailType
+     * @return void
+     */
+    private function sendMailForLaptop($recipients, $mailData, $mailType){
+        Mail::to($recipients)->send(new MailLaptops($mailData, $mailType));
     }
 
 }
