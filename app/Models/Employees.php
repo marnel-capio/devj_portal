@@ -32,4 +32,14 @@ class Employees extends Authenticatable
                             ->toArray();
         
     }
+
+    static function getEmployeeNameList(){
+        return self::selectRaw('id, CONCAT(last_name, ", ", first_name) AS employee_name')
+                    ->where('active_status', 1)
+                    ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+                    ->orderBy('last_name', 'asc')
+                    ->orderBy('first_name', 'asc')
+                    ->get()
+                    ->toArray();
+    }
 }

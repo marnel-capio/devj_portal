@@ -7,6 +7,7 @@ use App\Http\Requests\ChangePassword;
 use App\Http\Requests\LaptopsRequest;
 use App\Http\Requests\LinkLaptop;
 use App\Http\Requests\LinkProject;
+use App\Http\Requests\LaptopLinkage;
 use App\Mail\Employee;
 use App\Mail\Laptops as MailLaptops;
 use App\Models\Employees;
@@ -240,7 +241,7 @@ class ApiController extends Controller
                     ->update($dbReadyData);
 
             //format log
-            $log = '';
+            $log = 'Laptop Update: ';
             foreach($dbReadyData as $key => $val){
                 $log .= "{$key}: {$originalData[$key]} > {$val}, ";
             }
@@ -248,7 +249,7 @@ class ApiController extends Controller
 
             Logs::createLog('Laptop', $log);
 
-            session(['l_alert'=> 'Updated successfully.']);
+            session(['l_alert'=> 'laptop detail was updated successfully.']);
         }else{
             Laptops::where('id', $id)
                     ->update([
@@ -271,6 +272,147 @@ class ApiController extends Controller
 
             session(['l_alert'=> 'Request for Laptop Detail Update has been sent.']);
         }
+        return response()->json([
+            'success' => true,
+        ]);
+    }
+
+    public function updateLaptopLinkage(LaptopLinkage $request){
+        $request->validated();
+        
+        $updateData = $request->except(['_token', 'id']);
+        $id = $request->input('id');
+
+        $originalData = EmployeesLaptops::where('id', $id)->first();
+        $dbReadyData = [];
+        foreach($updateData as $key => $val){
+            if($originalData[$key] != $val){
+                $dbReadyData[$key] = $val;
+            }
+        }
+
+        if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
+
+            //update data in DB
+            $dbReadyData['updated_by'] = Auth::user()->id;
+            $dbReadyData['approved_status'] = config('constants.APPROVED_STATUS_APPROVED');
+            $dbReadyData['approved_by'] = Auth::user()->id;
+            EmployeesLaptops::where('id', $id)
+                    ->update($dbReadyData);
+
+            //format log
+            $log = 'Laptop Linkage Update:';
+            foreach($dbReadyData as $key => $val){
+                $log .= "{$key}: {$originalData[$key]} > {$val}, ";
+            }
+            $log = rtrim($log, ", ");
+
+            Logs::createLog('Laptop', $log);
+
+            $recipient = Employees::where('id', $originalData['employee_id'])->first();
+
+            if($recipient->id != Auth::user()->id){
+                //send mail
+                $mailData = [
+                    'link' => "/laptops/{$id}",
+                    'firstName' => $recipient['first_name'],
+                    'currentUserId' => Auth::user()->id,
+                    'module' => "Laptop",
+                ];
+    
+                $this->sendMailForLaptop($recipient['email'], $mailData, config('constants.MAIL_LAPTOP_LINKAGE_UPDATE_BY_MANAGER_NOTIF'));
+            }
+
+
+            session(['ul_alert'=> 'Laptop linkage was updated successfully.']);
+        }else{
+            EmployeesLaptops::where('id', $id)
+                    ->update([
+                        'approved_status' => config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE'),
+                        'update_data' => json_encode($dbReadyData, true),
+                        'updated_by' => Auth::user()->id
+                    ]);
+            Logs::createLog('Laptop', 'Latop Linkage Update:: ' .json_encode($dbReadyData));
+
+            //send mail
+            $recipients = Employees::getEmailOfManagers();
+
+            $mailData = [
+                'link' => "/laptops/{$id}",
+                'currentUserId' => Auth::user()->id,
+                'module' => "Laptop",
+            ];
+
+            $this->sendMailForLaptop($recipients, $mailData, config('constants.MAIL_LAPTOP_LINKAGE_UPDATE_BY_NON_MANAGER_REQUEST'));
+
+            session(['ul_alert'=> 'Request for Laptop Linkage Update has been sent.']);
+        }
+        
+
+        return response()->json([
+            'success' => true,
+        ]);
+    }
+
+    public function registLaptopLinkage(LaptopLinkage $request){
+        $request->validated();
+        
+        $requestData = $request->except(['_token']);
+        $laptopData = Laptops::where('id', $requestData['id'])->first();
+        $employeeData = Employees::where('id', $requestData['assignee'])->first();
+
+        $insertData = [
+            'laptop_id' => $requestData['id'],
+            'employee_id' => $requestData['assignee'],
+            'brought_home_flag' => $requestData['brought_home_flag'],
+            'vpn_flag' => $requestData['vpn_flag'],
+            'created_by' => Auth::user()->id,
+            'updated_by' => Auth::user()->id,
+        ];
+
+        if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
+
+            //add data
+            $insertData['approved_status'] = config('constants.APPROVED_STATUS_APPROVED');
+            $insertData['approved_by'] = Auth::user()->id;
+            EmployeesLaptops::create($insertData);
+
+            Logs::createLog('Laptop', "{$laptopData['tag_number']} laptop is linked to {$employeeData['last_name']}, {$employeeData['first_name']}");
+
+            if($employeeData->id != Auth::user()->id){
+                //send mail
+                $mailData = [
+                    'link' => "/laptops/{$requestData['id']}",
+                    'firstName' => $employeeData['first_name'],
+                    'currentUserId' => Auth::user()->id,
+                    'module' => "Laptop",
+                ];
+    
+                $this->sendMailForLaptop($employeeData['email'], $mailData, config('constants.MAIL_LAPTOP_NEW_LINKAGE_BY_MANAGER_NOTIF'));
+            }
+
+            session(['ll_alert'=> 'Laptop was linked successfully.']);
+        }else{
+            //add data
+            $insertData['approved_status'] = config('constants.APPROVED_STATUS_PENDING');
+            EmployeesLaptops::create($insertData);
+
+            Logs::createLog('Laptop', "{$employeeData['last_name']}, {$employeeData['first_name']} requests to use {$laptopData['tag_number']} laptop");
+
+            //send mail
+            $recipients = Employees::getEmailOfManagers();
+
+            $mailData = [
+                'link' => "/laptops/{$requestData['id']}",
+                'currentUserId' => Auth::user()->id,
+                'module' => "Laptop",
+            ];
+
+            $this->sendMailForLaptop($recipients, $mailData, config('constants.MAIL_LAPTOP_NEW_LINKAGE_BY_NON_MANAGER_REQUEST'));
+
+            session(['ul_alert'=> 'Request for Laptop Linkage has been sent.']);
+        }
+
         return response()->json([
             'success' => true,
         ]);

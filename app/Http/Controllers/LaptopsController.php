@@ -101,22 +101,27 @@ class LaptopsController extends Controller
         abort_if(empty($laptopDetails), 404);
         abort_if(!in_array($laptopDetails['approved_status'], [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]), 403);
 
-        $linkageData = EmployeesLaptops::getLinkageData($id);
+    $linkageData = EmployeesLaptops::getLinkageData($id);
+
+        if(in_array(Auth::user()->roles, [config('constants.ADMIN_ROLE_VALUE'), config('constants.MANAGER_ROLE_VALUE')])){
+            $employeeDropdown = Employees::getEmployeeNameList();
+        }else{
+            $employeeDropdown = [[
+                'id' => Auth::user()->id,
+                'employee_name' => Auth::user()->last_name .", " .Auth::user()->first_name,
+            ]];
+        }
 
         return view('laptops.details')->with(['detail' => $laptopDetails,
                                             'detailOnly' => true,
                                             'detailNote' => $this->getDetailNote($laptopDetails),
                                             'linkageData' => $linkageData,
                                             'history' => EmployeesLaptops::getLaptopHistory($id),
-                                            
+                                            'employeeDropdown' => $employeeDropdown,
                                         ]);
 
     }
 
-        
-    public function update(Request $request){
-        dd($request);
-    }
 
     public function request($id){
         dd("request page for " .$id);

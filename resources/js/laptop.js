@@ -1,5 +1,7 @@
 const FILTER_LAPTOP_LINK = '/devj_portal/public/api/laptops/search';
-const VALIDATE_UPDATE_LINK = '/devj_portal/public/api/laptops/update';
+const UPDATE_LINK = '/devj_portal/public/api/laptops/update';
+const UPDATE_LINKAGE_LINK = '/devj_portal/public/api/laptops/updateLinkage';
+const REGISTER_LINKAGE_LINK = '/devj_portal/public/api/laptops/registLinkage';
 
 $(document).ready(function(){
 
@@ -64,7 +66,7 @@ $(document).ready(function(){
         formData.forEach(function(data){
             arrData[data['name']] = data['value'];
         });
-        // delete arrData['_token'];
+
         var jsonData = JSON.stringify(Object.assign({}, arrData));
         jsonData = JSON.parse(jsonData);
 
@@ -72,7 +74,7 @@ $(document).ready(function(){
         
         $.ajax({
             type: "POST",
-            url: VALIDATE_UPDATE_LINK,
+            url: UPDATE_LINK,
             data: jsonData,
             dataType: "json",
             encode: true,
@@ -85,8 +87,7 @@ $(document).ready(function(){
                 //display errors
                 errors = data.data;
                 for(var key in errors){
-                    console.log("#" + key + "-error")
-                    $("#" + key + "-error").html(errors[key]);
+                    $("#" + key + "-error").html(errors[key][0]);
                 }
             }else{
                 location.reload();
@@ -103,11 +104,106 @@ $(document).ready(function(){
 
     var linkRequestTable = $("#link-req-tbl").DataTable({
 		"stateSave": true,
-		"pageLength": 10
+        "bFilter": false,
+		"pageLength": 10,
+		"oLanguage": {
+	        "sEmptyTable": "No Data"
+	    }
 	});
+
+    $("#update-linkage-form").submit(function(e){
+        var formData = $("#update-linkage-form").serializeArray();
+        var arrData = [];
+        formData.forEach(function(data){
+            arrData[data['name']] = data['value'];
+        });
+
+        arrData['brought_home_flag'] = $("#ul-brought-home").is(':checked') ? 1 : 0;
+        arrData['vpn_flag'] = $("#ul-vpn").is(':checked') ? 1 : 0;
+        arrData['surrender_flag'] = $("#ul-surrender").is(':checked') ? 1 : 0;
+
+        var jsonData = JSON.stringify(Object.assign({}, arrData));
+        jsonData = JSON.parse(jsonData);
+        
+        $.ajax({
+            type: "POST",
+            url: UPDATE_LINKAGE_LINK,
+            data: jsonData,
+            dataType: "json",
+            encode: true,
+        })
+        .done(function(data){
+            for(var key in jsonData){
+                $("#ul-" + key + "-error").empty();
+            }
+            if(!data.success){
+                //display errors
+                errors = data.data;
+                for(var key in errors){
+                    $("#ul-" + key + "-error").html(errors[key][0]).addClass("text-danger");
+                }
+            }else{
+                location.reload();
+            }
+
+        }).fail(function(){
+            console.log('error');
+        })
+
+
+		e.preventDefault();
+    });
+
+    $("#link-form").submit(function(e){
+        var formData = $("#link-form").serializeArray();
+        var arrData = [];
+        formData.forEach(function(data){
+            arrData[data['name']] = data['value'];
+        });
+
+        arrData['brought_home_flag'] = $("#ll-brought-home").is(':checked') ? 1 : 0;
+        arrData['vpn_flag'] = $("#ll-vpn").is(':checked') ? 1 : 0;
+
+        var jsonData = JSON.stringify(Object.assign({}, arrData));
+        jsonData = JSON.parse(jsonData);
+        console.log(jsonData);
+        
+        $.ajax({
+            type: "POST",
+            url: REGISTER_LINKAGE_LINK,
+            data: jsonData,
+            dataType: "json",
+            encode: true,
+        })
+        .done(function(data){
+            for(var key in jsonData){
+                $("#ll-" + key + "-error").empty();
+            }
+            if(!data.success){
+                //display errors
+                errors = data.data;
+                for(var key in errors){
+                    console.log("#ll-" + key + "-error")
+                    $("#ll-" + key + "-error").html(errors[key][0]).addClass("text-danger");
+                }
+            }else{
+                location.reload();
+            }
+
+        }).fail(function(){
+            console.log('error');
+        })
+
+
+		e.preventDefault();
+    });
 
 	var employeeHistoryTable = $("#emp-hist-tbl").DataTable({
 		"stateSave": true,
-		"pageLength": 10
+		"pageLength": 10,
+        "bFilter": false,
+        "oLanguage": {
+	        "sEmptyTable": "No Data"
+	    }
 	});
 });

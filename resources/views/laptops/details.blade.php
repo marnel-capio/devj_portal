@@ -10,9 +10,9 @@
 <div class="alert alert-success" role="alert">
     {{session()->pull('l_alert')}}
 </div>
-<div class="container ps-md-3 pe-md-3 pt-2">
+<div class="container-md ps-md-3 pe-md-3 pt-2">
 @else
-<div class="container ps-md-3 pe-md-3 pt-5">
+<div class="container-md ps-md-3 pe-md-3 pt-5">
 @endif
     <div class="d-flex justify-content-between mb-2">
         <div class="text-primary d-flex align-items-center">
@@ -201,15 +201,152 @@
             @if (!empty($linkageData))
                 @if ($linkageData['approved_status'] == config('constants.APPROVED_STATUS_APPROVED'))
                     <button class="btn btn-success" data-bs-target="#updateLinkageModal" data-bs-toggle="modal">Update</button>
+                    <div class="modal modal fade" tabindex='-1' id="updateLinkageModal">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">
+                                        Update Laptop Details
+                                    </h5>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="p-2">
+                                        Current Assignee: {{ $linkageData->employee_name }}
+                                        <form action="#" id="update-linkage-form">
+                                            @csrf
+                                            <span id="ul-success-msg"></span>
+                                            <input hidden type="text" name="id" value="{{ $linkageData->id }}">
+                                            <div class="row mb-2 ">
+                                                <div class="col-6 g-3">
+                                                    <div class="form-check">
+                                                        <label for="ul-brought-home" class="form-check-label">Brought Home?</label>
+                                                        <input type="checkbox" class="form-check-input" name="brought_home_flag" id="ul-brought-home" value="1" {{ $linkageData->brought_home_flag ? "checked" : "" }}>
+                                                    </div>  
+                                                </div>
+                                                <div class="col-6 g-3">
+                                                    <div class="form-check">
+                                                        <label for="ul-vpn" class="form-check-label">VPN Access?</label>
+                                                        <input type="checkbox" class="form-check-input" name="vpn_flag" id="ul-vpn" value="1" {{ $linkageData->vpn_flag ? "checked" : "" }}>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-2">
+                                                <div class="col-6 g-3">
+                                                    <div class="d-flex align-items-center" style="height: 100%">
+                                                        <div class="form-check">
+                                                            <label for="ul-surrender" class="form-check-label">Surrender</label>
+                                                            <input type="checkbox" class="form-check-input" name="surrender_flag" id="ul-surrender" value="1" >
+                                                        </div>  
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 g-3 form-floating">
+                                                    <input type="date" class="form-control" name="surrender_date" id="ul-surrender-date" placeholder="Surrender Date" value="" pattern="\d{4}-\d{2}-\d{2}">
+                                                    <label  class="text-center" for="ul-surrender-date">Surrender Date</label>
+                                                </div>
+                                                <span id="ul-surrender_date-error"></p>
+                                            </div>
+                                            <div class="row">
+                                                <h6>Remarks</h6>
+                                            </div>
+                                            <div class="row text-start">
+                                                <div class="gs-3 ge-3 gt-1">
+                                                    <textarea name="remarks" id="ul-remarks" rows="3" class="form-control">{{ $linkageData->remarks }}</textarea>
+                                                    <span id="ul-remarks-error"></span>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button class="btn btn-primary" type="submit"  id="ul-submit-btn" form="update-linkage-form">Update</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 @endif
             @else
                 <button class="btn btn-primary" data-bs-target="#newLinkageModal" data-bs-toggle="modal">Link</button>
+                <div class="modal modal fade" tabindex='-1' id="newLinkageModal">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">
+                                    Link Laptop To Employee
+                                </h5>
+                            </div>
+                            <div class="modal-body">
+                                <div class="p-2">
+                                    <form action="#" id="link-form">
+                                        @csrf
+                                        <input hidden type="text" name="id" value="{{ $detail->id }}">
+                                        <span id="ll-id-error"></span>
+                                        <div class="row mb-2">
+                                            <div class="col-12 g-3 form-floating">
+                                            @if (in_array(Auth::user()->roles, [config('constants.ADMIN_ROLE_VALUE'), config('constants.MANAGER_ROLE_VALUE')]))
+                                                <select name="assignee" class="form-select" id="assigneeList" required>
+                                                    <option value=""></option>
+                                            @else
+                                                <select name="assignee" class="form-select" id="assigneeList" readonly>
+                                            @endif
+                                                    @foreach ( $employeeDropdown as $employee )
+                                                        <option value="{{ $employee['id'] }}">{{ $employee['employee_name'] }}</option>
+                                                    @endforeach
+                                                </select>
+                                                <label for="assigneeList" class="text-center">Assignee</label>
+                                                <span id="ll-assignee-error"></span>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2 ">
+                                            <div class="col-6 g-3">
+                                                <div class="form-check">
+                                                    <label for="ll-brought-home" class="form-check-label">Brought Home?</label>
+                                                    <input type="checkbox" class="form-check-input" name="brought_home_flag" id="ll-brought-home" value="1">
+                                                </div>  
+                                            </div>
+                                            <div class="col-6 g-3">
+                                                <div class="form-check">
+                                                    <label for="ll-vpn" class="form-check-label">VPN Access?</label>
+                                                    <input type="checkbox" class="form-check-input" name="vpn_flag" id="ll-vpn" value="1">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row pt-2">
+                                            <h6>Remarks</h6>
+                                        </div>
+                                        <div class="row text-start">
+                                            <div class="gs-3 ge-3 gt-1">
+                                                <textarea name="remarks" id="ll-remarks" rows="3" class="form-control"></textarea>
+                                                <span id="ll-remarks-error"></span>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button class="btn btn-primary" type="submit"  id="ll-submit-btn" form="link-form">Link</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             @endif
         </div>
 
         <div class="ms-3">
+            @if(!empty(session('ul_alert')))
+                <div class="alert alert-success mt-2" role="alert">
+                    {{session()->pull('ul_alert')}}
+                </div>
+            @elseif(!empty(session('ll_alert')))
+                <div class="alert alert-success mt-2" role="alert">
+                    {{session()->pull('ll_alert')}}
+                </div>
+            @endif
             @if (!empty($linkageData) && $linkageData['approved_status'] == config('constants.APPROVED_STATUS_APPROVED'))
-            <div class="text-primary d-flex align-items-center">
+            <div class="text-primary d-flex align-items-center mb-2">
                 <i class="bi bi-info-circle-fill"></i>&nbsp;Only the laptop details of the current owner can be updated
             </div>
             @endif
@@ -248,7 +385,7 @@
 
         <div class="ms-3">
             @if (!empty($linkageData))
-            <div class="text-primary d-flex align-items-center">
+            <div class="text-primary d-flex align-items-center mb-2">
                 <i class="bi bi-info-circle-fill"></i>&nbsp;Once a request has been approved, other request will be rejected
             </div>
             @endif
