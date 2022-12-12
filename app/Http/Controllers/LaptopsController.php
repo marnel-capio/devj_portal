@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\LaptopsExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LaptopsRequest;
 use App\Mail\Laptops as MailLaptops;
@@ -23,6 +24,14 @@ class LaptopsController extends Controller
     }
 
     public function download(){
+
+        Logs::createLog("Employee", "Laptop employee's laptop details");
+        // determine excel type
+        if (in_array(Auth::user()->roles, [config('constants.MANAGER_ROLE_VALUE'), config('constants.ADMIN_ROLE_VALUE')])) {
+            return (new LaptopsExport())->download('DevJ Laptop Details.xlsx');
+        } else {
+            // return (new EmployeesExport($request['searchInput'],$request['searchFilter'],$request['employeeStatus'], 'pdf'))->download('DevJ Contact Details.pdf');
+        }
         dd("coming soon . . .");
     }
 

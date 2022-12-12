@@ -63,9 +63,9 @@
             <input type="text" name="searchInput" class="search-input-text" id="search-input" placeholder="Search">
         </div>
         <div class="col-2">
-            <form action="route('laptops.download')" method="GET">
+            <form action="{{  route('laptops.download')  }}" method="GET">
                 @csrf
-				<button type="submit" class="btn btn-primary float-end" disabled>Download</button>
+				<button type="submit" class="btn btn-primary float-end">Download</button>
             </form>
         </div>
     </div>

@@ -42,4 +42,37 @@ class Employees extends Authenticatable
                     ->get()
                     ->toArray();
     }
+
+    static function getEmployeeLaptopHistory(){
+        return self::selectRaw('
+                                CONCAT(employees.last_name, ", ", employees.first_name) AS employee_name,
+                                CASE WHEN employees_laptops.brought_home_flag THEN "Y" ELSE "N" END AS brought_home_flag,
+                                laptops.peza_form_number,
+                                laptops.peza_permit_number,
+                                CASE WHEN employees_laptops.vpn_flag THEN "Y" ELSE "N" END AS vpn_access,
+                                laptops.tag_number,
+                                laptops.status,
+                                laptops.laptop_make,
+                                laptops.laptop_model,
+                                laptops.laptop_clock_speed,
+                                laptops.laptop_ram,
+                                employees_laptops.remarks,
+                                employees_laptops.updated_by AS last_update,
+                                employees_laptops.surrender_flag
+
+                    ')
+                    ->leftJoin('employees_laptops', 'employees_laptops.employee_id', 'employees.id')
+                    ->leftJoin('laptops', 'employees_laptops.laptop_id', 'laptops.id')
+                    ->where('employees.active_status', 1)
+                    ->whereIn('employees.approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+                    ->where('laptops.status', 1)
+                    ->whereIn('employees_laptops.approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+                    ->orderBy('employees.last_name', 'asc')
+                    ->orderBy('employees.first_name', 'asc')
+                    ->orderBy('employees_laptops.surrender_flag', 'asc')
+                    ->orderBy('employees_laptops.surrender_flag', 'asc')
+                    ->orderBy('employees_laptops.created_by', 'asc')
+                    ->get()
+                    ->toArray();
+    }
 }
