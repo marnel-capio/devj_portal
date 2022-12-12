@@ -206,4 +206,18 @@ $(document).ready(function(){
 	        "sEmptyTable": "No Data"
 	    }
 	});
+
+    //reject modal
+	$("#reject-request-form").submit(function(){
+		if($("#reject-reason").val() == ""){
+			console.log("hello");
+			$("#reject-reason-error").html('The reason field is required.').addClass("text-danger text-start");
+			return false;
+		}else if($("#reject-reason").val().length > 1024){
+			$("#reject-reason-error").html('The reason must not be greater than 1024 characters.').addClass("text-danger text-start");
+			return false;
+		}else {
+			$('#reject-sub').prop('disabled', true);
+		}
+	});
 });

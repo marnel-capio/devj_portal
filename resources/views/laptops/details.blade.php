@@ -20,6 +20,7 @@
             <i class="bi bi-info-circle-fill"></i>&nbsp;{{ $detailNote }}
             @endif
         </div>
+        @if ($detailOnly)
         <div class="">
             @if ($detailOnly && !empty($detail) && $detail['approved_status'] == config('constants.APPROVED_STATUS_APPROVED'))
             <button type="button" class="btn btn-primary  ms-1" data-bs-toggle="modal" data-bs-target="#editLaptopModal" >Edit</button>
@@ -122,7 +123,9 @@
                 </div>
             </div>
             @endif
-        </div>
+        </div> 
+        @endif
+
     </div>
     <div class="pt-4">
         <form action="#">
@@ -195,6 +198,7 @@
             </div>
         </form>
     </div>
+    @if ($detailOnly)
     <div class="group-category mb-4 p-3 rounded-3">
         <div class="d-flex justify-content-between">
             <h4 class="text-start">Employee History</h4>
@@ -406,6 +410,41 @@
             </table>
         </div>
     </div>
+    @endif
+
+    
+    @if (!$detailOnly)
+    <div class="text-center p-4">
+        <button class="btn btn-danger btn-lg mb-5 me-4 rqst-btn"  data-bs-target="#rejectRequestModal" data-bs-toggle="modal" id="reject-request">Reject</button>
+        <button class="btn btn-success btn-lg mb-5 ms-4 rqst-btn" id="approve-request"  form="approve-request-form">Approve</button>
+        <form action="{{ route('laptops.store') }}" method="POST" id="approve-request-form">
+            @csrf
+            <input type="text" name="id" hidden value="{{ $detail->id }}">
+        </form>
+    </div>
+    <div class="modal fade" tabindex="-1" id="rejectRequestModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="p-2">
+                        <form action="{{ route('laptops.reject') }}" method="POST" id="reject-request-form">
+                            @csrf
+                            <input type="text" name="id" value="{{ $detail->id }}" hidden>
+                            <div class="mb-2">
+                                <textarea class="form-control" name="reason" placeholder="Reason" rows="5" id="reject-reason" required></textarea>
+                            </div>
+                            <p id="reject-reason-error"></p>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button class="btn btn-danger" id="reject-sub" type="submit" form="reject-request-form">Reject</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
 </div>
 
 @include('footer')

@@ -10,9 +10,26 @@ Hi {{ $mailData['firstName'] }},<br>
 There has been a request for laptop registration approval. <br>
 Check the request <a href="{{ url($mailData['link']) }}">here</a>.
 
+@elseif ($mailType == config('constants.MAIL_LAPTOP_NEW_REGISTRATION_APPROVAL'))
+Your request for laptop registration has been approved. <br>
+Check the details <a href="{{ url($mailData['link']) }}">here</a>.
+
+@elseif ($mailType == config('constants.MAIL_LAPTOP_NEW_REGISTRATION_REJECTION'))
+Your laptop registration has been rejected because of the reason below: <br>
+{{ $reason }} <br><br>
+You can update the registration <a href="{{ url($mailData['link']) }}">here</a>.
+
 @elseif ($mailType == config('constants.MAIL_LAPTOP_DETAIL_UPDATE_REQUEST'))
 There has been a request for laptop detail update approval. <br>
 Check the request <a href="{{ url($mailData['link']) }}">here</a>.
+
+@elseif ($mailType == config('constants.MAIL_LAPTOP_DETAIL_UPDATE_APPROVAL'))
+Your request for laptop detail update has been approved. <br>
+Check the details <a href="{{ url($mailData['link']) }}">here</a>.
+
+@elseif ($mailType == config('constants.MAIL_LAPTOP_DETAIL_UPDATE_APPROVAL'))
+Your request for laptop detail update has been rejected because of the reason below: <br>
+{{ $reason }}
 
 @elseif ($mailType == config('constants.MAIL_LAPTOP_NEW_LINKAGE_BY_NON_MANAGER_REQUEST'))
 There has been a request for laptop linkage.<br>
