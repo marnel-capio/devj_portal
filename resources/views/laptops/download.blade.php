@@ -1,6 +1,10 @@
 <table>
     <thead>
         <tr>
+            <th></th>
+        </tr>
+        <tr>
+            <th></th>
             <th rowspan="2">Members</th>
             <th rowspan="2">Office PC brought home? (Y/N)</th>
             <th rowspan="1" colspan="2">PEZA</th>
@@ -14,6 +18,7 @@
             <th rowspan="2">Last Updated</th>
         </tr>
         <tr>
+            <th></th>
             <th rowspan="1">Form Number</th>
             <th rowspan="1">Permit Number</th>
         </tr>
@@ -21,6 +26,7 @@
     <tbody>
         @foreach ($detail as $item)
             <tr>
+                <td></td>
                 <td>{{ $item['employee_name'] }}</td>
                 <td>{{ $item['brought_home_flag'] }}</td>
                 <td>{{ $item['peza_form_number'] }}</td>

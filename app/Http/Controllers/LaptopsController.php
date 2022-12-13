@@ -32,7 +32,7 @@ class LaptopsController extends Controller
         } else {
             // return (new EmployeesExport($request['searchInput'],$request['searchFilter'],$request['employeeStatus'], 'pdf'))->download('DevJ Contact Details.pdf');
         }
-        dd("coming soon . . .");
+        
     }
 
     public function create($rejectCode = ""){
