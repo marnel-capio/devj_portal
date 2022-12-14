@@ -405,7 +405,55 @@
                     </tr>
                 </thead>
                 <tbody class="">
-
+                    @foreach ($linkageRequest as $request)
+                        <tr>
+                            <td>{{ $request['employee_name'] }}</td>
+                            <td>{{ $request['vpn_access'] }}</td>
+                            <td>{{ $request['brought_home'] }}</td>
+                            <td>{{ date('Y-m-d', strtotime($request['request_date'])); }}</td>
+                            <td>{{ $request['remarks'] }}</td>
+                            @if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE') )
+                                <td>
+                                    <button class="btn btn-link btn-sm text-decoration-none" data-bs-target="#rejectLinkageRequestModal" data-bs-toggle="modal"><span class="text-danger">Reject</span></button>
+                                    <div class="modal fade" tabindex="-1" id="rejectLinkageRequestModal">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">
+                                                        Reject Laptop Link Request
+                                                    </h5>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="p-2">
+                                                        <form action="{{ route('laptops.rejectLinkage') }}" method="POST" id="reject-request-form">
+                                                            @csrf
+                                                            <input type="text" name="id" value="{{ $detail->id }}" hidden>
+                                                            <div class="mb-2">
+                                                                <textarea class="form-control" name="reason" placeholder="Reason" rows="5" id="reject-reason" required></textarea>
+                                                            </div>
+                                                            <p id="reject-reason-error"></p>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button class="btn btn-danger" id="reject-sub" type="submit" form="reject-request-form">Reject</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    /
+                                    <button class="btn btn-link btn-sm text-decoration-none" form="link-request-form"><span class="text-success">Approve</span></button>
+                                    <form action="{{ route('laptops.storeLinkage') }}" id="link-request-form">
+                                        @csrf
+                                        <input type="text" hidden name="id" value="{{ $request['id'] }}">
+                                    </form>
+                                </td>
+                            @else
+                                <td></td>
+                            @endif
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>
@@ -417,7 +465,7 @@
     <div class="text-center p-4">
         <button class="btn btn-danger btn-lg mb-5 me-4 rqst-btn"  data-bs-target="#rejectRequestModal" data-bs-toggle="modal" id="reject-request">Reject</button>
         <button class="btn btn-success btn-lg mb-5 ms-4 rqst-btn" id="approve-request"  form="approve-request-form">Approve</button>
-        <form action="{{ route('laptops.store') }}" method="POST" id="approve-request-form">
+        <form action="{{ route('laptops.storeLinkage') }}" method="POST" id="approve-request-form">
             @csrf
             <input type="text" name="id" hidden value="{{ $detail->id }}">
         </form>
@@ -425,6 +473,11 @@
     <div class="modal fade" tabindex="-1" id="rejectRequestModal">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        Reject Laptop Request
+                    </h5>
+                </div>
                 <div class="modal-body">
                     <div class="p-2">
                         <form action="{{ route('laptops.reject') }}" method="POST" id="reject-request-form">

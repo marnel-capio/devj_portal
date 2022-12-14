@@ -66,6 +66,8 @@ Route::middleware(['auth', 'web'])->group(function(){
         Route::get('/{id}/request', 'request')->name('laptops.request');
         Route::post('/store', 'store')->name('laptops.store');
         Route::post('/reject', 'reject')->name('laptops.reject');
+        Route::post('/storeLinkage', 'storeLinkage')->name('laptops.storeLinkage');
+        Route::post('/rejectLinkage', 'rejectLinkage')->name('laptops.rejectLinkage');
 
         Route::get('/regist/complete', function(){
             return view('laptops.complete');

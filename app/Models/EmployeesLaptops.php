@@ -85,7 +85,11 @@ class EmployeesLaptops extends Model
                                 laptops.tag_number,
                                 laptops.laptop_make,
                                 laptops.laptop_model,
-                                employees_laptops.id
+                                employees_laptops.id,
+                                employees_laptops.remarks,
+                                case when employees_laptops.vpn_flag then "Y" else "N" end as vpn_access,
+                                case when employees_laptops.brought_home_flag then "Y" else "N" end as brought_home,
+                                employees_laptops.update_time as request_date 
                             ')
                         ->leftJoin('laptops', 'laptops.id', 'employees_laptops.laptop_id')
                         ->leftJoin('employees', 'employees.id', 'employees_laptops.employee_id')
