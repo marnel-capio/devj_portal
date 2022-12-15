@@ -388,7 +388,7 @@
         </div>
 
         <div class="ms-3">
-            @if (!empty($linkageData))
+            @if (empty($linkageData))
             <div class="text-primary d-flex align-items-center mb-2">
                 <i class="bi bi-info-circle-fill"></i>&nbsp;Once a request has been approved, other request will be rejected
             </div>
@@ -427,7 +427,7 @@
                                                     <div class="p-2">
                                                         <form action="{{ route('laptops.rejectLinkage') }}" method="POST" id="reject-request-form">
                                                             @csrf
-                                                            <input type="text" name="id" value="{{ $detail->id }}" hidden>
+                                                            <input type="text" name="id" value="{{ $request['id'] }}" hidden>
                                                             <div class="mb-2">
                                                                 <textarea class="form-control" name="reason" placeholder="Reason" rows="5" id="reject-reason" required></textarea>
                                                             </div>
@@ -444,7 +444,7 @@
                                     </div>
                                     /
                                     <button class="btn btn-link btn-sm text-decoration-none" form="link-request-form"><span class="text-success">Approve</span></button>
-                                    <form action="{{ route('laptops.storeLinkage') }}" id="link-request-form">
+                                    <form action="{{ route('laptops.storeLinkage') }}" id="link-request-form" method="POST">
                                         @csrf
                                         <input type="text" hidden name="id" value="{{ $request['id'] }}">
                                     </form>

@@ -38,6 +38,10 @@
     width: 50%
 }
 
+.w-double{
+    width: 200px;
+}
+
 .group-category{
     background-color: #F2F2F2;
 }

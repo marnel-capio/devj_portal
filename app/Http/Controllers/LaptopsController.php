@@ -33,7 +33,7 @@ class LaptopsController extends Controller
         if (in_array(Auth::user()->roles, [config('constants.MANAGER_ROLE_VALUE'), config('constants.ADMIN_ROLE_VALUE')])) {
             return (new LaptopsExport())->download('DevJ Laptop Details.xlsx');
         } else {
-            return (new LaptopsExport())->download('DevJ Contact Details.pdf');
+            return (new LaptopsExport(true))->download('DevJ Laptop Details.pdf');
         }
     }
 
@@ -125,11 +125,10 @@ class LaptopsController extends Controller
                                             'detailOnly' => true,
                                             'detailNote' => $this->getDetailNote($laptopDetails),
                                             'linkageData' => EmployeesLaptops::getLinkageData($id),
-                                            'linkageRequest' => EmployeesLaptops::getLinkLaptopRequest(),
+                                            'linkageRequest' => EmployeesLaptops::getLinkRequestByLaptop($id),
                                             'history' => EmployeesLaptops::getLaptopHistory($id),
                                             'employeeDropdown' => $employeeDropdown,
                                         ]);
-
     }
 
 
@@ -335,8 +334,8 @@ class LaptopsController extends Controller
 
             Mail::to($recipient->email)->send(new MailLaptops($mailData, config('constants.MAIL_LAPTOP_NEW_LINKAGE_BY_NON_MANAGER_APPROVAL')));
 
-            //reject other linkage request
-
+            //reject other new linkage request
+            $this->rejectOtherLinkageRequest($laptopLinkDetails['laptop_id']);
 
         }else{
             $recipient = Employees::where('id', $laptopLinkDetails->updated_by)->first();
@@ -369,7 +368,31 @@ class LaptopsController extends Controller
     }
 
     private function rejectOtherLinkageRequest($laptop_id){
-        $requests = EmployeesLaptops::getLinkLaptopRequest();
+        $reason = 'Laptop has been assigned to other employee';
+        $pendingApproval = EmployeesLaptops::getLinkRequestByLaptop($laptop_id, config('constants.APPROVED_STATUS_PENDING'));
+        $pendingIds = array_column($pendingApproval, 'id');
+        EmployeesLaptops::whereIn('id', $pendingIds)
+                            ->update([
+                                'approved_status' => config('constants.APPROVED_STATUS_REJECTED'),
+                                'approved_by' => Auth::user()->id,
+                                'updated_by' => Auth::user()->id,
+                                'reasons' => $reason,
+                            ]);
+
+        Logs::createLog('Laptop', 'Laptop Linkage Request Rejection');
+
+        //send mail
+        foreach($pendingApproval as $request => $data){
+            $mailData = [
+                'link' => route('laptops.details', ['id' => $laptop_id]),
+                'reason' => $reason,
+                'firstName' => $data['first_name'],
+                'currentUserId' => Auth::user()->id,
+                'module' => "Laptop",
+            ];
+            Mail::to($data['email'])->send(new MailLaptops($mailData, config('constants.MAIL_LAPTOP_NEW_LINKAGE_BY_NON_MANAGER_REJECTION')));
+        }
+
     }
 
 
@@ -387,14 +410,15 @@ class LaptopsController extends Controller
 
         $laptopLinkDetails = EmployeesLaptops::where('id', $id)->first();
         $reason = $request->input('reason');
+        $rejectCode = uniqid();
 
         if($laptopLinkDetails->approved_status == config('constants.APPROVED_STATUS_PENDING')){
             //approve the  data
             EmployeesLaptops::where('id', $id)
                     ->update([
                         'approved_status' => config('constants.APPROVED_STATUS_REJECTED'),
-                        'reject_code' => uniqid(),
-                        'reason' => $reason, 
+                        'reject_code' => $rejectCode,
+                        'reasons' => $reason, 
                         'updated_by' => Auth::user()->id,
                         'approved_by' => Auth::user()->id,
                     ]);
@@ -406,7 +430,7 @@ class LaptopsController extends Controller
             $recipient = Employees::where('id', $laptopLinkDetails->created_by)->first();
 
             $mailData = [
-                'link' => route('laptops.details', ['id' => $laptopLinkDetails->laptop_id]),
+                'link' => route('laptops.details', ['id' => $laptopLinkDetails->laptop_id]) .$rejectCode,
                 'reason' => $reason,
                 'firstName' => $recipient->first_name,
                 'currentUserId' => Auth::user()->id,
@@ -422,6 +446,7 @@ class LaptopsController extends Controller
             $update = json_decode($laptopLinkDetails->update_data, true);
             $update['updated_by'] = Auth::user()->id;
             $update['approved_by'] = Auth::user()->id;
+            $update['reasons'] = $reason;
             $update['update_data'] = NULL;
             $update['approved_status'] = config('constants.APPROVED_STATUS_REJECTED');
 
@@ -434,7 +459,7 @@ class LaptopsController extends Controller
             //send mail to requestor
 
             $mailData = [
-                'reason' => $reason,
+                'reasons' => $reason,
                 'firstName' => $recipient->first_name,
                 'currentUserId' => Auth::user()->id,
                 'module' => "Laptop",
@@ -460,10 +485,10 @@ class LaptopsController extends Controller
             return 'Invalid request.';
         }
 
-        $detail = Laptops::where('id', $id)->first();
+        $detail = $type == self::LAPTOP_REQUEST ? Laptops::where('id', $id)->first() : EmployeesLaptops::where('id', $id)->first();
 
         if(empty($detail)){
-            if($type == self::LAPTOP_REQUEST){
+            if($type == self::LAPTOP_LINK_REQUEST){
                 return 'Laptop linkage does not exists.';
             }else{
                 return 'Laptop does not exists.';

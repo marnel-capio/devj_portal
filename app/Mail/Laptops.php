@@ -27,8 +27,6 @@ class Laptops extends Mailable
     const MAIL_12 = '【DEV J PORTAL】Laptop Linkage Update Approval';
     const MAIL_14 = '【DEV J PORTAL】Laptop Linkage Update';
 
-
-
     
     /**
      * Create a new message instance.

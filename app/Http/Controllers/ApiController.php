@@ -365,6 +365,7 @@ class ApiController extends Controller
             'laptop_id' => $requestData['id'],
             'employee_id' => $requestData['assignee'],
             'brought_home_flag' => $requestData['brought_home_flag'],
+            'remarks' => $requestData['remarks'],
             'vpn_flag' => $requestData['vpn_flag'],
             'created_by' => Auth::user()->id,
             'updated_by' => Auth::user()->id,

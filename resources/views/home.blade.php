@@ -105,7 +105,7 @@
 							<td>{{ $request['tag_number'] }}</a></td>
 							<td>{{ $request['laptop_make'] }}</td>
 							<td>{{ $request['laptop_model'] }}</td>
-							<td><a href="{{ route('laptops.details', ['id' => $request['laptop_id']]) }}"><i class="bi bi-eye"></i>View</a></td>
+							<td><a href="{{ route('laptops.details', ['id' => $request['laptop_id']]) ."#link-req-tbl" }}"><i class="bi bi-eye"></i>View</a></td>
 						</tr>
 					@endforeach
 				</tbody>

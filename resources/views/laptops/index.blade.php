@@ -9,34 +9,6 @@
 @endif
 <div class="container container-list-table mt-3 ms-4 mb-5">
 	<h3> Laptop List </h3>
-	<div class="row row-list">
-		<div class="col">
-			<a href="{{ route('laptops.create') }}" class="btn btn-success float-end " id='send-notif'>
-				Create
-			</a>
-		</div>
-	</div>
-    <div class="row row-list">
-        <div class="col-lg-1 col-2">
-            Availability: 
-        </div>
-        <div class="col-lg-11 col-10">
-            <input class="laptop-search-availability" type="radio" name="laptopAvailability" id="filter-all" value="1" checked>
-            <label class="form-check-label" for="filter-all">
-                All
-            </label>
-            &nbsp;&nbsp;
-            <input class="laptop-search-availability" type="radio" name="laptopAvailability" id="filter-owned" value="2" >
-            <label class="form-check-label" for="filter-owned">
-                Owned
-            </label>
-            &nbsp;&nbsp;
-            <input class="laptop-search-availability" type="radio" name="laptopAvailability" id="filter-not-owned" value="3" >
-            <label class="form-check-label" for="filter-not-owned">
-                Not Owned
-            </label>
-        </div>
-    </div>
     <div class="row row-list">
         <div class="col-lg-1 col-2">
             Status: 
@@ -58,14 +30,15 @@
             </label>
         </div>
     </div>
-    <div class="row row-list align-items-center">
-        <div class="col-10">
+    <div class="row row-list mb-2 mt-2 align-middle">
+        <div class="col-8">
             <input type="text" name="searchInput" class="search-input-text" id="search-input" placeholder="Search">
         </div>
-        <div class="col-2">
-            <form action="{{  route('laptops.download')  }}" method="GET">
+        <div class="col-4 text-end">
+            <a href="{{ route('laptops.create') }}" class="btn btn-success me-1" id='send-notif'>Create</a>
+			<button type="submit" class="btn btn-primary ms-1" form="download">Download</button>
+            <form action="{{  route('laptops.download')  }}" method="GET" id="download">
                 @csrf
-				<button type="submit" class="btn btn-primary float-end">Download</button>
             </form>
         </div>
     </div>

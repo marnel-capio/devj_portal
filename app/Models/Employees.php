@@ -55,6 +55,7 @@ class Employees extends Authenticatable
                             laptops.laptop_make,
                             laptops.laptop_model,
                             laptops.laptop_clock_speed,
+                            laptops.laptop_cpu,
                             laptops.laptop_ram,
                             employees_laptops.remarks,
                             employees_laptops.update_time AS last_update,

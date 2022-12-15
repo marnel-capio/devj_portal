@@ -4,17 +4,11 @@ namespace App\Exports;
 
 use App\Models\Employees;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\Facades\Date;
 use Maatwebsite\Excel\Concerns\Exportable;
-use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
-use Maatwebsite\Excel\Concerns\WithCustomStartCell;
 use Maatwebsite\Excel\Concerns\WithEvents;
-use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup as WorksheetPageSetup;
 use Maatwebsite\Excel\Events\AfterSheet;
@@ -25,10 +19,7 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class LaptopsExport implements 
-                        // FromQuery,
-                        // WithMapping,
                         FromView,
-                        // WithHeadings, 
                         WithEvents,
                         WithStyles,
                         ShouldAutoSize,
@@ -37,11 +28,15 @@ class LaptopsExport implements
     use Exportable;
 
     protected $grayRows = [];
-
     protected $maxRow;
-
-    protected $startRowForData = 4; //1st row: space, 2nd-3rd row - header
+    protected $startRowForData = 3; //1st-2nd row - header
+    protected $isPdf = "";
     
+    public function __construct($isPdf = false)
+    {
+        $this->isPdf = $isPdf;
+    }
+
     public function view(): View
     {
         $data = Employees::getEmployeeLaptopHistory();
@@ -57,111 +52,54 @@ class LaptopsExport implements
 
     public function columnWidths(): array
     {
-        return [
-            'A' => 5,
-        ];
+
+        if($this->isPdf){
+            $width = [
+                'A' => 22,
+                'B' => 10,
+                'C' => 10,
+                'D' => 10,
+                'E' => 8,
+                'F' => 10,
+                'G' => 8,
+                'H' => 8,
+                'I' => 8,
+                'J' => 8,
+                'K' => 5,
+                'L' => 18,
+                'M' => 12,
+            ];
+        }else{
+            $width = [
+                'A' => 30,
+                'B' => 20,
+                'C' => 20,
+                'D' => 20,
+                'E' => 20,
+                'F' => 25,
+                'G' => 25,
+                'H' => 25,
+                'I' => 10,
+                'J' => 10,
+                'K' => 10,
+                'L' => 30,
+                'M' => 20,
+            ];
+
+        }
+        return $width;
     }
-
-
-    // public function headings(): array
-    // {
-    //     return [
-    //         [
-    //             "Members",
-    //             "Office PC brought home? (Y/N)",
-    //             "PEZA",
-    //             "",
-    //             "VPN Access? (Y/N)",
-    //             "Tag Number",
-    //             "Laptop Make",
-    //             "Model",
-    //             "Clock Speed (GHz)",
-    //             "RAM (GB)",
-    //             "Remarks",
-    //             "Last Updated",         
-    //         ],
-    //         [
-    //             "",
-    //             "",
-    //             "Form Number",
-    //             "Permit Number",
-    //             "",
-    //             "",
-    //             "",
-    //             "",
-    //             "",
-    //             "",
-    //             "",
-    //             "",      
-    //         ]
-    //     ];
-    // }
-
-    // public function query(){
-    //     return Employees::selectRaw('
-    //                 CONCAT(employees.last_name, ", ", employees.first_name) AS employee_name,
-    //                 CASE WHEN employees_laptops.brought_home_flag THEN "Y" ELSE "N" END AS brought_home_flag,
-    //                 laptops.peza_form_number,
-    //                 laptops.peza_permit_number,
-    //                 CASE WHEN employees_laptops.vpn_flag THEN "Y" ELSE "N" END AS vpn_access,
-    //                 laptops.tag_number,
-    //                 laptops.status,
-    //                 laptops.laptop_make,
-    //                 laptops.laptop_model,
-    //                 laptops.laptop_clock_speed,
-    //                 laptops.laptop_ram,
-    //                 employees_laptops.remarks,
-    //                 employees_laptops.update_time AS last_update,
-    //                 employees_laptops.surrender_flag
-    //                 ')
-    //             ->leftJoin('employees_laptops', 'employees_laptops.employee_id', 'employees.id')
-    //             ->leftJoin('laptops', 'employees_laptops.laptop_id', 'laptops.id')
-    //             ->where('employees.active_status', 1)
-    //             ->whereIn('employees.approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
-    //             ->where('laptops.status', 1)
-    //             ->whereIn('employees_laptops.approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
-    //             ->orderBy('employees.last_name', 'asc')
-    //             ->orderBy('employees.first_name', 'asc')
-    //             ->orderBy('laptops.tag_number', 'asc')
-    //             ->orderBy('employees_laptops.surrender_flag', 'asc')
-    //             ->orderBy('employees_laptops.surrender_date', 'asc')
-    //             ->orderBy('employees_laptops.created_by', 'desc')
-    //             ->orderBy('laptops.tag_number', 'asc');
-    // }
-
-
-    // /**
-    //  * Maps the query result in the excel file
-    //  *
-    //  * @param Employee $data
-    //  * @return array
-    //  */
-    // public function map($data): array {
-    //     return [
-    //         $data->employee_name,
-    //         $data->brought_home_flag,
-    //         $data->peza_form_number,
-    //         $data->peza_permit_number,
-    //         $data->vpn_access,
-    //         $data->tag_number,
-    //         $data->laptop_make,
-    //         $data->laptop_model,
-    //         $data->laptop_clock_speed,
-    //         $data->laptop_ram,
-    //         $data->remarks,
-    //         Date::dateTimeToExcel($data->last_update),
-    //     ];
-    // }
 
     public function styles(Worksheet $sheet)
     {
 
         $style = [
-            "B2:M3" => [    //style for header
+            "A1:M3" => [    //style for header
                     'font' => ['bold' => true],
                     'alignment' => [
                         'horizontal' => Alignment::HORIZONTAL_CENTER,
                         'vertical' => Alignment::VERTICAL_CENTER,
+                        'wrapText' => true,
                     ],
                     'fill' => [
                         'fillType' => Fill::FILL_SOLID,
@@ -170,13 +108,14 @@ class LaptopsExport implements
                         ]
                     ],
                 ],
-            "B4:M" .$this->maxRow =>[
-                'alignment' => [
+            "A3:M" .$this->maxRow =>[
+              'alignment' => [
                     'horizontal' => Alignment::HORIZONTAL_LEFT,
                     'vertical' => Alignment::VERTICAL_CENTER,
+                    'wrapText' => true
                 ],
             ],
-            "B2:M" .$this->maxRow =>[
+            "A1:M" .$this->maxRow =>[
                 'borders' => [
                     'allBorders' => [
                         'borderStyle' => Border::BORDER_THIN,
@@ -192,7 +131,7 @@ class LaptopsExport implements
         ];
 
         foreach($this->grayRows as $idx => $value){
-            $style["B" .$value .":M" .$value] = [
+            $style["A" .$value .":M" .$value] = [
                 'fill' => [
                     'fillType' => Fill::FILL_SOLID,
                     'startColor' => [
@@ -200,6 +139,11 @@ class LaptopsExport implements
                     ]
                 ],
             ];
+        }
+
+        if($this->isPdf){
+            $sheet->getRowDimension('2')->setRowHeight(30);
+            $sheet->getRowDimension('1')->setRowHeight(25);
         }
 
         return $style;

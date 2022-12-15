@@ -63,10 +63,10 @@ class LaptopLinkage extends FormRequest
                 'remarks' => 'max:1024'
             ];
     
-            if($this->has('surrender_date')){
+            if($this->has('surrender_date') && $this->input('surrender_flag')){
                 $rules['surrender_date'] = ["required_if:surrender_flag,1", "date", function($attribute, $value, $fail) use ($id){
-                    $data = EmployeesLaptops::where('id', $id);
-                    if($value < $data['create_date']){
+                    $data = EmployeesLaptops::where('id', $id)->first();
+                    if($value < $data->create_date){
                         $fail('The surrender date must be greater than the borrow date.');
                     }
                 }];
@@ -82,7 +82,7 @@ class LaptopLinkage extends FormRequest
                 'id' => [
                         function($attribute, $value, $fail){
                             $data = Laptops::where('id', $value)->first();
-                            if((!empty($data) && !$data['status'])){
+                            if((!empty($data) && !$data->status)){
                                 $fail('Invalid laptop.');
                             }
                             if(empty(Laptops::getLaptopEmployeeDetails($value))){

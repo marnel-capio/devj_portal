@@ -105,6 +105,7 @@ $(document).ready(function(){
     var linkRequestTable = $("#link-req-tbl").DataTable({
 		"stateSave": true,
         "bFilter": false,
+        "ordering": false,
 		"pageLength": 10,
 		"oLanguage": {
 	        "sEmptyTable": "No Data"
@@ -201,6 +202,7 @@ $(document).ready(function(){
 	var employeeHistoryTable = $("#emp-hist-tbl").DataTable({
 		"stateSave": true,
 		"pageLength": 10,
+        "ordering": false,
         "bFilter": false,
         "oLanguage": {
 	        "sEmptyTable": "No Data"
