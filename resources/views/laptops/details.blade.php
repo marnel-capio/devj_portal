@@ -125,12 +125,24 @@
             @endif
         </div> 
         @endif
-
     </div>
-    <div class="pt-4">
+    <div class="pt-2">
         <form action="#">
+            @if(!$detailOnly)
+            <div class="row mb-2 ps-3 pe-3">
+                <div class="col-6 g-3">
+                    <div class="row">
+                        <h5 class="text-danger">※Requested by {{ $requestor->requestor }}</h5>
+                    </div>
+                </div>
+            </div>
+            @endif
             <div class="group-category p-3 mb-4 rounded-3">
-                <h4 class="text-start">Laptop Details</h4>
+                @if ($detailOnly)
+                    <h4 class="text-start">Laptop Details</h4>
+                @else
+                    <h4 class="d-inline text-start">Laptop Request</h4>&nbsp;&nbsp;
+                @endif
                 <div class="row mb-2 ps-5 pe-3">
                     <div class="col-md-3 col-6 g-3 form-floating">
                        <input type="text" name="tag_number" class="form-control" id="tag-number" placeholder="Tag Number" value="{{ $detail->tag_number }}" readonly>
@@ -388,6 +400,15 @@
         </div>
 
         <div class="ms-3">
+            @if(!empty(session('lla_alert')))
+                <div class="alert alert-success mt-2" role="alert">
+                    {{session()->pull('lla_alert')}}
+                </div>
+            @elseif(!empty(session('llr_alert')))
+                <div class="alert alert-success mt-2" role="alert">
+                    {{session()->pull('llr_alert')}}
+                </div>
+            @endif
             @if (empty($linkageData))
             <div class="text-primary d-flex align-items-center mb-2">
                 <i class="bi bi-info-circle-fill"></i>&nbsp;Once a request has been approved, other request will be rejected

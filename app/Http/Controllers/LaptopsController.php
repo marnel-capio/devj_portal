@@ -13,6 +13,7 @@ use App\Models\Logs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Redirect;
 
 class LaptopsController extends Controller
 {
@@ -28,8 +29,8 @@ class LaptopsController extends Controller
 
     public function download(){
 
-        Logs::createLog("Employee", "Laptop employee's laptop details");
-        // determine excel type
+        Logs::createLog("Laptop", "Downloaded employee's laptop details");
+        // determine file type
         if (in_array(Auth::user()->roles, [config('constants.MANAGER_ROLE_VALUE'), config('constants.ADMIN_ROLE_VALUE')])) {
             return (new LaptopsExport())->download('DevJ Laptop Details.xlsx');
         } else {
@@ -81,6 +82,7 @@ class LaptopsController extends Controller
             $data['approved_status'] = config('constants.APPROVED_STATUS_PENDING');
             $data['reject_code'] = NULL;
             $data['reasons'] = NULL;
+            $data['updated_by'] = Auth::user()->id;
 
             Laptops::where('id', $id)
                     ->update($data);
@@ -106,11 +108,10 @@ class LaptopsController extends Controller
     public function details($id){
 
         $laptopDetails = Laptops::where('id', $id)
-                                    ->whereIn('approved_status', [2,4])
+                                    ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'),config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
                                     ->first();
 
         abort_if(empty($laptopDetails), 404);
-        abort_if(!in_array($laptopDetails['approved_status'], [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]), 403);
 
         if(in_array(Auth::user()->roles, [config('constants.ADMIN_ROLE_VALUE'), config('constants.MANAGER_ROLE_VALUE')])){
             $employeeDropdown = Employees::getEmployeeNameList();
@@ -137,6 +138,10 @@ class LaptopsController extends Controller
             ->whereIn('approved_status', [3,4])
             ->first();
 
+        $requestor = Employees::selectRaw('concat(first_name, " ", last_name) as requestor')
+                                ->where('id', $laptopDetails->updated_by)
+                                ->first();
+
         abort_if(empty($laptopDetails), 404);
 
         if($laptopDetails->approved_status == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')){
@@ -147,6 +152,7 @@ class LaptopsController extends Controller
 
         return view('laptops.details')->with([
             'detail' => $laptopDetails,
+            'requestor' => $requestor,
             'detailNote' => $this->getDetailNote($laptopDetails),
             'detailOnly' => false,
         ]);
@@ -334,6 +340,7 @@ class LaptopsController extends Controller
 
             Mail::to($recipient->email)->send(new MailLaptops($mailData, config('constants.MAIL_LAPTOP_NEW_LINKAGE_BY_NON_MANAGER_APPROVAL')));
 
+            $alert = 'Successfully approved laptop linkage.';
             //reject other new linkage request
             $this->rejectOtherLinkageRequest($laptopLinkDetails['laptop_id']);
 
@@ -354,7 +361,6 @@ class LaptopsController extends Controller
             Logs::createLog("Laptop", 'Laptop Linkage Detail Update Approval');
 
             //send mail to requestor
-
             $mailData = [
                 'link' => route('laptops.details', ['id' => $laptopLinkDetails->laptop_id]),
                 'firstName' => $recipient->first_name,
@@ -363,8 +369,12 @@ class LaptopsController extends Controller
             ];
 
             Mail::to($recipient->email)->send(new MailLaptops($mailData, config('constants.MAIL_LAPTOP_LINKAGE_UPDATE_BY_NON_MANAGER_APPROVAL')));
-                
+
+            $alert = 'Successfully approved laptop linkage detail update.';
         }
+
+        session(['lla_alert'=> $alert]);
+        return Redirect::back();
     }
 
     private function rejectOtherLinkageRequest($laptop_id){
@@ -439,6 +449,7 @@ class LaptopsController extends Controller
 
             Mail::to($recipient->email)->send(new MailLaptops($mailData, config('constants.MAIL_LAPTOP_NEW_LINKAGE_BY_NON_MANAGER_REJECTION')));
 
+            $alert = 'Successfully rejected laptop linkage.';
         }else{
             $recipient = Employees::where('id', $laptopLinkDetails->updated_by)->first();
 
@@ -466,11 +477,12 @@ class LaptopsController extends Controller
             ];
 
             Mail::to($recipient->email)->send(new MailLaptops($mailData, config('constants.MAIL_LAPTOP_DETAIL_UPDATE_REJECTION')));
-                
+            
+            $alert = 'Successfully rejected laptop linkage detail update.';    
         }
 
-        return redirect(route('home'));
-
+        session(['llr_alert'=> $alert]);
+        return Redirect::back();
     }
 
     /**

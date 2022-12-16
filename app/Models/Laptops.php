@@ -42,6 +42,17 @@ class Laptops extends Model
             ->toArray();
     }
 
+    /**
+     * Rerieve laptop list for laptop list screen
+     * Filters:
+     * status: 1:all, 2:active, 3:inacive 
+     * availability: 1:all, 2:owned, 3:not owned
+     *
+     * @param string $keyword
+     * @param string $availability
+     * @param string $status
+     * @return void
+     */
     static function getLaptopList($keyword = '', $availability = '', $status = ''){
         $query = self::selectRaw('
                             id
@@ -52,15 +63,15 @@ class Laptops extends Model
                             ,laptop_model
                             ,CASE  WHEN status = 1 THEN "Active" ELSE "Inactive" END AS status');
 
-        if(!empty($status)){
-            if($status == 2){
+        if(!empty($status) && $status != 1){
+            if($status == 2){ 
                 $query->where('status', 1);
             }elseif($status == 3){
                 $query->where('status', 0);
             }
         }
 
-        if(!empty($availability)){
+        if(!empty($availability) && $availability != 1){
             if($availability == 2){
                 $query->whereIn('id', function($query){
                     $query->select('laptop_id')
@@ -94,6 +105,11 @@ class Laptops extends Model
         return $query->get()->toArray();
     }
 
+    /**
+     * Get laptop requests
+     *
+     * @return array
+     */
     static function getLaptopRequest(){
         $query = self::selectRaw('
                                 id,

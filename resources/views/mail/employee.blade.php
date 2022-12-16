@@ -1,5 +1,5 @@
 
-@if (in_array($mailType, [config('constants.MAIL_NEW_REGISTRATION_REQUEST'), config('constants.MAIL_EMPLOYEE_UPDATE_REQUEST'), config('constants.MAIL_EMPLOYEE_LAPTOP_LINK_REQUEST'), config('constants.MAIL_EMPLOYEE_PROJECT_LINK_REQUEST')]))
+@if (in_array($mailType, [config('constants.MAIL_NEW_REGISTRATION_REQUEST'), config('constants.MAIL_EMPLOYEE_UPDATE_REQUEST'), config('constants.MAIL_EMPLOYEE_LAPTOP_LINK_REQUEST'), config('constants.MAIL_EMPLOYEE_PROJECT_LINK_REQUEST'), config('constants.MAIL_EMPLOYEE_SURRENDER_LAPTOP_WHEN_USER_IS_DEACTIVATED')]))
     Hi Managers,<br>
 @else
     Hi {{ $mailData['first_name'] }},<br>
@@ -80,6 +80,11 @@
     The manager has linked a laptop to your account. <br>
     Check the details <a href="{{ url($mailData['link']) }}">here</a>.
 
+@elseif ($mailType == config('constants.MAIL_EMPLOYEE_SURRENDER_LAPTOP_WHEN_USER_IS_DEACTIVATED'))
+
+    {{ $mailData['employeeName'] }}'s account has been deactivated.<br>
+    A request to surrenderthe laptops assigned to {{ $mailData['employeeName'] }} has been created.<br>
+    Check the request <a href="{{ url($mailData['link']) }}">here</a>.
     
 @endif
 <br>

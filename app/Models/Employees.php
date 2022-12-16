@@ -27,12 +27,18 @@ class Employees extends Authenticatable
     static function getEmailOfManagers(){
         return self::select('email')
                             ->where('roles', config('constants.MANAGER_ROLE_VALUE'))
+                            ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
                             ->where('active_status', 1)
                             ->get()
                             ->toArray();
         
     }
 
+    /**
+     * Get all the names of active employees
+     *
+     * @return void
+     */
     static function getEmployeeNameList(){
         return self::selectRaw('id, CONCAT(last_name, ", ", first_name) AS employee_name')
                     ->where('active_status', 1)
@@ -43,6 +49,11 @@ class Employees extends Authenticatable
                     ->toArray();
     }
 
+    /**
+     * get all employee's laptop history
+     *
+     * @return array
+     */
     static function getEmployeeLaptopHistory(){
         return self::selectRaw('
                             CONCAT(employees.last_name, ", ", employees.first_name) AS employee_name,
@@ -51,7 +62,6 @@ class Employees extends Authenticatable
                             laptops.peza_permit_number,
                             CASE WHEN employees_laptops.vpn_flag THEN "Y" ELSE "N" END AS vpn_access,
                             laptops.tag_number,
-                            laptops.status,
                             laptops.laptop_make,
                             laptops.laptop_model,
                             laptops.laptop_clock_speed,

@@ -88,7 +88,16 @@
 
 
 
-    <div class="pt-4">
+    <div class="pt-2">
+        @if(!$detailOnly)
+        <div class="row mb-2 ps-3 pe-3">
+            <div class="col-6 g-3">
+                <div class="row">
+                    <h5 class="text-danger">※Requested by {{ $requestor->requestor }}</h5>
+                </div>
+            </div>
+        </div>
+        @endif
         <form action="{{ route('employees.regist') }}" method="POST">
             @csrf
             <div class="emp-regist-category p-3 mb-4 rounded-3">

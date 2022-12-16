@@ -11,6 +11,27 @@
 	<h3> Laptop List </h3>
     <div class="row row-list">
         <div class="col-lg-1 col-2">
+            Availability: 
+        </div>
+        <div class="col-lg-11 col-10">
+            <input class="laptop-search-availability" type="radio" name="laptopAvailability" id="filter-all" value="1" checked>
+            <label class="form-check-label" for="filter-all">
+                All
+            </label>
+            &nbsp;&nbsp;
+            <input class="laptop-search-availability" type="radio" name="laptopAvailability" id="filter-owned" value="2" >
+            <label class="form-check-label" for="filter-owned">
+                Owned
+            </label>
+            &nbsp;&nbsp;
+            <input class="laptop-search-availability" type="radio" name="laptopAvailability" id="filter-not-owned" value="3" >
+            <label class="form-check-label" for="filter-not-owned">
+                Not Owned
+            </label>
+        </div>
+    </div>
+    <div class="row row-list">
+        <div class="col-lg-1 col-2">
             Status: 
         </div>
         <div class="col-lg-11 col-10">

@@ -10,6 +10,7 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup as WorksheetPageSetup;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
@@ -23,7 +24,8 @@ class LaptopsExport implements
                         WithEvents,
                         WithStyles,
                         ShouldAutoSize,
-                        WithColumnWidths
+                        WithColumnWidths,
+                        WithTitle
 {
     use Exportable;
 
@@ -35,6 +37,11 @@ class LaptopsExport implements
     public function __construct($isPdf = false)
     {
         $this->isPdf = $isPdf;
+    }
+
+    public function title(): string
+    {
+        return 'Laptop';
     }
 
     public function view(): View
@@ -94,18 +101,12 @@ class LaptopsExport implements
     {
 
         $style = [
-            "A1:M3" => [    //style for header
+            "A1:M" => [    //style for header
                     'font' => ['bold' => true],
                     'alignment' => [
                         'horizontal' => Alignment::HORIZONTAL_CENTER,
                         'vertical' => Alignment::VERTICAL_CENTER,
                         'wrapText' => true,
-                    ],
-                    'fill' => [
-                        'fillType' => Fill::FILL_SOLID,
-                        'startColor' => [
-                            'argb' => (new Color('C0EEE4'))->getARGB(),
-                        ]
                     ],
                 ],
             "A3:M" .$this->maxRow =>[

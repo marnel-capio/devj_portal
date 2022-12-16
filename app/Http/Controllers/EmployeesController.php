@@ -200,6 +200,10 @@ class EmployeesController extends Controller
 
             Logs::createLog("Employee", $log);
 
+            if(!$updateData['active_status']){
+                $this->surrenderLaptop($originalData);
+            }
+
             if(Auth::user()->id == $id){
                 return redirect(route('employees.details', ['id' => $id]))->with(['success' => 1, "message" => "Details are updated successfully."]);
             }else{
@@ -238,6 +242,41 @@ class EmployeesController extends Controller
         
     }
 
+    private function surrenderLaptop($employeeDetails){
+
+        //get latop data in DB
+        $ownedLaptops = EmployeesLaptops::getOwnedLaptopByEmployee($employeeDetails['id']);
+
+        if(!empty($ownedLaptops)){
+            //update data in DB
+            $ids = array_column($ownedLaptops, 'id');
+            EmployeesLaptops::whereIn('id', $ids)
+            ->where('surrender_flag', 0)
+            ->update([
+                'update_data'=> json_encode([
+                    'surrender_flag' => 1,
+                    'surrender_date' => date('Y-m-d H:i:s')
+                ]),
+                'updated_by' => Auth::user()->id,
+            ]);
+
+            foreach($ownedLaptops as $idx => $laptop){
+                //createLog
+                Logs::createLog('Laptop', "Surrender {$laptop['tag_number']} laptop.");
+
+                //send mail
+                $mailData = [
+                    'employeeName' => $employeeDetails['first_name'] .' ' .$employeeDetails['last_name'],
+                    'link' => route('laptops.request', ['id' => $laptop['laptop_id']]),
+                    'currentUserId' => Auth::user()->id,
+                    'module' => "Employee",
+                ];
+
+                $this->sendMail(Employees::getEmailOfManagers(), $mailData, config('constants.MAIL_EMPLOYEE_SURRENDER_LAPTOP_WHEN_USER_IS_DEACTIVATED'));
+            }
+        }
+    }
+
     public function request($id){
 
         $employeeDetails = Employees::where('id', $id)->first();
@@ -268,6 +307,8 @@ class EmployeesController extends Controller
             abort(404);
         }
 
+        $requestor = Employees::selectRaw('concat(first_name, " ", last_name) as requestor')->where('id', $employeeDetails->updated_by)->first();
+
         return view('employees.details')
         ->with([
             'allowedToEdit' => false,
@@ -279,7 +320,8 @@ class EmployeesController extends Controller
             'empLaptop' => EmployeesLaptops::getOwnedLaptopByEmployee($id),
             'empProject' => EmployeesProjects::getProjectsByEmployee($id),
             'laptopList' => Laptops::getLaptopDropdown(),
-            'projectList' => Projects::getProjectDropdownPerEmployee($id)
+            'projectList' => Projects::getProjectDropdownPerEmployee($id),
+            'requestor' => $requestor,
         ]);
     }
 
@@ -332,6 +374,10 @@ class EmployeesController extends Controller
 
             //logs
             Logs::createLog("Employee", "Approved the update details of {$employee->first_name} {$employee->last_name}");
+
+            if(!$employeeUpdate['active_status']){
+                $this->surrenderLaptop($employee);
+            }
         }
 
         return redirect(route('home'));

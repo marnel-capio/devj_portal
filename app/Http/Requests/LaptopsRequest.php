@@ -73,7 +73,7 @@ class LaptopsRequest extends FormRequest
             'peza_permit_number' => 'required',
             'laptop_make' => 'required',
             'laptop_model' => 'required',
-            'laptop_clock_speed' => 'required',
+            'laptop_cpu' => 'required',
             'laptop_clock_speed' => 'required',
             'laptop_ram' => 'required',
             'remarks' => 'max:1024',
@@ -105,8 +105,6 @@ class LaptopsRequest extends FormRequest
                 ];
             }
         }
-
-
 
         return $rules;
     }

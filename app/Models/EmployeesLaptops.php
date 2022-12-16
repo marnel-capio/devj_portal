@@ -41,7 +41,7 @@ class EmployeesLaptops extends Model
                     ->leftJoin('laptops', 'employees_laptops.laptop_id', 'laptops.id')
                     ->where('employees_laptops.employee_id', $id)
                     ->where('employees_laptops.surrender_flag', 0)
-                    ->where('employees_laptops.approved_status', 2)
+                    ->whereIn('employees_laptops.approved_status', [config('constants.APPROVED_STATUS_APPROVED'). config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
                     ->orderBy('laptops.tag_number', 'ASC')
                     ->get()
                     ->toArray();
@@ -91,7 +91,7 @@ class EmployeesLaptops extends Model
                     ->where('employees_laptops.laptop_id', $id)
                     ->whereIn('employees_laptops.approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
                     ->orderBy('employees_laptops.surrender_flag', 'asc')
-                    ->orderBy('employees_laptops.surrender_date', 'asc')
+                    ->orderBy('employees_laptops.surrender_date', 'desc')
                     ->get()
                     ->toArray();
     }
@@ -132,7 +132,7 @@ class EmployeesLaptops extends Model
     }
 
     /**
-     * get all link request
+     * get all link request of a laptop
      *
      * @return array
      */
@@ -152,7 +152,6 @@ class EmployeesLaptops extends Model
                                 employees.first_name,
                                 employees.email,
                                 laptops.tag_number,
-                                employees_laptops.id
                             ')
                         ->leftJoin('laptops', 'laptops.id', 'employees_laptops.laptop_id')
                         ->leftJoin('employees', 'employees.id', 'employees_laptops.employee_id')

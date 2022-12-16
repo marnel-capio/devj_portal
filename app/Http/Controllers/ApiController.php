@@ -216,6 +216,12 @@ class ApiController extends Controller
         ]);
     }
 
+    /**
+     * Laptop Detail Update Process
+     *
+     * @param LaptopsRequest $request
+     * @return void
+     */
     public function updateLaptopDetails(LaptopsRequest $request){
         $request->validated();
 
@@ -277,6 +283,12 @@ class ApiController extends Controller
         ]);
     }
 
+    /**
+     * Laptop  Linkage Detail Update Process
+     *
+     * @param LaptopLinkage $request
+     * @return void
+     */
     public function updateLaptopLinkage(LaptopLinkage $request){
         $request->validated();
         
@@ -307,7 +319,7 @@ class ApiController extends Controller
             }
             $log = rtrim($log, ", ");
 
-            Logs::createLog('Laptop', $log);
+            Logs::createLog('Laptop', 'Laptop Linkage Update: ' .$log);
 
             $recipient = Employees::where('id', $originalData['employee_id'])->first();
 
@@ -322,7 +334,6 @@ class ApiController extends Controller
     
                 $this->sendMailForLaptop($recipient['email'], $mailData, config('constants.MAIL_LAPTOP_LINKAGE_UPDATE_BY_MANAGER_NOTIF'));
             }
-
 
             session(['ul_alert'=> 'Laptop linkage was updated successfully.']);
         }else{
@@ -354,6 +365,12 @@ class ApiController extends Controller
         ]);
     }
 
+    /**
+     * Registration of new laptop linkage
+     *
+     * @param LaptopLinkage $request
+     * @return void
+     */
     public function registLaptopLinkage(LaptopLinkage $request){
         $request->validated();
         
@@ -420,7 +437,7 @@ class ApiController extends Controller
     }
 
     /**
-     * send email
+     * send laptop related email
      * @param array $mailData
      * @param int $mailType
      * @return void
