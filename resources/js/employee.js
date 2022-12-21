@@ -68,9 +68,9 @@ $(document).ready(function () {
        });
     }
 
-    const CHANGE_PASSWORD_LINK = '/devj_portal/public/api/changePassword';
-	const LINK_LAPTOP_LINK = '/devj_portal/public/api/linkLaptop';
-	const LINK_PROJECT_LINK = '/devj_portal/public/api/linkProject'
+    const CHANGE_PASSWORD_LINK = '/api/changePassword';
+	const LINK_LAPTOP_LINK = '/api/linkLaptop';
+	const LINK_PROJECT_LINK = '/api/linkProject'
 
 	//start for employee registration
 

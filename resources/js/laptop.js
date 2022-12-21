@@ -1,7 +1,7 @@
-const FILTER_LAPTOP_LINK = '/devj_portal/public/api/laptops/search';
-const UPDATE_LINK = '/devj_portal/public/api/laptops/update';
-const UPDATE_LINKAGE_LINK = '/devj_portal/public/api/laptops/updateLinkage';
-const REGISTER_LINKAGE_LINK = '/devj_portal/public/api/laptops/registLinkage';
+const FILTER_LAPTOP_LINK = '/api/laptops/search';
+const UPDATE_LINK = '/api/laptops/update';
+const UPDATE_LINKAGE_LINK = '/api/laptops/updateLinkage';
+const REGISTER_LINKAGE_LINK = '/api/laptops/registLinkage';
 
 $(document).ready(function(){
 
