@@ -28,7 +28,7 @@ class LoginRequest extends FormRequest
     public function messages()
     {
         return [
-            'email_address.exists' => "The username does not exists.",
+            'email_address.exists' => "The :attribute does not exists.",
         ];
     }
 
@@ -54,7 +54,7 @@ class LoginRequest extends FormRequest
     {
         $rules = [];
         if($this->isMethod('POST')){
-            $rules = ['email_address' => ['bail', 'required', 'email', 'max:80', 'min:15', 'exists:employees,email', new AWSEmailAddress(), new AccountStatus()]];
+            $rules = ['email_address' => ['bail', 'required', 'email', 'max:80', 'min:15', new AWSEmailAddress(), 'exists:employees,email', new AccountStatus()]];
             if(strpos($this->header('referer'), route('login')) !== FALSE){
                 $rules['password'] = 'required|max:80|min:8';
             }
