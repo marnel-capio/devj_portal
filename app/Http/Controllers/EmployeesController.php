@@ -304,6 +304,7 @@ class EmployeesController extends Controller
                 ->update([
                     'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
                     'active_status' => 1,
+                    'reasons' => NULL,
                     'updated_by' => Auth::user()->id,
                     'approved_by' => Auth::user()->id,
                 ]);
@@ -321,6 +322,7 @@ class EmployeesController extends Controller
             $employeeUpdate['updated_by'] = Auth::user()->id;
             $employeeUpdate['approved_by'] = Auth::user()->id;
             $employeeUpdate['update_data'] = NULL;
+            $employeeUpdate['reasons'] = NULL;
             $employeeUpdate['approved_status'] = config('constants.APPROVED_STATUS_APPROVED');
 
             Employees::where('id', $employee['id'])->update($employeeUpdate);
