@@ -190,7 +190,7 @@ class EmployeesController extends Controller
             }
 
             //format log
-            $log = "";
+            $log = "Employee updated by manager: ";
             foreach($updateData as $key => $value){
                 if($value != $originalData[$key] && !in_array($key, ['updated_by', 'password'])){
                     $log .= "{$key}: {$originalData[$key]} > {$value}, ";
