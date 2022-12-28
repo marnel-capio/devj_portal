@@ -314,7 +314,7 @@ class EmployeesController extends Controller
                 'currentUserId' => Auth::user()->id,
                 'module' => "Employee",], config('constants.MAIL_NEW_REGISTRATION_APPROVAL'));
 
-            Logs::createLog("Employee", "Approved the account registration of {$employee->first_name} {$employee->last_name}.");
+            Logs::createLog("Employee", "{$employee->first_name} {$employee->last_name}'s account  has been approved.");
         
         }else{
             //update only
