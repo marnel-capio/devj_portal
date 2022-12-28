@@ -52,7 +52,8 @@ class EmployeesRequest extends FormRequest
     public function messages()
     {
         return [
-            'birthdate.regex' => "The :attribute is not a valid date.",
+            'birthdate.regex' => "The birth date must be a valid date.",
+            'birthdate.date' => "The birth date must be a valid date.",
         ];
     }
 
