@@ -76,7 +76,7 @@ class EmployeesController extends Controller
         $recipients = Employees::getEmailOfManagers();
 
         $mailData = [
-            'link' => "/employees/{$id}/request",
+            'link' => route('employees.request', ['id' => $id]),
             'currentUserId' => $id,
             'module' => "Employee",
         ];
@@ -223,7 +223,7 @@ class EmployeesController extends Controller
 
             //notify the managers of the request
             $mailData = [
-                'link' => "/",  //update link
+                'link' => route('employees.request', ['id' => Auth::user()->id]),
                 'requestor' => Auth::user()->first_name .' ' .Auth::user()->last_name,
                 'currentUserId' => Auth::user()->id,
                 'module' => "Employee",
