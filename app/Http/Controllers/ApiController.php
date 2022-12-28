@@ -69,7 +69,7 @@ class ApiController extends Controller
             $message = 'Added Successfully';
         }else{
             //if an employee edits his own data and is not the manager
-            $insertData['approved_status'] = config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE');
+            $insertData['approved_status'] = config('constants.APPROVED_STATUS_PENDING');
 
             EmployeesLaptops::create($insertData);
 
@@ -133,7 +133,7 @@ class ApiController extends Controller
             $message = 'Added Successfully';
         }else{
             //if an employee edits his own data and is not the manager
-            $insertData['approved_status'] = config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE');
+            $insertData['approved_status'] = config('constants.APPROVED_STATUS_PENDING');
 
             EmployeesProjects::create($insertData);
 
