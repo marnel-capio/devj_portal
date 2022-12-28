@@ -20,7 +20,7 @@ class Laptops extends Model
                                         $query->select('laptop_id')
                                                 ->from('employees_laptops')
                                                 ->where('surrender_flag', 0)
-                                                ->where('approved_status', 2);
+                                                ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
                                     })
                 ->get()
                 ->toArray();
