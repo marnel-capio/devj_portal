@@ -503,19 +503,6 @@
                                     </div>
                                 </div>
                             </div>
-                            {{-- <div class="row mb-2">
-                                <div class="col-6 g-3 text-start">
-                                    <div class="form-check">
-                                        <label for="ll-surrender" class="form-check-label">Surrender?</label>
-                                        <input type="checkbox" class="form-check-input" name="laptop_surrender" id="ll-surrender" value="1">
-                                    </div>
-                                </div>
-                                <div class="col-6 g-3 form-floating">
-                                    <input type="date" class="form-control" id="ll-surrender-date">
-                                    <label for="ll-surrender-date" class="text-center">Surrender Date</label>
-                                    <p id="error-surrender-date"></p>
-                                </div>
-                            </div> --}}
                         </form>
                     </div>
                 </div>
