@@ -117,7 +117,7 @@ class EmployeesController extends Controller
                         'employee' => $employeeDetails,
                         'empLaptop' => EmployeesLaptops::getOwnedLaptopByEmployee($id),
                         'empProject' => EmployeesProjects::getProjectsByEmployee($id),
-                        'laptopList' => Laptops::getLaptopDropdown(),
+                        'laptopList' => Laptops::getLaptopDropdown($id),
                         'projectList' => Projects::getProjectDropdownPerEmployee($id)
                     ]);
     }

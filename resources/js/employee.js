@@ -399,4 +399,24 @@ $(document).ready(function () {
 	}
 
 	//end for employee details/request
+
+	//project dropdown max min date
+	updateProjectCalendar();
+	$("#projectList").change(function(e){
+		updateProjectCalendar();
+	});
+
+	function updateProjectCalendar(){
+		var minDate = $("#projectList :selected").data("mindate");
+		var maxDate = $("#projectList :selected").data("maxdate");
+		
+		$("#project-start").attr({
+			min:minDate,
+			max:maxDate
+		});
+		$("#project-end").attr({
+			min:minDate,
+			max:maxDate
+		});
+	}
 });

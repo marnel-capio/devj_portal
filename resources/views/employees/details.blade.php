@@ -417,7 +417,7 @@
                                 <div class="col-12 g-3 form-floating">
                                     <select name="project_id" class="form-select" id="projectList" required>
                                         @foreach ( $projectList as $project )
-                                            <option value="{{ $project['id'] }}">{{ $project['name'] }}</option>
+                                            <option data-mindate="{{ date('Y-m-d', strtotime($project['start_date']))  }}" data-maxdate="{{ !empty($project['end_date']) ? date('Y-m-d', strtotime($project['end_date'])) : date("Y-m-d")  }}" value="{{ $project['id'] }}">{{ $project['name'] }}</option>
                                         @endforeach
                                     </select>
                                     <label for="projectList" class="text-center">Project Name</label>
