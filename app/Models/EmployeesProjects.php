@@ -29,7 +29,7 @@ class EmployeesProjects extends Model
 
                     ->leftJoin('projects', 'projects.id',  'employees_projects.project_id')
                     ->where('employees_projects.employee_id', $id)
-                    ->where('employees_projects.approved_status', 2)
+                    ->whereIn('employees_projects.approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
                     ->orderByRaw('case when isnull(employees_projects.end_date) then 0 else 1 end ASC
                                     , employees_projects.end_date DESC')
                     ->get()
