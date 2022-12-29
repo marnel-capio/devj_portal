@@ -16,7 +16,7 @@
                         <li><a href="{{ route('employees') }}" class="dropdown-item small text-white">View List</a></li>            
                     </ul>
                 </li>
-                <li class="nav-item dropdown">
+                {{-- <li class="nav-item dropdown">
                     <a href="#" class="nav-link text-white"  role="button">Laptops</a>
                     <ul class="dropdown-menu">
                         <li><a href="{{ route('laptops') }}" class="dropdown-item small text-white">View List</a></li>
@@ -53,7 +53,7 @@
                             @endif
                         </ul>
                     </li>
-                @endif
+                @endif --}}
             </ul>
             <ul class="navbar-nav mb-2 mb-lg-0">
                 <li class="nav-item dropdown">

@@ -307,7 +307,7 @@
             </div>
         </form>
     </div>
-    @if ($detailOnly)
+    {{-- @if ($detailOnly)
     <div class="emp-regist-category mb-4 p-3 rounded-3">
         <div class="d-flex justify-content-between">
             <h4 class="text-start">Projects</h4>
@@ -364,7 +364,7 @@
             </tbody>
         </table>
     </div>
-    @endif
+    @endif --}}
 
 
     @if (!$detailOnly)
@@ -400,7 +400,7 @@
     </div>
     @endif
 
-    @if ($detailOnly)
+    {{-- @if ($detailOnly)
     <div class="modal fade" tabindex="-1" id="linkProjectModal">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -513,7 +513,7 @@
             </div>
         </div>
     </div>
-    @endif
+    @endif --}}
 
 </div>
 
