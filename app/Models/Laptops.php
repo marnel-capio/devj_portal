@@ -14,15 +14,19 @@ class Laptops extends Model
     const CREATED_AT = 'create_time';
     protected $guarded = [];
 
-    static function getLaptopDropdown(){
+    static function getLaptopDropdown($employeeId){
 
         return self::select('id', 'tag_number', )
                 ->where('status', 1)
-                ->whereNotIn('id', function($query){
+                ->whereNotIn('id', function($query) use ($employeeId){
                                         $query->select('laptop_id')
                                                 ->from('employees_laptops')
                                                 ->where('surrender_flag', 0)
-                                                ->where('approved_status', 2);
+                                                ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+                                                ->orWhere(function($query) use ($employeeId){
+                                                    $query->where('approved_status', config('constants.APPROVED_STATUS_PENDING'))
+                                                            ->where('employee_id', $employeeId);
+                                                });
                                     })
                 ->get()
                 ->toArray();

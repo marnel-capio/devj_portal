@@ -74,7 +74,9 @@ class LoginController extends Controller
         $mailData = [
             'email' => $email,
             'first_name' => $employee['first_name'],
-            'password' => $newPassword
+            'password' => $newPassword,
+            'module' => 'Login',
+            'currentUserId' => $employee['id'],
         ];
         Mail::to($email)->send(new passwordResetMail($mailData));
         $request->flash();

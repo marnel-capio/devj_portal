@@ -12,12 +12,13 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use App\Models\Employees;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border as StyleBorder;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup as WorksheetPageSetup;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithEvents, ShouldAutoSize, WithColumnWidths, WithStyles
+class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithEvents, ShouldAutoSize, WithColumnWidths, WithStyles, WithTitle
 {
     use Exportable;
 
@@ -29,6 +30,11 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithEvent
         $this->filter = $filter;
         $this->status = $status;
         $this->fileType = $fileType;
+    }
+
+    public function title(): string
+    {
+        return "Contact Info";
     }
 
     public function headings(): array

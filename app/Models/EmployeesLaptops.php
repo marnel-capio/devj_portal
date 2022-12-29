@@ -41,7 +41,7 @@ class EmployeesLaptops extends Model
                     ->leftJoin('laptops', 'employees_laptops.laptop_id', 'laptops.id')
                     ->where('employees_laptops.employee_id', $id)
                     ->where('employees_laptops.surrender_flag', 0)
-                    ->whereIn('employees_laptops.approved_status', [config('constants.APPROVED_STATUS_APPROVED'). config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+                    ->whereIn('employees_laptops.approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
                     ->orderBy('laptops.tag_number', 'ASC')
                     ->get()
                     ->toArray();

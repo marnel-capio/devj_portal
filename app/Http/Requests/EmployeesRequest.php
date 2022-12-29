@@ -45,6 +45,19 @@ class EmployeesRequest extends FormRequest
     }
 
     /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'birthdate.regex' => "The birth date must be a valid date.",
+            'birthdate.date' => "The birth date must be a valid date.",
+        ];
+    }
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, mixed>
@@ -57,7 +70,7 @@ class EmployeesRequest extends FormRequest
                 'first_name' => 'required|max:80|alpha_space',
                 'middle_name' => 'required|max:80|alpha_space',
                 'last_name' => 'required|max:80|alpha_space',
-                'birthdate' => 'required|date',
+                'birthdate' => 'required|date|regex:/^\d{4}-\d{2}-\d{2}$/',
                 'gender' => 'required|in:0,1',
                 'position' => 'required|in:1,2,3,4,5,6,7,8,9',
                 'email' => ['required', 'email', 'max:80', 'min:15', new AWSEmailAddress()],

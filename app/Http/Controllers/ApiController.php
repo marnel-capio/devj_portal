@@ -72,7 +72,7 @@ class ApiController extends Controller
             $message = 'Added Successfully';
         }else{
             //if an employee edits his own data and is not the manager
-            $insertData['approved_status'] = config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE');
+            $insertData['approved_status'] = config('constants.APPROVED_STATUS_PENDING');
 
             EmployeesLaptops::create($insertData);
 
@@ -106,7 +106,7 @@ class ApiController extends Controller
             'project_id' => $data['project_id'],
             'employee_id' => $data['employee_id'],
             'start_date' => $data['project_start'],
-            'end_date' => $request->filled('project_end') ?: NULL,
+            'end_date' => $request->filled('project_end') ? $data['project_end'] : NULL,
             'project_role_type' => $data['project_role'],
             'onsite_flag' => $data['project_onsite'] ? 1 : 0,
             'created_by' => Auth::user()->id,
@@ -136,7 +136,7 @@ class ApiController extends Controller
             $message = 'Added Successfully';
         }else{
             //if an employee edits his own data and is not the manager
-            $insertData['approved_status'] = config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE');
+            $insertData['approved_status'] = config('constants.APPROVED_STATUS_PENDING');
 
             EmployeesProjects::create($insertData);
 

@@ -76,7 +76,7 @@ class EmployeesController extends Controller
         $recipients = Employees::getEmailOfManagers();
 
         $mailData = [
-            'link' => "/employees/{$id}/request",
+            'link' => route('employees.request', ['id' => $id]),
             'currentUserId' => $id,
             'module' => "Employee",
         ];
@@ -117,7 +117,7 @@ class EmployeesController extends Controller
                         'employee' => $employeeDetails,
                         'empLaptop' => EmployeesLaptops::getOwnedLaptopByEmployee($id),
                         'empProject' => EmployeesProjects::getProjectsByEmployee($id),
-                        'laptopList' => Laptops::getLaptopDropdown(),
+                        'laptopList' => Laptops::getLaptopDropdown($id),
                         'projectList' => Projects::getProjectDropdownPerEmployee($id)
                     ]);
     }
@@ -190,7 +190,7 @@ class EmployeesController extends Controller
             }
 
             //format log
-            $log = "";
+            $log = "Employee updated by manager: ";
             foreach($updateData as $key => $value){
                 if($value != $originalData[$key] && !in_array($key, ['updated_by', 'password'])){
                     $log .= "{$key}: {$originalData[$key]} > {$value}, ";
@@ -227,7 +227,7 @@ class EmployeesController extends Controller
 
             //notify the managers of the request
             $mailData = [
-                'link' => "/",  //update link
+                'link' => route('employees.request', ['id' => Auth::user()->id]),
                 'requestor' => Auth::user()->first_name .' ' .Auth::user()->last_name,
                 'currentUserId' => Auth::user()->id,
                 'module' => "Employee",
@@ -346,6 +346,7 @@ class EmployeesController extends Controller
                 ->update([
                     'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
                     'active_status' => 1,
+                    'reasons' => NULL,
                     'updated_by' => Auth::user()->id,
                     'approved_by' => Auth::user()->id,
                 ]);
@@ -355,7 +356,7 @@ class EmployeesController extends Controller
                 'currentUserId' => Auth::user()->id,
                 'module' => "Employee",], config('constants.MAIL_NEW_REGISTRATION_APPROVAL'));
 
-            Logs::createLog("Employee", "Approved the account registration of {$employee->first_name} {$employee->last_name}.");
+            Logs::createLog("Employee", "{$employee->first_name} {$employee->last_name}'s account  has been approved.");
         
         }else{
             //update only
@@ -363,6 +364,7 @@ class EmployeesController extends Controller
             $employeeUpdate['updated_by'] = Auth::user()->id;
             $employeeUpdate['approved_by'] = Auth::user()->id;
             $employeeUpdate['update_data'] = NULL;
+            $employeeUpdate['reasons'] = NULL;
             $employeeUpdate['approved_status'] = config('constants.APPROVED_STATUS_APPROVED');
 
             Employees::where('id', $employee['id'])->update($employeeUpdate);
