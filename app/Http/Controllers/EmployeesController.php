@@ -317,11 +317,6 @@ class EmployeesController extends Controller
             'detailNote' => $detailNote,
             'showRejectCodeModal' => 1,
             'employee' => $employeeDetails,
-            'empLaptop' => EmployeesLaptops::getOwnedLaptopByEmployee($id),
-            'empProject' => EmployeesProjects::getProjectsByEmployee($id),
-            'laptopList' => Laptops::getLaptopDropdown(),
-            'projectList' => Projects::getProjectDropdownPerEmployee($id),
-            'requestor' => $requestor,
         ]);
     }
 
