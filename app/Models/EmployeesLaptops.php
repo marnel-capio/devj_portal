@@ -151,7 +151,7 @@ class EmployeesLaptops extends Model
                                 employees_laptops.update_time as request_date,
                                 employees.first_name,
                                 employees.email,
-                                laptops.tag_number,
+                                laptops.tag_number
                             ')
                         ->leftJoin('laptops', 'laptops.id', 'employees_laptops.laptop_id')
                         ->leftJoin('employees', 'employees.id', 'employees_laptops.employee_id')

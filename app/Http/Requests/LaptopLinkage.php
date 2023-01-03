@@ -29,6 +29,7 @@ class LaptopLinkage extends FormRequest
     public function messages()
     {
         return [
+            'remarks.max_digits' => "The remarks must not be greater than 1024 characters.",
             'surrender_date.required_if' => "The surrender date is required if the surrender flag is checked.",
         ];
     }
@@ -60,7 +61,7 @@ class LaptopLinkage extends FormRequest
             $id = $this->input('id');
             $rules = [
                 'surrender_date' => 'required_if:surrender_flag,1',
-                'remarks' => 'max:1024'
+                'remarks' => 'max_digits:1024'
             ];
     
             if($this->has('surrender_date') && $this->input('surrender_flag')){
@@ -75,10 +76,10 @@ class LaptopLinkage extends FormRequest
             $rules = [
                 'assignee' => ["required", "exists:employees,id", function($attribute, $value, $fail){
                     if(Auth::user()->roles == config('constants.ENGINEER_ROLE_VALUE') && $value != Auth::user()->id){
-                        $fail('An employee with engineer role is not allowed to link a laptop to other employee');
+                        $fail('An employee with engineer role is not allowed to link a laptop to other employee.');
                     }
                 }],
-                'remarks' => 'max:1024',
+                'remarks' => 'max_digits:1024',
                 'id' => [
                         function($attribute, $value, $fail){
                             $data = Laptops::where('id', $value)->first();
