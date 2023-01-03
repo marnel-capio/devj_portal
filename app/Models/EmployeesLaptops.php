@@ -127,6 +127,7 @@ class EmployeesLaptops extends Model
             //get all laptop request and laptop linkage requests of the current user only
             $query->where('employees_laptops.employee_id', Auth::user()->id);
         }
+        $query->orderBy('employees.last_name', 'asc');
 
         return $query->get()->toArray();
     }

@@ -42,7 +42,7 @@ class LaptopsController extends Controller
         $laptop = '';
         if($rejectCode){
             $laptop = Laptops::where('reject_code', $rejectCode)
-                ->where('approved_status', 3)
+                ->where('approved_status', config('constants.APPROVED_STATUS_PENDING'))
                 ->where('status',1)
                 ->first();
             abort_if(empty($laptop), 404);
@@ -242,13 +242,14 @@ class LaptopsController extends Controller
 
         $laptopDetails = Laptops::where('id', $id)->first();
         $reason = $request->input('reason');
+        $rejectCode = uniqid();
 
         if($laptopDetails->approved_status == config('constants.APPROVED_STATUS_PENDING')){
             //approve the  data
             Laptops::where('id', $id)
                     ->update([
                         'approved_status' => config('constants.APPROVED_STATUS_REJECTED'),
-                        'reject_code' => uniqid(),
+                        'reject_code' => $rejectCode,
                         'reason' => $reason, 
                         'updated_by' => Auth::user()->id,
                         'approved_by' => Auth::user()->id,
@@ -261,7 +262,7 @@ class LaptopsController extends Controller
             $recipient = Employees::where('id', $laptopDetails->created_by)->first();
 
             $mailData = [
-                'link' => route('laptops.details', ['id' => $id]),
+                'link' => route('laptops.create') . '/' .$rejectCode,
                 'reason' => $reason,
                 'firstName' => $recipient->first_name,
                 'currentUserId' => Auth::user()->id,
@@ -420,14 +421,12 @@ class LaptopsController extends Controller
 
         $laptopLinkDetails = EmployeesLaptops::where('id', $id)->first();
         $reason = $request->input('reason');
-        $rejectCode = uniqid();
 
         if($laptopLinkDetails->approved_status == config('constants.APPROVED_STATUS_PENDING')){
             //approve the  data
             EmployeesLaptops::where('id', $id)
                     ->update([
                         'approved_status' => config('constants.APPROVED_STATUS_REJECTED'),
-                        'reject_code' => $rejectCode,
                         'reasons' => $reason, 
                         'updated_by' => Auth::user()->id,
                         'approved_by' => Auth::user()->id,
@@ -440,7 +439,7 @@ class LaptopsController extends Controller
             $recipient = Employees::where('id', $laptopLinkDetails->created_by)->first();
 
             $mailData = [
-                'link' => route('laptops.details', ['id' => $laptopLinkDetails->laptop_id]) .$rejectCode,
+                'link' => route('laptops.details', ['id' => $laptopLinkDetails->laptop_id]),
                 'reason' => $reason,
                 'firstName' => $recipient->first_name,
                 'currentUserId' => Auth::user()->id,

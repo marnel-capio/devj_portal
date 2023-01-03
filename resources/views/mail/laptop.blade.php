@@ -27,7 +27,7 @@ Check the request <a href="{{ url($mailData['link']) }}">here</a>.
 Your request for laptop detail update has been approved. <br>
 Check the details <a href="{{ url($mailData['link']) }}">here</a>.
 
-@elseif ($mailType == config('constants.MAIL_LAPTOP_DETAIL_UPDATE_APPROVAL'))
+@elseif ($mailType == config('constants.MAIL_LAPTOP_DETAIL_UPDATE_REJECTION'))
 Your request for laptop detail update has been rejected because of the reason below: <br>
 {{ $reason }}
 
@@ -55,7 +55,7 @@ Check the request <a href="{{ url($mailData['link']) . "#link-req-tbl" }}">here<
 Your request for laptop linkage detail update has been approved.<br>
 Check the details <a href="{{ url($mailData['link']) }}">here</a>.
 
-@elseif ($mailType == config('constants.MAIL_LAPTOP_DETAIL_UPDATE_REQUEST'))
+@elseif ($mailType == config('constants.MAIL_LAPTOP_LINKAGE_UPDATE_BY_MANAGER_NOTIF'))
 A manager has updated the laptop data linked to your account.<br>
 Check the details <a href="{{ url($mailData['link']) }}">here</a>.
 

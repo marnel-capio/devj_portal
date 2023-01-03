@@ -17,14 +17,14 @@ class Laptops extends Mailable
     const MAIL_2 = '【DEV J PORTAL】Laptop Registation Rejection';
     const MAIL_3 = '【DEV J PORTAL】Laptop Registration Approval';
     const MAIL_4 = '【DEV J PORTAL】Laptop Detail Update';
-    const MAIL_5 = '【DEV J PORTAL】Laptop Linkage Detail Update Approval';
+    const MAIL_5 = '【DEV J PORTAL】Laptop Detail Update Approval';
     const MAIL_6 = '【DEV J PORTAL】Laptop Detail Update Rejection';
     const MAIL_7 = '【DEV J PORTAL】Laptop Linkage Request';
     const MAIL_8 = '【DEV J PORTAL】Laptop Linkage Approval';
     const MAIL_9 = '【DEV J PORTAL】Laptop Linkage Rejection';
     const MAIL_10 = '【DEV J PORTAL】Laptop Linkage';
-    const MAIL_11 = '【DEV J PORTAL】Laptop Linkage Update Request';
-    const MAIL_12 = '【DEV J PORTAL】Laptop Linkage Update Approval';
+    const MAIL_11 = '【DEV J PORTAL】Laptop Linkage Update Approval';
+    const MAIL_12 = '【DEV J PORTAL】Laptop Linkage Update Rejection';
     const MAIL_14 = '【DEV J PORTAL】Laptop Linkage Update';
 
     

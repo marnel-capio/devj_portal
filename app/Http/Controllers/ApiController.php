@@ -255,7 +255,7 @@ class ApiController extends Controller
 
             Logs::createLog('Laptop', $log);
 
-            session(['l_alert'=> 'laptop detail was updated successfully.']);
+            session(['l_alert'=> 'Laptop detail was updated successfully.']);
         }else{
             Laptops::where('id', $id)
                     ->update([
@@ -343,7 +343,7 @@ class ApiController extends Controller
                         'update_data' => json_encode($dbReadyData, true),
                         'updated_by' => Auth::user()->id
                     ]);
-            Logs::createLog('Laptop', 'Latop Linkage Update:: ' .json_encode($dbReadyData));
+            Logs::createLog('Laptop', 'Latop Linkage Update: ' .json_encode($dbReadyData));
 
             //send mail
             $recipients = Employees::getEmailOfManagers();
