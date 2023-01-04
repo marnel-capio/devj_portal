@@ -24,7 +24,7 @@
                         <li><a href="{{ route('laptops.create') }}" class="dropdown-item small text-white">Create Laptop</a></li>
                     </ul>
                 </li>
-                <li class="nav-item dropdown">
+                {{-- <li class="nav-item dropdown">
                     <a href="#" class="nav-link text-white"  role="button">Softwares</a>
                     <ul class="dropdown-menu">
                         <li><a href="{{ route('softwares') }}" class="dropdown-item small text-white">View List</a></li>
@@ -53,7 +53,7 @@
                             @endif
                         </ul>
                     </li>
-                @endif
+                @endif --}}
             </ul>
             <ul class="navbar-nav mb-2 mb-lg-0">
                 <li class="nav-item dropdown">
