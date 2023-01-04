@@ -76,6 +76,7 @@ class Employees extends Authenticatable
                     ->where('employees.active_status', 1)
                     ->whereIn('employees.approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
                     ->where('laptops.status', 1)
+                    ->whereIn('laptops.approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
                     ->whereIn('employees_laptops.approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
                     ->orderBy('employees.last_name', 'asc')
                     ->orderBy('employees.first_name', 'asc')
@@ -83,7 +84,6 @@ class Employees extends Authenticatable
                     ->orderBy('employees_laptops.surrender_flag', 'asc')
                     ->orderBy('employees_laptops.surrender_date', 'asc')
                     ->orderBy('employees_laptops.created_by', 'desc')
-                    ->orderBy('laptops.tag_number', 'asc')
                     ->get()
                     ->toArray();
     }

@@ -101,7 +101,7 @@ class LaptopsExport implements
     {
 
         $style = [
-            "A1:M" => [    //style for header
+            "A1:M2" => [    //style for header
                     'font' => ['bold' => true],
                     'alignment' => [
                         'horizontal' => Alignment::HORIZONTAL_CENTER,
@@ -155,14 +155,26 @@ class LaptopsExport implements
      * @return array
      */
     public function registerEvents(): array
-    {
-        $setting = [
-            AfterSheet::class => function(AfterSheet $event) {
-                $event->sheet
-                    ->getPageSetup()
-                    ->setOrientation(WorksheetPageSetup::ORIENTATION_LANDSCAPE);
-            },
-        ];
+    {        
+        if($this->isPdf){
+            $setting = [
+                AfterSheet::class => function(AfterSheet $event) {
+                    $event->sheet
+                        ->getPageSetup()
+                        ->setOrientation(WorksheetPageSetup::ORIENTATION_LANDSCAPE)
+                        ->setPaperSizeDefault(WorksheetPageSetup::PAPERSIZE_A4);
+                },
+            ];
+        }else{
+            $setting = [
+                AfterSheet::class => function(AfterSheet $event) {
+                    $event->sheet
+                        ->getPageSetup()
+                        ->setOrientation(WorksheetPageSetup::ORIENTATION_LANDSCAPE);
+
+                },
+            ];
+        }
     
         return $setting;
     }
