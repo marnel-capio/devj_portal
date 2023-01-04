@@ -17,7 +17,10 @@ class HomeController extends Controller
     	}
 
 
-        return view('home', ['employee_request' => $employee_request]);
+        return view('home', [
+        	'employee_request' => $employee_request,
+        	'softwareRequest' => Softwares::getSoftwareRequest()
+        	]);
     }
 
     private function getEmployeeRequest() {

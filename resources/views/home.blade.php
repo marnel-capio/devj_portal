@@ -53,6 +53,33 @@
 		    </table>
 	    </div>
 	@endif
+	{{-- This section is for Software list --}}
+	<div class="row-req-table row group-category-home p-2"> 
+		<div class="col">
+		  <h3 class="mb-4"> Software Request </h3>
+			<table id="softwares-request" class="table table-striped request-table" >
+				<thead>
+					<tr>
+						<th style="width:18%">Software Name</th>
+						<th style="width:18%">Type</th>
+						<th style="width:18%">Status</th>
+						<th style="width:12%">Purpose</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach ($softwareRequest as $request)
+						<tr>
+							<td>{{ $request['software_name'] }}</td>
+							<td>{{ $request['type'] }}</td>
+							<td>{{ $request['approved_status'] }}</td>	
+							<td>{{ $request['remarks'] }}</td>
+							<td><a href="{{ route('softwares.request', ['id' => $request['id']]) }}"><i class="bi bi-eye"></i>View</a></td>
+						</tr>
+					@endforeach
+				</tbody>
+			</table>
+		</div>
+	</div>
 </div>
 
 

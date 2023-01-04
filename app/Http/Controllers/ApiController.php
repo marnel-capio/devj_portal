@@ -13,6 +13,7 @@ use App\Models\EmployeesProjects;
 use App\Models\Laptops;
 use App\Models\Logs;
 use App\Models\Projects;
+use App\Models\Softwares;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -200,6 +201,25 @@ class ApiController extends Controller
                 ->get();
 
         return json_encode($employee);
+    }
+
+    
+    public function getSoftwareByFilter(Request $request){
+        $searchFilter = [
+            'keyword' => $request->get('keyword'),
+            'status' => $request->get('status'),
+        ];
+        // DB::enableQueryLog();
+        $software = Softwares::whereIn('approved_status', [1,2,3,4]);
+                    
+       // get software
+        if (!empty($searchFilter['keyword'])) {
+            $software = $software->where('software_name','LIKE','%'.$searchFilter['keyword'].'%');
+        }
+        $software = $software->orderBy('software_name', 'ASC')
+                ->get();
+
+        return json_encode($software);
     }
 
 }
