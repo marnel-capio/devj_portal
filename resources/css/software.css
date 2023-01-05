@@ -7,17 +7,17 @@
     background-color: #F2F2F2;
 }
 
-.text-danger{
+.softtext-danger{
     text-align: left;
 }
 
 /* software details */
-input[readonly] {
+softinput[readonly] {
     background-color: #e9ecef;
     opacity: 1;
 }
 
-.rqst-btn {
+.softrqst-btn {
     width: 110px;
 }
 
