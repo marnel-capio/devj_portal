@@ -91,23 +91,38 @@ class LaptopsController extends Controller
         //create logs
         Logs::createLog("Laptop", 'Laptop Registration');
 
-        //send mail to managers
-        $recipients = Employees::getEmailOfManagers();
+        if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE')){
+            //send mail to managers
+            $recipients = Employees::getEmailOfManagers();
 
-        $mailData = [
-            'link' => "/laptops/{$id}/request",
-            'currentUserId' => Auth::user()->id,
-            'module' => "Laptop",
-        ];
+            $mailData = [
+                'link' => "/laptops/{$id}/request",
+                'currentUserId' => Auth::user()->id,
+                'module' => "Laptop",
+            ];
 
-        Mail::to($recipients)->send(new MailLaptops($mailData, config('constants.MAIL_LAPTOP_NEW_REGISTRATION_REQUEST')));
-        
+            Mail::to($recipients)->send(new MailLaptops($mailData, config('constants.MAIL_LAPTOP_NEW_REGISTRATION_REQUEST')));
+        }
+
         return redirect(route('laptops.regist.complete'));
     }
 
     public function details($id){
 
-        $laptopDetails = Laptops::where('id', $id)
+        $laptopDetails = Laptops::select(
+                                        'id',
+                                        'peza_form_number',
+                                        'peza_permit_number',
+                                        'tag_number',
+                                        'laptop_make',
+                                        'laptop_model',
+                                        'laptop_cpu',
+                                        'laptop_clock_speed',
+                                        'laptop_ram',
+                                        'remarks',
+                                        'status'
+                                    )
+                                    ->where('id', $id)
                                     ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'),config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
                                     ->first();
 
