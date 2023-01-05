@@ -1,6 +1,6 @@
 @include('header')
-<link rel="stylesheet" href="{{ asset(mix('css/employee.min.css')) }}">
-<script src="{{ asset(mix('js/employee.min.js')) }}" defer></script>
+<link rel="stylesheet" href="{{ asset(mix('css/software.min.css')) }}">
+<script src="{{ asset(mix('js/software.min.js')) }}" defer></script>
 @include('headerMenu')
 @if (session('success')) 
 	<div class="alert alert-success " role="alert">
@@ -9,67 +9,46 @@
 @endif
 <div class="container container-list-table mt-3 ms-4 mb-5">
 	<h3> Employee List </h3>
-	@if(auth()->user()->roles != 3)
-	<div class="row row-list">
-		<div class="col">
-			<a href='{!! url("/employees/sendNotification"); !!}' class="btn btn-primary float-end " id='send-notif'>
-				<div class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
-  					<span class="sr-only"></span>
-				</div>
-				Send Notification
-			</a>
-		</div>
-	</div>
-	@endif
-	<form action='{!! url("/employees/download"); !!}' method="POST">
+	<form action='{!! url("/softwares/download"); !!}' method="POST">
                 @csrf
         <div class="row row-list">
-        	<div class="col-1 filter-employee">
+        	<div class="col-1 filter-software">
 				Status: 
 			</div>
 			<div class="col-11">
-				<input class="search-status-rdb-input" type="radio" name="employeeStatus" id="status-all" value="1" checked>
-				<label class="search-status-rdb-label  form-check-label" for="status-all">
+				<input class="soft-search-status-rdb-input" type="radio" name="softwareStatus" id="status-all" value="1" checked>
+				<label class="soft-search-status-rdb-label  form-check-label" for="status-all">
 				    All
 				</label>
 				&nbsp;&nbsp;
-				<input class="search-status-rdb-input" type="radio" name="employeeStatus" id="status-active" value="2" >
-				<label class="search-status-rdb-label form-check-label" for="status-active">
-				    Active
+				<input class="soft-search-status-rdb-input" type="radio" name="softwareStatus" id="status-approved" value="2" >
+				<label class="soft-search-status-rdb-label form-check-label" for="status-approved">
+				    Approved
 				</label>
 				&nbsp;&nbsp;
-				<input class="search-status-rdb-input" type="radio" name="employeeStatus" id="status-deactivated" value="3" >
-				<label class="search-status-rdb-label form-check-label" for="status-deactivated">
-				    Deactivated
-				</label>
-			</div>
-		</div>
-		<div class="row row-list">
-        	<div class="col-1 filter-employee">
-				Filter: 
-			</div>
-			<div class="col">
-				<input class="search-filter-rdb-input" type="radio" name="searchFilter" id="filter-name" value="1" checked>
-				<label class="search-filter-rdb-label  form-check-label" for="filter-name">
-				    Name
+				<input class="soft-search-status-rdb-input" type="radio" name="softwareStatus" id="status-pending-new" value="3" >
+				<label class="soft-search-status-rdb-label form-check-label" for="status-pending-new">
+				    Pending Approval
 				</label>
 				&nbsp;&nbsp;
-				<input class="search-filter-rdb-input" type="radio" name="searchFilter" id="filter-city" value="2" >
-				<label class="search-filter-rdb-label  form-check-label" for="filter-city">
-				    City
+				<input class="soft-search-status-rdb-input" type="radio" name="softwareStatus" id="status-pending-update" value="4" >
+				<label class="soft-search-status-rdb-label form-check-label" for="status-pending-update">
+				    Pending Update Approval
 				</label>
 				&nbsp;&nbsp;
-				<input class="search-filter-rdb-input" type="radio" name="searchFilter" id="filter-province" value="3" >
-				<label class="search-filter-rdb-label  form-check-label" for="filter-province">
-				    Province
+				<input class="soft-search-status-rdb-input" type="radio" name="softwareStatus" id="status-rejected" value="5" >
+				<label class="soft-search-status-rdb-label form-check-label" for="status-rejected">
+				    Denied
 				</label>
 			</div>
 		</div>
 		<div class="row row-list">
 			<div class="col-10">
-				<input type="text" name="searchInput" class="search-input-text" id="search-input" placeholder="Search">
+				<input type="text" name="softSearchInput" class="search-input-text" id="search-input" placeholder="Search">
 			</div>
-
+			<div class="col">
+				<button type="submit" class="btn btn-primary float-end me-1">Download</button>
+			</div>
 			<div class="col">
 				<button type="submit" class="btn btn-primary float-end download-btn">Download</button>
 			</div>
@@ -77,43 +56,25 @@
 	</form>
 	<div class="row-list row">
 	    <div class="col ">
-	    	<table id="employee-list" class="table table-striped" >
+	    	<table id="softwares-list" class="table table-striped" >
 		        <thead>
 		            <tr>
-		                <th class="tbl-header-name">Name</th>
-		                <th>Email Address</th>
-		                <th>Phone Number</th>
-		                <th>City</th>
-		                <th>Province</th>
+		                <th class="tbl-header-name">Software Name</th>
+		                <th>Type</th>
 		                <th>Status</th>
+		                <th>Rejection Reason</th>
+		                <th>Purpose</th>
 		            </tr>
 		        </thead>
 		        <tbody>
-		        	@foreach ($employee_request as $user)
+		        	@foreach ($software_request as $software)
 		        	<?php $id = $user["id"]; ?>
 		            <tr>
-		                <td><a href='{!! url("/employees/$id"); !!}'>{{$user['last_name']}}, {{$user['first_name']}} ({{$user['middle_name']}})</a></td>
-		                <td>{{$user['email']}}</td>
-		                <td>{{$user['cellphone_number']}}</td>
-		                <td>{{$user['current_address_city']}}</td>
-		                <td>{{$user['current_address_province']}}</td>
-		                <td>
-		                	@if($user['active_status'] == 0)
-		                		@if($user['approved_status'] == 1 || $user['approved_status'] == 2 || $user['approved_status'] == 4)
-		                			Deactivated
-		                		@else
-		                			Pending for Approval
-		                		@endif
-		                	@else
-		                		@if ($user['approved_status'] == 1)
-		                			Deactivated
-		                		@elseif ($user['approved_status'] == 2 || $user['approved_status'] == 4) 
-		                			Active
-		                		@else
-		                			Pending for Approval
-		                		@endif
-		                	@endif
-		                </td>
+		                <td><a href='{!! url("/softwares/$id"); !!}'>{{$software['software_name']}}</a></td>
+		                <td>{{$software['type']}}</td>
+		                <td>{{$software['approved_status']}}</td>
+		                <td>{{$software['reasons']}}</td>
+		                <td>{{$software['remarks']}}</td>
 		            </tr>
 		            @endforeach
 		        </tbody>

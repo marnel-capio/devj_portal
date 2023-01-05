@@ -10,25 +10,20 @@ $(document).ready(function () {
 	    }
 	});
 
-    $("#send-notif").on("click", function() {
-        $(".spinner-border").show();
-
-    });
-
-    $(".search-status-rdb-input").on("click", function(){
+    $(".soft-search-status-rdb-input").on("click", function(){
         filterSoftwareList();
     });
 
-    $(".search-filter-rdb-input").on("click", function(){
+    $(".soft-search-filter-rdb-input").on("click", function(){
         filterSoftwareList();
     });
 
-    $("#search-input").on("input",function(){
+    $("#soft-search-input").on("input",function(){
         filterSoftwareList();
     });
 
     function filterSoftwareList() {
-      var keyword = $("input[name='searchInput']").val();
+      var keyword = $("input[name='softSearchInput']").val();
       var status = $("input[name='softwareStatus']:checked").val();
         $.ajax({
             type:"get",
@@ -62,14 +57,14 @@ $(document).ready(function () {
 	//start for software registration
 
 	//disable submit button if not all required fields have value
-	checkRequiredFields();
+	softcheckRequiredFields();
 
 	$(":input[required]").change(function(){
-		checkRequiredFields();
+		softcheckRequiredFields();
 	});
 
 
-	function checkRequiredFields(){
+	function softcheckRequiredFields(){
 		var empty = false;
 		$(":input[required]").each(function(){
 			if($(this).val() == ''){
@@ -77,9 +72,9 @@ $(document).ready(function () {
 			}
 		})
 		if(empty){
-			$("#emp-reg-submit").prop('disabled', true);
+			$("#soft-reg-submit").prop('disabled', true);
 		}else{
-			$("#emp-reg-submit").prop('disabled', false);
+			$("#soft-reg-submitt").prop('disabled', false);
 		}
 	}
 
@@ -187,33 +182,33 @@ $(document).ready(function () {
 
 
     //reject modal
-	$("#reject-request-form").submit(function(){
-		if($("#reject-reason").val() == ""){
+	$("#soft-reject-request-form").submit(function(){
+		if($("soft-#reject-reason").val() == ""){
 			console.log("hello");
-			$("#reject-reason-error").html('The reason field is required.').addClass("text-danger text-start");
+			$("#soft-reject-reason-error").html('The reason field is required.').addClass("text-danger text-start");
 			return false;
-		}else if($("#reject-reason").val().length > 1024){
-			$("#reject-reason-error").html('The reason must not be greater than 1024 characters.').addClass("text-danger text-start");
+		}else if($("#soft-reject-reason").val().length > 1024){
+			$("#soft-reject-reason-error").html('The reason must not be greater than 1024 characters.').addClass("text-danger text-start");
 			return false;
 		}else {
-			$('#reject-sub').prop('disabled', true);
+			$('#soft-reject-sub').prop('disabled', true);
 		}
 	});
 
 	//approve
-	$("#approve-request-form").submit(function(){
+	$("#soft-approve-request-form").submit(function(){
 		$('#approve-request').prop('disabled', true);
 	})
 
 	// edit submit
-	$("#emp-update-form").submit(function(){
+	$("#soft-update-form").submit(function(){
 		if($("#active-status").is(':checked')){
 			$("#active-status-hidden").prop('disabled', true);
 		}
 		if($("#server-manage-flag").is(':checked')){
 			$("#server-manage-flag-hidden").prop('disabled', true);
 		}
-		$('#emp-update-submit').prop('disabled', true);
+		$('#soft-update-submit').prop('disabled', true);
 	});
 
 	$('linkProjectModal').on('hidden.bs.modal', function(){

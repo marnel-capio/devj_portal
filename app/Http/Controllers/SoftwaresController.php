@@ -32,7 +32,7 @@ class SoftwaresController extends Controller
             abort_if(empty($software), 404);
         }
 
-        return view('software.create')->with(['software' => $software]);
+        return view('softwares.create')->with(['software' => $software]);
     }
 
     public function regist(SoftwaresRequest $request){
@@ -79,7 +79,7 @@ class SoftwaresController extends Controller
         ];
         $this->sendMail($recipients, $mailData, config('constants.MAIL_NEW_SOFTWARE_REQUEST'));
         
-        return redirect(route('software.regist.complete'));
+        return redirect(route('softwares.regist.complete'));
     }
 
     public function detail($id){
@@ -326,7 +326,7 @@ class SoftwaresController extends Controller
             $mailData = [
                 'first_name' => $employee->first_name,
                 'reasons' => $reason,
-                'link' => route('software.create') ."/{$rejectCode}",
+                'link' => route('softwares.create') ."/{$rejectCode}",
                 'currentUserId' => Auth::user()->id,
                 'module' => "Software",
             ];
