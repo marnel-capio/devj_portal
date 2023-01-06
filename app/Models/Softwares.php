@@ -17,7 +17,6 @@ class Softwares extends Model
     static function getSoftwareRequest(){
         $query = self::selectRaw('
                                 id,
-                                requested_by,
                                 approved_by,
                                 approved_status,
                                 type,

@@ -39,7 +39,7 @@
                 <h4 class="text-start">Software </h4>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="software_status" id="software_status" placeholder="Status" value="{{ $software->approved_status }}" required @readonly($readOnly)>
+                        <input type="text" class="form-control" name="software_status" id="software_status" placeholder="Status" value="{{ $current_status }}" required @readonly($readOnly)>
                         <label class="text-center" for="software_status">Status</label>
                         @if ($errors->has('software_status'))
                         <p class="text-danger">{{ $errors->first('software_status') }}</p>
@@ -58,12 +58,12 @@
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-md-6 col-8 g-3 form-floating">
                         <select name="software_type" id="software_type" class="form-select form-control" {{ $readOnly ? 'disabled' : '' }}>
-                            <option {{ $software->type == 1 ? "selected" : "" }} value="1">{{ config('constants.SOFTWARE_TYPE_PROD_TOOL_NAME') }}</option>
-                            <option {{ $software->type == 2 ? "selected" : "" }} value="2">{{ config('constants.SOFTWARE_TYPE_MESSAGING_NAME') }}</option>
-                            <option {{ $software->type == 3 ? "selected" : "" }} value="3">{{ config('constants.SOFTWARE_TYPE_BROWSER_NAME') }}</option>
-                            <option {{ $software->type == 4 ? "selected" : "" }} value="4">{{ config('constants.SOFTWARE_TYPE_SYSTEM_UTIL_NAME') }}</option>
-                            <option {{ $software->type == 5 ? "selected" : "" }} value="5">{{ config('constants.SOFTWARE_TYPE_PROJECT_SPECIFIC_NAME') }}</option>
-                            <option {{ $software->type == 6 ? "selected" : "" }} value="6">{{ config('constants.SOFTWARE_TYPE_PHONE_DRIVERS_NAME') }}</option>
+                            <option {{ $software->type == 1 ? "selected" : "" }} value="1">{{ config('constants.SOFTWARE_TYPE_1_NAME') }}</option>
+                            <option {{ $software->type == 2 ? "selected" : "" }} value="2">{{ config('constants.SOFTWARE_TYPE_2_NAME') }}</option>
+                            <option {{ $software->type == 3 ? "selected" : "" }} value="3">{{ config('constants.SOFTWARE_TYPE_3_NAME') }}</option>
+                            <option {{ $software->type == 4 ? "selected" : "" }} value="4">{{ config('constants.SOFTWARE_TYPE_4_NAME') }}</option>
+                            <option {{ $software->type == 5 ? "selected" : "" }} value="5">{{ config('constants.SOFTWARE_TYPE_5_NAME') }}</option>
+                            <option {{ $software->type == 6 ? "selected" : "" }} value="6">{{ config('constants.SOFTWARE_TYPE_6_NAME') }}</option>
                         </select>
                         <label  class="text-center" for="software_type">Software Type</label>
                         @if ($errors->has('software_type'))
@@ -71,33 +71,35 @@
                         @endif
                     </div>
                 </div>
-            </div>
-            <div class="row mb-2 ps-3 pe-3">
-                <div class="col-4 g-3 form-floating">
-                    <input type="text" class="form-control" name="software_purpose" id="software_purpose" placeholder="Purpose" value="{{ $software->remarks }}" required @readonly($readOnly)>
-                    <label class="text-center" for="software_purpose">Purpose</label>
-                    @if ($errors->has('software_purpose'))
-                    <p class="text-danger">{{ $errors->first('software_purpose') }}</p>
-                    @endif
+                <div class="row mb-2 ps-3 pe-3">
+                    <div class="col-4 g-3 form-floating">
+                        <input type="text" class="form-control" name="software_purpose" id="software_purpose" placeholder="Purpose" value="{{ $software->remarks }}" required @readonly($readOnly)>
+                        <label class="text-center" for="software_purpose">Purpose</label>
+                        @if ($errors->has('software_purpose'))
+                        <p class="text-danger">{{ $errors->first('software_purpose') }}</p>
+                        @endif
+                    </div>
                 </div>
-            </div>
-            <div class="row mb-2 ps-3 pe-3">
-                <div class="col-4 g-3 form-floating">
-                    <input type="text" class="form-control" name="software_createdby" id="software_createdby" placeholder="Created By" value="{{ $software->created_by }}" required @readonly($readOnly)>
-                    <label class="text-center" for="software_createdby">Created By</label>
-                    @if ($errors->has('software_createdby'))
-                    <p class="text-danger">{{ $errors->first('software_createdby') }}</p>
-                    @endif
+                <div class="row mb-2 ps-3 pe-3">
+                    <div class="col-4 g-3 form-floating">
+                        <input type="text" class="form-control" name="software_createdby" id="software_createdby" placeholder="Created By" value="{{ $requestor }}" required @readonly($readOnly)>
+                        <label class="text-center" for="software_createdby">Created By</label>
+                        @if ($errors->has('software_createdby'))
+                        <p class="text-danger">{{ $errors->first('software_createdby') }}</p>
+                        @endif
+                    </div>
                 </div>
-            </div>
-            <div class="row mb-2 ps-3 pe-3">
-                <div class="col-4 g-3 form-floating">
-                    <input type="text" class="form-control" name="software_approvedby" id="software_approvedby" placeholder="Approved By" value="{{ $software->approved_by }}" required @readonly($readOnly)>
-                    <label class="text-center" for="software_approvedby">Approved By</label>
-                    @if ($errors->has('software_approvedby'))
-                    <p class="text-danger">{{ $errors->first('software_approvedby') }}</p>
-                    @endif
-                </div>
+                @if( $is_display_approver)
+                    <div class="row mb-2 ps-3 pe-3">
+                        <div class="col-4 g-3 form-floating">
+                            <input type="text" class="form-control" name="software_approvedby" id="software_approvedby" placeholder="Approved By" value="{{ $approver }}" required @readonly($readOnly)>
+                            <label class="text-center" for="software_approvedby">Approved By</label>
+                            @if ($errors->has('software_approvedby'))
+                            <p class="text-danger">{{ $errors->first('software_approvedby') }}</p>
+                            @endif
+                        </div>
+                    </div>
+                @endif
             </div>
         </form>
     </div>
@@ -134,7 +136,7 @@
     <div class="text-center p-4">
         <button class="btn btn-danger btn-lg mb-5 me-4 rqst-btn"  data-bs-target="#softwarerejectRequestModal" data-bs-toggle="modal" id="soft-reject-request">Reject</button>
         <button class="btn btn-success btn-lg mb-5 ms-4 rqst-btn" id="soft-approve-request"  form="soft-approve-request-form">Approve</button>
-        <form action="{{ route('software.store') }}" method="POST" id="soft-approve-request-form">
+        <form action="{{ route('softwares.store') }}" method="POST" id="soft-approve-request-form">
             @csrf
             <input type="text" name="id" hidden value="{{ $software->id }}">
         </form>
@@ -148,7 +150,7 @@
                             @csrf
                             <input type="text" name="id" value="{{ $software->id }}" hidden>
                             <div class="mb-2">
-                                <textarea class="form-control" name="reason" placeholder="Reason" rows="5" id="soft-reject-reason" required></textarea>
+                                <textarea class="form-control" name="reason" placeholder="Rejection Reason" rows="5" id="soft-reject-reason" required></textarea>
                             </div>
                             <p id="soft-reject-reason-error"></p>
                         </form>

@@ -1,10 +1,10 @@
 @include('header')
 
 @include('headerMenu')
-<div class="container container-req-table  mt-3 ms-4 mb-5">
+<div class="container container-req-table  mt-4 ms-4 mb-4">
   @if(auth()->user()->roles == 2)
 
-	<div class="row-req-table row">
+	<div class="row-req-table row group-category-home p-2">
 	    <div class="col">
 	      <h3 class="mb-4"> Employee Request </h3>
 			<table id="employee-request" class="table table-striped request-table" >
@@ -52,35 +52,65 @@
 		        </tbody>
 		    </table>
 	    </div>
+	</div>
+
 	@endif
 	{{-- This section is for Software list --}}
 	<div class="row-req-table row group-category-home p-2"> 
 		<div class="col">
 		  <h3 class="mb-4"> Software Request </h3>
-			<table id="softwares-request" class="table table-striped request-table" >
+			<table id="software-request" class="table table-striped request-table" >
 				<thead>
 					<tr>
 						<th style="width:18%">Software Name</th>
 						<th style="width:18%">Type</th>
 						<th style="width:18%">Status</th>
-						<th style="width:12%">Purpose</th>
+						<th style="width:25%">Purpose</th>
+						<th style="width:12%">Action</th>
 					</tr>
 				</thead>
 				<tbody>
-					@foreach ($softwareRequest as $request)
+					@foreach ($softwareRequest as $software)
 						<tr>
-							<td>{{ $request['software_name'] }}</td>
-							<td>{{ $request['type'] }}</td>
-							<td>{{ $request['approved_status'] }}</td>	
-							<td>{{ $request['remarks'] }}</td>
-							<td><a href="{{ route('softwares.request', ['id' => $request['id']]) }}"><i class="bi bi-eye"></i>View</a></td>
+							<td>{{ $software['software_name'] }}</td>
+							<td>
+								@if ($software['type'] == config('constants.SOFTWARE_TYPE_1')) 
+									{{config('constants.SOFTWARE_TYPE_1_NAME')}}
+								@elseif ($software['type'] == config('constants.SOFTWARE_TYPE_2')) 
+									{{config('constants.SOFTWARE_TYPE_2_NAME')}}
+								@elseif ($software['type'] == config('constants.SOFTWARE_TYPE_3')) 
+									{{config('constants.SOFTWARE_TYPE_3_NAME')}}
+								@elseif ($software['type'] == config('constants.SOFTWARE_TYPE_4')) 
+									{{config('constants.SOFTWARE_TYPE_4_NAME')}}
+								@elseif ($software['type'] == config('constants.SOFTWARE_TYPE_5')) 
+									{{config('constants.SOFTWARE_TYPE_5_NAME')}}
+								@elseif ($software['type'] == config('constants.SOFTWARE_TYPE_6')) 
+									{{config('constants.SOFTWARE_TYPE_6_NAME')}}
+								@else
+									-
+								@endif
+							</td>
+							<td>
+								@if ($software['approved_status'] == config('constants.APPROVED_STATUS_REJECTED')) 
+									{{config('constants.APPROVED_STATUS_REJECTED_TEXT')}}
+								@elseif ($software['approved_status'] == config('constants.APPROVED_STATUS_APPROVED')) 
+									{{config('constants.APPROVED_STATUS_APPROVED_TEXT')}}
+								@elseif ($software['approved_status'] == config('constants.APPROVED_STATUS_PENDING')) 
+									{{config('constants.APPROVED_STATUS_PENDING_TEXT')}}
+								@elseif ($software['approved_status'] == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')) 
+									{{config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE_TEXT')}}
+								@else
+									-
+								@endif
+							</td>
+							<td>{{ $software['remarks'] }}</td>
+							<td><a href="{{ route('softwares.request', ['id' => $software['id']]) }}"><i class="bi bi-eye"></i>View</a></td>
 						</tr>
 					@endforeach
 				</tbody>
 			</table>
 		</div>
 	</div>
-</div>
 
 
 @include('footer')

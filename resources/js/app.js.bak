@@ -6,9 +6,4 @@ $(document).ready(function () {
 		"stateSave": true,
 		"pageLength": 10
 	});
-
-	$("#software-request").DataTable({
-		"stateSave": true,
-		"pageLength": 10
-	});
 });

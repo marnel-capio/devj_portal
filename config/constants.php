@@ -17,6 +17,12 @@ return [
     'APPROVED_STATUS_PENDING' => 3,
     'APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE' => 4,
 
+    //Approve Status Text
+    'APPROVED_STATUS_REJECTED_TEXT' => 'Denied',
+    'APPROVED_STATUS_APPROVED_TEXT' => 'Approved',
+    'APPROVED_STATUS_PENDING_TEXT' => 'Pending Approval',
+    'APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE_TEXT' => 'Pending Update Approval',
+
     //Employee table - position
     'POSITION_JR_RESEARCH_DEVELOPMENT_VALUE' => 1,
     'POSITION_ASSISTANT_RESEARCH_DEVELOPMENT_VALUE' => 2,
@@ -59,20 +65,20 @@ return [
     'MAIL_SOFTWARE_PROJECT_LINK_REQUEST' => 18,
 
     //software type
-    'SOFTWARE_TYPE_PROD_TOOL_VALUE' => 1,
-    'SOFTWARE_TYPE_MESSAGING_VALUE' => 2,
-    'SOFTWARE_TYPE_BROWSER_VALUE' => 3,
-    'SOFTWARE_TYPE_SYSTEM_UTIL_VALUE' => 4,
-    'SOFTWARE_TYPE_PROJECT_SPECIFIC_VALUE' => 5,
-    'SOFTWARE_TYPE_PHONE_DRIVERS_VALUE' => 6,
+    'SOFTWARE_TYPE_1' => 1,    //SOFTWARE_TYPE_PROD_TOOL_VALUE
+    'SOFTWARE_TYPE_2' => 2,    //SOFTWARE_TYPE_MESSAGING_VALUE
+    'SOFTWARE_TYPE_3' => 3,    //SOFTWARE_TYPE_BROWSER_VALUE
+    'SOFTWARE_TYPE_4' => 4,    //SOFTWARE_TYPE_SYSTEM_UTIL_VALUE
+    'SOFTWARE_TYPE_5' => 5,    //SOFTWARE_TYPE_PROJECT_SPECIFIC_VALUE
+    'SOFTWARE_TYPE_6' => 6,    //SOFTWARE_TYPE_PHONE_DRIVERS_VALUE
 
     //softwaretype name
-    'SOFTWARE_TYPE_PROD_TOOL_NAME' => 'Productivity Tools',
-    'SOFTWARE_TYPE_MESSAGING_NAME' => 'Messaging/Collaboration ',
-    'SOFTWARE_TYPE_BROWSER_NAME' => 'Browser',
-    'SOFTWARE_TYPE_SYSTEM_UTIL_NAME' => 'System Utilities',
-    'SOFTWARE_TYPE_PROJECT_SPECIFIC_NAME' => 'Project Specific Softwares',
-    'SOFTWARE_TYPE_PHONE_DRIVERS_NAME' => 'Phone Drivers',
+    'SOFTWARE_TYPE_1_NAME' => 'Productivity Tools',
+    'SOFTWARE_TYPE_2_NAME' => 'Messaging/Collaboration ',
+    'SOFTWARE_TYPE_3_NAME' => 'Browser',
+    'SOFTWARE_TYPE_4_NAME' => 'System Utilities',
+    'SOFTWARE_TYPE_5_NAME' => 'Project Specific Softwares',
+    'SOFTWARE_TYPE_6_NAME' => 'Phone Drivers',
 
 
 ];

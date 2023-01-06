@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\SoftwaresRequest;
 use PhpOffice\PhpSpreadsheet\Writer\Pdf;
 use Illuminate\Contracts\Session\Session;
+use Illuminate\Support\Facades\Log;
 
 class SoftwaresController extends Controller
 {
@@ -84,6 +85,7 @@ class SoftwaresController extends Controller
 
     public function detail($id){
         $softwareDetails = Softwares::where('id', $id)->first();
+        $is_display_approver = true;
 
         abort_if(empty($softwareDetails), 404); //software does not exist
 
@@ -108,6 +110,8 @@ class SoftwaresController extends Controller
                         'detailNote' => $this->getSoftwareStatus($softwareDetails),
                         'readOnly' => true,
                         'detailOnly' => true,
+                        'current_status' => $this->transformStatusToText($softwareDetails),
+                        'is_display_approver' => $is_display_approver,
                     ]);
     }
 
@@ -202,6 +206,13 @@ class SoftwaresController extends Controller
     public function request($id){
 
         $softwaresDetails = Softwares::where('id', $id)->first();
+        $requestorDetail = Employees::where('id', $softwaresDetails->updated_by)->first();
+        $approverDetails = Employees::where('id', $softwaresDetails->approved_by)->first();
+
+        $requesterName = $requestorDetail->last_name . ", " . $requestorDetail->first_name . " " . $requestorDetail->middle_name; 
+        $approverName = $approverDetails->last_name . ", " . $approverDetails->first_name . " " . $approverDetails->middle_name; 
+
+        $is_display_approver = false;
 
         //abort_if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE'), 403);   //can only be accessed by manager
 
@@ -235,6 +246,10 @@ class SoftwaresController extends Controller
             'detailNote' => $detailNote,
             'showRejectCodeModal' => 1,
             'software' => $softwaresDetails,
+            'current_status' => $this->transformStatusToText($softwaresDetails),
+            'requestor' => $requesterName,
+            'approver' => $approverName,
+            'is_display_approver' => $is_display_approver,
         ]);
     }
 
@@ -410,6 +425,29 @@ class SoftwaresController extends Controller
 
         return $note;
     }
+
+    private function transformStatusToText($software){
+        $statut_text = '';
+        switch ($software['approved_status']){
+            case config('constants.APPROVED_STATUS_REJECTED'):     //rejected registration
+                $statut_text = config('constants.APPROVED_STATUS_REJECTED_TEXT');
+                break;
+            case config('constants.APPROVED_STATUS_PENDING'):     //pending registration
+                $statut_text = config('constants.APPROVED_STATUS_PENDING_TEXT');
+                break;
+            case config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE'):
+                $statut_text = config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE_TEXT');
+                break;
+            case config('constants.APPROVED_STATUS_APPROVED'):     //rejected registration
+                $statut_text = config('constants.APPROVED_STATUS_APPROVED_TEXT');
+                break;
+           default:    //account has been deactivated 
+                $statut_text = '';
+        }
+
+        return $statut_text;
+    }
+
 
     /**
      * formats data for insert/update in softwares table

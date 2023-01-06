@@ -1,10 +1,14 @@
 {
     "/js/app.js": "/js/app.js",
     "/js/employee.js": "/js/employee.js",
+    "/js/software.js": "/js/software.js",
+    "/css/software.css": "/css/software.css",
     "/css/employee.css": "/css/employee.css",
     "/css/app.css": "/css/app.css",
     "/js/app.min.js": "/js/app.min.js",
     "/css/app.min.css": "/css/app.min.css",
     "/js/employee.min.js": "/js/employee.min.js",
-    "/css/employee.min.css": "/css/employee.min.css"
+    "/css/employee.min.css": "/css/employee.min.css",
+    "/js/software.min.js": "/js/software.min.js",
+    "/css/software.min.css": "/css/software.min.css"
 }

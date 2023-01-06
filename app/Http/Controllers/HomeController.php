@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Employees;
+use App\Models\Softwares;
 use PhpParser\Node\Stmt\Return_;
 
 class HomeController extends Controller
@@ -15,7 +16,6 @@ class HomeController extends Controller
     	if (Auth::user()->roles != 3) {
     		$employee_request = $this->getEmployeeRequest();
     	}
-
 
         return view('home', [
         	'employee_request' => $employee_request,
@@ -35,4 +35,5 @@ class HomeController extends Controller
 
         return $employee;
     }
+
 }

@@ -79,7 +79,7 @@ Route::middleware(['auth', 'web'])->group(function(){
     });
 
     Route::prefix('/softwares')->controller(SoftwaresController::class)->group(function(){
-        Route::get('/{id}/request', 'request')->name('  ')->whereNumber('id');
+        Route::get('/{id}/request', 'request')->name('softwares.request')->whereNumber('id');
         Route::post('/store', 'store')->name('softwares.store');
         Route::post('/reject', 'reject')->name('softwares.reject');
         Route::post('/update', 'update')->name('softwares.update');
