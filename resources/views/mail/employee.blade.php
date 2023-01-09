@@ -83,7 +83,7 @@
 @elseif ($mailType == config('constants.MAIL_EMPLOYEE_SURRENDER_LAPTOP_WHEN_USER_IS_DEACTIVATED'))
 
     {{ $mailData['employeeName'] }}'s account has been deactivated.<br>
-    A request to surrenderthe laptops assigned to {{ $mailData['employeeName'] }} has been created.<br>
+    A request to surrender the laptops assigned to {{ $mailData['employeeName'] }} has been created.<br>
     Check the request <a href="{{ url($mailData['link']) }}">here</a>.
     
 @endif

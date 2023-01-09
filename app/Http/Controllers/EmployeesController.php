@@ -253,6 +253,7 @@ class EmployeesController extends Controller
             EmployeesLaptops::whereIn('id', $ids)
             ->where('surrender_flag', 0)
             ->update([
+                'approved_status' => config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE'),
                 'update_data'=> json_encode([
                     'surrender_flag' => 1,
                     'surrender_date' => date('Y-m-d H:i:s')
@@ -267,7 +268,7 @@ class EmployeesController extends Controller
                 //send mail
                 $mailData = [
                     'employeeName' => $employeeDetails['first_name'] .' ' .$employeeDetails['last_name'],
-                    'link' => route('laptops.request', ['id' => $laptop['laptop_id']]),
+                    'link' => route('laptops.details', ['id' => $laptop['laptop_id']]) .'#link-req-tbl',
                     'currentUserId' => Auth::user()->id,
                     'module' => "Employee",
                 ];
@@ -317,6 +318,7 @@ class EmployeesController extends Controller
             'detailNote' => $detailNote,
             'showRejectCodeModal' => 1,
             'employee' => $employeeDetails,
+            'requestor' => $requestor
         ]);
     }
 

@@ -93,7 +93,7 @@
         <div class="row mb-2 ps-3 pe-3">
             <div class="col-6 g-3">
                 <div class="row">
-                    <h5 class="text-danger">※Requested by {{ $requestor->requestor }}</h5>
+                    <h6 class="text-danger">※Requested by {{ $requestor->requestor }}</h6>
                 </div>
             </div>
         </div>

@@ -24,7 +24,8 @@ class EmployeesLaptops extends Model
      */
     static function getOwnedLaptopByEmployee($id){
         
-        return self::selectRaw('laptops.id
+        return self::selectRaw('employees_laptops.id
+                                ,employees_laptops.laptop_id
                                 ,laptops.tag_number
                                 ,laptops.laptop_make
                                 ,laptops.laptop_model
@@ -119,7 +120,6 @@ class EmployeesLaptops extends Model
                         ->leftJoin('employees', 'employees.id', 'employees_laptops.employee_id')
                         ->whereIn('laptops.approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
                         ->where('laptops.status', 1)
-                        ->where('employees.active_status', 1)
                         ->whereIn('employees_laptops.approved_status', [config('constants.APPROVED_STATUS_PENDING'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
                         ->whereIn('employees.approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
 
