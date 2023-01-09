@@ -24,8 +24,8 @@ class EmployeesLaptops extends Model
      */
     static function getOwnedLaptopByEmployee($id){
         
-        return self::selectRaw('employees_laptops.id
-                                ,employees_laptops.laptop_id
+        return self::selectRaw('laptops.id
+                                ,employees_laptops.id as linkage_id
                                 ,laptops.tag_number
                                 ,laptops.laptop_make
                                 ,laptops.laptop_model
@@ -62,14 +62,13 @@ class EmployeesLaptops extends Model
 									employees_laptops.approved_status,
 									employees_laptops.remarks,
 									CONCAT(employees.last_name, ", ", employees.first_name) AS employee_name
-		')
-		->where('laptop_id', $laptopId)
+		                        ')
+		                        ->where('laptop_id', $laptopId)
 								->leftJoin('employees', 'employees.id', 'employees_laptops.employee_id')
                                 ->where('employees_laptops.surrender_flag', 0)
                                 ->whereIn('employees_laptops.approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
                                 ->orderBy('employees_laptops.update_time', 'desc')
 								->first();
-
     }
 
     /**
@@ -146,19 +145,21 @@ class EmployeesLaptops extends Model
                                 laptops.laptop_make,
                                 laptops.laptop_model,
                                 employees_laptops.id,
+                                employees_laptops.surrender_date,
                                 employees_laptops.remarks,
-                                case when employees_laptops.vpn_flag then "Y" else "N" end as vpn_access,
-                                case when employees_laptops.brought_home_flag then "Y" else "N" end as brought_home,
+                                case when employees_laptops.vpn_flag then "Y" else "N" end as vpn_flag,
+                                case when employees_laptops.brought_home_flag then "Y" else "N" end as brought_home_flag,
+                                case when employees_laptops.surrender_flag then "Y" else "N" end as surrender_flag,
                                 employees_laptops.update_time as request_date,
                                 employees.first_name,
                                 employees.email,
-                                laptops.tag_number
+                                laptops.tag_number,
+                                employees_laptops.update_data
                             ')
                         ->leftJoin('laptops', 'laptops.id', 'employees_laptops.laptop_id')
                         ->leftJoin('employees', 'employees.id', 'employees_laptops.employee_id')
                         ->whereIn('laptops.approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
                         ->where('laptops.status', 1)
-                        ->where('employees.active_status', 1)
                         ->where('employees_laptops.laptop_id', $laptopId)
                         ->whereIn('employees.approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
 

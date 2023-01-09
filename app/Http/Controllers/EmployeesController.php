@@ -249,7 +249,7 @@ class EmployeesController extends Controller
 
         if(!empty($ownedLaptops)){
             //update data in DB
-            $ids = array_column($ownedLaptops, 'id');
+            $ids = array_column($ownedLaptops, 'linkage_id');
             EmployeesLaptops::whereIn('id', $ids)
             ->where('surrender_flag', 0)
             ->update([
@@ -268,7 +268,7 @@ class EmployeesController extends Controller
                 //send mail
                 $mailData = [
                     'employeeName' => $employeeDetails['first_name'] .' ' .$employeeDetails['last_name'],
-                    'link' => route('laptops.details', ['id' => $laptop['laptop_id']]) .'#link-req-tbl',
+                    'link' => route('laptops.details', ['id' => $laptop['id']]) .'#link-req-tbl',
                     'currentUserId' => Auth::user()->id,
                     'module' => "Employee",
                 ];

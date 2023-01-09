@@ -41,7 +41,21 @@ class LaptopsController extends Controller
     public function create($rejectCode = ""){
         $laptop = '';
         if($rejectCode){
-            $laptop = Laptops::where('reject_code', $rejectCode)
+            $laptop = Laptops::select(
+                                    'id',
+                                    'approved_status',
+                                    'peza_form_number',
+                                    'peza_permit_number',
+                                    'tag_number',
+                                    'laptop_make',
+                                    'laptop_model',
+                                    'laptop_cpu',
+                                    'laptop_clock_speed',
+                                    'laptop_ram',
+                                    'remarks',
+                                    'status'
+                                )
+                ->where('reject_code', $rejectCode)
                 ->where('approved_status', config('constants.APPROVED_STATUS_PENDING'))
                 ->where('status',1)
                 ->first();
@@ -111,6 +125,7 @@ class LaptopsController extends Controller
 
         $laptopDetails = Laptops::select(
                                         'id',
+                                        'approved_status',
                                         'peza_form_number',
                                         'peza_permit_number',
                                         'tag_number',
@@ -137,11 +152,32 @@ class LaptopsController extends Controller
             ]];
         }
 
+        $linkageData = EmployeesLaptops::getLinkageData($id);
+        if(empty($linkageData)){
+            //get new linkage request
+            $linkageRequest = EmployeesLaptops::getLinkRequestByLaptop($id, config('constants.APPROVED_STATUS_PENDING'));
+        }else{
+            //get linkage update requests
+            $linkageRequest = EmployeesLaptops::getLinkRequestByLaptop($id, config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE'));
+
+            //apply update to data
+            foreach($linkageRequest as $idx => &$data){
+                if(!empty($data['update_data'])){
+                    foreach (json_decode($data['update_data'], true) as $key => $value){
+                        if(strpos($key, '_flag') !== FALSE){
+                            $value = $value ? 'Y' : 'N';
+                        }
+                        $data[$key] = $value;
+                    }
+                }
+            }
+        }
+
         return view('laptops.details')->with(['detail' => $laptopDetails,
                                             'detailOnly' => true,
                                             'detailNote' => $this->getDetailNote($laptopDetails),
-                                            'linkageData' => EmployeesLaptops::getLinkageData($id),
-                                            'linkageRequest' => EmployeesLaptops::getLinkRequestByLaptop($id),
+                                            'linkageData' => $linkageData,
+                                            'linkageRequest' => $linkageRequest,
                                             'history' => EmployeesLaptops::getLaptopHistory($id),
                                             'employeeDropdown' => $employeeDropdown,
                                         ]);

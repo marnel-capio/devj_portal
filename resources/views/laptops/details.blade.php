@@ -22,7 +22,7 @@
         </div>
         @if ($detailOnly)
         <div class="">
-            @if ($detailOnly && !empty($detail) && $detail['approved_status'] == config('constants.APPROVED_STATUS_APPROVED'))
+            @if (!empty($detail) && $detail->approved_status == config('constants.APPROVED_STATUS_APPROVED'))
             <button type="button" class="btn btn-primary  ms-1" data-bs-toggle="modal" data-bs-target="#editLaptopModal" >Edit</button>
             <div class="modal modal-lg fade" tabindex='-1' id="editLaptopModal">
                 <div class="modal-dialog modal-dialog-centered">
@@ -366,7 +366,7 @@
                 <i class="bi bi-info-circle-fill"></i>&nbsp;Only the laptop details of the current owner can be updated
             </div>
             @endif
-            <table class="table table-bordered border-secondary mt-3" id="emp-hist-tbl">
+            <table class="table table-bordered border-secondary mt-3 tbl-th-centered" id="emp-hist-tbl">
                 <thead class="bg-primary text-white fw-bold">
                     <tr>
                         <th>Member</th>
@@ -392,11 +392,9 @@
             </table>
         </div>
     </div>
-
     <div class="group-category mb-4 p-3 rounded-3">
-        <div class="d-flex justify-content-between">
-            <h4 class="text-start">Link Requests</h4>
-
+        <div class="d-flex justify-content-start">
+            <h4 class="text-start">Link Requests</h4><span class="text-primary">&nbsp;&nbsp; {{ empty($linkageData) ? '※For new linkage' : '※For linkage udpate'   }}</span>
         </div>
 
         <div class="ms-3">
@@ -414,14 +412,20 @@
                 <i class="bi bi-info-circle-fill"></i>&nbsp;Once a request has been approved, other request will be rejected
             </div>
             @endif
-            <table class="table table-bordered border-secondary mt-3" id="link-req-tbl">
+            <table class="table table-bordered border-secondary tbl-th-centered mt-3" id="link-req-tbl">
                 <thead class="bg-primary text-white fw-bold">
                     <tr>
                         <th>Requestor</th>
                         <th>VPN Access?</th>
                         <th>Brought Home?</th>
-                        <th>Request Date</th>
+                        @if (!empty($linkageData))
+                            <th>Surrender?</th>
+                            <th>Surrender Date</th>
+                        @endif
                         <th>Remarks</th>
+                        @if (empty($linkageData))
+                            <th>Request Date</th>
+                        @endif
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -429,10 +433,16 @@
                     @foreach ($linkageRequest as $request)
                         <tr>
                             <td>{{ $request['employee_name'] }}</td>
-                            <td>{{ $request['vpn_access'] }}</td>
-                            <td>{{ $request['brought_home'] }}</td>
-                            <td>{{ date('Y-m-d', strtotime($request['request_date'])); }}</td>
+                            <td>{{ $request['vpn_flag'] }}</td>
+                            <td>{{ $request['brought_home_flag'] }}</td>
+                            @if (!empty($linkageData))
+                                <td>{{ $request['surrender_flag'] }}</td>
+                                <td>{{ !empty($request['surrender_date']) ? date('Y-m-d', strtotime($request['surrender_date'])) : "";}}</td>
+                            @endif
                             <td>{{ $request['remarks'] }}</td>
+                            @if (empty($linkageData))
+                                <td>{{ date('Y-m-d', strtotime($request['request_date'])); }}</td>
+                            @endif
                             @if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE') )
                                 <td>
                                     <button class="btn btn-link btn-sm text-decoration-none" data-bs-target="#rejectLinkageRequestModal" data-bs-toggle="modal"><span class="text-danger">Reject</span></button>
