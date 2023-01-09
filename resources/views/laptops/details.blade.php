@@ -409,7 +409,7 @@
                     {{session()->pull('llr_alert')}}
                 </div>
             @endif
-            @if (empty($linkageData))
+            @if (empty($linkageData) && !empty($linkageRequest))
             <div class="text-primary d-flex align-items-center mb-2">
                 <i class="bi bi-info-circle-fill"></i>&nbsp;Once a request has been approved, other request will be rejected
             </div>

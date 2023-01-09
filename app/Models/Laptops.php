@@ -18,6 +18,7 @@ class Laptops extends Model
 
         return self::select('id', 'tag_number', )
                 ->where('status', 1)
+                ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
                 ->whereNotIn('id', function($query) use ($employeeId){
                                         $query->select('laptop_id')
                                                 ->from('employees_laptops')

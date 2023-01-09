@@ -394,31 +394,32 @@ class LaptopsController extends Controller
     }
 
     private function rejectOtherLinkageRequest($laptop_id){
-        $reason = 'Laptop has been assigned to other employee';
         $pendingApproval = EmployeesLaptops::getLinkRequestByLaptop($laptop_id, config('constants.APPROVED_STATUS_PENDING'));
-        $pendingIds = array_column($pendingApproval, 'id');
-        EmployeesLaptops::whereIn('id', $pendingIds)
-                            ->update([
-                                'approved_status' => config('constants.APPROVED_STATUS_REJECTED'),
-                                'approved_by' => Auth::user()->id,
-                                'updated_by' => Auth::user()->id,
-                                'reasons' => $reason,
-                            ]);
-
-        Logs::createLog('Laptop', 'Laptop Linkage Request Rejection');
-
-        //send mail
-        foreach($pendingApproval as $request => $data){
-            $mailData = [
-                'link' => route('laptops.details', ['id' => $laptop_id]),
-                'reason' => $reason,
-                'firstName' => $data['first_name'],
-                'currentUserId' => Auth::user()->id,
-                'module' => "Laptop",
-            ];
-            Mail::to($data['email'])->send(new MailLaptops($mailData, config('constants.MAIL_LAPTOP_NEW_LINKAGE_BY_NON_MANAGER_REJECTION')));
+        if(!empty($pendingApproval)){
+            $reason = 'Laptop has been assigned to other employee';
+            $pendingIds = array_column($pendingApproval, 'id');
+            EmployeesLaptops::whereIn('id', $pendingIds)
+                                ->update([
+                                    'approved_status' => config('constants.APPROVED_STATUS_REJECTED'),
+                                    'approved_by' => Auth::user()->id,
+                                    'updated_by' => Auth::user()->id,
+                                    'reasons' => $reason,
+                                ]);
+    
+            Logs::createLog('Laptop', 'Laptop Linkage Request Rejection');
+    
+            //send mail
+            foreach($pendingApproval as $request => $data){
+                $mailData = [
+                    'link' => route('laptops.details', ['id' => $laptop_id]),
+                    'reason' => $reason,
+                    'firstName' => $data['first_name'],
+                    'currentUserId' => Auth::user()->id,
+                    'module' => "Laptop",
+                ];
+                Mail::to($data['email'])->send(new MailLaptops($mailData, config('constants.MAIL_LAPTOP_NEW_LINKAGE_BY_NON_MANAGER_REJECTION')));
+            }
         }
-
     }
 
 
@@ -473,7 +474,7 @@ class LaptopsController extends Controller
             $update['approved_by'] = Auth::user()->id;
             $update['reasons'] = $reason;
             $update['update_data'] = NULL;
-            $update['approved_status'] = config('constants.APPROVED_STATUS_REJECTED');
+            $update['approved_status'] = config('constants.APPROVED_STATUS_APPROVED');
 
             EmployeesLaptops::where('id', $id)
                     ->update($update);
@@ -484,13 +485,13 @@ class LaptopsController extends Controller
             //send mail to requestor
 
             $mailData = [
-                'reasons' => $reason,
+                'reason' => $reason,
                 'firstName' => $recipient->first_name,
                 'currentUserId' => Auth::user()->id,
                 'module' => "Laptop",
             ];
 
-            Mail::to($recipient->email)->send(new MailLaptops($mailData, config('constants.MAIL_LAPTOP_DETAIL_UPDATE_REJECTION')));
+            Mail::to($recipient->email)->send(new MailLaptops($mailData, config('constants.MAIL_LAPTOP_NEW_LINKAGE_BY_NON_MANAGER_REJECTION')));
             
             $alert = 'Successfully rejected laptop linkage detail update.';    
         }

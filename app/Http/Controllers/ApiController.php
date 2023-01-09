@@ -410,6 +410,8 @@ class ApiController extends Controller
             }
 
             session(['ll_alert'=> 'Laptop was linked successfully.']);
+
+            $this->rejectOtherLinkageRequest($requestData['id']);
         }else{
             //add data
             $insertData['approved_status'] = config('constants.APPROVED_STATUS_PENDING');
@@ -444,6 +446,35 @@ class ApiController extends Controller
      */
     private function sendMailForLaptop($recipients, $mailData, $mailType){
         Mail::to($recipients)->send(new MailLaptops($mailData, $mailType));
+    }
+
+    private function rejectOtherLinkageRequest($laptop_id){
+        $pendingApproval = EmployeesLaptops::getLinkRequestByLaptop($laptop_id, config('constants.APPROVED_STATUS_PENDING'));
+        if(!empty($pendingApproval)){
+            $reason = 'Laptop has been assigned to other employee';
+            $pendingIds = array_column($pendingApproval, 'id');
+            EmployeesLaptops::whereIn('id', $pendingIds)
+                                ->update([
+                                    'approved_status' => config('constants.APPROVED_STATUS_REJECTED'),
+                                    'approved_by' => Auth::user()->id,
+                                    'updated_by' => Auth::user()->id,
+                                    'reasons' => $reason,
+                                ]);
+    
+            Logs::createLog('Laptop', 'Laptop Linkage Request Rejection');
+    
+            //send mail
+            foreach($pendingApproval as $request => $data){
+                $mailData = [
+                    'link' => route('laptops.details', ['id' => $laptop_id]),
+                    'reason' => $reason,
+                    'firstName' => $data['first_name'],
+                    'currentUserId' => Auth::user()->id,
+                    'module' => "Laptop",
+                ];
+                Mail::to($data['email'])->send(new MailLaptops($mailData, config('constants.MAIL_LAPTOP_NEW_LINKAGE_BY_NON_MANAGER_REJECTION')));
+            }
+        }
     }
 
 }

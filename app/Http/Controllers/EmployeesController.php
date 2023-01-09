@@ -200,7 +200,7 @@ class EmployeesController extends Controller
 
             Logs::createLog("Employee", $log);
 
-            if(!$updateData['active_status']){
+            if(isset($updateData['active_status']) && !$updateData['active_status']){
                 $this->surrenderLaptop($originalData);
             }
 
@@ -374,7 +374,7 @@ class EmployeesController extends Controller
             //logs
             Logs::createLog("Employee", "Approved the update details of {$employee->first_name} {$employee->last_name}");
 
-            if(!$employeeUpdate['active_status']){
+            if(isset($employeeUpdate['active_status']) && !$employeeUpdate['active_status']){
                 $this->surrenderLaptop($employee);
             }
         }
