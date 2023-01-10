@@ -301,7 +301,7 @@ class LaptopsController extends Controller
                     ->update([
                         'approved_status' => config('constants.APPROVED_STATUS_REJECTED'),
                         'reject_code' => $rejectCode,
-                        'reason' => $reason, 
+                        'reasons' => $reason, 
                         'updated_by' => Auth::user()->id,
                         'approved_by' => Auth::user()->id,
                     ]);

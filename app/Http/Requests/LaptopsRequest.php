@@ -41,7 +41,7 @@ class LaptopsRequest extends FormRequest
     {
         return [
             'tag_number.unique' => "The tag number is already registered.",
-            'remarks.max_digits' => "The remarks must not be greater than 1024 characters.",
+            'remarks.max' => "The remarks must not be greater than 1024 characters.",
             'tag_number.unique' => "The tag number is already registered.",
         ];
     }
@@ -78,7 +78,7 @@ class LaptopsRequest extends FormRequest
             'laptop_cpu' => 'required',
             'laptop_clock_speed' => 'required',
             'laptop_ram' => 'required',
-            'remarks' => 'max_digits:1024',
+            'remarks' => 'max:1024',
         ];
 
         if(strpos($this->header('referer'), route('laptops.create')) !== FALSE){
