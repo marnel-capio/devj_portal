@@ -88,7 +88,7 @@
                 </div>
                 <div class="row mb-2 ps-5 pe-3">
                     <div class="col-md-6 g-3">
-                        <textarea class="form-control" name="remarks"  rows="3" id="remarks" required>{{ old('remarks', !empty($laptop) ? $laptop->remarks : '') }}</textarea>
+                        <textarea class="form-control" name="remarks"  rows="3" id="remarks">{{ old('remarks', !empty($laptop) ? $laptop->remarks : '') }}</textarea>
                     </div>
                     @if ($errors->has('remarks'))
                     <p class="text-danger">{{ $errors->first('remarks') }}</p>
