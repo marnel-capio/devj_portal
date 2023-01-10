@@ -39,34 +39,41 @@ class SoftwaresController extends Controller
     public function regist(SoftwaresRequest $request){
         $request->validated();
 
-        $insertData = $this->getSoftwareData($request);
+        $insertData = $request;
+        $insertData['created_by'] = Auth::user()->id;
+        $insertData['updated_by'] = Auth::user()->id;
         $id = null;
 
-        if(isset($insertData['id'])){
-            //update data only
+
+        if(empty($insertData['id'])){
+            //new registration
+            unset($insertData['id']);
+            if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
+                //approve the registration, no email is sent
+                $insertData['approved_status'] = config('constants.APPROVED_STATUS_APPROVED');
+                $insertData['approved_by'] = Auth::user()->id;
+
+                $id = Softwares::create($insertData)->id;
+
+            }else{
+                //pending request, 
+                $insertData['approved_status'] = config('constants.APPROVED_STATUS_PENDING');
+                $id = Softwares::create($insertData)->id;
+            }
+        }        
+        else{
+            //registration update
             $id = $insertData['id'];
             unset($insertData['id']);
-            unset($insertData['created_by']);
-
-            $additionalData = [
-                'approved_status' => config('constants.APPROVED_STATUS_PENDING'),
-                'reasons' => NULL,
-                'reject_code' => NULL,
-            ];
-
-            $insertData = array_merge($insertData, $additionalData);
+            $insertData['approved_status'] = config('constants.APPROVED_STATUS_PENDING');
+            $insertData['reject_code'] = NULL;
+            $insertData['reasons'] = NULL;
+            $insertData['updated_by'] = Auth::user()->id;
 
             Softwares::where('id', $id)
-                        ->update($insertData);
+                    ->update($insertData);
 
-        }else{
-            //insert new entry
-            $id = Softwares::create($insertData)->id;
-            //update created_by/updated_by
-            Softwares::where('id', $id)
-                        ->update(['updated_by' => $id, 'created_by' => $id]);
         }
-
         //create logs
         Logs::createLog("Software", 'Created Software Approval Request for software ' + $id );
 
@@ -127,6 +134,11 @@ class SoftwaresController extends Controller
 
     public function edit($id){
         $software = Softwares::where('id', $id)->first();
+        $requestorDetail = Employees::where('id', $software->updated_by)->first();
+        $approverDetails = Employees::where('id', $software->approved_by)->first();
+
+        $requesterName = $requestorDetail->last_name . ", " . $requestorDetail->first_name . " " . $requestorDetail->middle_name; 
+        $approverName = $approverDetails->last_name . ", " . $approverDetails->first_name . " " . $approverDetails->middle_name; 
 
         abort_if(empty($software), 404); //software does not exist
 
@@ -141,7 +153,10 @@ class SoftwaresController extends Controller
         }
 
         return view('softwares.edit')->with([
-                                        'software' => $software
+                                        'software' => $software,
+                                        'requestor' => $requesterName,
+                                        'approver' => $approverName,
+                                        'current_status' => $this->transformStatusToText($software),
                                     ]);
 
     }

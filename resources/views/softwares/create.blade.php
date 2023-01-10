@@ -2,9 +2,9 @@
 <link rel="stylesheet" href="{{ asset(mix('css/software.min.css')) }}">
 <script src="{{ asset(mix('js/software.min.js')) }}" defer></script>
 <div class="container text-center ps-3 pe-3 pt-5">
-    <h3 class="text-start">Account Registration</h3>
+    <h3 class="text-start">Software Registration</h3>
     <div class="pt-4">
-        <form action="{{ route('softwares.create') }}" method="POST">
+        <form action="{{ route('softwares.regist') }}" method="POST">
             @csrf
             <input type="text" name="id" value="{{ isset($software->id) ? $software->id : '' }}" hidden >
             <div class="soft-regist-category p-3 mb-4 rounded-3">

@@ -15,12 +15,12 @@
         @endif
         <form action="{{ route('softwares.update') }}" method="POST" id="soft-update-form">
             @csrf
-            <input type="text" name="id" hidden value="{{ $employee->id }}">
+            <input type="text" name="id" hidden value="{{ $software->id }}">
             <div class="soft-regist-category p-3 mb-4 rounded-3">
-                <h4 class="text-start">Employee Details</h4>
+                <h4 class="text-start">Software Details</h4>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="software_status" id="software_status" placeholder="Status" value="{{ $software->approved_status }}" required @readonly($readOnly)>
+                        <input type="text" class="form-control" name="software_status" id="software_status" placeholder="Status" value="{{ $current_status }}" readonly>
                         <label class="text-center" for="software_status">Status</label>
                         @if ($errors->has('software_status'))
                         <p class="text-danger">{{ $errors->first('software_status') }}</p>
@@ -39,12 +39,12 @@
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-4 g-3 form-floating">
                         <select name="software_type" id="software_type" class="form-select form-control">
-                            <option {{ old('software_type', $software->position) == 1 ? "selected" : "" }} value="1">{{ config('constants.SOFTWARE_TYPE_1') }}</option>
-                            <option {{ old('software_type', $software->position) == 2 ? "selected" : "" }} value="2">{{ config('constants.SOFTWARE_TYPE_2') }}</option>
-                            <option {{ old('software_type', $software->position) == 3 ? "selected" : "" }} value="3">{{ config('constants.SOFTWARE_TYPE_3') }}</option>
-                            <option {{ old('software_type', $software->position) == 4 ? "selected" : "" }} value="4">{{ config('constants.SOFTWARE_TYPE_4') }}</option>
-                            <option {{ old('software_type', $software->position) == 5 ? "selected" : "" }} value="5">{{ config('constants.SOFTWARE_TYPE_5') }}</option>
-                            <option {{ old('software_type', $software->position) == 6 ? "selected" : "" }} value="6">{{ config('constants.SOFTWARE_TYPE_6') }}</option>
+                            <option {{ old('software_type', $software->position) == 1 ? "selected" : "" }} value="1">{{ config('constants.SOFTWARE_TYPE_1_NAME') }}</option>
+                            <option {{ old('software_type', $software->position) == 2 ? "selected" : "" }} value="2">{{ config('constants.SOFTWARE_TYPE_2_NAME') }}</option>
+                            <option {{ old('software_type', $software->position) == 3 ? "selected" : "" }} value="3">{{ config('constants.SOFTWARE_TYPE_3_NAME') }}</option>
+                            <option {{ old('software_type', $software->position) == 4 ? "selected" : "" }} value="4">{{ config('constants.SOFTWARE_TYPE_4_NAME') }}</option>
+                            <option {{ old('software_type', $software->position) == 5 ? "selected" : "" }} value="5">{{ config('constants.SOFTWARE_TYPE_5_NAME') }}</option>
+                            <option {{ old('software_type', $software->position) == 6 ? "selected" : "" }} value="6">{{ config('constants.SOFTWARE_TYPE_6_NAME') }}</option>
                         </select>
                         <label  class="text-center" for="software_type">Position</label>
                         @if ($errors->has('software_type'))
@@ -63,7 +63,7 @@
                 </div>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="software_createdby" id="software_createdby" placeholder="Created By" value="{{ $software->created_by }}" required @readonly($readOnly)>
+                        <input type="text" class="form-control" name="software_createdby" id="software_createdby" placeholder="Created By" value="{{ $requestor }}" readonly>
                         <label class="text-center" for="software_createdby">Created By</label>
                         @if ($errors->has('software_createdby'))
                         <p class="text-danger">{{ $errors->first('software_createdby') }}</p>
@@ -72,7 +72,7 @@
                 </div>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="software_approvedby" id="software_approvedby" placeholder="Approved By" value="{{ $software->approved_by }}" required @readonly($readOnly)>
+                        <input type="text" class="form-control" name="software_approvedby" id="software_approvedby" placeholder="Approved By" value="{{ $approver }}" readonly>
                         <label class="text-center" for="software_approvedby">Created By</label>
                         @if ($errors->has('software_approvedby'))
                         <p class="text-danger">{{ $errors->first('software_approvedby') }}</p>
