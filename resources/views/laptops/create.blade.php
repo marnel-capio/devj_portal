@@ -8,6 +8,9 @@
             <input type="text" name="id" value="{{ !empty($laptop->id) ? $laptop->id : '' }}" hidden >
             <div class="group-category p-3 mb-4 rounded-3">
                 <h4 class="text-start">Laptop Details</h4>
+                @if ($errors->has('id'))
+                <p class="text-danger">{{ $errors->first('id') }}</p>
+                @endif
                 <div class="row mb-2 ps-5 pe-3">
                     <div class="col-md-3 col-6 g-3 form-floating">
                        <input type="text" name="tag_number" class="form-control" id="tag-number" placeholder="Tag Number" value="{{ old('tag_number', !empty($laptop) ? $laptop->tag_number : '') }}" required>

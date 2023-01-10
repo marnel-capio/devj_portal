@@ -56,7 +56,7 @@ class LaptopsController extends Controller
                                     'status'
                                 )
                 ->where('reject_code', $rejectCode)
-                ->where('approved_status', config('constants.APPROVED_STATUS_PENDING'))
+                ->where('approved_status', config('constants.APPROVED_STATUS_REJECTED'))
                 ->where('status',1)
                 ->first();
             abort_if(empty($laptop), 404);
@@ -189,11 +189,11 @@ class LaptopsController extends Controller
             ->whereIn('approved_status', [3,4])
             ->first();
 
-        $requestor = Employees::selectRaw('concat(first_name, " ", last_name) as requestor')
-                                ->where('id', $laptopDetails->updated_by)
-                                ->first();
-
         abort_if(empty($laptopDetails), 404);
+
+        $requestor = Employees::selectRaw('concat(first_name, " ", last_name) as requestor')
+        ->where('id', $laptopDetails->updated_by)
+        ->first();
 
         if($laptopDetails->approved_status == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')){
             foreach(json_decode($laptopDetails->update_data, true) as $key => $value){
