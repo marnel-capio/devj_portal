@@ -25,9 +25,6 @@
             @if ($allowedToEdit)
             <a href="{{ route('softwares.edit', ['id' => $software->id]) }}" class="btn btn-primary  me-1" type="button">Edit</a>
             @endif
-            @if($detailOnly && $userInfo->id == $software->id)
-            <button type="button" class="btn btn-success  ms-1" data-bs-toggle="modal" data-bs-target="#changePasswordModal" >Change Password</button>
-            @endif
         </div>
         
     </div>
@@ -56,7 +53,7 @@
                     </div>
                 </div>
                 <div class="row mb-2 ps-3 pe-3">
-                    <div class="col-md-6 col-8 g-3 form-floating">
+                    <div class="col-4 g-3 form-floating">
                         <select name="software_type" id="software_type" class="form-select form-control" {{ $readOnly ? 'disabled' : '' }}>
                             <option {{ $software->type == 1 ? "selected" : "" }} value="1">{{ config('constants.SOFTWARE_TYPE_1_NAME') }}</option>
                             <option {{ $software->type == 2 ? "selected" : "" }} value="2">{{ config('constants.SOFTWARE_TYPE_2_NAME') }}</option>

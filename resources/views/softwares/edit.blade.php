@@ -37,7 +37,7 @@
                     </div>
                 </div>
                 <div class="row mb-2 ps-3 pe-3">
-                    <div class="col-md-6 col-12 g-3 form-floating">
+                    <div class="col-4 g-3 form-floating">
                         <select name="software_type" id="software_type" class="form-select form-control">
                             <option {{ old('software_type', $software->position) == 1 ? "selected" : "" }} value="1">{{ config('constants.SOFTWARE_TYPE_1') }}</option>
                             <option {{ old('software_type', $software->position) == 2 ? "selected" : "" }} value="2">{{ config('constants.SOFTWARE_TYPE_2') }}</option>

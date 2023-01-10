@@ -38,15 +38,6 @@ Route::middleware(['guest', 'web'])->controller(EmployeesController::class)->pre
     
 });
 
-Route::middleware(['guest', 'web'])->controller(SoftwaresController::class)->prefix('/softwares')->group(function(){
-    Route::post('/regist', 'regist')->name('softwares.regist');
-    Route::get('/create/{rejectCode?}', 'create')->name('softwares.create');
-    Route::get('/regist/complete', function(){
-        return view('softwares.complete');
-    })->name('softwares.regist.complete');
-    
-});
-
 Route::middleware(['auth', 'web'])->group(function(){
     Route::get('logout', [LogoutController::class, 'execute'])->name('logout');
     Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -79,10 +70,18 @@ Route::middleware(['auth', 'web'])->group(function(){
     });
 
     Route::prefix('/softwares')->controller(SoftwaresController::class)->group(function(){
+        Route::get('/',  'index')->name('softwares');
         Route::get('/{id}/request', 'request')->name('softwares.request')->whereNumber('id');
         Route::post('/store', 'store')->name('softwares.store');
         Route::post('/reject', 'reject')->name('softwares.reject');
         Route::post('/update', 'update')->name('softwares.update');
+        Route::get('/{id}', 'detail')->name('softwares.details')->whereNumber('id');
+        Route::get('/{id}/edit', 'edit')->name('softwares.edit')->whereNumber('id');
+        Route::post('/regist', 'regist')->name('softwares.regist');
+        Route::get('/create/{rejectCode?}', 'create')->name('softwares.create');
+        Route::get('/regist/complete', function(){
+            return view('softwares.complete');
+        })->name('softwares.regist.complete');        
     });
 
     Route::prefix('/projects')->group(function(){

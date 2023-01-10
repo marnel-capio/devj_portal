@@ -8,7 +8,7 @@
 	</div>
 @endif
 <div class="container container-list-table mt-3 ms-4 mb-5">
-	<h3> Employee List </h3>
+	<h3> Software List </h3>
 	<form action='{!! url("/softwares/download"); !!}' method="POST">
                 @csrf
         <div class="row row-list">
@@ -49,14 +49,11 @@
 			<div class="col">
 				<button type="submit" class="btn btn-primary float-end me-1">Download</button>
 			</div>
-			<div class="col">
-				<button type="submit" class="btn btn-primary float-end download-btn">Download</button>
-			</div>
 		</div>
 	</form>
 	<div class="row-list row">
 	    <div class="col ">
-	    	<table id="softwares-list" class="table table-striped" >
+	    	<table id="software-list" class="table table-striped" >
 		        <thead>
 		            <tr>
 		                <th class="tbl-header-name">Software Name</th>
@@ -68,11 +65,35 @@
 		        </thead>
 		        <tbody>
 		        	@foreach ($software_request as $software)
-		        	<?php $id = $user["id"]; ?>
+		        	<?php $id = $software["id"]; ?>
 		            <tr>
 		                <td><a href='{!! url("/softwares/$id"); !!}'>{{$software['software_name']}}</a></td>
-		                <td>{{$software['type']}}</td>
-		                <td>{{$software['approved_status']}}</td>
+		                <td>
+		                	@if($software['type'] == config('constants.SOFTWARE_TYPE_1'))
+								{{  config('constants.SOFTWARE_TYPE_1_NAME')}}
+							@elseif($software['type'] == config('constants.SOFTWARE_TYPE_2'))
+								{{  config('constants.SOFTWARE_TYPE_2_NAME')}}
+							@elseif($software['type'] == config('constants.SOFTWARE_TYPE_3'))
+								{{  config('constants.SOFTWARE_TYPE_3_NAME')}}
+							@elseif($software['type'] == config('constants.SOFTWARE_TYPE_4'))
+								{{  config('constants.SOFTWARE_TYPE_4_NAME')}}
+							@elseif($software['type'] == config('constants.SOFTWARE_TYPE_5'))
+								{{  config('constants.SOFTWARE_TYPE_5_NAME')}}
+							@elseif($software['type'] == config('constants.SOFTWARE_TYPE_6'))
+								{{  config('constants.SOFTWARE_TYPE_6_NAME')}}
+		                	@endif
+		                </td>
+		                <td>
+		                	@if($software['approved_status'] == config('constants.APPROVED_STATUS_REJECTED'))
+								{{  config('constants.APPROVED_STATUS_REJECTED_TEXT')}}
+							@elseif($software['approved_status'] == config('constants.APPROVED_STATUS_APPROVED'))
+								{{  config('constants.APPROVED_STATUS_APPROVED_TEXT')}}
+							@elseif($software['approved_status'] == config('constants.APPROVED_STATUS_PENDING'))
+								{{  config('constants.APPROVED_STATUS_PENDING_TEXT')}}
+							@elseif($software['approved_status'] == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE'))
+								{{  config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE_TEXT')}}
+		                	@endif
+		                </td>						
 		                <td>{{$software['reasons']}}</td>
 		                <td>{{$software['remarks']}}</td>
 		            </tr>

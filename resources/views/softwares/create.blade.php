@@ -19,14 +19,14 @@
                     </div>
                 </div>
                 <div class="row mb-2 ps-3 pe-3">
-                    <div class="col-md-6 col-12 g-3 form-floating">
+                    <div class="col-4 g-3 form-floating">
                         <select name="software_type" id="software_type" class="form-select form-control">
-                            <option {{ old('software_type', $software ? $software->type : '') == 1 ? "selected" : "" }} value="1">{{ config('constants.SOFTWARE_TYPE_1') }}</option>
-                            <option {{ old('software_type', $software ? $software->type : '') == 2 ? "selected" : "" }} value="2">{{ config('constants.SOFTWARE_TYPE_2') }}</option>
-                            <option {{ old('software_type', $software ? $software->type : '') == 3 ? "selected" : "" }} value="3">{{ config('constants.SOFTWARE_TYPE_3') }}</option>
-                            <option {{ old('software_type', $software ? $software->type : '') == 4 ? "selected" : "" }} value="4">{{ config('constants.SOFTWARE_TYPE_4') }}</option>
-                            <option {{ old('software_type', $software ? $software->type : '') == 5 ? "selected" : "" }} value="5">{{ config('constants.SOFTWARE_TYPE_5') }}</option>
-                            <option {{ old('software_type', $software ? $software->type : '') == 6 ? "selected" : "" }} value="6">{{ config('constants.SOFTWARE_TYPE_6') }}</option>
+                            <option {{ old('software_type', $software ? $software->type : '') == 1 ? "selected" : "" }} value="1">{{ config('constants.SOFTWARE_TYPE_1_NAME') }}</option>
+                            <option {{ old('software_type', $software ? $software->type : '') == 2 ? "selected" : "" }} value="2">{{ config('constants.SOFTWARE_TYPE_2_NAME') }}</option>
+                            <option {{ old('software_type', $software ? $software->type : '') == 3 ? "selected" : "" }} value="3">{{ config('constants.SOFTWARE_TYPE_3_NAME') }}</option>
+                            <option {{ old('software_type', $software ? $software->type : '') == 4 ? "selected" : "" }} value="4">{{ config('constants.SOFTWARE_TYPE_4_NAME') }}</option>
+                            <option {{ old('software_type', $software ? $software->type : '') == 5 ? "selected" : "" }} value="5">{{ config('constants.SOFTWARE_TYPE_5_NAME') }}</option>
+                            <option {{ old('software_type', $software ? $software->type : '') == 6 ? "selected" : "" }} value="6">{{ config('constants.SOFTWARE_TYPE_6_NAME') }}</option>
                         </select>
                         <label  class="text-center" for="software_type">Software Type</label>
                         @if ($errors->has('software_type'))

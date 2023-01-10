@@ -57,26 +57,26 @@ $(document).ready(function () {
 	//start for software registration
 
 	//disable submit button if not all required fields have value
-	softcheckRequiredFields();
+	//softcheckRequiredFields();
 
-	$(":input[required]").change(function(){
-		softcheckRequiredFields();
-	});
+	//$(":input[required]").change(function(){
+	//	softcheckRequiredFields();
+	//});
 
 
-	function softcheckRequiredFields(){
-		var empty = false;
-		$(":input[required]").each(function(){
-			if($(this).val() == ''){
-				empty = true;
-			}
-		})
-		if(empty){
-			$("#soft-reg-submit").prop('disabled', true);
-		}else{
-			$("#soft-reg-submitt").prop('disabled', false);
-		}
-	}
+	//function softcheckRequiredFields(){
+	//	var empty = false;
+	//	$(":input[required]").each(function(){
+	//		if($(this).val() == ''){
+	//			empty = true;
+	//		}
+	//	})
+	//	if(empty){
+	//		$("#soft-reg-submit").prop('disabled', true);
+	//	}else{
+	//		$("#soft-reg-submitt").prop('disabled', false);
+	//	}
+	//}
 
 	$('.btn-prevent-multiple-submit').on('submit', function($e){
 		e.preventDefault()
@@ -88,7 +88,7 @@ $(document).ready(function () {
 	//start for software details/request
 
 	//link project
-	var projectTable = $("#project-tbl").DataTable({
+	var softprojectTable = $("#project-tbl").DataTable({
 		"stateSave": true,
 		"bFilter": false,
 		"bPaginate": false,
@@ -153,7 +153,7 @@ $(document).ready(function () {
 				$("#lp-success-msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;' + data.message + '.').addClass("text-success mb-2 text-start");
 
 				//update projects table
-				projectTable.clear().draw();
+				softprojectTable.clear().draw();
 				data.update.forEach(function(project){
 					let url = window.location.origin + '/devj_portal/projects/' + project.project_id;
 					console.log(project);
@@ -164,7 +164,7 @@ $(document).ready(function () {
 						eDate = new Date(project.end_date);
 						spanEnd = eDate.getFullYear() + '/' + eDate.getMonth() + '/' + eDate.getDate();
 					}
-					projectTable.row.add([
+					softprojectTable.row.add([
 						'<a href="' + url + '" class="text-decoration-none">' + project.name + '</a>',
 						spanStart + spanEnd,
 						project.project_status

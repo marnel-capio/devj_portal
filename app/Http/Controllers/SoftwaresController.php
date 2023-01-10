@@ -87,6 +87,12 @@ class SoftwaresController extends Controller
         $softwareDetails = Softwares::where('id', $id)->first();
         $is_display_approver = true;
 
+        $requestorDetail = Employees::where('id', $softwareDetails->updated_by)->first();
+        $approverDetails = Employees::where('id', $softwareDetails->approved_by)->first();
+
+        $requesterName = $requestorDetail->last_name . ", " . $requestorDetail->first_name . " " . $requestorDetail->middle_name; 
+        $approverName = $approverDetails->last_name . ", " . $approverDetails->first_name . " " . $approverDetails->middle_name; 
+
         abort_if(empty($softwareDetails), 404); //software does not exist
 
         //check if software has pending update,
@@ -106,12 +112,14 @@ class SoftwaresController extends Controller
                     ->with([
                         'allowedToEdit' => $allowedToEdit,
                         'software' => $softwareDetails,
-                        'softwareProject' => ProjectSoftwares::getProjectBySoftware($id),
+                        'projectList' => ProjectSoftwares::getProjectBySoftware($id),
                         'detailNote' => $this->getSoftwareStatus($softwareDetails),
                         'readOnly' => true,
                         'detailOnly' => true,
                         'current_status' => $this->transformStatusToText($softwareDetails),
                         'is_display_approver' => $is_display_approver,
+                        'requestor' => $requesterName,
+                        'approver' => $approverName,
                     ]);
     }
 
@@ -266,7 +274,7 @@ class SoftwaresController extends Controller
         }
 
         $softwares = Softwares::where('id',$id)->first();
-        $employee =  Employees::where('id', $softwares->updated_by);
+        $employee =  Employees::where('id', $softwares->updated_by)->first();
         
         //if no error, update employee details
         if($softwares->approved_status == config('constants.APPROVED_STATUS_PENDING')){
@@ -322,7 +330,7 @@ class SoftwaresController extends Controller
         }
 
         $software = Softwares::where('id',$id)->first();
-        $employee = Employees::where('id', $software->updated_by);
+        $employee = Employees::where('id', $software->updated_by)->first();
         $reason = $request->input('reason');
         $this->removeNewLine($reason);
 
@@ -352,7 +360,7 @@ class SoftwaresController extends Controller
         else{
             Softwares::where('id', $software['id'])
                 ->update([
-                    'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
+                    'approved_status' => config('constants.APPROVED_STATUS_REJECTED'),
                     'reasons' => $reason,
                     'update_data' => NULL,
                     'updated_by' => Auth::user()->id,
@@ -487,7 +495,7 @@ class SoftwaresController extends Controller
     public function index(Request $request){
         $software_request = $this->getSoftware();
 
-        return view('softwares/list', ['sofware_request' => $software_request]);
+        return view('softwares/list', ['software_request' => $software_request]);
     }
 
     private function getSoftware() {

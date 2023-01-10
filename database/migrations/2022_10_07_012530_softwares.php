@@ -27,6 +27,7 @@ return new class extends Migration
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->dateTime('create_time')->nullable();
             $table->dateTime('update_time')->nullable();
+            $table->string('reject_code', 80)->nullable();
         });
     }
 
