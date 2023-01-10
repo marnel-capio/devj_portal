@@ -475,7 +475,7 @@ class LaptopsController extends Controller
         $reason = $request->input('reason');
 
         if($laptopLinkDetails->approved_status == config('constants.APPROVED_STATUS_PENDING')){
-            //approve the  data
+            //reset the  data
             EmployeesLaptops::where('id', $id)
                     ->update([
                         'approved_status' => config('constants.APPROVED_STATUS_REJECTED'),
@@ -504,8 +504,7 @@ class LaptopsController extends Controller
         }else{
             $recipient = Employees::where('id', $laptopLinkDetails->updated_by)->first();
 
-            //save temporary data
-            $update = json_decode($laptopLinkDetails->update_data, true);
+            //reset data
             $update['updated_by'] = Auth::user()->id;
             $update['approved_by'] = Auth::user()->id;
             $update['reasons'] = $reason;
@@ -519,7 +518,6 @@ class LaptopsController extends Controller
             Logs::createLog("Laptop", 'Laptop Detail Update Rejection');
 
             //send mail to requestor
-
             $mailData = [
                 'reason' => $reason,
                 'firstName' => $recipient->first_name,
