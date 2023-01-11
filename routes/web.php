@@ -81,7 +81,10 @@ Route::middleware(['auth', 'web'])->group(function(){
         Route::get('/create/{rejectCode?}', 'create')->name('softwares.create');
         Route::get('/regist/complete', function(){
             return view('softwares.complete');
-        })->name('softwares.regist.complete');        
+        })->name('softwares.regist.complete');
+        Route::get('/update/complete', function(){
+            return view('softwares.complete');
+        })->name('softwares.update.complete');        
     });
 
     Route::prefix('/projects')->group(function(){

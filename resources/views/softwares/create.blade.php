@@ -20,26 +20,26 @@
                 </div>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-4 g-3 form-floating">
-                        <select name="software_type" id="software_type" class="form-select form-control">
-                            <option {{ old('software_type', $software ? $software->type : '') == 1 ? "selected" : "" }} value="1">{{ config('constants.SOFTWARE_TYPE_1_NAME') }}</option>
-                            <option {{ old('software_type', $software ? $software->type : '') == 2 ? "selected" : "" }} value="2">{{ config('constants.SOFTWARE_TYPE_2_NAME') }}</option>
-                            <option {{ old('software_type', $software ? $software->type : '') == 3 ? "selected" : "" }} value="3">{{ config('constants.SOFTWARE_TYPE_3_NAME') }}</option>
-                            <option {{ old('software_type', $software ? $software->type : '') == 4 ? "selected" : "" }} value="4">{{ config('constants.SOFTWARE_TYPE_4_NAME') }}</option>
-                            <option {{ old('software_type', $software ? $software->type : '') == 5 ? "selected" : "" }} value="5">{{ config('constants.SOFTWARE_TYPE_5_NAME') }}</option>
-                            <option {{ old('software_type', $software ? $software->type : '') == 6 ? "selected" : "" }} value="6">{{ config('constants.SOFTWARE_TYPE_6_NAME') }}</option>
+                        <select name="type" id="type" class="form-select form-control">
+                            <option {{ old('type', $software ? $software->type : '') == 1 ? "selected" : "" }} value="1">{{ config('constants.SOFTWARE_TYPE_1_NAME') }}</option>
+                            <option {{ old('type', $software ? $software->type : '') == 2 ? "selected" : "" }} value="2">{{ config('constants.SOFTWARE_TYPE_2_NAME') }}</option>
+                            <option {{ old('type', $software ? $software->type : '') == 3 ? "selected" : "" }} value="3">{{ config('constants.SOFTWARE_TYPE_3_NAME') }}</option>
+                            <option {{ old('type', $software ? $software->type : '') == 4 ? "selected" : "" }} value="4">{{ config('constants.SOFTWARE_TYPE_4_NAME') }}</option>
+                            <option {{ old('type', $software ? $software->type : '') == 5 ? "selected" : "" }} value="5">{{ config('constants.SOFTWARE_TYPE_5_NAME') }}</option>
+                            <option {{ old('type', $software ? $software->type : '') == 6 ? "selected" : "" }} value="6">{{ config('constants.SOFTWARE_TYPE_6_NAME') }}</option>
                         </select>
-                        <label  class="text-center" for="software_type">Software Type</label>
-                        @if ($errors->has('software_type'))
-                        <p class="text-danger">{{ $errors->first('software_type') }}</p>
+                        <label  class="text-center" for="type">Software Type</label>
+                        @if ($errors->has('type'))
+                        <p class="text-danger">{{ $errors->first('type') }}</p>
                         @endif
                     </div>
                 </div>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="software_purpose" id="software_purpose" placeholder="Purpose" value="{{ old('software_purpose', $software ? $software->remarks : '') }}" required>
-                        <label class="text-center" for="software_purpose">Purpose</label>
-                        @if ($errors->has('software_purpose'))
-                        <p class="text-danger">{{ $errors->first('software_purpose') }}</p>
+                        <input type="text" class="form-control" name="remarks" id="remarks" placeholder="Purpose" value="{{ old('remarks', $software ? $software->remarks : '') }}" required>
+                        <label class="text-center" for="remarks">Purpose</label>
+                        @if ($errors->has('remarks'))
+                        <p class="text-danger">{{ $errors->first('remarks') }}</p>
                         @endif
                     </div>
                 </div>

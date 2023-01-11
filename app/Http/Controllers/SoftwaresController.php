@@ -37,37 +37,37 @@ class SoftwaresController extends Controller
     }
 
     public function regist(SoftwaresRequest $request){
-        Log::info("Entere Regist");
-        Log::debug("Entere Regist");
+
         $request->validated();
 
-        $insertData = $request;
+
+        $insertData = $request->input();
         $insertData['created_by'] = Auth::user()->id;
         $insertData['updated_by'] = Auth::user()->id;
         $id = null;
+        //dd($insertData);
 
+
+        //dd($insertData);
 
         if(empty($insertData['id'])){
             //new registration
-            Log::info("empty");
-            Log::debug("empty");
             unset($insertData['id']);
             if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
                 //approve the registration, no email is sent
                 $insertData['approved_status'] = config('constants.APPROVED_STATUS_APPROVED');
                 $insertData['approved_by'] = Auth::user()->id;
 
-                $id = Softwares::create($insertData)->id;
+                //$id = Softwares::create($insertData)->id;
 
             }else{
                 //pending request, 
                 $insertData['approved_status'] = config('constants.APPROVED_STATUS_PENDING');
-                $id = Softwares::create($insertData)->id;
+                //$id = Softwares::create($insertData)->id;
             }
+            $id = Softwares::create($insertData)->id;
         }        
         else{
-            Log::info("empty");
-            Log::debug("empty");
             //registration update
             $id = $insertData['id'];
             unset($insertData['id']);
@@ -80,17 +80,20 @@ class SoftwaresController extends Controller
                     ->update($insertData);
         }
         //create logs
-        Logs::createLog("Software", 'Created Software Approval Request for software ' + $id );
+        Logs::createLog("Software", 'Created Software Approval Request for software ' . strval($id) );
 
-        //send mail to managers
-        $recipients = Softwares::getEmailOfManagers();
+        //send mail if current user is not manager
+        if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE')){
+            //send mail to managers
+            $recipients = Employees::getEmailOfManagers();
 
-        $mailData = [
-            'link' => route('softwares.request', ['id' => $id]),
-            'currentUserId' => $id,
-            'module' => "Software",
-        ];
-        $this->sendMail($recipients, $mailData, config('constants.MAIL_NEW_SOFTWARE_REQUEST'));
+            $mailData = [
+                'link' => route('softwares.request', ['id' => $id]),
+                'currentUserId' => $id,
+                'module' => "Software",
+            ];
+            $this->sendMail($recipients, $mailData, config('constants.MAIL_NEW_SOFTWARE_REQUEST'));
+        }
         
         return redirect(route('softwares.regist.complete'));
     }
@@ -168,10 +171,10 @@ class SoftwaresController extends Controller
 
     public function update(SoftwaresRequest $request){
         $request->validated();
-
-        $updateData = $this->getSoftwareData($request);
+        $updateData = $request->except("_token");
         $id = $updateData['id'];
         $originalData = Softwares::where('id', $id)->first();
+        //dd($updateData);
 
         unset($updateData['id']);
         unset($updateData['created_by']);
@@ -179,6 +182,8 @@ class SoftwaresController extends Controller
         //check logined employee role
         if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
             //save directly in DB in db
+            unset($updateData['approved_status']);
+            unset($updateData['approved_by']);
             Softwares::where('id', $id)
                 ->update($updateData);
 
@@ -235,10 +240,11 @@ class SoftwaresController extends Controller
 
         $softwaresDetails = Softwares::where('id', $id)->first();
         $requestorDetail = Employees::where('id', $softwaresDetails->updated_by)->first();
-        $approverDetails = Employees::where('id', $softwaresDetails->approved_by)->first();
+        $approverDetail = Employees::where('id', $softwaresDetails->approved_by)->first();
+        
 
         $requesterName = $requestorDetail->last_name . ", " . $requestorDetail->first_name . " " . $requestorDetail->middle_name; 
-        $approverName = $approverDetails->last_name . ", " . $approverDetails->first_name . " " . $approverDetails->middle_name; 
+        $approverName = $approverDetail->last_name . ", " . $approverDetail->first_name . " " . $approverDetail->middle_name; 
 
         $is_display_approver = false;
 
@@ -247,7 +253,7 @@ class SoftwaresController extends Controller
         abort_if(empty($softwaresDetails), 404); //software does not exist
 
         $detailNote = $this->getSoftwareStatus($softwaresDetails);
-
+   
         if($softwaresDetails->approved_status == config('constants.APPROVED_STATUS_PENDING')){
             $detailNote = 'Software is still pending for approval';
         }elseif($softwaresDetails->approved_status == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')){
@@ -438,7 +444,8 @@ class SoftwaresController extends Controller
      */
     private function getSoftwareStatus($software){
         $note = '';
-        switch ($software['approved_status']){
+        
+        switch ($software->approved_status){
             case config('constants.APPROVED_STATUS_REJECTED'):     //rejected registration
                 $note = 'Software was rejected';
                 break;
@@ -483,16 +490,14 @@ class SoftwaresController extends Controller
      * @param SoftwaresRequest $request
      * @return array
      */
-    private function getSoftwareData(SoftwaresRequest $request){
-        $data = $request;
-        if(Auth::check()){
+    /*Auth::check()){
             //for data update
             $data['created_by'] = Auth::user()->id;
             $data['updated_by'] = Auth::user()->id;
         }
         return $data;
     }
-
+    */
     /**
      * send email
      *

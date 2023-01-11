@@ -36,10 +36,10 @@
                 <h4 class="text-start">Software </h4>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="software_status" id="software_status" placeholder="Status" value="{{ $current_status }}" required @readonly($readOnly)>
-                        <label class="text-center" for="software_status">Status</label>
-                        @if ($errors->has('software_status'))
-                        <p class="text-danger">{{ $errors->first('software_status') }}</p>
+                        <input type="text" class="form-control" name="approved_status" id="approved_status" placeholder="Status" value="{{ $current_status }}" required @readonly($readOnly)>
+                        <label class="text-center" for="approved_status">Status</label>
+                        @if ($errors->has('approved_status'))
+                        <p class="text-danger">{{ $errors->first('approved_status') }}</p>
                         @endif
                     </div>
                 </div>
@@ -54,7 +54,7 @@
                 </div>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-4 g-3 form-floating">
-                        <select name="software_type" id="software_type" class="form-select form-control" {{ $readOnly ? 'disabled' : '' }}>
+                        <select name="type" id="type" class="form-select form-control" {{ $readOnly ? 'disabled' : '' }}>
                             <option {{ $software->type == 1 ? "selected" : "" }} value="1">{{ config('constants.SOFTWARE_TYPE_1_NAME') }}</option>
                             <option {{ $software->type == 2 ? "selected" : "" }} value="2">{{ config('constants.SOFTWARE_TYPE_2_NAME') }}</option>
                             <option {{ $software->type == 3 ? "selected" : "" }} value="3">{{ config('constants.SOFTWARE_TYPE_3_NAME') }}</option>
@@ -62,37 +62,37 @@
                             <option {{ $software->type == 5 ? "selected" : "" }} value="5">{{ config('constants.SOFTWARE_TYPE_5_NAME') }}</option>
                             <option {{ $software->type == 6 ? "selected" : "" }} value="6">{{ config('constants.SOFTWARE_TYPE_6_NAME') }}</option>
                         </select>
-                        <label  class="text-center" for="software_type">Software Type</label>
-                        @if ($errors->has('software_type'))
-                        <p class="text-danger">{{ $errors->first('software_type') }}</p>
+                        <label  class="text-center" for="type">Software Type</label>
+                        @if ($errors->has('type'))
+                        <p class="text-danger">{{ $errors->first('type') }}</p>
                         @endif
                     </div>
                 </div>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="software_purpose" id="software_purpose" placeholder="Purpose" value="{{ $software->remarks }}" required @readonly($readOnly)>
-                        <label class="text-center" for="software_purpose">Purpose</label>
-                        @if ($errors->has('software_purpose'))
-                        <p class="text-danger">{{ $errors->first('software_purpose') }}</p>
+                        <input type="text" class="form-control" name="remarks" id="remarks" placeholder="Purpose" value="{{ $software->remarks }}" required @readonly($readOnly)>
+                        <label class="text-center" for="remarks">Purpose</label>
+                        @if ($errors->has('remarks'))
+                        <p class="text-danger">{{ $errors->first('remarks') }}</p>
                         @endif
                     </div>
                 </div>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="software_createdby" id="software_createdby" placeholder="Created By" value="{{ $requestor }}" required @readonly($readOnly)>
-                        <label class="text-center" for="software_createdby">Created By</label>
-                        @if ($errors->has('software_createdby'))
-                        <p class="text-danger">{{ $errors->first('software_createdby') }}</p>
+                        <input type="text" class="form-control" name="created_by" id="created_by" placeholder="Created By" value="{{ $requestor }}" required @readonly($readOnly)>
+                        <label class="text-center" for="created_by">Created By</label>
+                        @if ($errors->has('created_by'))
+                        <p class="text-danger">{{ $errors->first('created_by') }}</p>
                         @endif
                     </div>
                 </div>
                 @if( $is_display_approver)
                     <div class="row mb-2 ps-3 pe-3">
                         <div class="col-4 g-3 form-floating">
-                            <input type="text" class="form-control" name="software_approvedby" id="software_approvedby" placeholder="Approved By" value="{{ $approver }}" required @readonly($readOnly)>
-                            <label class="text-center" for="software_approvedby">Approved By</label>
-                            @if ($errors->has('software_approvedby'))
-                            <p class="text-danger">{{ $errors->first('software_approvedby') }}</p>
+                            <input type="text" class="form-control" name="approved_by" id="approved_by" placeholder="Approved By" value="{{ $approver }}" required @readonly($readOnly)>
+                            <label class="text-center" for="approved_by">Approved By</label>
+                            @if ($errors->has('approved_by'))
+                            <p class="text-danger">{{ $errors->first('approved_by') }}</p>
                             @endif
                         </div>
                     </div>
