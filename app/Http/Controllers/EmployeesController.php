@@ -529,9 +529,14 @@ class EmployeesController extends Controller
     }
 
     private function getEmployee() {
-        $employee = Employees::whereIn('approved_status',[2,4])
-                                ->orderBy('last_name', 'ASC')
-                                ->get();
+        $query = Employees::whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
+
+        if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE')){
+            $query->where('active_status', 1);
+        }
+
+        $employee = $query->orderBy('last_name', 'ASC')
+                            ->get();
 
         return $employee;
     }

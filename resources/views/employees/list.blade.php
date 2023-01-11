@@ -22,7 +22,8 @@
 	</div>
 	@endif
 	<form action='{!! url("/employees/download"); !!}' method="POST">
-                @csrf
+        @csrf
+		@if(auth()->user()->roles == config('constants.MANAGER_ROLE_VALUE'))
         <div class="row row-list">
         	<div class="col-1 filter-employee">
 				Status: 
@@ -44,6 +45,7 @@
 				</label>
 			</div>
 		</div>
+		@endif
 		<div class="row row-list">
         	<div class="col-1 filter-employee">
 				Filter: 
