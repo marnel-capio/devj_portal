@@ -95,7 +95,7 @@
                         <div class="d-flex align-items-center">
                             <div class="form-check ">
                                 <label class="form-check-label" for="active-status">Active Status</label>
-                                <input type="checkBox" class="form-check-input" name="active_status" id="active-status" value="1" {{ old('active_status', $employee->active_status) == 1 ? "checked" : "" }} {{ !$manager_admin ? 'disabled' : '' }}>
+                                <input type="checkBox" class="form-check-input" name="active_status" id="active-status" value="1" {{ old('active_status', $employee->active_status) == 1 ? "checked" : "" }} {{ !$isManager ? 'disabled' : '' }}>
                                 <input type="text" hidden value="0" name="active_status" id="active-status-hidden">
                             </div>
                         </div>
@@ -107,7 +107,7 @@
                         <div class="d-flex align-items-center">
                             <div class="form-check ">
                                 <label class="form-check-label" for="server-manage-flag">Manage Server</label>
-                                <input type="checkBox" class="form-check-input" name="server_manage_flag" id="server-manage-flag" value="1" {{ old('server_manage_flag', $employee->server_manage_flag) == 1 ? "checked" : "" }} {{ !$manager_admin ? 'disabled' : '' }}>
+                                <input type="checkBox" class="form-check-input" name="server_manage_flag" id="server-manage-flag" value="1" {{ old('server_manage_flag', $employee->server_manage_flag) == 1 ? "checked" : "" }} {{ !$isManager ? 'disabled' : '' }}>
                                 <input type="text" hidden value="0" name="server_manage_flag" id="server-manage-flag-hidden">
                             </div>
                         </div>
@@ -115,17 +115,20 @@
                         <p class="text-danger">{{ $errors->first('server_manage_flag') }}</p>
                         @endif
                     </div>
+                    @if (!in_array($employee->position, [config('constants.POSITION_MANAGER_VALUE'), config('constants.POSITION_ASSSITANT_MANAGER_VALUE')]))
                     <div class="col-lg-2 col-4 g-3 ps-1" id="admin-check">
                         <div class="d-flex align-items-center" style="height: 100%">
                             <div class="form-check ">
                                 <label class="form-check-label" for="is-admin">Admin</label>
                                 <input type="checkBox" class="form-check-input" name="is_admin" id="is-admin" value="1" {{ old('is_admin', $employee->roles) == 1 ? "checked" : "" }}>
+                                <input type="text" hidden value="0" name="is_admin" id="is-admin-hidden">
                             </div>
                             @if ($errors->has('is-admin'))
                             <p class="text-danger">{{ $errors->first('is-admin') }}</p>
                             @endif
                         </div>
                     </div>
+                    @endif
                 </div>
                 @endif
             </div>

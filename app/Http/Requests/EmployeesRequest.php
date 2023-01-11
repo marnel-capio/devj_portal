@@ -37,7 +37,6 @@ class EmployeesRequest extends FormRequest
             'permanent_address_province' => 'province or region',
             'permanent_address_postal_code' => 'postal code',
             'email' => 'email address',
-            'roles' => 'role',
             'cellphone_number' => 'contact number',
             'current_address_postalcode' => 'postal code',
             'permanent_address_postalcode' => 'postal code',
@@ -119,25 +118,31 @@ class EmployeesRequest extends FormRequest
             }
 
             if(strpos($this->header('referer'), '/edit') !== FALSE){
-                // $rules['roles'] = [function($attribute, $value, $fail){
-                //     $employee = Employees::where('id', $this->input('id'))->first();
-                //     if($value != $employee->roles && !in_array(Auth::user()->roles, [config('constants.MANAGER_ROLE_VALUE'), config('constants.ADMIN_ROLE_VALUE')])){
-                //         $fail('Role can only be update by an Admin or a Manager.');
-                //     }
-                // }];
-                // if(in_array(Auth::user()->roles, [config('constants.MANAGER_ROLE_VALUE'), config('constants.ADMIN_ROLE_VALUE')])){
-                //     $rules['roles'] = 'required|in:1,2,3';
-                // }
                 $rules['active_status'] = [function($attribute, $value, $fail){
                     $employee = Employees::where('id', $this->input('id'))->first();
-                    if($value != $employee->active_status && !in_array(Auth::user()->roles, [config('constants.MANAGER_ROLE_VALUE'), config('constants.ADMIN_ROLE_VALUE')])){
-                        $fail('Active Status can only be update by an Admin or a Manager.');
+                    if($value != $employee->active_status && Auth::user()->roles != config ('constants.MANAGER_ROLE_VALUE')){
+                        $fail('Active Status can only be updated by a Manager.');
                     }
                 }];
                 $rules['server_manage_flag'] = [function($attribute, $value, $fail){
                     $employee = Employees::where('id', $this->input('id'))->first();
-                    if($value != $employee->server_manage_flag && !in_array(Auth::user()->roles, [config('constants.MANAGER_ROLE_VALUE'), config('constants.ADMIN_ROLE_VALUE')])){
-                        $fail('Manage Server Flag can only be update by an Admin or a Manager.');
+                    if($value != $employee->server_manage_flag && Auth::user()->roles != config ('constants.MANAGER_ROLE_VALUE')){
+                        $fail('Manage Server Flag can only be updated a Manager.');
+                    }
+                }];
+                $rules['is_admin'] = [function($attribute, $value, $fail){
+                    $employee = Employees::where('id', $this->input('id'))->first();
+                    if($value != $employee->roles && Auth::user()->roles != config ('constants.MANAGER_ROLE_VALUE')){
+                        $fail('Manage Server Flag can only be updated by an Admin or a Manager.');
+                    }
+                    if($value == 1){
+                        if($employee->roles != config('constants.ADMIN_ROLE_VALUE') && Auth::user()->roles != config ('constants.MANAGER_ROLE_VALUE')){
+                            $fail('Admin Flag can only be updated by a Manager.');
+                        }
+                    }else{
+                        if($employee->roles == config('constants.ADMIN_ROLE_VALUE') && Auth::user()->roles != config ('constants.MANAGER_ROLE_VALUE')){
+                            $fail('Admin Flag can only be updated by a Manager.');
+                        }
                     }
                 }];
                 $rules['id'] = [function($attribute, $value, $fail){

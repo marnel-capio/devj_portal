@@ -148,7 +148,7 @@ class EmployeesController extends Controller
 
         return view('employees.edit')->with([
                                         'employee' => $employee,
-                                        'manager_admin' => in_array(Auth::user()->roles, [config('constants.ADMIN_ROLE_VALUE'), config('constants.MANAGER_ROLE_VALUE')])
+                                        'isManager' => Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')
                                     ]);
 
     }

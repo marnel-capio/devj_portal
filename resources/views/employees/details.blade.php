@@ -188,14 +188,16 @@
                             @endif
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-2 col-4 g-3 ps-1" id="admin-detail">
-                    <div class="d-flex align-items-center" style="height: 100%">
-                        <div class="form-check ">
-                            <label class="form-check-label" for="is-admin-detail">Admin</label>
-                            <input type="checkBox" class="form-check-input" name="is_admin" id="is-admin-detail" value="0" {{ $employee->roles == config('constants.ADMIN_ROLE_VALUE') ? "checked" : "" }} {{ $readOnly ? 'disabled' : '' }}>
+                    @if (!in_array($employee->position, [config('constants.POSITION_MANAGER_VALUE'), config('constants.POSITION_ASSSITANT_MANAGER_VALUE')]))
+                    <div class="col-lg-2 col-4 g-3 ps-1" id="admin-detail">
+                        <div class="d-flex align-items-center" style="height: 100%">
+                            <div class="form-check ">
+                                <label class="form-check-label" for="is-admin-detail">Admin</label>
+                                <input type="checkBox" class="form-check-input" name="is_admin" id="is-admin-detail" value="0" {{ $employee->roles == config('constants.ADMIN_ROLE_VALUE') ? "checked" : "" }} {{ $readOnly ? 'disabled' : '' }}>
+                            </div>
                         </div>
                     </div>
+                    @endif
                 </div>
                 @endif
             </div>
