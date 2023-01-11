@@ -105,16 +105,11 @@
                         <p class="text-danger">{{ $errors->first('cellphone_number') }}</p>
                         @endif
                     </div>
-                    <div class="col-4 g-3">
-                        <div class="input-group">
-                            <span class="input-group-text">+63</span>
-                            <div class="form-floating">
-                                <input type="text" class="form-control" name="other_contact_number" id="other_contact" placeholder="Other Contact Number" value="{{ old('other_contact_number', $employee ? $employee->other_contact_number : '') }}">
-                                <label for="other_contact" class="text-center">Other Contact Number (optional)</label>
-                            </div>
-                        </div>
-                        @if ($errors->has('other_contact_number'))
-                        <p class="text-danger">{{ $errors->first('other_contact_number') }}</p>
+                    <div class="col-4 g-3 form-floating">
+                        <input type="text" class="form-control" name="other_contact_info" id="other_contact" placeholder="Other Contact Info" value="{{ old('other_contact_info', $employee ? $employee->other_contact_info : '') }}">
+                        <label for="other_contact" class="text-center">Other Contact Info (optional)</label>
+                        @if ($errors->has('other_contact_info'))
+                        <p class="text-danger">{{ $errors->first('other_contact_info') }}</p>
                         @endif
                     </div>
                 </div>

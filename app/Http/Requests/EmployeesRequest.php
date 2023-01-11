@@ -85,10 +85,6 @@ class EmployeesRequest extends FormRequest
                 'permanent_address_postalcode' =>'required|numeric',
             ];
 
-            if(!empty($this->input('other_contact_number'))){
-                $rules['other_contact_number'] = 'numeric|digits:10';
-            }
-
             if(strpos($this->header('referer'), route('employees.create')) !== FALSE){
                 $rules['password'] = ['required', 'min:8', 'max:16', new Password()];
                 $referer = $this->header('referer');

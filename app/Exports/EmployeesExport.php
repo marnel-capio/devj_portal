@@ -23,6 +23,10 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithEvent
     use Exportable;
 
     private $maxRow = 100;
+    private $keyword;
+    private $filter;
+    private $status;
+    private $fileType;
 
     public function __construct($keyword,$filter,$status,$fileType = "")
     {
@@ -84,7 +88,7 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithEvent
             date("Y-m-d",strtotime($employee->update_time)),
             $employee->last_name.", ". $employee->first_name." (". $employee->middle_name.")",
             $employee->cellphone_number,
-            $employee->other_contact_number,
+            $employee->other_contact_info,
             $employee->current_address_street. ", ". $employee->current_address_city. ", ". $employee->current_address_province . " " . $employee->current_address_postalcode,
             $employee->permanent_address_street. ", ". $employee->permanent_address_city. ", ". $employee->permanent_address_province . " " . $employee->permanent_address_postalcode,
         ];
