@@ -81,7 +81,7 @@
                 </div>
             </div>
             <div class="text-center p-2">
-                <button class="btn btn-primary btn-lg mb-5 btn-prevent-multiple-submit" id="emp-update-submit" type="submit">Update</button>
+                <button class="btn btn-primary btn-lg mb-5 btn-prevent-multiple-submit" id="soft-update-submit" type="submit">Update</button>
             </div>
         </form>
     </div>

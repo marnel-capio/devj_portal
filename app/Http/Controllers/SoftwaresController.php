@@ -37,6 +37,8 @@ class SoftwaresController extends Controller
     }
 
     public function regist(SoftwaresRequest $request){
+        Log::info("Entere Regist");
+        Log::debug("Entere Regist");
         $request->validated();
 
         $insertData = $request;
@@ -47,6 +49,8 @@ class SoftwaresController extends Controller
 
         if(empty($insertData['id'])){
             //new registration
+            Log::info("empty");
+            Log::debug("empty");
             unset($insertData['id']);
             if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
                 //approve the registration, no email is sent
@@ -62,6 +66,8 @@ class SoftwaresController extends Controller
             }
         }        
         else{
+            Log::info("empty");
+            Log::debug("empty");
             //registration update
             $id = $insertData['id'];
             unset($insertData['id']);
@@ -72,7 +78,6 @@ class SoftwaresController extends Controller
 
             Softwares::where('id', $id)
                     ->update($insertData);
-
         }
         //create logs
         Logs::createLog("Software", 'Created Software Approval Request for software ' + $id );

@@ -30,7 +30,7 @@
     </div>
 
     <div class="pt-4">
-        <form action="{{ route('softwares.create') }}" method="POST">
+        <form>
             @csrf
             <div class="soft-regist-category p-3 mb-4 rounded-3">
                 <h4 class="text-start">Software </h4>
