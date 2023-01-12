@@ -17,18 +17,13 @@ class Softwares extends Model
     static function getSoftwareRequest(){
         $query = self::selectRaw('
                                 id,
-                                approved_by,
+                                software_name,
                                 approved_status,
                                 type,
-                                software_name,
-                                remarks,
-                                reasons,
-                                update_data,
-                                created_by,
-                                updated_by,
-                                create_time
+                                remarks
                             ')
-                        ->whereIn('approved_status', [config('constants.APPROVED_STATUS_PENDING'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
+                        ->whereIn('approved_status', [config('constants.APPROVED_STATUS_PENDING'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+                        ->orderBy('software_name', 'ASC');
 
 
         if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE')){
