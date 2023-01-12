@@ -164,8 +164,9 @@
                         @endif
                     </div>
                 </div>
-                @if ($userInfo->roles == config('constants.MANAGER_ROLE_VALUE'))
+                
                 <div class="row mb-2 ps-3 pe-3">
+                    @if ($userInfo->roles == config('constants.MANAGER_ROLE_VALUE'))
                     <div class="col-lg-2 col-4 g-3 ps-1">
                         <div class="d-flex align-items-center">
                             <div class="form-check ">
@@ -177,6 +178,8 @@
                             @endif
                         </div>
                     </div>
+                    @endif
+                    @if ($userInfo->roles == config('constants.MANAGER_ROLE_VALUE') || $userInfo->id == $employee->id)
                     <div class="col-lg-2 col-4 g-3 ps-1">
                         <div class="d-flex align-items-center">
                             <div class="form-check ">
@@ -198,8 +201,8 @@
                         </div>
                     </div>
                     @endif
+                    @endif
                 </div>
-                @endif
             </div>
             <div class="emp-regist-category mb-4 p-3 rounded-3">
                 <h4 class="text-start">Contact </h4>
