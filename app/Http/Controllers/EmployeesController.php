@@ -162,9 +162,9 @@ class EmployeesController extends Controller
 
         $roleBasedOnPosition = $this->getRoleBasedOnPosition($updateData['position']);
         $rolebasedOnadminFlag = $request->input('is_admin', 0) ? config('constants.ADMIN_ROLE_VALUE') : config('constants.ENGINEER_ROLE_VALUE');
-        if($roleBasedOnPosition != $originalData->roles && $roleBasedOnPosition == config('constants.MANAGER_ROLE_VALUE')){
+        if($roleBasedOnPosition == config('constants.MANAGER_ROLE_VALUE')){
             $updateData['roles'] = $roleBasedOnPosition;
-        }else if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE') && $rolebasedOnadminFlag != $originalData->roles){
+        }else if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
             $updateData['roles'] = $rolebasedOnadminFlag;
         }
        

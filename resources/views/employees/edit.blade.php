@@ -115,7 +115,6 @@
                         <p class="text-danger">{{ $errors->first('server_manage_flag') }}</p>
                         @endif
                     </div>
-                    @if (!in_array($employee->position, [config('constants.POSITION_MANAGER_VALUE'), config('constants.POSITION_ASSSITANT_MANAGER_VALUE')]))
                     <div class="col-lg-2 col-4 g-3 ps-1" id="admin-check">
                         <div class="d-flex align-items-center" style="height: 100%">
                             <div class="form-check ">
@@ -128,7 +127,6 @@
                             @endif
                         </div>
                     </div>
-                    @endif
                 </div>
                 @endif
             </div>
