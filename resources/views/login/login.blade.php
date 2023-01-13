@@ -23,14 +23,16 @@
                         @endif
                     </div>
                 </div>
-                <div class="row  ps-2 pe-2">
-                        <div class="row mb-4">
-                            <div class="small text-center ">
-                                <a class="text-primary" href="{{ route('login.forgotPassword') }}" style="text-decoration:none">forgot password?</a>
-                            </div>
+                <div class="row mt-4 ps-2 pe-2">
+                    <div class="text-center">
+                        <button class="btn btn-primary ps-5 pe-5 fw-bold" type="submit">Login</button>
+                    </div>
+                    <div class="d-flex justify-content-between mt-4">
+                        <div class="small text-start ms-5">
+                            <a class="text-end text-primary" href="{{ route('employees.create') }}" style="text-decoration:none">Don't have an account?</a>
                         </div>
-                        <div class="text-center">
-                            <button class="btn btn-primary ps-5 pe-5 fw-bold" type="submit">Login</button>
+                        <div class="small text-end me-5">
+                            <a class="text-primary" href="{{ route('login.forgotPassword') }}" style="text-decoration:none">Forgot password?</a>
                         </div>
                     </div>
                 </div>

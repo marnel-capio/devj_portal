@@ -172,17 +172,11 @@
                         <p class="text-danger">{{ $errors->first('position') }}</p>
                         @endif
                     </div>
-                    <div class="col-lg-2 col-4 g-3 ps-3" id="admin-detail">
-                        <div class="d-flex align-items-center" style="height: 100%">
-                            <div class="form-check ">
-                                <label class="form-check-label" for="is-admin-detail">Admin</label>
-                                <input type="checkBox" class="form-check-input" name="is_admin" id="is-admin-detail" value="0" {{ $employee->roles == config('constants.ADMIN_ROLE_VALUE') ? "checked" : "" }} {{ $readOnly ? 'disabled' : '' }}>
-                            </div>
-                        </div>
-                    </div>
                 </div>
+                
                 <div class="row mb-2 ps-3 pe-3">
-                    <div class="col-lg-2 col-md-4 col-6 g-3 ps-1">
+                    @if ($userInfo->roles == config('constants.MANAGER_ROLE_VALUE'))
+                    <div class="col-lg-2 col-4 g-3 ps-1">
                         <div class="d-flex align-items-center">
                             <div class="form-check ">
                                 <label class="form-check-label" for="active-status">Active Status</label>
@@ -193,7 +187,9 @@
                             @endif
                         </div>
                     </div>
-                    <div class="col-lg-2 col-md-4 col-6 g-3 ps-1">
+                    @endif
+                    @if ($userInfo->roles == config('constants.MANAGER_ROLE_VALUE') || $userInfo->id == $employee->id)
+                    <div class="col-lg-2 col-4 g-3 ps-1">
                         <div class="d-flex align-items-center">
                             <div class="form-check ">
                                 <label class="form-check-label" for="server-manage-flag">Manage Server</label>
@@ -204,6 +200,17 @@
                             @endif
                         </div>
                     </div>
+                    @if (!in_array($employee->position, [config('constants.POSITION_MANAGER_VALUE'), config('constants.POSITION_ASSSITANT_MANAGER_VALUE')]))
+                    <div class="col-lg-2 col-4 g-3 ps-1" id="admin-detail">
+                        <div class="d-flex align-items-center" style="height: 100%">
+                            <div class="form-check ">
+                                <label class="form-check-label" for="is-admin-detail">Admin</label>
+                                <input type="checkBox" class="form-check-input" name="is_admin" id="is-admin-detail" value="0" {{ $employee->roles == config('constants.ADMIN_ROLE_VALUE') ? "checked" : "" }} {{ $readOnly ? 'disabled' : '' }}>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+                    @endif
                 </div>
             </div>
             <div class="emp-regist-category mb-4 p-3 rounded-3">
@@ -230,16 +237,11 @@
                         <p class="text-danger">{{ $errors->first('cellphone_number') }}</p>
                         @endif
                     </div>
-                    <div class="col-4 g-3">
-                        <div class="input-group">
-                            <span class="input-group-text">+63</span>
-                            <div class="form-floating">
-                            <input type="text" class="form-control" name="other_contact_number" id="other_contact" placeholder="Other Contact Number" value="{{ $employee->other_contact_number }}" @readonly($readOnly)>
-                                <label for="other_contact" class="text-center">Other Contact Number (optional)</label>
-                            </div>
-                        </div>
-                        @if ($errors->has('other_contact_number'))
-                        <p class="text-danger">{{ $errors->first('other_contact_number') }}</p>
+                    <div class="col-4 g-3 form-floating">
+                        <input type="text" class="form-control" name="other_contact_info" id="other_contact" placeholder="Other Contact Number" value="{{ $employee->other_contact_info }}" @readonly($readOnly)>
+                        <label for="other_contact" class="text-center">Other Contact Info (optional)</label>
+                        @if ($errors->has('other_contact_info'))
+                        <p class="text-danger">{{ $errors->first('other_contact_info') }}</p>
                         @endif
                     </div>
                 </div>
