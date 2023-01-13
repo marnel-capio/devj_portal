@@ -10,14 +10,26 @@
 <div class="container text-center ps-3 pe-3 pt-5">
     <h3 class="text-start">Account Update</h3>
     <div class="pt-4">
-        @if ($errors->has('id'))
-        <p class="text-danger mb-2">{{ $errors->first('id') }}</p>
-        @endif
+
         <form action="{{ route('employees.update') }}" method="POST" id="emp-update-form">
             @csrf
             <input type="text" name="id" hidden value="{{ $employee->id }}">
             <div class="emp-regist-category p-3 mb-4 rounded-3">
                 <h4 class="text-start">Employee Details</h4>
+                @if ($errors->has('id'))
+                <p class="text-danger mb-2">{{ $errors->first('id') }}</p>
+                @endif
+                @if ($userInfo->roles != config('constants.MANAGER_ROLE_VALUE'))
+                    @if ($errors->has('active_status'))
+                    <p class="text-danger mb-2">{{ $errors->first('active_status') }}</p>
+                    @endif
+                    @if ($errors->has('server_manage_flag'))
+                    <p class="text-danger mb-2">{{ $errors->first('server_manage_flag') }}</p>
+                    @endif
+                    @if ($errors->has('is_admin'))
+                    <p class="text-danger mb-2">{{ $errors->first('is_admin') }}</p>
+                    @endif
+                @endif
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-4 g-3 form-floating">
                         <input type="text" class="form-control" name="first_name" id="first_name" placeholder="First Name" value="{{ old('first_name', $employee->first_name) }}" required>

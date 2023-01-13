@@ -226,7 +226,7 @@ class EmployeesController extends Controller
 
             //notify the managers of the request
             $mailData = [
-                'link' => route('employees.request', ['id' => Auth::user()->id]),
+                'link' => route('employees.request', ['id' => $id]),
                 'requestor' => Auth::user()->first_name .' ' .Auth::user()->last_name,
                 'currentUserId' => Auth::user()->id,
                 'module' => "Employee",
