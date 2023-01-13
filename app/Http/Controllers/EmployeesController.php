@@ -203,10 +203,6 @@ class EmployeesController extends Controller
 
             Logs::createLog("Employee", $log);
 
-            if(isset($updateData['active_status']) && !$updateData['active_status']){
-                $this->surrenderLaptop($originalData);
-            }
-
             if(Auth::user()->id == $id){
                 return redirect(route('employees.details', ['id' => $id]))->with(['success' => 1, "message" => "Details are updated successfully."]);
             }else{
@@ -243,42 +239,6 @@ class EmployeesController extends Controller
         }
         
         
-    }
-
-    private function surrenderLaptop($employeeDetails){
-
-        //get latop data in DB
-        $ownedLaptops = EmployeesLaptops::getOwnedLaptopByEmployee($employeeDetails['id']);
-
-        if(!empty($ownedLaptops)){
-            //update data in DB
-            $ids = array_column($ownedLaptops, 'linkage_id');
-            EmployeesLaptops::whereIn('id', $ids)
-            ->where('surrender_flag', 0)
-            ->update([
-                'approved_status' => config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE'),
-                'update_data'=> json_encode([
-                    'surrender_flag' => 1,
-                    'surrender_date' => date('Y-m-d H:i:s')
-                ]),
-                'updated_by' => Auth::user()->id,
-            ]);
-
-            foreach($ownedLaptops as $idx => $laptop){
-                //createLog
-                Logs::createLog('Laptop', "Surrender {$laptop['tag_number']} laptop.");
-
-                //send mail
-                $mailData = [
-                    'employeeName' => $employeeDetails['first_name'] .' ' .$employeeDetails['last_name'],
-                    'link' => route('laptops.details', ['id' => $laptop['id']]) .'#link-req-tbl',
-                    'currentUserId' => Auth::user()->id,
-                    'module' => "Employee",
-                ];
-
-                $this->sendMail(Employees::getEmailOfManagers(), $mailData, config('constants.MAIL_EMPLOYEE_SURRENDER_LAPTOP_WHEN_USER_IS_DEACTIVATED'));
-            }
-        }
     }
 
     public function request($id){
@@ -376,10 +336,6 @@ class EmployeesController extends Controller
 
             //logs
             Logs::createLog("Employee", "Approved the update details of {$employee->first_name} {$employee->last_name}");
-
-            if(isset($employeeUpdate['active_status']) && !$employeeUpdate['active_status']){
-                $this->surrenderLaptop($employee);
-            }
         }
 
         return redirect(route('home'));
