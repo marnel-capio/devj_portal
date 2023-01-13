@@ -38,12 +38,10 @@ $(document).ready(function () {
                 // console.log(result);
                 result.forEach(function(software) {
                     var status = "";
-                    if (software['active_status'] == 0) {
-                        if (software['approved_status'] == 1 || software['approved_status'] == 2 || software['approved_status'] == 4) {
-                            status = "Deactivated";
-                        } else {
-                            status = "Pending for Approval";
-                        }
+                    if (software['approved_status'] == 1 || software['approved_status'] == 2 || software['approved_status'] == 4) {
+                        status = "Deactivated";
+                    } else {
+                        status = "Pending for Approval";
                     } 
                     url = window.location.href+"/"+software['id'];
                     software_list.row.add(['<a href="'+url+'">'+software['software_name']+'</a>', software['type'], software['approved_status'],software['reasons'],software['remarks']]).draw(false);
