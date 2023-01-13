@@ -128,7 +128,7 @@ class EmployeesRequest extends FormRequest
                 $rules['server_manage_flag'] = [function($attribute, $value, $fail){
                     $employee = Employees::where('id', $this->input('id'))->first();
                     if($value != $employee->server_manage_flag && Auth::user()->roles != config ('constants.MANAGER_ROLE_VALUE')){
-                        $fail('Manage Server Flag can only be updated a Manager.');
+                        $fail('Manage Server Flag can only be updated by a Manager.');
                     }
                 }];
                 $rules['is_admin'] = [function($attribute, $value, $fail){
