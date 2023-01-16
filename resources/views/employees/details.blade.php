@@ -6,10 +6,10 @@
 <link rel="stylesheet" href="{{ asset(mix('css/employee.min.css')) }}">
 <script src="{{ asset(mix('js/employee.min.js')) }}" defer></script>
 @include('headerMenu')
-
-@if (session('success')) 
+<div id="alert-div"></div>
+@if (session()->pull('success')) 
 	<div class="alert alert-success" role="alert">
-        <span class="ms-2">{{ session('message') }}</span>
+        <span class="ms-2">{{ session()->pull('message') }}</span>
 	</div>
 @endif
 
@@ -28,8 +28,29 @@
             @if($detailOnly && $userInfo->id == $employee->id)
             <button type="button" class="btn btn-success  ms-1" data-bs-toggle="modal" data-bs-target="#changePasswordModal" >Change Password</button>
             @endif
+            @if ($userInfo->roles == config('constants.MANAGER_ROLE_VALUE'))
+                @if ($employee->active_status == 0)
+                    <button class="btn btn-success ms-1" id="employee-reactivate">Reactivate
+                        <div id="react-deact-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                            <span class="sr-only"></span>
+                        </div>
+                    </button>
+                @else
+                    <button class="btn btn-danger ms-1" id="employee-deactivate">Deactivate
+                        <div id="react-deact-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                            <span class="sr-only"></span>
+                        </div>
+                    </button>
+                @endif
+                <div id="react-deact-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                    <span class="sr-only"></span>
+                </div>
+                <form action="#" id="deact-react-form">
+                    @csrf
+                    <input hidden name="id" value="{{ $employee->id }}" type="text">
+                </form>
+            @endif
         </div>
-        
     </div>
     @if ($detailOnly)
     @if($userInfo->id == $employee->id)

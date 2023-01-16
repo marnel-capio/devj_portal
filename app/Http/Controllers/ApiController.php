@@ -481,4 +481,158 @@ class ApiController extends Controller
         }
     }
 
+    /**
+     * Deactivate employee
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function deactivateEmployee(Request $request){
+        $employeeId = $request->input('id');
+        $message = '';
+        $success = false;
+        $notify = false;
+
+        if(empty($employeeId)){
+            $message = 'Invalid Request!';
+        }else{
+            $employee = Employees::where('id', $employeeId)
+                                ->where('approved_status', config('constants.APPROVED_STATUS_APPROVED'))
+                                ->first();
+            if(empty($employee)){
+                $message = 'Invalid Request!';
+            }elseif($employee->active_status == 0){
+                $message = 'Employee has already been deactivated.';
+            }else{
+                //check if employee has no linked laptops
+                $laptops = EmployeesLaptops::getOwnedLaptopByEmployee($employeeId);
+                if(!empty($laptops)){
+                    $notify = true;
+                    $message = 'Deactivation is not allowed because laptop/s are still assigned to the employee.';
+
+                    $mailData = [
+                        'first_name' => $employee->first_name,
+                        'laptops' => $laptops,
+                        'module' => 'Employee',
+                        'currentUserId' => Auth::user()->id,
+                    ];
+
+                    $this->sendMailForEmployeeUpdate($employee->email, $mailData, config('constants.MAIL_EMPLOYEE_SURRENDER_LAPTOP_NOTIFICATION'));
+                }else{
+                    $success = true;
+                    //deactivate employee
+                    $notify = true;
+                    Employees::where('id', $employeeId)
+                                ->update([
+                                    'active_status' => 0,
+                                    'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
+                                    'updated_by' => Auth::user()->id,
+                                    'approved_by' => Auth::user()->id,
+                                ]);
+                    
+                    Logs::createLog('Employee', "Deactivated {$employee->first_name} {$employee->last_name}'s account");
+                    
+                    $mailData = [
+                        'first_name' => $employee->first_name,
+                        'module' => 'Employee',
+                        'currentUserId' => Auth::user()->id,
+                    ];
+
+                    $this->sendMailForEmployeeUpdate($employee->email, $mailData, config('constants.MAIL_EMPLOYEE_DEACTIVATION'));
+                    session(['success' => $success, 'message'=> 'Employee was successfully deactivated.']);
+                }
+            }
+        }
+
+        return response()->json([
+            'success' => $success,
+            'notify' => $notify,
+            'message' => $message,
+        ]);
+    }
+
+    public function reactivateEmployee(Request $request){
+        $employeeId = $request->input('id');
+        $message = '';
+        $success = false;
+
+        if(empty($employeeId)){
+            $message = 'Invalid Request!';
+        }else{
+            $employee = Employees::where('id', $employeeId)
+                                ->where('approved_status', config('constants.APPROVED_STATUS_APPROVED'))
+                                ->first();
+            if(empty($employee)){
+                $message = 'Invalid Request!';
+            }elseif($employee->active_status == 1){
+                $message = 'Employee is still active';
+            }else{
+                $success = true;
+                //reactivate employee
+
+                Employees::where('id', $employeeId)
+                            ->update([
+                                'active_status' => 1,
+                                'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
+                                'updated_by' => Auth::user()->id,
+                                'approved_by' => Auth::user()->id,
+                            ]);
+                
+                Logs::createLog('Employee', "Reactivated {$employee->first_name} {$employee->last_name}'s account");
+                
+
+                $mailData = [
+                    'first_name' => $employee->first_name,
+                    'module' => 'Employee',
+                    'currentUserId' => Auth::user()->id,
+                ];
+
+                $this->sendMailForEmployeeUpdate($employee->email, $mailData, config('constants.MAIL_EMPLOYEE_DEACTIVATION'));
+                session(['success' => $success, 'message'=> 'Employee was successfully reactivated.']);
+
+            }
+        }
+
+        return response()->json([
+            'success' => $success,
+            'message' => $message,
+        ]);
+    }
+
+    public function notifySurrenderOfLaptops(Request $request){
+        $id = $request->input('id');
+        $message = 'Email has been sent.';
+        $success = false;
+        if(empty($id)){
+            $message = 'Invalid request!';
+        }else{
+            $employee = Employees::where('id', $id)
+                                    ->where('approved_status', config('constants.APPROVED_STATUS_APPROVED'))
+                                    ->first();
+
+            if(empty($employee)){
+                $message = 'Invalid request!';
+            }else{
+                $success = true;
+                $message = 'Email has been sent!';
+                $laptops = EmployeesLaptops::getOwnedLaptopByEmployee($id);
+    
+                $mailData = [
+                    'first_name' => $employee->first_name,
+                    'module' => 'Employee',
+                    'currentUserId' => Auth::user()->id,
+                    'laptops' => $laptops
+                ];
+    
+                $this->sendMailForEmployeeUpdate($employee->email, $mailData, config('constants.MAIL_EMPLOYEE_DEACTIVATION'));
+
+                Logs::createLog('Employee', "Notified {$employee->first_name} {$employee->last_name} to surrender all linked laptops.");
+            }
+        }
+
+        return response()->json([
+            'success' => $success,
+            'message' => $message,
+        ]);
+    }
 }

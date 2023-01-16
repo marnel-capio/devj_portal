@@ -556,7 +556,7 @@ class EmployeesController extends Controller
                         $query->where('approved_status', 2)
                             ->orWhere('approved_status', 4);
                     })
-                    ->where('email',"!=",'devjportal@awsys-i.com')->get();
+                    ->where('email',"!=",'devj-portal@awsys-i.com')->get();
         // $query = DB::getQueryLog();
         // dd($query);            
         foreach ($employee as $key => $detail) {
