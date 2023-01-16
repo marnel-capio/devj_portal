@@ -498,7 +498,7 @@ class ApiController extends Controller
             $message = 'Invalid Request!';
         }else{
             $employee = Employees::where('id', $employeeId)
-                                ->where('approved_status', config('constants.APPROVED_STATUS_APPROVED'))
+                                ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
                                 ->first();
             if(empty($employee)){
                 $message = 'Invalid Request!';
@@ -518,7 +518,6 @@ class ApiController extends Controller
                         'currentUserId' => Auth::user()->id,
                     ];
 
-                    $this->sendMailForEmployeeUpdate($employee->email, $mailData, config('constants.MAIL_EMPLOYEE_SURRENDER_LAPTOP_NOTIFICATION'));
                 }else{
                     $success = true;
                     //deactivate employee
@@ -561,7 +560,7 @@ class ApiController extends Controller
             $message = 'Invalid Request!';
         }else{
             $employee = Employees::where('id', $employeeId)
-                                ->where('approved_status', config('constants.APPROVED_STATUS_APPROVED'))
+                                ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
                                 ->first();
             if(empty($employee)){
                 $message = 'Invalid Request!';
@@ -608,14 +607,13 @@ class ApiController extends Controller
             $message = 'Invalid request!';
         }else{
             $employee = Employees::where('id', $id)
-                                    ->where('approved_status', config('constants.APPROVED_STATUS_APPROVED'))
+                                    ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
                                     ->first();
 
             if(empty($employee)){
                 $message = 'Invalid request!';
             }else{
                 $success = true;
-                $message = 'Email has been sent!';
                 $laptops = EmployeesLaptops::getOwnedLaptopByEmployee($id);
     
                 $mailData = [

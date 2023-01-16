@@ -483,7 +483,6 @@ $(document).ready(function () {
 			encode: true,
 		}).done(function(data){
 			$("#deact-react-alert").remove();
-			console.log('done yey');
 			if(data.success){
 				//display success message
 				$("#alert-div").append('<div id="deact-react-alert" class="alert alert-success" role="alert"><span class="ms-2">' + data.message + '</span></div>');
