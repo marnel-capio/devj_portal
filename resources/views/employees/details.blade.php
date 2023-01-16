@@ -521,7 +521,7 @@
                                     <p id="error-laptop-id"></p>
                                 </div>
                             </div>
-                            <div class="row mb-2 text-start">
+                            <div class="row mb-4 text-start">
                                 <div class="col-6 g-3">
                                     <div class="form-check">
                                         <label for="ll-brought-home" class="form-check-label">Brought Home?</label>
@@ -533,6 +533,15 @@
                                         <label for="ll-vpn" class="form-check-label">VPN Access?</label>
                                         <input type="checkbox" class="form-check-input" name="laptop_vpn" id="ll-vpn" value="1">
                                     </div>
+                                </div>
+                            </div>
+                            <div class="row mt-2 pt-2 text-start">
+                                <h6>Remarks</h6>
+                            </div>
+                            <div class="row text-start">
+                                <div class="gs-3 ge-3 gt-1">
+                                    <textarea name="remarks" id="ll-remarks" rows="3" class="form-control"></textarea>
+                                    <p id="error-ll-remarks"></p>
                                 </div>
                             </div>
                         </form>

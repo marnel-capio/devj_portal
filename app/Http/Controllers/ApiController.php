@@ -46,6 +46,7 @@ class ApiController extends Controller
             'employee_id' => $data['employee_id'],
             'brought_home_flag' => $data['brought_home_flag'] ? 1 : 0,
             'vpn_flag' => $data['vpn_access_flag'] ? 1 : 0,
+            'remarks' => $data['remarks'],
             'created_by' => Auth::user()->id,
             'updated_by' => Auth::user()->id,
         ];
