@@ -588,7 +588,7 @@ class ApiController extends Controller
                     'currentUserId' => Auth::user()->id,
                 ];
 
-                $this->sendMailForEmployeeUpdate($employee->email, $mailData, config('constants.MAIL_EMPLOYEE_DEACTIVATION'));
+                $this->sendMailForEmployeeUpdate($employee->email, $mailData, config('constants.MAIL_EMPLOYEE_REACTIVATION'));
                 session(['success' => $success, 'message'=> 'Employee was successfully reactivated.']);
 
             }
@@ -625,7 +625,7 @@ class ApiController extends Controller
                     'laptops' => $laptops
                 ];
     
-                $this->sendMailForEmployeeUpdate($employee->email, $mailData, config('constants.MAIL_EMPLOYEE_DEACTIVATION'));
+                $this->sendMailForEmployeeUpdate($employee->email, $mailData, config('constants.MAIL_EMPLOYEE_SURRENDER_LAPTOP_NOTIFICATION'));
 
                 Logs::createLog('Employee', "Notified {$employee->first_name} {$employee->last_name} to surrender all linked laptops.");
             }

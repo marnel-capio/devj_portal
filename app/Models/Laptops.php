@@ -41,14 +41,14 @@ class Laptops extends Model
                         $query->select('laptop_id')
                                 ->from('employees_laptops')
                                 ->where('surrender_flag', 0)
-                                ->where('approved_status', 2);
+                                ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
                     })
             ->get()
             ->toArray();
     }
 
     /**
-     * Rerieve laptop list for laptop list screen
+     * Retrieve laptop list for laptop list screen
      * Filters:
      * status: 1:all, 2:active, 3:inacive 
      * availability: 1:all, 2:owned, 3:not owned
