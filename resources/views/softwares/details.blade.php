@@ -33,7 +33,7 @@
         <form>
             @csrf
             <div class="soft-regist-category p-3 mb-4 rounded-3">
-                <h4 class="text-start">Software </h4>
+                <h4 class="text-start">Software Details</h4>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-4 g-3 form-floating">
                         <input type="text" class="form-control" name="approved_status" id="approved_status" placeholder="Status" value="{{ $current_status }}" required @readonly($readOnly)>

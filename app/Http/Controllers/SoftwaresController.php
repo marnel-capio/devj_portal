@@ -455,7 +455,7 @@ class SoftwaresController extends Controller
             case config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE'):
                 $note = 'Software Update approval is still pending';
             default:    //account has been deactivated 
-                $note = 'Softeware detail is invalid';
+                $note = 'Software detail is invalid.';
         }
 
         return $note;
@@ -533,12 +533,13 @@ class SoftwaresController extends Controller
 
     public function download(Request $request) {
         
+        $current_date = date("Y-m");
         Logs::createLog("Software", "Downloaded list of software");
         // determine excel type
         if (Auth::user()->roles != 3) {
-            return (new SoftwaresExport($request['searchInput'],$request['softwareStatus']))->download('C4I DEV J Dev K SW Inventory (2022-04).xlsx');
+            return (new SoftwaresExport($request['searchInput'],$request['softwareStatus']))->download('C4I DEV J Dev K SW Inventory ' . $current_date . '.xlsx');
         } else {
-            return (new SoftwaresExport($request['searchInput'],$request['softwareStatus'], 'pdf'))->download('C4I DEV J Dev K SW Inventory (2022-04).pdf');
+            return (new SoftwaresExport($request['searchInput'],$request['softwareStatus'], 'pdf'))->download('C4I DEV J Dev K SW Inventory ' . $current_date . '.pdf');
         }
 
     }
