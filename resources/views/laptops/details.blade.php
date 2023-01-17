@@ -276,13 +276,18 @@
                                 
                                 <div class="modal-footer">
                                     <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button class="btn btn-primary" type="submit"  id="ul-submit-btn" form="update-linkage-form">Update</button>
+                                    <button class="btn btn-primary" type="submit"  id="ul-submit-btn" form="update-linkage-form">Update
+                                        <div id="link-update-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                                            <span class="sr-only"></span>
+                                        </div>
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 @endif
             @else
+                @if ($showLinkBtn)
                 <button class="btn btn-primary" data-bs-target="#newLinkageModal" data-bs-toggle="modal">Link</button>
                 <div class="modal modal fade" tabindex='-1' id="newLinkageModal">
                     <div class="modal-dialog modal-dialog-centered">
@@ -340,14 +345,18 @@
                                     </form>
                                 </div>
                             </div>
-                            
                             <div class="modal-footer">
                                 <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button class="btn btn-primary" type="submit"  id="ll-submit-btn" form="link-form">Link</button>
+                                <button class="btn btn-primary" type="submit"  id="ll-submit-btn" form="link-form">Link
+                                    <div id="link-update-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                                        <span class="sr-only"></span>
+                                    </div>
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
+                @endif
             @endif
         </div>
 

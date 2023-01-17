@@ -549,7 +549,11 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button class="btn btn-primary" type="submit" id="ll-submit-btn">Link</button>
+                    <button class="btn btn-primary" type="submit" id="ll-submit-btn">Link
+                        <div id="ll-link-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                            <span class="sr-only"></span>
+                        </div>
+                    </button>
                 </div>
             </div>
         </div>

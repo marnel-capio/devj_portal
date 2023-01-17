@@ -122,7 +122,7 @@ class LaptopsController extends Controller
     }
 
     public function details($id){
-
+        $showLinkBtn = true;
         $laptopDetails = Laptops::select(
                                         'id',
                                         'approved_status',
@@ -142,14 +142,25 @@ class LaptopsController extends Controller
                                     ->first();
 
         abort_if(empty($laptopDetails), 404);
-
+        
+        $employeeDropdown = [];
         if(in_array(Auth::user()->roles, [config('constants.ADMIN_ROLE_VALUE'), config('constants.MANAGER_ROLE_VALUE')])){
-            $employeeDropdown = Employees::getEmployeeNameList();
+            $employeeDropdown = Employees::getEmployeeNameListForLaptopDropdown($id);
         }else{
-            $employeeDropdown = [[
-                'id' => Auth::user()->id,
-                'employee_name' => Auth::user()->last_name .", " .Auth::user()->first_name,
-            ]];
+            //check if employee has pending request
+            $currentUserRequest = EmployeesLaptops::where('approved_status', config('constants.APPROVED_STATUS_PENDING'))
+                                                ->where('laptop_id', $id)
+                                                ->where('employee_id', Auth::user()->id)
+                                                ->first();
+
+            if(empty($currentUserRequest)){
+                $employeeDropdown = [[
+                    'id' => Auth::user()->id,
+                    'employee_name' => Auth::user()->last_name .", " .Auth::user()->first_name,
+                ]];
+            }else{
+                $showLinkBtn = false;
+            }
         }
 
         $linkageData = EmployeesLaptops::getLinkageData($id);
@@ -180,6 +191,7 @@ class LaptopsController extends Controller
                                             'linkageRequest' => $linkageRequest,
                                             'history' => EmployeesLaptops::getLaptopHistory($id),
                                             'employeeDropdown' => $employeeDropdown,
+                                            'showLinkBtn' => $showLinkBtn,
                                         ]);
     }
 

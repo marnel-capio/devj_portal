@@ -39,13 +39,13 @@ $(document).ready(function(){
             dataType: "json",
             encode: true
         }).done(function(data){
-            console.log(data);
+            // console.log(data);
             if(data.success){
                 laptopList.clear().draw();
 
                 data.update.forEach(function(laptop){
                     laptopList.row.add([
-                        '<a href="' + window.location.href + laptop.id + '">' + laptop.tag_number + '</a>',
+                        '<a href="' + window.location.href + '/' + laptop.id + '">' + laptop.tag_number + '</a>',
                         laptop.peza_form_number,
                         laptop.peza_permit_number,
                         laptop.laptop_make,
@@ -70,7 +70,7 @@ $(document).ready(function(){
         var jsonData = JSON.stringify(Object.assign({}, arrData));
         jsonData = JSON.parse(jsonData);
 
-        console.log(jsonData);
+        // console.log(jsonData);
         
         $.ajax({
             type: "POST",
@@ -113,6 +113,8 @@ $(document).ready(function(){
 	});
 
     $("#update-linkage-form").submit(function(e){
+        $("#ul-submit-btn").prop('disabled', true);
+        $("#link-update-spinner").show();
         var formData = $("#update-linkage-form").serializeArray();
         var arrData = [];
         formData.forEach(function(data){
@@ -156,6 +158,8 @@ $(document).ready(function(){
     });
 
     $("#link-form").submit(function(e){
+        $("#ll-submit-btn").prop('disabled', true);
+        $("#link-update-spinner").show();
         var formData = $("#link-form").serializeArray();
         var arrData = [];
         formData.forEach(function(data){
@@ -167,7 +171,6 @@ $(document).ready(function(){
 
         var jsonData = JSON.stringify(Object.assign({}, arrData));
         jsonData = JSON.parse(jsonData);
-        console.log(jsonData);
         
         $.ajax({
             type: "POST",
@@ -184,7 +187,7 @@ $(document).ready(function(){
                 //display errors
                 errors = data.data;
                 for(var key in errors){
-                    console.log("#ll-" + key + "-error")
+                    // console.log("#ll-" + key + "-error")
                     $("#ll-" + key + "-error").html(errors[key][0]).addClass("text-danger");
                 }
             }else{
@@ -212,7 +215,6 @@ $(document).ready(function(){
     //reject modal
 	$("#reject-request-form").submit(function(){
 		if($("#reject-reason").val() == ""){
-			console.log("hello");
 			$("#reject-reason-error").html('The reason field is required.').addClass("text-danger text-start");
 			return false;
 		}else if($("#reject-reason").val().length > 1024){

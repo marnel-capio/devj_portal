@@ -280,6 +280,7 @@ $(document).ready(function () {
 	});
 
 	$("#ll-submit-btn").click(function(e){
+		$("#ll-link-spinner").show();
 		$('#ll-submit-btn').prop('disabled', true);
 		var postData = {
 			_token: $("#linkLaptopForm > input[name=_token]").val(),
@@ -332,6 +333,7 @@ $(document).ready(function () {
 					.draw(false);
 				});
 			}
+		$("#ll-link-spinner").hide();
 		$('#ll-submit-btn').prop('disabled', false);
 		}).fail(function(){
 			console.log('error');
@@ -343,7 +345,6 @@ $(document).ready(function () {
 	//reject modal
 	$("#reject-request-form").submit(function(){
 		if($("#reject-reason").val() == ""){
-			console.log("hello");
 			$("#reject-reason-error").html('The reason field is required.').addClass("text-danger text-start");
 			return false;
 		}else if($("#reject-reason").val().length > 1024){

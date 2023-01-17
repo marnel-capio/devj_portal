@@ -35,14 +35,20 @@ class Employees extends Authenticatable
     }
 
     /**
-     * Get all the names of active employees
+     * Get all the names of active employees for laptop linkage dropdown
      *
      * @return void
      */
-    static function getEmployeeNameList(){
+    static function getEmployeeNameListForLaptopDropdown($laptopId){
         return self::selectRaw('id, CONCAT(last_name, ", ", first_name) AS employee_name')
                     ->where('active_status', 1)
                     ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+                    ->whereNotIn('id', function($query) use ($laptopId){
+                        $query->select('employee_id')
+                                ->from('employees_laptops')
+                                ->where('approved_status', config('constants.APPROVED_STATUS_PENDING'))
+                                ->where('laptop_id', $laptopId);
+                    })
                     ->orderBy('last_name', 'asc')
                     ->orderBy('first_name', 'asc')
                     ->get()
