@@ -191,9 +191,13 @@ class ApiController extends Controller
             }
         }
 
-        if ($searchFilter['status'] != 1) {
-            $status = $searchFilter['status'] == 2 ? 1 : 0;
-            $employee = $employee->where('active_status', $status);
+        if (Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
+            if ($searchFilter['status'] != 1) {
+                $status = $searchFilter['status'] == 2 ? 1 : 0;
+                $employee = $employee->where('active_status', $status);
+            }
+        }else{
+            $employee = $employee->where('active_status', 1);
         }
 
         $employee = $employee->orderBy('last_name', 'ASC')

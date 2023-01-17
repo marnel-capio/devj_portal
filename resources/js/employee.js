@@ -365,6 +365,9 @@ $(document).ready(function () {
 		if($("#server-manage-flag").is(':checked')){
 			$("#server-manage-flag-hidden").prop('disabled', true);
 		}
+		if($("#is-admin").is(':checked')){
+			$("#is-admin-hidden").prop('disabled', true);
+		}
 		$('#emp-update-submit').prop('disabled', true);
 	});
 

@@ -148,7 +148,7 @@ class EmployeesController extends Controller
 
         return view('employees.edit')->with([
                                         'employee' => $employee,
-                                        'manager_admin' => in_array(Auth::user()->roles, [config('constants.ADMIN_ROLE_VALUE'), config('constants.MANAGER_ROLE_VALUE')])
+                                        'isManager' => Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')
                                     ]);
 
     }
@@ -160,10 +160,12 @@ class EmployeesController extends Controller
         $id = $updateData['id'];
         $originalData = Employees::where('id', $id)->first();
 
-        //set value of role
-        $updateData['roles'] = $this->getRoleBasedOnPosition($updateData['position']);
-        if($request->input('is_admin', 0) && $updateData['roles'] != config('constants.MANAGER_ROLE_VALUE')){
-            $updateData['roles'] = config('constants.ADMIN_ROLE_VALUE');
+        $roleBasedOnPosition = $this->getRoleBasedOnPosition($updateData['position']);
+        $rolebasedOnadminFlag = $request->input('is_admin', 0) ? config('constants.ADMIN_ROLE_VALUE') : config('constants.ENGINEER_ROLE_VALUE');
+        if($roleBasedOnPosition == config('constants.MANAGER_ROLE_VALUE')){
+            $updateData['roles'] = $roleBasedOnPosition;
+        }else if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
+            $updateData['roles'] = $rolebasedOnadminFlag;
         }
        
         unset($updateData['id']);
@@ -173,6 +175,7 @@ class EmployeesController extends Controller
         //check logined employee role
         if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
             //save directly in DB in db
+            $updateData['approved_by'] = Auth::user()->id;
             Employees::where('id', $id)
                 ->update($updateData);
 
@@ -223,7 +226,7 @@ class EmployeesController extends Controller
 
             //notify the managers of the request
             $mailData = [
-                'link' => route('employees.request', ['id' => Auth::user()->id]),
+                'link' => route('employees.request', ['id' => $id]),
                 'requestor' => Auth::user()->first_name .' ' .Auth::user()->last_name,
                 'currentUserId' => Auth::user()->id,
                 'module' => "Employee",
@@ -465,7 +468,7 @@ class EmployeesController extends Controller
      */
     private function getEmployeeData(EmployeesRequest $request){
         $data = $request->except(['_token', 'confirm_password', 'password', 'is_admin']);
-        $this->changeStringCase($data, ['email', 'password']);
+        $this->changeStringCase($data, ['email', 'password', 'other_contact_info']);
         $data['password'] =  password_hash($request->input('password'), PASSWORD_BCRYPT);
         if(Auth::check()){
             //for data update
@@ -529,9 +532,14 @@ class EmployeesController extends Controller
     }
 
     private function getEmployee() {
-        $employee = Employees::whereIn('approved_status',[2,4])
-                                ->orderBy('last_name', 'ASC')
-                                ->get();
+        $query = Employees::whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
+
+        if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE')){
+            $query->where('active_status', 1);
+        }
+
+        $employee = $query->orderBy('last_name', 'ASC')
+                            ->get();
 
         return $employee;
     }
