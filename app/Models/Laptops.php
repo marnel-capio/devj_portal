@@ -82,14 +82,14 @@ class Laptops extends Model
                     $query->select('laptop_id')
                     ->from('employees_laptops')
                     ->where('surrender_flag', 0)
-                    ->where('approved_status', config('constants.APPROVED_STATUS_APPROVED'));
+                    ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
                 });
             }elseif($availability == 3){
                 $query->whereNotIn('id', function($query){
                     $query->select('laptop_id')
                     ->from('employees_laptops')
                     ->where('surrender_flag', 0)
-                    ->where('approved_status', config('constants.APPROVED_STATUS_APPROVED'));
+                    ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
                 });
             }
         }

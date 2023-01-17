@@ -215,7 +215,7 @@
         <div class="d-flex justify-content-between">
             <h4 class="text-start">Employee History</h4>
             @if (!empty($linkageData))
-                @if ($linkageData['approved_status'] == config('constants.APPROVED_STATUS_APPROVED'))
+                @if ($linkageData['approved_status'] == config('constants.APPROVED_STATUS_APPROVED') && (in_array(auth()->user()->roles, [config('constants.MANAGER_ROLE_VALUE'), config('constants.ADMIN_ROLE_VALUE')]) || auth()->user()->id == $linkageData->employee_id ))
                     <button class="btn btn-success" data-bs-target="#updateLinkageModal" data-bs-toggle="modal">Update</button>
                     <div class="modal modal fade" tabindex='-1' id="updateLinkageModal">
                         <div class="modal-dialog modal-dialog-centered">

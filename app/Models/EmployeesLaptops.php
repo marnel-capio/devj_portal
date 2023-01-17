@@ -57,6 +57,7 @@ class EmployeesLaptops extends Model
     static function getLinkageData($laptopId){
         return self::selectRaw('
 									employees_laptops.id,
+									employees_laptops.employee_id,
 									employees_laptops.brought_home_flag,
 									employees_laptops.vpn_flag,
 									employees_laptops.approved_status,
