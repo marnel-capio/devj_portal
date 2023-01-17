@@ -38,7 +38,7 @@ Route::middleware(['guest', 'web'])->controller(EmployeesController::class)->pre
     
 });
 
-Route::middleware(['auth', 'web'])->group(function(){
+Route::middleware(['auth', 'web', 'isActive'])->group(function(){
     Route::get('logout', [LogoutController::class, 'execute'])->name('logout');
     Route::get('/', [HomeController::class, 'index'])->name('home');
 

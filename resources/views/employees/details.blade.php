@@ -28,7 +28,7 @@
             @if($detailOnly && $userInfo->id == $employee->id)
             <button type="button" class="btn btn-success  ms-1" data-bs-toggle="modal" data-bs-target="#changePasswordModal" >Change Password</button>
             @endif
-            @if ($userInfo->roles == config('constants.MANAGER_ROLE_VALUE'))
+            @if ($detailOnly && $userInfo->roles == config('constants.MANAGER_ROLE_VALUE'))
                 @if ($employee->active_status == 0)
                     <button class="btn btn-success ms-1" id="employee-reactivate">Reactivate
                         <div id="react-deact-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
