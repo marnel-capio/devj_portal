@@ -208,8 +208,11 @@ class LaptopsController extends Controller
         ->first();
 
         if($laptopDetails->approved_status == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')){
-            foreach(json_decode($laptopDetails->update_data, true) as $key => $value){
-                $laptopDetails[$key] = $value;
+            $updateData = json_decode($laptopDetails->update_data, true);
+            if(!is_null($updateData)){
+                foreach($updateData as $key => $value){
+                    $laptopDetails[$key] = $value;
+                }
             }
         }
 

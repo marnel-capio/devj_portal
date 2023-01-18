@@ -61,6 +61,9 @@ $(document).ready(function(){
     }
 
     $("#edit-form").submit(function(e){
+        $("#el-spinner").show();
+        $("#el-submit-btn").prop('disabled', true);
+
         var formData = $("#edit-form").serializeArray();
         var arrData = [];
         formData.forEach(function(data){
@@ -89,6 +92,8 @@ $(document).ready(function(){
                 for(var key in errors){
                     $("#" + key + "-error").html(errors[key][0]);
                 }
+                $("#el-submit-btn").prop('disabled', false);
+                $("#el-spinner").hide();
             }else{
                 location.reload();
             }
@@ -145,6 +150,8 @@ $(document).ready(function(){
                 for(var key in errors){
                     $("#ul-" + key + "-error").html(errors[key][0]).addClass("text-danger");
                 }
+                $("#ul-submit-btn").prop('disabled', false);
+                $("#link-update-spinner").hide();
             }else{
                 location.reload();
             }
@@ -190,6 +197,8 @@ $(document).ready(function(){
                     // console.log("#ll-" + key + "-error")
                     $("#ll-" + key + "-error").html(errors[key][0]).addClass("text-danger");
                 }
+                $("#ll-submit-btn").prop('disabled', false);
+                $("#link-update-spinner").hide();
             }else{
                 location.reload();
             }
@@ -224,4 +233,14 @@ $(document).ready(function(){
 			$('#reject-sub').prop('disabled', true);
 		}
 	});
+
+    $(".reject-link-btn").click(function(){
+        var linkId = $(this).data('linkid');
+        $("#reject-link-in").val(linkId);
+    });
+
+    $(".approve-link-btn").click(function(){
+        var linkId = $(this).data('linkid');
+        $("#approve-link-in").val(linkId);
+    })
 });

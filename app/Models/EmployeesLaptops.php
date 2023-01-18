@@ -62,7 +62,8 @@ class EmployeesLaptops extends Model
 									employees_laptops.vpn_flag,
 									employees_laptops.approved_status,
 									employees_laptops.remarks,
-									CONCAT(employees.last_name, ", ", employees.first_name) AS employee_name
+									CONCAT(employees.last_name, ", ", employees.first_name) AS employee_name,
+                                    employees_laptops.create_time AS borrow_date
 		                        ')
 		                        ->where('laptop_id', $laptopId)
 								->leftJoin('employees', 'employees.id', 'employees_laptops.employee_id')
@@ -175,6 +176,11 @@ class EmployeesLaptops extends Model
             //get all laptop request and laptop linkage requests of the current user only
             $query->where('employees_laptops.employee_id', Auth::user()->id);
         }
+
+        $query->orderBy('employees_laptops.create_time', 'asc')
+                ->orderBy('employees.last_name')
+                ->orderBy('employees.first_name')
+                ->orderBy('employees.id');
 
         return $query->get()->toArray();
     }

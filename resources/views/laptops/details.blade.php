@@ -117,7 +117,11 @@
                         </div>
                         <div class="modal-footer">
                             <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button class="btn btn-primary" type="submit"  id="el-submit-btn" form="edit-form">Submit</button>
+                            <button class="btn btn-primary" type="submit"  id="el-submit-btn" form="edit-form">Submit
+                                <div id="el-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                                    <span class="sr-only"></span>
+                                </div>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -128,7 +132,7 @@
     </div>
     <div class="pt-2">
         <form action="#">
-            @if(!$detailOnly)
+            @if(!$detailOnly && !empty($requestor))
             <div class="row mb-2 ps-3 pe-3">
                 <div class="col-6 g-3">
                     <div class="row">
@@ -256,7 +260,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-6 g-3 form-floating">
-                                                    <input type="date" class="form-control" name="surrender_date" id="ul-surrender-date" placeholder="Surrender Date" value="" pattern="\d{4}-\d{2}-\d{2}">
+                                                    <input type="date" class="form-control" name="surrender_date" id="ul-surrender-date" placeholder="Surrender Date" value="" pattern="\d{4}-\d{2}-\d{2}" min="{{ date('Y-m-d', strtotime($linkageData->borrow_date)) }}">
                                                     <label  class="text-center" for="ul-surrender-date">Surrender Date</label>
                                                 </div>
                                                 <span id="ul-surrender_date-error"></p>
@@ -454,40 +458,9 @@
                             @endif
                             @if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE') )
                                 <td>
-                                    <button class="btn btn-link btn-sm text-decoration-none" data-bs-target="#rejectLinkageRequestModal" data-bs-toggle="modal"><span class="text-danger">Reject</span></button>
-                                    <div class="modal fade" tabindex="-1" id="rejectLinkageRequestModal">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">
-                                                        Reject Laptop Link Request
-                                                    </h5>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="p-2">
-                                                        <form action="{{ route('laptops.rejectLinkage') }}" method="POST" id="reject-request-form">
-                                                            @csrf
-                                                            <input type="text" name="id" value="{{ $request['id'] }}" hidden>
-                                                            <div class="mb-2">
-                                                                <textarea class="form-control" name="reason" placeholder="Reason" rows="5" id="reject-reason" required></textarea>
-                                                            </div>
-                                                            <p id="reject-reason-error"></p>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                    <button class="btn btn-danger" id="reject-sub" type="submit" form="reject-request-form">Reject</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <button class="btn btn-link btn-sm text-decoration-none reject-link-btn" data-bs-target="#rejectLinkageRequestModal" data-bs-toggle="modal" data-linkid="{{ $request['id'] }}"><span class="text-danger">Reject</span></button>
                                     /
-                                    <button class="btn btn-link btn-sm text-decoration-none" form="link-request-form"><span class="text-success">Approve</span></button>
-                                    <form action="{{ route('laptops.storeLinkage') }}" id="link-request-form" method="POST">
-                                        @csrf
-                                        <input type="text" hidden name="id" value="{{ $request['id'] }}">
-                                    </form>
+                                    <button class="btn btn-link btn-sm text-decoration-none approve-link-btn" form="link-request-form" data-linkid="{{ $request['id'] }}"><span class="text-success">Approve</span></button>
                                 </td>
                             @else
                                 <td></td>
@@ -500,12 +473,46 @@
     </div>
     @endif
 
+    @if ($detailOnly && Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE') )
+        <div class="modal fade" tabindex="-1" id="rejectLinkageRequestModal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            Reject Laptop Link Request
+                        </h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="p-2">
+                            <form action="{{ route('laptops.rejectLinkage') }}" method="POST" id="reject-request-form">
+                                @csrf
+                                <input type="text" name="id" value="" id="reject-link-in" hidden>
+                                <div class="mb-2">
+                                    <textarea class="form-control" name="reason" placeholder="Reason" rows="5" id="reject-reason" required></textarea>
+                                </div>
+                                <p id="reject-reason-error"></p>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button class="btn btn-danger" id="reject-sub" type="submit" form="reject-request-form">Reject</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <form action="{{ route('laptops.storeLinkage') }}" id="link-request-form" method="POST">
+            @csrf
+            <input type="text" hidden name="id" value="" id="approve-link-in">
+        </form>
+    @endif
+
     
-    @if (!$detailOnly)
+    @if (!$detailOnly && $userInfo->roles == config('constants.MANAGER_ROLE_VALUE'))
     <div class="text-center p-4">
         <button class="btn btn-danger btn-lg mb-5 me-4 rqst-btn"  data-bs-target="#rejectRequestModal" data-bs-toggle="modal" id="reject-request">Reject</button>
         <button class="btn btn-success btn-lg mb-5 ms-4 rqst-btn" id="approve-request"  form="approve-request-form">Approve</button>
-        <form action="{{ route('laptops.storeLinkage') }}" method="POST" id="approve-request-form">
+        <form action="{{ route('laptops.store') }}" method="POST" id="approve-request-form">
             @csrf
             <input type="text" name="id" hidden value="{{ $detail->id }}">
         </form>
