@@ -67,7 +67,7 @@ class LaptopLinkage extends FormRequest
             if($this->has('surrender_date') && $this->input('surrender_flag')){
                 $rules['surrender_date'] = ["required_if:surrender_flag,1", "date", function($attribute, $value, $fail) use ($id){
                     $data = EmployeesLaptops::where('id', $id)->first();
-                    if($value < $data->create_time){
+                    if($value < date('Y-m-d', strtotime($data->create_time))){
                         $fail('The surrender date must be greater than the borrow date.');
                     }
                 }];

@@ -243,6 +243,12 @@ class ApiController extends Controller
             }
         }
         if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
+            //format log
+            $log = 'Laptop Update: ';
+            foreach($dbReadyData as $key => $val){
+                $log .= "{$key}: {$originalData[$key]} > {$val}, ";
+            }
+            $log = rtrim($log, ", ");
 
             //update data in DB
             $dbReadyData['updated_by'] = Auth::user()->id;
@@ -250,13 +256,6 @@ class ApiController extends Controller
             $dbReadyData['approved_by'] = Auth::user()->id;
             Laptops::where('id', $id)
                     ->update($dbReadyData);
-
-            //format log
-            $log = 'Laptop Update: ';
-            foreach($dbReadyData as $key => $val){
-                $log .= "{$key}: {$originalData[$key]} > {$val}, ";
-            }
-            $log = rtrim($log, ", ");
 
             Logs::createLog('Laptop', $log);
 
@@ -310,6 +309,13 @@ class ApiController extends Controller
 
         if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
 
+            //format log
+            $log = 'Laptop Linkage Update: ';
+            foreach($dbReadyData as $key => $val){
+                $log .= "{$key}: {$originalData[$key]} > {$val}, ";
+            }
+            $log = rtrim($log, ", ");
+
             //update data in DB
             $dbReadyData['updated_by'] = Auth::user()->id;
             $dbReadyData['approved_status'] = config('constants.APPROVED_STATUS_APPROVED');
@@ -317,21 +323,14 @@ class ApiController extends Controller
             EmployeesLaptops::where('id', $id)
                     ->update($dbReadyData);
 
-            //format log
-            $log = 'Laptop Linkage Update:';
-            foreach($dbReadyData as $key => $val){
-                $log .= "{$key}: {$originalData[$key]} > {$val}, ";
-            }
-            $log = rtrim($log, ", ");
-
-            Logs::createLog('Laptop', 'Laptop Linkage Update: ' .$log);
+            Logs::createLog('Laptop', $log);
 
             $recipient = Employees::where('id', $originalData['employee_id'])->first();
 
             if($recipient->id != Auth::user()->id){
                 //send mail
                 $mailData = [
-                    'link' => "/laptops/{$id}",
+                    'link' => "/laptops/{$originalData['laptop_id']}",
                     'firstName' => $recipient['first_name'],
                     'currentUserId' => Auth::user()->id,
                     'module' => "Laptop",
@@ -354,7 +353,7 @@ class ApiController extends Controller
             $recipients = Employees::getEmailOfManagers();
 
             $mailData = [
-                'link' => "/laptops/{$id}",
+                'link' => "/laptops/{$originalData['laptop_id']}",
                 'currentUserId' => Auth::user()->id,
                 'module' => "Laptop",
             ];

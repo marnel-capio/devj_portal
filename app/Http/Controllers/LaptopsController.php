@@ -340,15 +340,14 @@ class LaptopsController extends Controller
         }else{
             $recipient = Employees::where('id', $laptopDetails->updated_by)->first();
 
-            //save temporary data
-            $update = json_decode($laptopDetails->update_data, true);
-            $update['updated_by'] = Auth::user()->id;
-            $update['approved_by'] = Auth::user()->id;
-            $update['update_data'] = NULL;
-            $update['approved_status'] = config('constants.APPROVED_STATUS_REJECTED');
-
             Laptops::where('id', $id)
-                    ->update($update);
+                    ->update([
+                        'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
+                        'reasons' => $reason,
+                        'update_data' => NULL,
+                        'updated_by' => Auth::user()->id,
+                        'approved_by' => Auth::user()->id,
+                    ]);
 
             //create logs
             Logs::createLog("Laptop", 'Laptop Detail Update Rejection');
@@ -407,7 +406,7 @@ class LaptopsController extends Controller
 
             Mail::to($recipient->email)->send(new MailLaptops($mailData, config('constants.MAIL_LAPTOP_NEW_LINKAGE_BY_NON_MANAGER_APPROVAL')));
 
-            $alert = 'Successfully approved laptop linkage.';
+            $alert = 'Successfully approved the laptop linkage.';
             //reject other new linkage request
             $this->rejectOtherLinkageRequest($laptopLinkDetails['laptop_id']);
 
@@ -437,7 +436,7 @@ class LaptopsController extends Controller
 
             Mail::to($recipient->email)->send(new MailLaptops($mailData, config('constants.MAIL_LAPTOP_LINKAGE_UPDATE_BY_NON_MANAGER_APPROVAL')));
 
-            $alert = 'Successfully approved laptop linkage detail update.';
+            $alert = 'Successfully approved the laptop linkage detail update.';
         }
 
         session(['lla_alert'=> $alert]);
@@ -540,7 +539,7 @@ class LaptopsController extends Controller
                 'module' => "Laptop",
             ];
 
-            Mail::to($recipient->email)->send(new MailLaptops($mailData, config('constants.MAIL_LAPTOP_NEW_LINKAGE_BY_NON_MANAGER_REJECTION')));
+            Mail::to($recipient->email)->send(new MailLaptops($mailData, config('constants.MAIL_LAPTOP_LINKAGE_UPDATE_BY_NON_MANAGER_REJECTION')));
             
             $alert = 'Successfully rejected laptop linkage detail update.';    
         }

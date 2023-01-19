@@ -27,7 +27,6 @@ return new class extends Migration
             $table->unsignedTinyInteger('laptop_ram')->nullable();
             $table->string('remarks', 1024)->nullable();
             $table->json('update_data')->nullable();
-            $table->string('reject_code', 80)->nullable();
             $table->string('reasons', 1024)->nullable();
             $table->unsignedTinyInteger('status')->default(1)->nullable()->comment( '1: active , 0: inactive');
             $table->unsignedBigInteger('created_by')->nullable();

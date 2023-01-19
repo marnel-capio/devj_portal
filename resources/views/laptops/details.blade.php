@@ -397,7 +397,7 @@
                                 <td id="vpn-col">{{ $data['vpn_flag'] }}</td>
                                 <td id="bhf-col">{{ $data['brought_home_flag'] }}</td>
                                 <td id="remarks-col">{{ $data['remarks'] }}</td>
-                                <td id="sdate-col">{{ $data['surrender_date'] }}</td>
+                                <td id="sdate-col">{{ !empty($date['surrender_date']) ? date('Y-m-d', strtotime($data['surrender_date'])) : '' }}</td>
                             </tr>
                         @endforeach
                     @endif
