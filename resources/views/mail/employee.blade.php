@@ -87,8 +87,8 @@
 
 @elseif ($mailType == config('constants.MAIL_EMPLOYEE_SURRENDER_LAPTOP_NOTIFICATION'))
 
-    Your manager requests to have your assets surrender.<br>
-    Please surrender the laptops below and update the status in Dev J Portal.<br>
+    Your manager requests to have your assets surrendered.<br>
+    Please surrender the laptops below and update the status in the Dev J Portal.<br>
     <ol style="list-style-type: square">
     @foreach ($mailData['laptops'] as $laptop)
         <li>{{ $laptop['tag_number'] }}</li>

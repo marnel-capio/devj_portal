@@ -440,6 +440,7 @@ $(document).ready(function () {
 			if(data.success){
 				location.reload();
 			}else{
+				var notify = '';
 				//display error 
 				$("#deact-react-alert").remove();
 				if(data.notify){
