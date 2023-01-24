@@ -142,6 +142,10 @@ class LaptopsController extends Controller
                                     ->first();
 
         abort_if(empty($laptopDetails), 404);
+
+        if(!$laptopDetails->status){
+            $showLinkBtn = false;
+        }
         
         $employeeDropdown = [];
         if(in_array(Auth::user()->roles, [config('constants.ADMIN_ROLE_VALUE'), config('constants.MANAGER_ROLE_VALUE')])){

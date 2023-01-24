@@ -44,6 +44,7 @@
                                                <input type="text" name="tag_number" class="form-control" id="tag-number" placeholder="Tag Number" value="{{ $detail->tag_number }}" disabled>
                                                <label for="tag-number" class="text-center">Tag Number</label>
                                             </div>
+                                            @if (empty($linkageData))
                                             <div class="col-6 g-3">
                                                 <div class="d-flex align-items-center" style="height: 100%">
                                                     <div class="form-check ">
@@ -52,6 +53,7 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            @endif
                                         </div>
                                         <div class="row pt-4 ps-3 pe-3">
                                             <h5>PEZA</h5>
