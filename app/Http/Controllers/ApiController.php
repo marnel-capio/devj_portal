@@ -79,7 +79,7 @@ class ApiController extends Controller
 
             //notify the managers of the request
             $mailData = [
-                'link' => "/",  //update link
+                'link' => route('laptops.details', ['id' => $data['laptop_id']]) . '#link-req-tbl',
                 'requestor' => Auth::user()->first_name .' ' .Auth::user()->last_name,
                 'currentUserId' => Auth::user()->id,
                 'module' => "Employee",
