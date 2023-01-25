@@ -59,6 +59,10 @@ Check the details <a href="{{ url($mailData['link']) }}">here</a>.
 A manager has updated the laptop data linked to your account.<br>
 Check the details <a href="{{ url($mailData['link']) }}">here</a>.
 
+@elseif ($mailType == config('constants.MAIL_LAPTOP_LINKAGE_UPDATE_BY_NON_MANAGER_REJECTION'))
+Your request for laptop linkage update has been rejected for the reason below:<br>
+{{ $mailData['reason'] }}
+
 @endif
 
 <br><br>
