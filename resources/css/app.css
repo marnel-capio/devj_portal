@@ -53,3 +53,7 @@
 table.tbl-th-centered > thead > tr > th {
     text-align: center;
 }
+
+td {
+    word-break: break-all
+}

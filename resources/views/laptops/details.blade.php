@@ -387,7 +387,7 @@
                         <th>Member</th>
                         <th>VPN Access?</th>
                         <th>Brought Home?</th>
-                        <th>Remarks</th>
+                        <th style="width:25%">Remarks</th>
                         <th>Surrender Date</th>
                     </tr>
                 </thead>
@@ -430,14 +430,14 @@
             <table class="table table-bordered border-secondary tbl-th-centered mt-3" id="link-req-tbl">
                 <thead class="bg-primary text-white fw-bold">
                     <tr>
-                        <th>Requestor</th>
+                        <th>Employee</th>
                         <th>VPN Access?</th>
                         <th>Brought Home?</th>
                         @if (!empty($linkageData))
                             <th>Surrender?</th>
                             <th>Surrender Date</th>
                         @endif
-                        <th>Remarks</th>
+                        <th style="width:25%">Remarks</th>
                         @if (empty($linkageData))
                             <th>Request Date</th>
                         @endif

@@ -26,6 +26,7 @@ class EmployeesLaptops extends Model
         
         return self::selectRaw('laptops.id
                                 ,employees_laptops.id as linkage_id
+                                ,employees_laptops.remarks
                                 ,laptops.tag_number
                                 ,laptops.laptop_make
                                 ,laptops.laptop_model

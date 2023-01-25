@@ -379,6 +379,7 @@
                     <th>LAPTOP MAKE</th>
                     <th>LAPTOP MODEL</th>
                     <th>VPN ACCESS</th>
+                    <th style="width:20%">REMARKS</th>
                 </tr>
             </thead>
             <tbody class="">
@@ -390,6 +391,7 @@
                         <td>{{ $laptop['laptop_make'] }}</td>
                         <td>{{ $laptop['laptop_model'] }}</td>
                         <td>{{ $laptop['use_vpn'] }}</td>
+                        <td>{{ $laptop['remarks'] }}</td>
                     </tr>
                     @endforeach
                 @endif
