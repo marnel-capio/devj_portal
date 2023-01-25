@@ -9,48 +9,48 @@
 @endif
 <div class="container container-list-table mt-3 ms-4 mb-5">
 	<h3> Software List </h3>
-	<form action='{!! url("/softwares/download"); !!}' method="POST">
+    <div class="row row-list">
+        <div class="col-1 filter-software">
+			Status: 
+		</div>
+		<div class="col-11">
+			<input class="soft-search-status-rdb-input" type="radio" name="softwareStatus" id="status-all" value="5" checked>
+			<label class="soft-search-status-rdb-label  form-check-label" for="status-all">
+			    All
+			</label>
+			&nbsp;&nbsp;
+			<input class="soft-search-status-rdb-input" type="radio" name="softwareStatus" id="status-approved" value="2" >
+			<label class="soft-search-status-rdb-label form-check-label" for="status-approved">
+			    Approved
+			</label>
+			&nbsp;&nbsp;
+			<input class="soft-search-status-rdb-input" type="radio" name="softwareStatus" id="status-pending-new" value="3" >
+			<label class="soft-search-status-rdb-label form-check-label" for="status-pending-new">
+			    Pending Approval
+			</label>
+			&nbsp;&nbsp;
+			<input class="soft-search-status-rdb-input" type="radio" name="softwareStatus" id="status-pending-update" value="4" >
+			<label class="soft-search-status-rdb-label form-check-label" for="status-pending-update">
+			    Pending Update Approval
+			</label>
+			&nbsp;&nbsp;
+			<input class="soft-search-status-rdb-input" type="radio" name="softwareStatus" id="status-rejected" value="1" >
+			<label class="soft-search-status-rdb-label form-check-label" for="status-rejected">
+			    Denied
+			</label>
+		</div>
+	</div>
+	<div class="row row-list">
+		<div class="col-10">
+			<input type="text" name="softSearchInput" class="search-input-text" id="soft-search-input" placeholder="Search">
+		</div>
+		<div class="col">
+			<button type="submit" class="btn btn-primary ms-1" form="download" >Download</button>
+			<form action="{{  route('softwares.download')  }}" method="GET" id="download">
                 @csrf
-        <div class="row row-list">
-        	<div class="col-1 filter-software">
-				Status: 
-			</div>
-			<div class="col-11">
-				<input class="soft-search-status-rdb-input" type="radio" name="softwareStatus" id="status-all" value="1" checked>
-				<label class="soft-search-status-rdb-label  form-check-label" for="status-all">
-				    All
-				</label>
-				&nbsp;&nbsp;
-				<input class="soft-search-status-rdb-input" type="radio" name="softwareStatus" id="status-approved" value="2" >
-				<label class="soft-search-status-rdb-label form-check-label" for="status-approved">
-				    Approved
-				</label>
-				&nbsp;&nbsp;
-				<input class="soft-search-status-rdb-input" type="radio" name="softwareStatus" id="status-pending-new" value="3" >
-				<label class="soft-search-status-rdb-label form-check-label" for="status-pending-new">
-				    Pending Approval
-				</label>
-				&nbsp;&nbsp;
-				<input class="soft-search-status-rdb-input" type="radio" name="softwareStatus" id="status-pending-update" value="4" >
-				<label class="soft-search-status-rdb-label form-check-label" for="status-pending-update">
-				    Pending Update Approval
-				</label>
-				&nbsp;&nbsp;
-				<input class="soft-search-status-rdb-input" type="radio" name="softwareStatus" id="status-rejected" value="5" >
-				<label class="soft-search-status-rdb-label form-check-label" for="status-rejected">
-				    Denied
-				</label>
-			</div>
+			</form>
 		</div>
-		<div class="row row-list">
-			<div class="col-10">
-				<input type="text" name="softSearchInput" class="search-input-text" id="search-input" placeholder="Search">
-			</div>
-			<div class="col">
-				<button type="submit" class="btn btn-primary float-end me-1">Download</button>
-			</div>
-		</div>
-	</form>
+	</div>
 	<div class="row-list row">
 	    <div class="col ">
 	    	<table id="software-list" class="table table-striped" >

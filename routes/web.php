@@ -71,7 +71,7 @@ Route::middleware(['auth', 'web'])->group(function(){
 
     Route::prefix('/softwares')->controller(SoftwaresController::class)->group(function(){
         Route::get('/',  'index')->name('softwares');
-        Route::get('/{id}/request', 'request')->name('softwares.request')->whereNumber('id');
+        Route::get('/{id}/request', 'detailview')->name('softwares.request')->whereNumber('id');
         Route::post('/store', 'store')->name('softwares.store');
         Route::post('/reject', 'reject')->name('softwares.reject');
         Route::post('/update', 'update')->name('softwares.update');
@@ -79,6 +79,7 @@ Route::middleware(['auth', 'web'])->group(function(){
         Route::get('/{id}/edit', 'edit')->name('softwares.edit')->whereNumber('id');
         Route::post('/regist', 'regist')->name('softwares.regist');
         Route::get('/create/{rejectCode?}', 'create')->name('softwares.create');
+        Route::get('/download',  'download')->name('softwares.download');
         Route::get('/regist/complete', function(){
             return view('softwares.complete');
         })->name('softwares.regist.complete');

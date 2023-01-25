@@ -1,3 +1,15 @@
+const STATUS_REJECTED_TEXT = "Denied";
+const STATUS_APPROVED_TEXT = "Approved";
+const STATUS_PENDING_TEXT = "Pending Approval";
+const STATUS_PENDING_APPROVAL_FOR_UPDATE_TEXT = "Pending Update Approval";
+
+const SOFTWARE_TYPE_PRODUCTIVITY = "Productivity Tools";
+const SOFTWARE_TYPE_MESSAGING = "Messaging/Collaboration";
+const SOFTWARE_TYPE_BROWSER = "Browser";
+const SOFTWARE_TYPE_UTIL = "System Utilities";
+const SOFTWARE_TYPE_PROJECT_SPECIFIC = "Project Specific Softwares";
+const SOFTWARE_TYPE_DRIVERS = "Phone Drivers";
+
 
 $(document).ready(function () {
 
@@ -37,14 +49,14 @@ $(document).ready(function () {
                 var result = JSON.parse(res);
                 // console.log(result);
                 result.forEach(function(software) {
-                    var status = "";
-                    if (software['approved_status'] == 1 || software['approved_status'] == 2 || software['approved_status'] == 4) {
-                        status = "Deactivated";
-                    } else {
-                        status = "Pending for Approval";
-                    } 
+					const status = [STATUS_REJECTED_TEXT, STATUS_APPROVED_TEXT, STATUS_PENDING_TEXT, STATUS_PENDING_APPROVAL_FOR_UPDATE_TEXT];
+					const software_type = [SOFTWARE_TYPE_PRODUCTIVITY, SOFTWARE_TYPE_MESSAGING, SOFTWARE_TYPE_BROWSER, SOFTWARE_TYPE_UTIL, SOFTWARE_TYPE_PROJECT_SPECIFIC, SOFTWARE_TYPE_DRIVERS];
+					const status_index =  software['approved_status']-1;
+					const st_index = software['type']-1;
+
+
                     url = window.location.href+"/"+software['id'];
-                    software_list.row.add(['<a href="'+url+'">'+software['software_name']+'</a>', software['type'], software['approved_status'],software['reasons'],software['remarks']]).draw(false);
+                    software_list.row.add(['<a href="'+url+'">'+software['software_name']+'</a>', software_type[st_index], status[status_index],software['reasons'],software['remarks']]).draw(false);
                 });
             }
        });

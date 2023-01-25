@@ -79,13 +79,22 @@
                 </div>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="created_by" id="created_by" placeholder="Created By" value="{{ $requestor }}" required @readonly($readOnly)>
+                        <input type="text" class="form-control" name="created_by" id="created_by" placeholder="Created By" value="{{ $creator }}" required @readonly($readOnly)>
                         <label class="text-center" for="created_by">Created By</label>
                         @if ($errors->has('created_by'))
                         <p class="text-danger">{{ $errors->first('created_by') }}</p>
                         @endif
                     </div>
                 </div>
+                <div class="row mb-2 ps-3 pe-3">
+                    <div class="col-4 g-3 form-floating">
+                        <input type="text" class="form-control" name="updated_by" id="updated_by" placeholder="Updated By" value="{{ $requestor }}" required @readonly($readOnly)>
+                        <label class="text-center" for="created_by">Updated By</label>
+                        @if ($errors->has('created_by'))
+                        <p class="text-danger">{{ $errors->first('created_by') }}</p>
+                        @endif
+                    </div>
+                </div>                
                 @if( $is_display_approver)
                     <div class="row mb-2 ps-3 pe-3">
                         <div class="col-4 g-3 form-floating">

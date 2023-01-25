@@ -15,13 +15,13 @@ class Software extends Mailable
 
     protected $mailType;
     protected $mailData;
-    const MAIL_12 = '【DEV J PORTAL】Software approval';
-    const MAIL_13 = '【DEV J PORTAL】Software request approved';
-    const MAIL_14 = '【DEV J PORTAL】Software request rejected';
-    const MAIL_15 = '【DEV J PORTAL】Software Details Update Approval Request';
-    const MAIL_16 = '【DEV J PORTAL】Software update request approved';
-    const MAIL_17 = '【DEV J PORTAL】Software update request rejected';
-    const MAIL_18 = '【DEV J PORTAL】【DEV J PORTAL】Project Link to Software Request';
+    const MAIL_1 = '【DEV J PORTAL】Software Approval Request';
+    const MAIL_2 = '【DEV J PORTAL】Software Request Approved';
+    const MAIL_3 = '【DEV J PORTAL】Software Request Rejected';
+    const MAIL_4 = '【DEV J PORTAL】Software Details Update Approval Request';
+    const MAIL_5 = '【DEV J PORTAL】Software Update Request Approved';
+    const MAIL_6 = '【DEV J PORTAL】Software Update Request Rejected';
+    const MAIL_7 = '【DEV J PORTAL】Project Link to Software Request';
 
     /**
      * Create a new message instance.

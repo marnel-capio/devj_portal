@@ -17,9 +17,11 @@ class HomeController extends Controller
     		$employee_request = $this->getEmployeeRequest();
     	}
 
+        $software_request = Softwares::getSoftwareRequest();
+
         return view('home', [
         	'employee_request' => $employee_request,
-        	'softwareRequest' => Softwares::getSoftwareRequest()
+        	'softwareRequest' => $software_request
         	]);
     }
 

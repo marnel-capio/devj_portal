@@ -192,9 +192,13 @@ class ApiController extends Controller
             }
         }
 
-        if ($searchFilter['status'] != 1) {
-            $status = $searchFilter['status'] == 2 ? 1 : 0;
-            $employee = $employee->where('active_status', $status);
+        if (Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
+            if ($searchFilter['status'] != 1) {
+                $status = $searchFilter['status'] == 2 ? 1 : 0;
+                $employee = $employee->where('active_status', $status);
+            }
+        }else{
+            $employee = $employee->where('active_status', 1);
         }
 
         $employee = $employee->orderBy('last_name', 'ASC')
@@ -211,10 +215,18 @@ class ApiController extends Controller
         ];
         // DB::enableQueryLog();
         $software = Softwares::whereIn('approved_status', [1,2,3,4]);
-                    
-       // get software
+
+        // get software
         if (!empty($searchFilter['keyword'])) {
             $software = $software->where('software_name','LIKE','%'.$searchFilter['keyword'].'%');
+        }
+        
+        if(!empty($searchFilter['status']))
+        {
+            if($searchFilter['status'] != 5)//status choses is all
+            {
+                $software = $software->where('approved_status','LIKE','%'.$searchFilter['status'].'%');
+            }
         }
         $software = $software->orderBy('software_name', 'ASC')
                 ->get();

@@ -26,6 +26,7 @@ class SoftwaresController extends Controller
     public function create($rejectCode = ""){
         $software = '';
         if($rejectCode){
+ 
             $software = Softwares::where('reject_code', $rejectCode)
             ->where('approved_status', config('constants.APPROVED_STATUS_REJECTED'))
             ->first();
@@ -42,6 +43,7 @@ class SoftwaresController extends Controller
 
 
         $insertData = $request->input();
+        $insertData = $request->except("_token");
         $insertData['created_by'] = Auth::user()->id;
         $insertData['updated_by'] = Auth::user()->id;
         $id = null;
@@ -89,24 +91,31 @@ class SoftwaresController extends Controller
 
             $mailData = [
                 'link' => route('softwares.request', ['id' => $id]),
-                'currentUserId' => $id,
+                'currentUserId' => Auth::user()->id,
                 'module' => "Software",
             ];
-            $this->sendMail($recipients, $mailData, config('constants.MAIL_NEW_SOFTWARE_REQUEST'));
+            $this->sendMail($recipients, $mailData, config('constants.MAIL_SOFTWARE_NEW_REQUEST'));
         }
         
         return redirect(route('softwares.regist.complete'));
     }
 
     public function detail($id){
+
         $softwareDetails = Softwares::where('id', $id)->first();
         $is_display_approver = true;
 
         $requestorDetail = Employees::where('id', $softwareDetails->updated_by)->first();
         $approverDetails = Employees::where('id', $softwareDetails->approved_by)->first();
+        $creatorDetail = Employees::where('id', $softwareDetails->created_by)->first();
+        $creatorName = $creatorDetail->last_name . ", " . $creatorDetail->first_name . " " . $creatorDetail->middle_name; 
 
         $requesterName = $requestorDetail->last_name . ", " . $requestorDetail->first_name . " " . $requestorDetail->middle_name; 
-        $approverName = $approverDetails->last_name . ", " . $approverDetails->first_name . " " . $approverDetails->middle_name; 
+        $approverName = "";
+        if($approverDetails) {
+            $approverName = $approverDetails->last_name . ", " . $approverDetails->first_name . " " . $approverDetails->middle_name; 
+        }
+
 
         abort_if(empty($softwareDetails), 404); //software does not exist
 
@@ -119,7 +128,8 @@ class SoftwaresController extends Controller
 
         //check if allowed to edit
         $allowedToEdit = false;
-        if((Auth::user()->id == $softwareDetails->updated_by )){
+        if($softwareDetails->approved_status == config('constants.APPROVED_STATUS_APPROVED'))
+        {
             $allowedToEdit = true;
         }
 
@@ -133,6 +143,7 @@ class SoftwaresController extends Controller
                         'detailOnly' => true,
                         'current_status' => $this->transformStatusToText($softwareDetails),
                         'is_display_approver' => $is_display_approver,
+                        'creator' => $creatorName,
                         'requestor' => $requesterName,
                         'approver' => $approverName,
                     ]);
@@ -144,9 +155,15 @@ class SoftwaresController extends Controller
         $software = Softwares::where('id', $id)->first();
         $requestorDetail = Employees::where('id', $software->updated_by)->first();
         $approverDetails = Employees::where('id', $software->approved_by)->first();
-
+        $creatorDetail = Employees::where('id', $software->created_by)->first();
+        
         $requesterName = $requestorDetail->last_name . ", " . $requestorDetail->first_name . " " . $requestorDetail->middle_name; 
-        $approverName = $approverDetails->last_name . ", " . $approverDetails->first_name . " " . $approverDetails->middle_name; 
+        $creatorName = $creatorDetail->last_name . ", " . $creatorDetail->first_name . " " . $creatorDetail->middle_name; 
+        $approverName = "";
+        if($approverDetails) {
+            $approverName = $approverDetails->last_name . ", " . $approverDetails->first_name . " " . $approverDetails->middle_name; 
+        }
+
 
         abort_if(empty($software), 404); //software does not exist
 
@@ -163,6 +180,7 @@ class SoftwaresController extends Controller
         return view('softwares.edit')->with([
                                         'software' => $software,
                                         'requestor' => $requesterName,
+                                        'creator' => $creatorName,
                                         'approver' => $approverName,
                                         'current_status' => $this->transformStatusToText($software),
                                     ]);
@@ -184,6 +202,8 @@ class SoftwaresController extends Controller
             //save directly in DB in db
             unset($updateData['approved_status']);
             unset($updateData['approved_by']);
+            $updateData['updated_by'] = Auth::user()->id;
+
             Softwares::where('id', $id)
                 ->update($updateData);
 
@@ -236,16 +256,32 @@ class SoftwaresController extends Controller
         
     }
 
-    public function request($id){
+    public function detailview($id)
+    {
+
+        if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE'))
+        {
+           return($this->request($id));
+        }
+
+        return redirect(route('softwares.details', ['id' => $id]));
+    }
+
+    public function request($id)
+    {
 
         $softwaresDetails = Softwares::where('id', $id)->first();
         $requestorDetail = Employees::where('id', $softwaresDetails->updated_by)->first();
         $approverDetail = Employees::where('id', $softwaresDetails->approved_by)->first();
-        
+        $creatorDetail = Employees::where('id', $softwaresDetails->created_by)->first();
 
         $requesterName = $requestorDetail->last_name . ", " . $requestorDetail->first_name . " " . $requestorDetail->middle_name; 
-        $approverName = $approverDetail->last_name . ", " . $approverDetail->first_name . " " . $approverDetail->middle_name; 
+        $creatorName = $creatorDetail->last_name . ", " . $creatorDetail->first_name . " " . $creatorDetail->middle_name; 
 
+        $approverName = "";
+        if($approverDetail) {
+            $approverName = $approverDetail->last_name . ", " . $approverDetail->first_name . " " . $approverDetail->middle_name;  
+        }
         $is_display_approver = false;
 
         //abort_if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE'), 403);   //can only be accessed by manager
@@ -257,7 +293,7 @@ class SoftwaresController extends Controller
         if($softwaresDetails->approved_status == config('constants.APPROVED_STATUS_PENDING')){
             $detailNote = 'Software is still pending for approval';
         }elseif($softwaresDetails->approved_status == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')){
-            $detailNote = 'Software Update is still pending';
+            $detailNote = 'Software Update approval is still pending';
         }
 
         //check if software has pending request
@@ -281,6 +317,7 @@ class SoftwaresController extends Controller
             'showRejectCodeModal' => 1,
             'software' => $softwaresDetails,
             'current_status' => $this->transformStatusToText($softwaresDetails),
+            'creator' => $creatorName,
             'requestor' => $requesterName,
             'approver' => $approverName,
             'is_display_approver' => $is_display_approver,
@@ -316,13 +353,14 @@ class SoftwaresController extends Controller
             //send mail
             $this->sendMail($employee->email, ['first_name' => $employee->first_name,
                 'currentUserId' => Auth::user()->id,
-                'module' => "Software",], config('constants.MAIL_NEW_SOFTWARE_APPROVAL'));
+                'module' => "Software",], config('constants.MAIL_SOFTWARE_NEW_APPROVAL'));
                 
                 Logs::createLog("Software", "Approve software request for software {$softwares->id}");
         
         }else{
             //update only
             $softwareUpdate = json_decode($softwares->update_data, true);
+            $softwareUpdate['created_by'] = $softwares->created_by;
             $softwareUpdate['updated_by'] = Auth::user()->id;
             $softwareUpdate['approved_by'] = Auth::user()->id;
             $softwareUpdate['update_data'] = NULL;
@@ -334,7 +372,7 @@ class SoftwaresController extends Controller
             //logs
             $this->sendMail($employee->email, ['first_name' => $employee->first_name,
                 'currentUserId' => Auth::user()->id,
-                'module' => "Software",], config('constants.MAIL_NEW_SOFTWARE_APPROVAL'));
+                'module' => "Software",], config('constants.MAIL_SOFTWARE_UPDATE_APPROVAL'));
                 
             Logs::createLog("Software", "Approved Update of software {$softwares->id}");
 
@@ -379,7 +417,7 @@ class SoftwaresController extends Controller
                 'currentUserId' => Auth::user()->id,
                 'module' => "Software",
             ];
-            $this->sendMail($employee->email, $mailData, config('constants.MAIL_NEW_SOFTWARE_REJECTION'));
+            $this->sendMail($employee->email, $mailData, config('constants.MAIL_SOFTWARE_NEW_REJECTION'));
 
             Logs::createLog("Software", "Reject software request with id {$software->id} for reason {$software->reasons}.");
         }
@@ -399,7 +437,7 @@ class SoftwaresController extends Controller
                 'currentUserId' => Auth::user()->id,
                 'module' => "Software",
             ];
-            $this->sendMail($employee->email, $mailData, config('constants.MAIL_NEW_SOFTWARE_REJECTION'));
+            $this->sendMail($employee->email, $mailData, config('constants.MAIL_SOFTWARE_UPDATE_REJECT'));
         
             //logs
             Logs::createLog("Software", "Reject software request with id {$software->id} for reason {$software->reasons}.");
@@ -444,8 +482,11 @@ class SoftwaresController extends Controller
      */
     private function getSoftwareStatus($software){
         $note = '';
-        
+
         switch ($software->approved_status){
+            case config('constants.APPROVED_STATUS_APPROVED'):     //rejected registration
+                $note = '';
+                break;
             case config('constants.APPROVED_STATUS_REJECTED'):     //rejected registration
                 $note = 'Software was rejected';
                 break;
@@ -454,7 +495,8 @@ class SoftwaresController extends Controller
                 break;
             case config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE'):
                 $note = 'Software Update approval is still pending';
-            default:    //account has been deactivated 
+                break;
+            default:    //invalid status 
                 $note = 'Software detail is invalid.';
         }
 
@@ -535,11 +577,11 @@ class SoftwaresController extends Controller
         
         $current_date = date("Y-m");
         Logs::createLog("Software", "Downloaded list of software");
-        // determine excel type
-        if (Auth::user()->roles != 3) {
-            return (new SoftwaresExport($request['searchInput'],$request['softwareStatus']))->download('C4I DEV J Dev K SW Inventory ' . $current_date . '.xlsx');
+        // determine file type
+        if (in_array(Auth::user()->roles, [config('constants.MANAGER_ROLE_VALUE'), config('constants.ADMIN_ROLE_VALUE')])) {
+            return (new SoftwaresExport())->download('C4I DEV J Dev K SW Inventory ' . $current_date . '.xlsx');
         } else {
-            return (new SoftwaresExport($request['searchInput'],$request['softwareStatus'], 'pdf'))->download('C4I DEV J Dev K SW Inventory ' . $current_date . '.pdf');
+            return (new SoftwaresExport('pdf'))->download('C4I DEV J Dev K SW Inventory ' . $current_date . '.pdf');
         }
 
     }

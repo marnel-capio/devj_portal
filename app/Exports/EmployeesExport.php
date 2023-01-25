@@ -10,6 +10,7 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
 use App\Models\Employees;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
@@ -23,6 +24,10 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithEvent
     use Exportable;
 
     private $maxRow = 100;
+    private $keyword;
+    private $filter;
+    private $status;
+    private $fileType;
 
     public function __construct($keyword,$filter,$status,$fileType = "")
     {
@@ -84,7 +89,7 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithEvent
             date("Y-m-d",strtotime($employee->update_time)),
             $employee->last_name.", ". $employee->first_name." (". $employee->middle_name.")",
             $employee->cellphone_number,
-            $employee->other_contact_number,
+            $employee->other_contact_info,
             $employee->current_address_street. ", ". $employee->current_address_city. ", ". $employee->current_address_province . " " . $employee->current_address_postalcode,
             $employee->permanent_address_street. ", ". $employee->permanent_address_city. ", ". $employee->permanent_address_province . " " . $employee->permanent_address_postalcode,
         ];
@@ -126,7 +131,7 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithEvent
         $keyword = $this->keyword;
         $status = $this->status;
 
-        $employee = Employees::whereIn('approved_status', [2,4]);
+        $employee = Employees::whereIn('approved_status',  [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
 
         if (!empty($keyword)) {
 
@@ -149,9 +154,13 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithEvent
             }
         }
 
-        if ($status != 1) {
-            $employeeStatus = $status == 2 ? 1 : 0;
-            $employee = $employee->where('active_status', $employeeStatus);
+        if (Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
+            if ($status != 1) {
+                $employeeStatus = $status == 2 ? 1 : 0;
+                $employee = $employee->where('active_status', $employeeStatus);
+            }
+        }else{
+            $employee = $employee->where('active_status', 1);
         }
 
         $employee = $employee->orderBy('last_name', 'ASC');
