@@ -328,7 +328,8 @@ $(document).ready(function () {
 						laptop.brought_home,
 						laptop.laptop_make,
 						laptop.laptop_model,
-						laptop.use_vpn
+						laptop.use_vpn,
+						laptop.remarks
 					])
 					.draw(false);
 				});
