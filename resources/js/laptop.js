@@ -70,6 +70,10 @@ $(document).ready(function(){
             arrData[data['name']] = data['value'];
         });
 
+        if($("#edit-form input[name=status").length){
+            arrData['status'] = $("#edit-form input[name=status").is(':checked') ? 1 : 0;
+        }
+
         var jsonData = JSON.stringify(Object.assign({}, arrData));
         jsonData = JSON.parse(jsonData);
 
