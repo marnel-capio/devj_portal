@@ -206,6 +206,7 @@ class LaptopsController extends Controller
             ->first();
 
         abort_if(empty($laptopDetails), 404);
+        $detailNote = $this->getDetailNote($laptopDetails, true);
 
         $requestor = Employees::selectRaw('concat(first_name, " ", last_name) as requestor')
         ->where('id', $laptopDetails->updated_by)
@@ -223,7 +224,7 @@ class LaptopsController extends Controller
         return view('laptops.details')->with([
             'detail' => $laptopDetails,
             'requestor' => $requestor,
-            'detailNote' => $this->getDetailNote($laptopDetails),
+            'detailNote' => $detailNote,
             'detailOnly' => false,
         ]);
     }
@@ -587,9 +588,9 @@ class LaptopsController extends Controller
         return ''; 
     }
 
-    private function getDetailNote($details){
+    private function getDetailNote($details, $forRequest = false){
         $note = '';
-        if($details['status']){
+        if($details['status'] || $forRequest){
             if($details['approved_status'] == config('constants.APPROVED_STATUS_PENDING')){
                 $note = 'Registration is still pending';
             }elseif($details['approved_status'] == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')){
