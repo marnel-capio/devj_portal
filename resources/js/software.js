@@ -193,7 +193,7 @@ $(document).ready(function () {
 
     //reject modal
 	$("#soft-reject-request-form").submit(function(){
-		if($("soft-#reject-reason").val() == ""){
+		if($("#soft-reject-reason").val() == ""){
 			console.log("hello");
 			$("#soft-reject-reason-error").html('The reason field is required.').addClass("text-danger text-start");
 			return false;
@@ -225,10 +225,6 @@ $(document).ready(function () {
 		$("#lp-success-msg").empty();
 	});
 
-	$('#linkLaptopModal').on('hidden.bs.modal', function(){
-		$("#ll-success-msg").empty();
-	})
-	
 	$('#changePasswordModal').on('hidden.bs.modal', function(){
 		$("#cp-success-msg").empty();
 	})

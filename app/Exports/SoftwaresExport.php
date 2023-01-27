@@ -26,6 +26,7 @@ class SoftwaresExport implements FromView, WithHeadings, WithMapping, WithEvents
     use Exportable;
 
     private $maxRow = 100;
+    private $fileType;
 
     public function __construct($fileType = "")
     {
@@ -106,7 +107,7 @@ class SoftwaresExport implements FromView, WithHeadings, WithMapping, WithEvents
         return [
             $software->type,
             $software->software_name,
-            $software->remarks,0
+            $software->remarks,
         ];
     }	
 
@@ -115,6 +116,22 @@ class SoftwaresExport implements FromView, WithHeadings, WithMapping, WithEvents
      */
     public function registerEvents(): array
     {
+
+        
+        //Merge cell processing  - start
+
+        //get the number of type. to be used in computing the range
+        // $prod_count = 0;
+        // $message_count = 0;
+        // $browser_count = 0;
+        // $system_count = 0;
+        // $p_specific = 0;
+        // $p_drivers = 0;
+        
+        // $software = Softwares::whereIn('approved_status', [2])
+        //         ->orderBy('type', 'ASC')
+        //         ->orderBy('software_name', 'ASC');
+
         if($this->fileType == 'pdf'){
             $setting = [
                 AfterSheet::class => function(AfterSheet $event) {
@@ -123,7 +140,7 @@ class SoftwaresExport implements FromView, WithHeadings, WithMapping, WithEvents
                         ->setOrientation(WorksheetPageSetup::ORIENTATION_LANDSCAPE)
                         ->setPaperSizeDefault(WorksheetPageSetup::PAPERSIZE_A4);
 
-                    //$event->sheet->getDelegate()->mergeCells('A1:A5');
+                    //$event->sheet->getDelegate()->mergeCells('A1:A2');
                     },
             ];
 
@@ -133,7 +150,7 @@ class SoftwaresExport implements FromView, WithHeadings, WithMapping, WithEvents
                         $event->sheet
                             ->getPageSetup()
                             ->setOrientation(WorksheetPageSetup::ORIENTATION_LANDSCAPE);
-                        //$event->sheet->getDelegate()->mergeCells('A1:A5');
+                        $event->sheet->getDelegate()->mergeCells('A1:A2');
 
                     },
             ];

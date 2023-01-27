@@ -77,6 +77,17 @@
                         @endif
                     </div>
                 </div>
+                @if($software->approved_status == 1)
+                    <div class="row mb-2 ps-3 pe-3">
+                        <div class="col-4 g-3 form-floating">
+                            <input type="text" class="form-control" name="reasons" id="reasons" placeholder="Reasons" value="{{ $software->reasons }}" required @readonly($readOnly)>
+                            <label class="text-center" for="reasons">Reasons</label>
+                            @if ($errors->has('reasons'))
+                            <p class="text-danger">{{ $errors->first('reasons') }}</p>
+                            @endif
+                        </div>
+                    </div>
+                @endif
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-4 g-3 form-floating">
                         <input type="text" class="form-control" name="created_by" id="created_by" placeholder="Created By" value="{{ $creator }}" required @readonly($readOnly)>
@@ -188,7 +199,7 @@
                                 <div class="col-12 g-3 form-floating">
                                     <select name="project_id" class="form-select" id="projectList" required>
                                         @foreach ( $projectList as $project )
-                                            <option data-mindate="{{ date('Y-m-d', strtotime($project['start_date']))  }}" data-maxdate="{{ !empty($project['end_date']) ? date('Y-m-d', strtotime($project['end_date'])) : date("Y-m-d")  }}" value="{{ $project['id'] }}">{{ $project['name'] }}</option>
+                                            <option value="{{ $project['id'] }}">{{ $project['name'] }}</option>
                                         @endforeach
                                     </select>
                                     <label for="projectList" class="text-center">Project Name</label>
@@ -197,7 +208,6 @@
                             </div>
                             <div class="row mb-2">
                                 <div class="col-12 g-3 form-floating">
-                                    <input type="text" name="project_remarks">
                                     <div class="mb-2">
                                         <textarea class="form-control" name="project_remarks" placeholder="Remarks" rows="5" id="soft-project_remarks" required></textarea>
                                     </div>

@@ -49,3 +49,7 @@
 .group-category-home{
     background-color: #f7fafa;
 }
+
+td {
+    word-break: break-all
+}

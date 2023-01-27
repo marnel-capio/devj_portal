@@ -44,6 +44,6 @@ class Software extends Mailable
     {
         return $this
             ->subject(constant("self::MAIL_{$this->mailType}"))
-            ->view('mail.employee', ['mailData' => $this->mailData, 'mailType' => $this->mailType]);
+            ->view('mail.softwares', ['mailData' => $this->mailData, 'mailType' => $this->mailType]);
     }
 }

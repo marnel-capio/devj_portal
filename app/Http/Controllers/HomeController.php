@@ -16,7 +16,7 @@ class HomeController extends Controller
     	if (Auth::user()->roles != 3) {
     		$employee_request = $this->getEmployeeRequest();
     	}
-
+       
         $software_request = Softwares::getSoftwareRequest();
 
         return view('home', [

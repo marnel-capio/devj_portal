@@ -10,6 +10,7 @@ use App\Mail\Employee;
 use App\Models\Employees;
 use App\Models\EmployeesLaptops;
 use App\Models\EmployeesProjects;
+use App\Models\ProjectSoftwares;
 use App\Models\Laptops;
 use App\Models\Logs;
 use App\Models\Projects;

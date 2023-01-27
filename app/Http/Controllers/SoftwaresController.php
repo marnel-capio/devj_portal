@@ -116,7 +116,6 @@ class SoftwaresController extends Controller
             $approverName = $approverDetails->last_name . ", " . $approverDetails->first_name . " " . $approverDetails->middle_name; 
         }
 
-
         abort_if(empty($softwareDetails), 404); //software does not exist
 
         //check if software has pending update,
@@ -133,11 +132,12 @@ class SoftwaresController extends Controller
             $allowedToEdit = true;
         }
 
+ 
         return view('softwares.details')
                     ->with([
                         'allowedToEdit' => $allowedToEdit,
                         'software' => $softwareDetails,
-                        'projectList' => ProjectSoftwares::getProjectBySoftware($id),
+                        'softProject' => ProjectSoftwares::getProjectBySoftware($id),
                         'detailNote' => $this->getSoftwareStatus($softwareDetails),
                         'readOnly' => true,
                         'detailOnly' => true,
@@ -146,6 +146,7 @@ class SoftwaresController extends Controller
                         'creator' => $creatorName,
                         'requestor' => $requesterName,
                         'approver' => $approverName,
+                        'projectList' => Projects::getProjectDropdownPersoftware($id),
                     ]);
     }
 
@@ -227,6 +228,8 @@ class SoftwaresController extends Controller
         }else{
             //if an software edits his own data and is not the manager
             $json = [];
+            unset($updateData['approved_status']);
+            unset($updateData['approved_by']);            
             foreach($updateData as $key => $value){
                 if($value != $originalData[$key] && !in_array($key, ['updated_by'])){
                     $json[$key] = $value;
@@ -307,7 +310,7 @@ class SoftwaresController extends Controller
                 }
             }
         }
-
+        
         return view('softwares.details')
         ->with([
             'allowedToEdit' => false,
@@ -351,9 +354,13 @@ class SoftwaresController extends Controller
                 ]);
 
             //send mail
-            $this->sendMail($employee->email, ['first_name' => $employee->first_name,
+            $mailData = [
+                'first_name' => $employee->first_name,
                 'currentUserId' => Auth::user()->id,
-                'module' => "Software",], config('constants.MAIL_SOFTWARE_NEW_APPROVAL'));
+                'module' => "Software",
+                'link' => route('softwares.details', ['id' => $id])
+            ];
+            $this->sendMail($employee->email, $mailData, config('constants.MAIL_SOFTWARE_NEW_APPROVAL'));
                 
                 Logs::createLog("Software", "Approve software request for software {$softwares->id}");
         
@@ -370,9 +377,13 @@ class SoftwaresController extends Controller
             Softwares::where('id', $softwares['id'])->update($softwareUpdate);
             
             //logs
-            $this->sendMail($employee->email, ['first_name' => $employee->first_name,
+            $mailData = [
+                'first_name' => $employee->first_name,
                 'currentUserId' => Auth::user()->id,
-                'module' => "Software",], config('constants.MAIL_SOFTWARE_UPDATE_APPROVAL'));
+                'module' => "Software",
+                'link' => route('softwares.details', ['id' => $id])
+            ];
+            $this->sendMail($employee->email, $mailData, config('constants.MAIL_SOFTWARE_UPDATE_APPROVAL'));
                 
             Logs::createLog("Software", "Approved Update of software {$softwares->id}");
 
@@ -383,7 +394,6 @@ class SoftwaresController extends Controller
 
     public function reject(Request $request){
         $id = $request->input('id');
-
         $error = $this->validateRequest($id);
         if($error){
             //id is not included in the request, show error page
@@ -392,7 +402,6 @@ class SoftwaresController extends Controller
                             'error' => $error
                         ]);
         }
-
         $software = Softwares::where('id',$id)->first();
         $employee = Employees::where('id', $software->updated_by)->first();
         $reason = $request->input('reason');
@@ -407,6 +416,7 @@ class SoftwaresController extends Controller
                     'reasons' => $reason,
                     'reject_code' => $rejectCode,
                     'updated_by' => Auth::user()->id,
+                    'approved_by' => Auth::user()->id,
                 ]);
             
             //send mail
@@ -417,9 +427,10 @@ class SoftwaresController extends Controller
                 'currentUserId' => Auth::user()->id,
                 'module' => "Software",
             ];
+            
             $this->sendMail($employee->email, $mailData, config('constants.MAIL_SOFTWARE_NEW_REJECTION'));
 
-            Logs::createLog("Software", "Reject software request with id {$software->id} for reason {$software->reasons}.");
+            Logs::createLog("Software", "Reject software request with id {$software->id} for reason {$reason}.");
         }
         else{
             Softwares::where('id', $software['id'])
@@ -428,6 +439,7 @@ class SoftwaresController extends Controller
                     'reasons' => $reason,
                     'update_data' => NULL,
                     'updated_by' => Auth::user()->id,
+                    'approved_by' => Auth::user()->id,
                 ]);
             
             //send mail
@@ -435,12 +447,13 @@ class SoftwaresController extends Controller
                 'first_name' => $employee->first_name,
                 'reasons' => $reason,
                 'currentUserId' => Auth::user()->id,
+                'link' => route('softwares.details', ['id' => $id]),
                 'module' => "Software",
             ];
             $this->sendMail($employee->email, $mailData, config('constants.MAIL_SOFTWARE_UPDATE_REJECT'));
         
             //logs
-            Logs::createLog("Software", "Reject software request with id {$software->id} for reason {$software->reasons}.");
+            Logs::createLog("Software", "Reject software request with id {$software->id} for reason {$reason}.");
         }
 
         return redirect(route('home'));
@@ -522,6 +535,7 @@ class SoftwaresController extends Controller
                 $statut_text = '';
         }
 
+  
         return $statut_text;
     }
 

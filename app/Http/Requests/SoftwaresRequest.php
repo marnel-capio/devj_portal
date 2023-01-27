@@ -29,7 +29,7 @@ class SoftwaresRequest extends FormRequest
     {
         return [
             'software_name' => 'software name',
-            'remarks' => 'remarks',
+            'remarks' => 'purpose',
             'reasons' => 'reasons',
             'update_data' => 'update data',
             'type' => 'type'
@@ -59,10 +59,59 @@ class SoftwaresRequest extends FormRequest
         $rules = [];
         if($this->isMethod('POST')){
             $rules = [
-                'software_name' => 'required|max:80',
+                'software_name' => ['required', 'max:80'],
                 'type' => 'required|in:1,2,3,4,5,6',
                 'remarks' => 'required|max:1024',
             ];
+
+            $referer = $this->header('referer');
+            $rejectCode = substr($referer, strripos($referer, '/') + 1);
+ 
+
+            if(strpos($this->header('referer'), route('softwares.create')) !== FALSE){
+                if(!empty($this->input('id'))){
+
+                    $rules['software_name'] = ['required',
+                                               'max:80',
+                                                function($attribute, $value, $fail) use ($rejectCode){
+                                                    $detail = Softwares::where('software_name', $value)->get()->toArray();
+                                                    if(!empty($detail) && $detail[0]['id'] != $rejectCode){
+                                                        $fail("The software is already registered.");
+                                                    }
+                                                }
+                                            ];
+                }else{
+                    $rules['software_name'] = ['required',
+                                               'max:80',
+                                                function($attribute, $value, $fail){
+                                                    $duplicatesoftware = Softwares::where('software_name', $value)->get()->toArray();
+                                                    if(!empty($duplicatesoftware)){
+                                                        $fail("The software is already registered.");
+                                                    }
+                    }];
+                }
+            }
+            else{
+                //get the id from the referer
+                $slash_last_pos = strrpos($referer, '/');
+                $next_to_last = 0;
+                if($slash_last_pos != 0)
+                {
+                    $next_to_last = strrpos($referer, '/', $slash_last_pos - strlen($referer) - 1); 
+                    $software_id = substr($referer,$next_to_last + 1, $slash_last_pos - $next_to_last - 1); //minus 1 for buffer
+                    if(strpos($this->header('referer'), route('softwares.edit', ['id' => $software_id])) !== FALSE){
+                        $rules['software_name'] = ['required',
+                        'max:80',
+                        function($attribute, $value, $fail) use ($software_id){
+                            $detail = Softwares::where('software_name', $value)->get()->toArray();
+                            if(!empty($detail) && $detail[0]['id'] != $software_id){
+                                $fail("The software is already registered.");
+                            }
+                         }
+                     ];
+                    }                    
+                }
+            }
         }
         return $rules;
     }
