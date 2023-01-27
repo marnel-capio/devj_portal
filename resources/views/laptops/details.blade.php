@@ -282,7 +282,7 @@
                                 
                                 <div class="modal-footer">
                                     <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button class="btn btn-primary" type="submit"  id="ul-submit-btn" form="update-linkage-form">Update
+                                    <button class="btn btn-success" type="submit"  id="ul-submit-btn" form="update-linkage-form">Update
                                         <div id="link-update-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
                                             <span class="sr-only"></span>
                                         </div>
