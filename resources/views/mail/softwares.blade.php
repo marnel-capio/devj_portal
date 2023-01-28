@@ -33,6 +33,10 @@ Your request for laptop detail update has been rejected because of the reason be
 {{ $mailData['reasons'] }}
 Check the details <a href="{{ url($mailData['link']) }}">here</a>.
 
+@elseif ($mailType == config('constants.MAIL_SOFTWARE_PROJECT_LINK_REQUEST'))
+There has been a request for project to be link on a software. 
+Check the details <a href="{{ url($mailData['link']) }}">here</a>.
+
 @endif
 
 <br><br>

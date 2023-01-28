@@ -65,7 +65,6 @@ return [
     'MAIL_SOFTWARE_UPDATE_APPROVAL' => 5,
     'MAIL_SOFTWARE_UPDATE_REJECT' => 6,
     'MAIL_SOFTWARE_PROJECT_LINK_REQUEST' => 7,
-    'MAIL_SOFTWARE_UPDATE_PROJECT_LINK_REQUEST' => 8,
 
     //software type
     'SOFTWARE_TYPE_1' => 1,    //SOFTWARE_TYPE_PROD_TOOL_VALUE
@@ -83,5 +82,12 @@ return [
     'SOFTWARE_TYPE_5_NAME' => 'Project Specific Softwares',
     'SOFTWARE_TYPE_6_NAME' => 'Phone Drivers',
 
+    //software range buffers
+    'SOFTWARE_RANGE_BUFFER' => 1,
+    'SOFTWARE_RANGE_INITIAL_VALUE' => 2,
+    'SOFTWARE_TYPE_COUNTER_INCREMENT' => 1,
+    'SOFTWARE_TYPE_EMPTY' => 0,
+    'SOFTWARE_TYPE_COUNT' =>  6,
+    
 
 ];

@@ -62,7 +62,7 @@ $(document).ready(function () {
        });
     }
 
-	const LINK_PROJECT_LINK = '/api/linkProject'
+	const LINK_PROJECT_LINK = '/api/softwarelinkProject'
 
 	//start for software registration
 
@@ -109,17 +109,14 @@ $(document).ready(function () {
 	});
 
 	$("#lp-submit-btn").click(function(e){
+		console.log("entered");
 		$('#lp-submit-btn').prop('disabled', true);
 		var postData = {
 			_token: $("#linkProjectForm > input[name=_token]").val(),
-			employee_id: $("#linkProjectForm > input[name=lp_employee_id]").val(),
+			software_id: $("#linkProjectForm > input[name=lp_software_id]").val(),
 			project_id: $("#projectList > option:selected").val(),
-			project_start: $("#project-start").val(),
-			project_end: $("#project-end").val(),
-			project_role: $("#projectRoleList > option:selected").val(),
-			project_onsite: $("#project-onsite").is(':checked') ? 1 : 0,
+			reasons: $("#soft-project_remarks").val(),
 		};
-
 		$.ajax({
 			type: "POST",
 			url: LINK_PROJECT_LINK,
@@ -225,9 +222,6 @@ $(document).ready(function () {
 		$("#lp-success-msg").empty();
 	});
 
-	$('#changePasswordModal').on('hidden.bs.modal', function(){
-		$("#cp-success-msg").empty();
-	})
 
 
 	hideAdminCheck();

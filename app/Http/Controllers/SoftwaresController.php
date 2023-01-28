@@ -226,7 +226,7 @@ class SoftwaresController extends Controller
             }
 
         }else{
-            //if an software edits his own data and is not the manager
+            //if an employee edit software and not the manager
             $json = [];
             unset($updateData['approved_status']);
             unset($updateData['approved_by']);            
@@ -566,7 +566,6 @@ class SoftwaresController extends Controller
         if (!empty($recipients)) {
             Mail::to($recipients)->send(new Software($mailData, $mailType));
         } 
-        
     }
 
     private function removeNewLine(&$string){

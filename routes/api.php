@@ -23,4 +23,5 @@ Route::middleware('auth:sanctum')->controller(ApiController::class)->group(funct
     Route::post('/linkProject', 'linkProject')->name('api.linkProject');
     Route::get('/employees/search', 'getEmployeeByFilter')->name('api.search');
     Route::get('/softwares/search', 'getSoftwareByFilter')->name('api.softwaresearch');
+    Route::post('/softwarelinkProject', 'softwarelinkProject')->name('api.softwarelinkProject');
 });

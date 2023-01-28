@@ -26,7 +26,7 @@ class SoftwaresExport implements FromView, WithHeadings, WithMapping, WithEvents
     use Exportable;
 
     private $maxRow = 100;
-    private $fileType;
+    private $fileType = '';
 
     public function __construct($fileType = "")
     {
@@ -76,8 +76,14 @@ class SoftwaresExport implements FromView, WithHeadings, WithMapping, WithEvents
 
     public function styles(Worksheet $sheet)
     {
+
+        $data_count = Softwares::whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED')])
+        ->count();
+
+        $bordered_cell = "A1:C" . (strVal($data_count) + config('constants.SOFTWARE_RANGE_BUFFER'));
+
         return [
-            "A1:M1" => [    //style for header
+            "A1:C1" => [    //style for header
                 'font' => ['bold' => true],
                 'alignment' => [
                     'horizontal' => Alignment::HORIZONTAL_CENTER,
@@ -95,6 +101,19 @@ class SoftwaresExport implements FromView, WithHeadings, WithMapping, WithEvents
             1 => ['font' => [
                 'bold' => true
             ]],
+            $bordered_cell =>[
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => StyleBorder::BORDER_THIN,
+                        'color' => [
+                            'argb' => Color::COLOR_BLACK
+                        ],
+                        'colorIndex' => [
+                            'argb' => Color::COLOR_BLACK
+                        ]
+                    ]
+                ]
+            ]
         ];
     }
 
@@ -120,37 +139,62 @@ class SoftwaresExport implements FromView, WithHeadings, WithMapping, WithEvents
         
         //Merge cell processing  - start
 
-        //get the number of type. to be used in computing the range
-        // $prod_count = 0;
-        // $message_count = 0;
-        // $browser_count = 0;
-        // $system_count = 0;
-        // $p_specific = 0;
-        // $p_drivers = 0;
-        
-        // $software = Softwares::whereIn('approved_status', [2])
-        //         ->orderBy('type', 'ASC')
-        //         ->orderBy('software_name', 'ASC');
+        $software = Softwares::whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED')])
+                 ->orderBy('type', 'ASC')
+                 ->orderBy('software_name', 'ASC')
+                 ->get()->toArray();
+
+        $type_count = array(0,0,0,0,0,0);
+        //check how many of each type are there in the array
+        foreach($software as $value){
+            $type_count[$value['type'] - config('constants.SOFTWARE_RANGE_BUFFER')] =  $type_count[$value['type'] - config('constants.SOFTWARE_RANGE_BUFFER')] + config('constants.SOFTWARE_TYPE_COUNTER_INCREMENT');      
+        }
+
+
+        //get 
+        $prev_index = config('constants.SOFTWARE_RANGE_INITIAL_VALUE');
+
+        $type_range = array('','','','','',''); 
+        for ($x = 0; $x < config('constants.SOFTWARE_TYPE_COUNT'); $x++) {
+            if($type_count[$x] != config('constants.SOFTWARE_TYPE_EMPTY'))
+            {
+                $type_range[$x] = 'A' . strval($prev_index) . ':A' . strval($prev_index + $type_count[$x] - config('constants.SOFTWARE_RANGE_BUFFER'));
+                $prev_index = $prev_index + $type_count[$x];
+            }
+
+        }
+
 
         if($this->fileType == 'pdf'){
             $setting = [
-                AfterSheet::class => function(AfterSheet $event) {
+                AfterSheet::class => function(AfterSheet $event) use($type_range) {
                     $event->sheet
                         ->getPageSetup()
                         ->setOrientation(WorksheetPageSetup::ORIENTATION_LANDSCAPE)
                         ->setPaperSizeDefault(WorksheetPageSetup::PAPERSIZE_A4);
+                        for ($x = 0; $x < config('constants.SOFTWARE_TYPE_COUNT'); $x++) {
+                            if($type_range[$x] != "")
+                            {
+                                $event->sheet->getDelegate()->mergeCells($type_range[$x]);
+                            }
+                        }
 
-                    //$event->sheet->getDelegate()->mergeCells('A1:A2');
                     },
             ];
 
         }else{
             $setting = [
-                AfterSheet::class => function(AfterSheet $event) {
+                AfterSheet::class => function(AfterSheet $event) use($type_range) {
                         $event->sheet
                             ->getPageSetup()
-                            ->setOrientation(WorksheetPageSetup::ORIENTATION_LANDSCAPE);
-                        $event->sheet->getDelegate()->mergeCells('A1:A2');
+                            ->setOrientation(WorksheetPageSetup::ORIENTATION_LANDSCAPE)
+                            ->setPaperSizeDefault(WorksheetPageSetup::PAPERSIZE_A4);
+                            for ($x = 0; $x < config('constants.SOFTWARE_TYPE_COUNT'); $x++) {
+                                if($type_range[$x] != "")
+                                {
+                                    $event->sheet->getDelegate()->mergeCells($type_range[$x]);
+                                }
+                            }
 
                     },
             ];

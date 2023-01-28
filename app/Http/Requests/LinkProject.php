@@ -69,27 +69,48 @@ class LinkProject extends FormRequest
      */
     public function rules()
     {   
-        $employeeId = $this->input('employee_id');
-        $projectDetails = Projects::where('id', $this->input('project_id'))->first();
-        $rules = [
-            'project_id' =>['required', 'exists:projects,id', function($atribute, $value, $fail) use ($employeeId) {
-                if(EmployeesProjects::checkIfProjectIsOngoing($value, $employeeId)){
-                    $fail('Employee is already a member of the selected project.');
-                }
-            }],
+        $referer = $this->header('referer');
+        //$rejectCode = substr($referer, strripos($referer, '/') + 1);
+        //get the id this will be used for page checking
+    
+        $slash_last_pos = strrpos($referer, '/');
+        $id = substr($referer,$slash_last_pos + 1, strlen($referer) - $slash_last_pos - 1); 
 
-            'project_role' => 'required|in:1,2,3',
-        ];
+        $rules = array();
 
-        if(!empty($projectDetails)){
-            $rules['project_start'] = "required|date|after_or_equal:{$projectDetails->start_date}";
-            if(!empty($projectDetails->end_date) && $projectDetails->end_date != "0000-00-00 00:00:00"){
-                $rules['project_start'] = "required|date|after_or_equal:{$projectDetails->start_date}|before:{$projectDetails->end_date}";
-                if($this->filled('project_end')){
-                    $rules['project_end'] = "date|after:{$projectDetails->start_date}|before_or_equal:{$projectDetails->end_date}";
+        
+        //check if the page is for employee
+        if(strpos($this->header('referer'), route('employees.details', ['id' => $id])) !== FALSE){
+            $employeeId = $this->input('employee_id');
+            $projectDetails = Projects::where('id', $this->input('project_id'))->first();
+            $emprules = [
+                'project_id' =>['required', 'exists:projects,id', function($atribute, $value, $fail) use ($employeeId) {
+                    if(EmployeesProjects::checkIfProjectIsOngoing($value, $employeeId)){
+                        $fail('Employee is already a member of the selected project.');
+                    }
+                }],
+    
+                'project_role' => 'required|in:1,2,3',
+            ];
+    
+            if(!empty($projectDetails)){
+                $emprules['project_start'] = "required|date|after_or_equal:{$projectDetails->start_date}";
+                if(!empty($projectDetails->end_date) && $projectDetails->end_date != "0000-00-00 00:00:00"){
+                    $emprules['project_start'] = "required|date|after_or_equal:{$projectDetails->start_date}|before:{$projectDetails->end_date}";
+                    if($this->filled('project_end')){
+                        $emprules['project_end'] = "date|after:{$projectDetails->start_date}|before_or_equal:{$projectDetails->end_date}";
+                    }
                 }
             }
+
+            $rules = $emprules;
         }
+        //check if page is software
+        else
+        {
+            
+        }
+
 
         return $rules;
     }

@@ -7,6 +7,7 @@ use App\Http\Requests\ChangePassword;
 use App\Http\Requests\LinkLaptop;
 use App\Http\Requests\LinkProject;
 use App\Mail\Employee;
+use App\Mail\Software;
 use App\Models\Employees;
 use App\Models\EmployeesLaptops;
 use App\Models\EmployeesProjects;
@@ -94,6 +95,61 @@ class ApiController extends Controller
                                     'update' => EmployeesLaptops::getOwnedLaptopByEmployee($data['employee_id'])]
                                 , 200);
     }
+    
+
+    public function softwarelinkProject(LinkProject $request){
+        $request->validated();
+
+
+        //save data in db
+        $data = $request->except(['_token', ]);
+
+        $insertData = [
+            'project_id' => $data['project_id'],
+            'software_id' => $data['software_id'],
+            'reasons' => $data['reasons'],
+            'created_by' => Auth::user()->id,
+            'updated_by' => Auth::user()->id,
+        ];
+
+        $software = Softwares::where('id', $data['software_id'])->first();
+        $project = Projects::where('id', $data['project_id'])->first();
+
+        $message = '';
+        //check logined employee role
+        if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
+            //save directly in DB in db
+            $insertData['approved_status'] =  config('constants.APPROVED_STATUS_APPROVED');
+            $insertData['approved_by'] = Auth::user()->id;        
+
+            ProjectSoftwares::create($insertData);
+            $message = 'Added Successfully';
+        }else{
+            //if an employee edit sofwtare data and not the manager
+            $insertData['approved_status'] = config('constants.APPROVED_STATUS_PENDING');
+
+            ProjectSoftwares::create($insertData);
+
+            //notify the managers of the request
+            $mailData = [
+                'link' => route('softwares.request', ['id' => $software->id]),
+                'requestor' => Auth::user()->first_name .' ' .Auth::user()->last_name,
+                'currentUserId' => Auth::user()->id,
+                'module' => "Software",
+            ];
+
+
+            $this->sendMailForSoftwareUpdate(Employees::getEmailOfManagers(), $mailData, config('constants.MAIL_SOFTWARE_PROJECT_LINK_REQUEST'));
+            $message = 'Your request has been sent';
+        }
+        
+        Logs::createLog("Software", "Link {$software->software_name} to {$project->name}");
+
+        return response()->json(['success' => true, 
+                                    'message' => $message, 
+                                    'update' => ProjectSoftwares::getProjectBySoftware($data['software_id'])]
+                                , 200);
+    }
 
     public function linkProject(LinkProject $request){
         $request->validated();
@@ -115,6 +171,7 @@ class ApiController extends Controller
         $employee = Employees::where('id', $data['employee_id'])->first();
         $project = Projects::where('id', $data['project_id'])->first();
 
+        $message = '';       
         //check logined employee role
         if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
             //save directly in DB in db
@@ -167,6 +224,18 @@ class ApiController extends Controller
      */
     private function sendMailForEmployeeUpdate($recipients, $mailData, $mailType){
         Mail::to($recipients)->send(new Employee($mailData, $mailType));
+    }
+
+        /**
+     * sendMailForSoftwareUpdate
+     * @param array $mailData
+     * @param int $mailType
+     * @return void
+     */
+    private function sendMailForSoftwareUpdate($recipients, $mailData, $mailType){
+        if (!empty($recipients)) {
+            Mail::to($recipients)->send(new Software($mailData, $mailType));
+        } 
     }
 
     public function getEmployeeByFilter(Request $request){

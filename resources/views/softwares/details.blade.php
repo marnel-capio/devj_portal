@@ -124,9 +124,9 @@
     <div class="soft-regist-category mb-4 p-3 rounded-3">
         <div class="d-flex justify-content-between">
             <h4 class="text-start">Projects</h4>
-            <button class="btn btn-primary" data-bs-target="#softLinkProjectModal" data-bs-toggle="modal">Add</button>
+            <button class="btn btn-primary" data-bs-target="#linkProjectModal" data-bs-toggle="modal">Add</button>
         </div>
-        <table class="table table-bordered border-secondary mt-3" id="soft-project-tbl">
+        <table class="table table-bordered border-secondary mt-3" id="project-tbl">
             <thead class="bg-primary text-white fw-bold">
                 <tr>
                     <th style="width:50%">NAME</th>
@@ -183,7 +183,7 @@
     @endif
 
     @if ($detailOnly)
-    <div class="modal fade" tabindex="-1" id="softLinkProjectModal">
+    <div class="modal fade" tabindex="-1" id="linkProjectModal">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
