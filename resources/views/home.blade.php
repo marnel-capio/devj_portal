@@ -58,7 +58,7 @@
 	{{-- This section is for Software list --}}
 	<div class="row-req-table row group-category-home p-2"> 
 		<div class="col">
-		  <h3 class="mb-4"> Software Request </h3>
+		  	<h3 class="mb-4"> Software Request </h3>
 			<table id="software-request" class="table table-striped request-table" >
 				<thead>
 					<tr>
@@ -111,6 +111,6 @@
 			</table>
 		</div>
 	</div>
-
+</div>
 
 @include('footer')

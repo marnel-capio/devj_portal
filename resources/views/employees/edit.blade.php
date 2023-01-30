@@ -10,14 +10,26 @@
 <div class="container text-center ps-3 pe-3 pt-5">
     <h3 class="text-start">Account Update</h3>
     <div class="pt-4">
-        @if ($errors->has('id'))
-        <p class="text-danger mb-2">{{ $errors->first('id') }}</p>
-        @endif
+
         <form action="{{ route('employees.update') }}" method="POST" id="emp-update-form">
             @csrf
             <input type="text" name="id" hidden value="{{ $employee->id }}">
             <div class="emp-regist-category p-3 mb-4 rounded-3">
                 <h4 class="text-start">Employee Details</h4>
+                @if ($errors->has('id'))
+                <p class="text-danger mb-2">{{ $errors->first('id') }}</p>
+                @endif
+                @if ($userInfo->roles != config('constants.MANAGER_ROLE_VALUE'))
+                    @if ($errors->has('active_status'))
+                    <p class="text-danger mb-2">{{ $errors->first('active_status') }}</p>
+                    @endif
+                    @if ($errors->has('server_manage_flag'))
+                    <p class="text-danger mb-2">{{ $errors->first('server_manage_flag') }}</p>
+                    @endif
+                    @if ($errors->has('is_admin'))
+                    <p class="text-danger mb-2">{{ $errors->first('is_admin') }}</p>
+                    @endif
+                @endif
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-4 g-3 form-floating">
                         <input type="text" class="form-control" name="first_name" id="first_name" placeholder="First Name" value="{{ old('first_name', $employee->first_name) }}" required>
@@ -88,38 +100,14 @@
                         <p class="text-danger">{{ $errors->first('position') }}</p>
                         @endif
                     </div>
-                    @if ($manager_admin)
-                    <div class="col-lg-2 col-4 g-3 ps-3" id="admin-check">
-                        <div class="d-flex align-items-center" style="height: 100%">
-                            <div class="form-check ">
-                                <label class="form-check-label" for="is-admin">Admin</label>
-                                <input type="checkBox" class="form-check-input" name="is_admin" id="is-admin" value="1" {{ old('is_admin', $employee->roles) == 1 ? "checked" : "" }}>
-                            </div>
-                            @if ($errors->has('is-admin'))
-                            <p class="text-danger">{{ $errors->first('is-admin') }}</p>
-                            @endif
-                        </div>
-                    </div>
-                    @else
-                    <div class="col-lg-2 col-4 g-3 ps-3">
-                        <div class="d-flex align-items-center" style="height: 100%">
-                            <div class="form-check ">
-                                <label class="form-check-label" for="is-admin-detail">Admin</label>
-                                <input type="checkBox" class="form-check-input" name="is_admin" id="is-admin-detail" value="1" {{ $employee->roles == config('constants.ADMIN_ROLE_VALUE') ? "checked" : "" }} disabled>
-                            </div>
-                            @if ($errors->has('is-admin'))
-                            <p class="text-danger">{{ $errors->first('is-admin') }}</p>
-                            @endif
-                        </div>
-                    </div>
-                    @endif
                 </div>
+                @if ($userInfo->roles == config('constants.MANAGER_ROLE_VALUE'))
                 <div class="row mb-2 ps-3 pe-3">
-                    <div class="col-lg-2 col-md-4 col-6 g-3 ps-1">
+                    <div class="col-lg-2 col-4 g-3 ps-1">
                         <div class="d-flex align-items-center">
                             <div class="form-check ">
                                 <label class="form-check-label" for="active-status">Active Status</label>
-                                <input type="checkBox" class="form-check-input" name="active_status" id="active-status" value="1" {{ old('active_status', $employee->active_status) == 1 ? "checked" : "" }} {{ !$manager_admin ? 'disabled' : '' }}>
+                                <input type="checkBox" class="form-check-input" name="active_status" id="active-status" value="1" {{ old('active_status', $employee->active_status) == 1 ? "checked" : "" }} {{ !$isManager ? 'disabled' : '' }}>
                                 <input type="text" hidden value="0" name="active_status" id="active-status-hidden">
                             </div>
                         </div>
@@ -127,11 +115,11 @@
                         <p class="text-danger">{{ $errors->first('active_status') }}</p>
                         @endif
                     </div>
-                    <div class="col-lg-2 col-md-4 col-6 g-3 ps-1">
+                    <div class="col-lg-2 col-4 g-3 ps-1">
                         <div class="d-flex align-items-center">
                             <div class="form-check ">
                                 <label class="form-check-label" for="server-manage-flag">Manage Server</label>
-                                <input type="checkBox" class="form-check-input" name="server_manage_flag" id="server-manage-flag" value="1" {{ old('server_manage_flag', $employee->server_manage_flag) == 1 ? "checked" : "" }} {{ !$manager_admin ? 'disabled' : '' }}>
+                                <input type="checkBox" class="form-check-input" name="server_manage_flag" id="server-manage-flag" value="1" {{ old('server_manage_flag', $employee->server_manage_flag) == 1 ? "checked" : "" }} {{ !$isManager ? 'disabled' : '' }}>
                                 <input type="text" hidden value="0" name="server_manage_flag" id="server-manage-flag-hidden">
                             </div>
                         </div>
@@ -139,7 +127,20 @@
                         <p class="text-danger">{{ $errors->first('server_manage_flag') }}</p>
                         @endif
                     </div>
+                    <div class="col-lg-2 col-4 g-3 ps-1" id="admin-check">
+                        <div class="d-flex align-items-center" style="height: 100%">
+                            <div class="form-check ">
+                                <label class="form-check-label" for="is-admin">Admin</label>
+                                <input type="checkBox" class="form-check-input" name="is_admin" id="is-admin" value="1" {{ old('is_admin', $employee->roles) == 1 ? "checked" : "" }}>
+                                <input type="text" hidden value="0" name="is_admin" id="is-admin-hidden">
+                            </div>
+                            @if ($errors->has('is-admin'))
+                            <p class="text-danger">{{ $errors->first('is-admin') }}</p>
+                            @endif
+                        </div>
+                    </div>
                 </div>
+                @endif
             </div>
             <div class="emp-regist-category mb-4 p-3 rounded-3">
                 <h4 class="text-start">Contact Details</h4>
@@ -165,16 +166,11 @@
                         <p class="text-danger">{{ $errors->first('cellphone_number') }}</p>
                         @endif
                     </div>
-                    <div class="col-4 g-3">
-                        <div class="input-group">
-                            <span class="input-group-text">+63</span>
-                            <div class="form-floating">
-                                <input type="text" class="form-control" name="other_contact_number" id="other_contact" placeholder="Other Contact Number" value="{{ old('other_contact_number', $employee->other_contact_number) }}">
-                                <label for="other_contact" class="text-center">Other Contact Number (optional)</label>
-                            </div>
-                        </div>
-                        @if ($errors->has('other_contact_number'))
-                        <p class="text-danger">{{ $errors->first('other_contact_number') }}</p>
+                    <div class="col-4 g-3 form-floating">
+                        <input type="text" class="form-control" name="other_contact_info" id="other_contact" placeholder="Other Contact Number" value="{{ old('other_contact_info', $employee->other_contact_info) }}">
+                        <label for="other_contact" class="text-center">Other Contact Info (optional)</label>
+                        @if ($errors->has('other_contact_info'))
+                        <p class="text-danger">{{ $errors->first('other_contact_info') }}</p>
                         @endif
                     </div>
                 </div>

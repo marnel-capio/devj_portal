@@ -6,6 +6,7 @@
 @endif
 <br>
 
+
 @if ($mailType == config('constants.MAIL_NEW_REGISTRATION_REQUEST'))
 
     There has been a request for new registration approval. Check the details on the link below:<br>
