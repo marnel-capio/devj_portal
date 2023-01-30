@@ -10,6 +10,8 @@ const SOFTWARE_TYPE_UTIL = "System Utilities";
 const SOFTWARE_TYPE_PROJECT_SPECIFIC = "Project Specific Softwares";
 const SOFTWARE_TYPE_DRIVERS = "Phone Drivers";
 
+const LINK_PROJECT_LINK = '/api/softwarelinkProject'
+
 
 $(document).ready(function () {
 
@@ -62,7 +64,7 @@ $(document).ready(function () {
        });
     }
 
-	const LINK_PROJECT_LINK = '/api/softwarelinkProject'
+
 
 	//start for software registration
 
@@ -115,7 +117,7 @@ $(document).ready(function () {
 			_token: $("#linkProjectForm > input[name=_token]").val(),
 			software_id: $("#linkProjectForm > input[name=lp_software_id]").val(),
 			project_id: $("#projectList > option:selected").val(),
-			reasons: $("#project_remarks").val(),
+			remarks: $("#project_remarks").val(),
 		};
 		$.ajax({
 			type: "POST",
@@ -127,36 +129,17 @@ $(document).ready(function () {
 			// display error
 			if(!data.success){
 				$("#lp-success-msg").empty();
-				$("#error-lp-proj-name").empty();
-				$("#error-lp-proj-role").empty();
-				$("#error-lp-proj-start").empty();
-				$("#error-lp-proj-end").empty();
 				var projectError = data.data.project_id;
 				if(projectError && projectError.length > 0 ){
 					$("#error-lp-proj-name").html(projectError[0]).addClass('text-danger text-start');
 				}
 
-				var projectRoleError = data.data.project_role;
-				if(projectRoleError && projectRoleError.length > 0 ){
-					$("#error-lp-proj-role").html(projectRoleError[0]).addClass('text-danger text-start');
-				}
-
-				var projectStartError = data.data.project_start;
-				if(projectStartError && projectStartError.length > 0 ){
-					$("#error-lp-proj-start").html(projectStartError[0]).addClass('text-danger text-start');
-				}
-
-				var projectEndError = data.data.project_end;
-				if(projectEndError && projectEndError.length > 0 ){
-					$("#error-lp-proj-end").html(projectEndError[0]).addClass('text-danger text-start');
+				var projectResonError = data.data.remarks;
+				if(projectResonError && projectResonError.length > 0 ){
+					$("#error-lp-proj-reason").html(projectResonError[0]).addClass('text-danger text-start');
 				}
 			}else{
 				$("#linkProjectForm").trigger('reset');
-				$("#error-lp-proj-name").empty();
-				$("#error-lp-proj-role").empty();
-				$("#error-lp-proj-start").empty();
-				$("#error-lp-proj-end").empty();
-				$("#projectList > option[value=" + postData.project_id + "]").remove();
 				$("#lp-success-msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;' + data.message + '.').addClass("text-success mb-2 text-start");
 
 				//update projects table
@@ -218,8 +201,9 @@ $(document).ready(function () {
 		$('#soft-update-submit').prop('disabled', true);
 	});
 
-	$('linkProjectModal').on('hidden.bs.modal', function(){
+	$('#linkProjectModal').on('hidden.bs.modal', function(){
 		$("#lp-success-msg").empty();
+		$("#error-lp-proj-reason").empty();
 	});
 
 

@@ -107,7 +107,7 @@ class ApiController extends Controller
         $insertData = [
             'project_id' => $data['project_id'],
             'software_id' => $data['software_id'],
-            'reasons' => $data['reasons'],
+            'reasons' => $data['remarks'],
             'created_by' => Auth::user()->id,
             'updated_by' => Auth::user()->id,
         ];
@@ -122,7 +122,7 @@ class ApiController extends Controller
             $insertData['approved_status'] =  config('constants.APPROVED_STATUS_APPROVED');
             $insertData['approved_by'] = Auth::user()->id;        
 
-            //ProjectSoftwares::create($insertData);
+            ProjectSoftwares::create($insertData);
             $message = 'Added Successfully';
         }else{
             //if an employee edit sofwtare data and not the manager

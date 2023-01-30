@@ -116,7 +116,7 @@ class LinkProject extends FormRequest
                         $fail('Employee is already a member of the selected project.');
                     }
                 }],
-                'project_remarks' => 'required|max:1024',
+                'remarks' => 'required|max:1024',
             ];
             $rules =  $softrules;
         }

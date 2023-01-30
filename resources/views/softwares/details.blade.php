@@ -211,7 +211,7 @@
                                     <div class="mb-2">
                                         <textarea class="form-control" name="project_remarks" placeholder="Remarks" rows="5" id="project_remarks" required></textarea>
                                     </div>
-                                    <p id="project_remarks-error"></p>
+                                    <p id="error-lp-proj-reason"></p>
                                 </div>
                             </div>
                         </form>
