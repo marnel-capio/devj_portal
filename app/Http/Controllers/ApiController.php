@@ -126,7 +126,7 @@ class ApiController extends Controller
             $message = 'Added Successfully';
         }else{
             //if an employee edit sofwtare data and not the manager
-            $insertData['approved_status'] = config('constants.APPROVED_STATUS_PENDING');
+            $insertData['approved_status'] = config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE');
 
             ProjectSoftwares::create($insertData);
 
@@ -138,13 +138,11 @@ class ApiController extends Controller
                 'module' => "Software",
             ];
 
-
             $this->sendMailForSoftwareUpdate(Employees::getEmailOfManagers(), $mailData, config('constants.MAIL_SOFTWARE_PROJECT_LINK_REQUEST'));
             $message = 'Your request has been sent';
         }
         
         Logs::createLog("Software", "Link {$software->software_name} to {$project->name}");
-
         return response()->json(['success' => true, 
                                     'message' => $message, 
                                     'update' => ProjectSoftwares::getProjectBySoftware($data['software_id'])]

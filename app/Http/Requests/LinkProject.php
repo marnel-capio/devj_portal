@@ -113,10 +113,10 @@ class LinkProject extends FormRequest
             $softrules = [
                 'project_id' =>['required', 'exists:projects,id', function($atribute, $value, $fail) use ($softwareId) {
                     if(ProjectSoftwares::checkIfSoftwareExists($value, $softwareId)){
-                        $fail('Employee is already a member of the selected project.');
+                        $fail('Software is already added to the current software.');
                     }
                 }],
-                //'remarks' => 'required|max:1024',
+                'remarks' => 'max:1024',
             ];
             $rules =  $softrules;
         }

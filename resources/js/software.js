@@ -111,7 +111,7 @@ $(document).ready(function () {
 	});
 
 	$("#lp-submit-btn").click(function(e){
-		console.log("entered");
+		
 		$('#lp-submit-btn').prop('disabled', true);
 		var postData = {
 			_token: $("#linkProjectForm > input[name=_token]").val(),
@@ -140,13 +140,13 @@ $(document).ready(function () {
 				}
 			}else{
 				$("#linkProjectForm").trigger('reset');
+				$("#projectList > option[value=" + postData.project_id + "]").remove();
 				$("#lp-success-msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;' + data.message + '.').addClass("text-success mb-2 text-start");
 
 				//update projects table
 				softprojectTable.clear().draw();
 				data.update.forEach(function(project){
 					let url = window.location.origin + '/devj_portal/projects/' + project.project_id;
-					console.log(project);
 					sDate = new Date(project.start_date);
 					spanStart = sDate.getFullYear() + '/' + sDate.getMonth() + '/' + sDate.getDate() + ' - ';
 					spanEnd = '';
