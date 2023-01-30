@@ -29,8 +29,8 @@ Your request for software detail update has been approved. <br>
 Check the details <a href="{{ url($mailData['link']) }}">here</a>.
 
 @elseif ($mailType == config('constants.MAIL_SOFTWARE_UPDATE_REJECT'))
-Your request for laptop detail update has been rejected because of the reason below: <br>
-{{ $mailData['reasons'] }}
+Your request for software detail update has been rejected because of the reason below: <br>
+{{ $mailData['reasons'] }}<br>
 Check the details <a href="{{ url($mailData['link']) }}">here</a>.
 
 @elseif ($mailType == config('constants.MAIL_SOFTWARE_PROJECT_LINK_REQUEST'))
