@@ -521,7 +521,7 @@ class LaptopsController extends Controller
 
             $alert = 'Successfully rejected laptop linkage.';
         }else{
-            $recipient = Employees::where('id', $laptopLinkDetails->updated_by)->first();
+            $recipient = Employees::where('id', $laptopLinkDetails->employee_id)->first();
 
             //reset data
             $update['updated_by'] = Auth::user()->id;
@@ -534,7 +534,7 @@ class LaptopsController extends Controller
                     ->update($update);
 
             //create logs
-            Logs::createLog("Laptop", 'Laptop Detail Update Rejection');
+            Logs::createLog("Laptop", 'Laptop Linkage Detail Update Rejection');
 
             //send mail to requestor
             $mailData = [
