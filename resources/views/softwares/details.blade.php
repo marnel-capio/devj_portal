@@ -209,9 +209,9 @@
                             <div class="row mb-2">
                                 <div class="col-12 g-3 form-floating">
                                     <div class="mb-2">
-                                        <textarea class="form-control" name="project_remarks" placeholder="Remarks" rows="5" id="soft-project_remarks" required></textarea>
+                                        <textarea class="form-control" name="project_remarks" placeholder="Remarks" rows="5" id="project_remarks" required></textarea>
                                     </div>
-                                    <p id="soft-project_remarks-error"></p>
+                                    <p id="project_remarks-error"></p>
                                 </div>
                             </div>
                         </form>

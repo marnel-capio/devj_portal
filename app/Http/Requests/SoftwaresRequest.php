@@ -70,12 +70,12 @@ class SoftwaresRequest extends FormRequest
 
             if(strpos($this->header('referer'), route('softwares.create')) !== FALSE){
                 if(!empty($this->input('id'))){
-
+                   
                     $rules['software_name'] = ['required',
                                                'max:80',
                                                 function($attribute, $value, $fail) use ($rejectCode){
                                                     $detail = Softwares::where('software_name', $value)->get()->toArray();
-                                                    if(!empty($detail) && $detail[0]['id'] != $rejectCode){
+                                                    if(!empty($detail) && $detail[0]['reject_code'] != $rejectCode){
                                                         $fail("The software is already registered.");
                                                     }
                                                 }

@@ -43,4 +43,12 @@ class ProjectSoftwares extends Model
                     ->toArray();
                     
     }
+
+    static function checkIfSoftwareExists($projectId, $softwareID){
+        $detail = self::where('project_id', $projectId)
+                        ->where('software_id', $softwareID)
+                            ->get()
+                            ->toArray();
+        return !empty($detail);
+    }    
 }

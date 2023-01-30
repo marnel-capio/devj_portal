@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\EmployeesProjects;
+use App\Models\ProjectSoftwares;
 use App\Models\Projects;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
@@ -78,7 +79,6 @@ class LinkProject extends FormRequest
 
         $rules = array();
 
-        
         //check if the page is for employee
         if(strpos($this->header('referer'), route('employees.details', ['id' => $id])) !== FALSE){
             $employeeId = $this->input('employee_id');
@@ -108,7 +108,17 @@ class LinkProject extends FormRequest
         //check if page is software
         else
         {
-            
+            $softwareId = $this->input('software_id');
+            $projectDetails = Projects::where('id', $this->input('project_id'))->first();
+            $softrules = [
+                'project_id' =>['required', 'exists:projects,id', function($atribute, $value, $fail) use ($softwareId) {
+                    if(ProjectSoftwares::checkIfSoftwareExists($value, $softwareId)){
+                        $fail('Employee is already a member of the selected project.');
+                    }
+                }],
+                'project_remarks' => 'required|max:1024',
+            ];
+            $rules =  $softrules;
         }
 
 

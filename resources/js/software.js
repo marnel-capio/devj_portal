@@ -115,7 +115,7 @@ $(document).ready(function () {
 			_token: $("#linkProjectForm > input[name=_token]").val(),
 			software_id: $("#linkProjectForm > input[name=lp_software_id]").val(),
 			project_id: $("#projectList > option:selected").val(),
-			reasons: $("#soft-project_remarks").val(),
+			reasons: $("#project_remarks").val(),
 		};
 		$.ajax({
 			type: "POST",
