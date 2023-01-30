@@ -377,23 +377,14 @@ $(document).ready(function () {
 
 	$('#linkProjectModal').on('hidden.bs.modal', function(){
 		$("#lp-success-msg").empty();
-		$("#error-lp-proj-name").empty();
-		$("#error-lp-proj-role").empty();
-		$("#error-lp-proj-start").empty();
-		$("#error-lp-proj-end").empty();
 	});
 
 	$('#linkLaptopModal').on('hidden.bs.modal', function(){
 		$("#ll-success-msg").empty();
-		$("#ll-success-msg").empty();
-		$("#error-laptop-id").empty();
-		$("#error-ll-remarks").empty();
 	})
 	
 	$('#changePasswordModal').on('hidden.bs.modal', function(){
 		$("#cp-success-msg").empty();
-		$("#current-pass-error").empty();
-		$("#new-pass-error").empty();
 	})
 
 
