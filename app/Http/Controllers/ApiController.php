@@ -124,7 +124,6 @@ class ApiController extends Controller
 
             //ProjectSoftwares::create($insertData);
             $message = 'Added Successfully';
-            dd($message);
         }else{
             //if an employee edit sofwtare data and not the manager
             $insertData['approved_status'] = config('constants.APPROVED_STATUS_PENDING');
