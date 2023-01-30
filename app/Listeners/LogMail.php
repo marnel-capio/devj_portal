@@ -62,7 +62,7 @@ class LogMail
         $toArray =  (array) $event->message->getTo();
         foreach($toArray as $idx => $recipient){
 
-            dd("entered LogMail");
+            
             $recipient = (array) $recipient;
             $ctr=0;
             $emailTo = '';
