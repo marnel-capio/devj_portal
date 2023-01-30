@@ -416,7 +416,7 @@ class LaptopsController extends Controller
             $this->rejectOtherLinkageRequest($laptopLinkDetails['laptop_id']);
 
         }else{
-            $recipient = Employees::where('id', $laptopLinkDetails->updated_by)->first();
+            $recipient = Employees::where('id', $laptopLinkDetails->employee_id)->first();
 
             //save temporary data
             $update = json_decode($laptopLinkDetails->update_data, true);
