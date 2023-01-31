@@ -57,7 +57,7 @@
 	{{-- This section is for Software list --}}
 	<div class="row-req-table row group-category-home p-2"> 
 		<div class="col">
-		  	<h3 class="mb-4"> Software Request </h3>
+	  		<h3 class="mb-4"> Software Request </h3>
 			<table id="software-request" class="table table-striped request-table" >
 				<thead>
 					<tr>
@@ -86,7 +86,7 @@
 								@elseif ($software['type'] == config('constants.SOFTWARE_TYPE_6')) 
 									{{config('constants.SOFTWARE_TYPE_6_NAME')}}
 								@else
-									-
+										-
 								@endif
 							</td>
 							<td>
@@ -105,10 +105,9 @@
 							<td>{{ $software['remarks'] }}</td>
 							<td><a href="{{ route('softwares.request', ['id' => $software['id']]) }}"><i class="bi bi-eye"></i>View</a></td>
 						</tr>
-						@endforeach
-					</tbody>
-				</table>
-			</div>
+					@endforeach
+				</tbody>
+			</table>
 		</div>
 	</div>
 	<div class="row-req-table row group-category-home p-2"> 
