@@ -58,6 +58,7 @@ class LinkLaptop extends FormRequest
                     $fail('The selected laptop is invalid, please select again.');
                 }
             }],
+            'remarks' => 'max:1024'
         ];
         return  $validation;
     }

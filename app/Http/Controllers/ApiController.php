@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ChangePassword;
+use App\Http\Requests\LaptopsRequest;
 use App\Http\Requests\LinkLaptop;
 use App\Http\Requests\LinkProject;
+use App\Http\Requests\LaptopLinkage;
 use App\Mail\Employee;
+use App\Mail\Laptops as MailLaptops;
 use App\Mail\Software;
 use App\Models\Employees;
 use App\Models\EmployeesLaptops;
@@ -46,6 +49,7 @@ class ApiController extends Controller
             'employee_id' => $data['employee_id'],
             'brought_home_flag' => $data['brought_home_flag'] ? 1 : 0,
             'vpn_flag' => $data['vpn_access_flag'] ? 1 : 0,
+            'remarks' => $data['remarks'],
             'created_by' => Auth::user()->id,
             'updated_by' => Auth::user()->id,
         ];
@@ -78,7 +82,7 @@ class ApiController extends Controller
 
             //notify the managers of the request
             $mailData = [
-                'link' => "/",  //update link
+                'link' => route('laptops.details', ['id' => $data['laptop_id']]) . '#link-req-tbl',
                 'requestor' => Auth::user()->first_name .' ' .Auth::user()->last_name,
                 'currentUserId' => Auth::user()->id,
                 'module' => "Employee",
@@ -169,7 +173,6 @@ class ApiController extends Controller
         $employee = Employees::where('id', $data['employee_id'])->first();
         $project = Projects::where('id', $data['project_id'])->first();
 
-        $message = '';       
         //check logined employee role
         if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
             //save directly in DB in db
@@ -275,6 +278,429 @@ class ApiController extends Controller
         return json_encode($employee);
     }
 
+    public function filterLaptopList(Request $request){
+        $data = $request->all();
+
+        $laptopList = Laptops::getLaptopList($data['keyword'], $data['availability'], $data['status']);
+
+        return response()->json([
+                                'success' => true,
+                                'update' => $laptopList
+        ]);
+    }
+
+    /**
+     * Laptop Detail Update Process
+     *
+     * @param LaptopsRequest $request
+     * @return void
+     */
+    public function updateLaptopDetails(LaptopsRequest $request){
+        $request->validated();
+
+        $updateData = $request->except(['_token', 'isUpdate', 'edit_id']);
+        if(!isset($updateData)){
+            $updateData['status'] = 0;
+        }
+        $id = $request->input('edit_id');
+        $originalData = Laptops::where('id', $id)->first();
+        $dbReadyData = [];
+        foreach($updateData as $key => $val){
+            if($originalData[$key] != $val){
+                $dbReadyData[$key] = $val;
+            }
+        }
+        if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
+            //format log
+            $log = 'Laptop Update: ';
+            foreach($dbReadyData as $key => $val){
+                $log .= "{$key}: {$originalData[$key]} > {$val}, ";
+            }
+            $log = rtrim($log, ", ");
+
+            //update data in DB
+            $dbReadyData['updated_by'] = Auth::user()->id;
+            $dbReadyData['approved_status'] = config('constants.APPROVED_STATUS_APPROVED');
+            $dbReadyData['approved_by'] = Auth::user()->id;
+            Laptops::where('id', $id)
+                    ->update($dbReadyData);
+
+            Logs::createLog('Laptop', $log);
+
+            session(['l_alert'=> 'Laptop detail was updated successfully.']);
+        }else{
+            Laptops::where('id', $id)
+                    ->update([
+                        'approved_status' => config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE'),
+                        'update_data' => json_encode($dbReadyData, true),
+                        'updated_by' => Auth::user()->id
+                    ]);
+            Logs::createLog('Laptop', 'Laptop Update: ' .json_encode($dbReadyData));
+
+            //send mail
+            $recipients = Employees::getEmailOfManagers();
+
+            $mailData = [
+                'link' => "/laptops/{$id}/request",
+                'currentUserId' => Auth::user()->id,
+                'module' => "Laptop",
+            ];
+
+            $this->sendMailForLaptop($recipients, $mailData, config('constants.MAIL_LAPTOP_DETAIL_UPDATE_REQUEST'));
+
+            session(['l_alert'=> 'Request for Laptop Detail Update has been sent.']);
+        }
+        return response()->json([
+            'success' => true,
+        ]);
+    }
+
+    /**
+     * Laptop  Linkage Detail Update Process
+     *
+     * @param LaptopLinkage $request
+     * @return void
+     */
+    public function updateLaptopLinkage(LaptopLinkage $request){
+        $request->validated();
+        
+        $updateData = $request->except(['_token', 'id']);
+        $id = $request->input('id');
+
+        $originalData = EmployeesLaptops::where('id', $id)->first();
+        $dbReadyData = [];
+        foreach($updateData as $key => $val){
+            if($originalData[$key] != $val){
+                $dbReadyData[$key] = $val;
+            }
+        }
+
+        if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
+
+            //format log
+            $log = 'Laptop Linkage Update: ';
+            foreach($dbReadyData as $key => $val){
+                $log .= "{$key}: {$originalData[$key]} > {$val}, ";
+            }
+            $log = rtrim($log, ", ");
+
+            //update data in DB
+            $dbReadyData['updated_by'] = Auth::user()->id;
+            $dbReadyData['approved_status'] = config('constants.APPROVED_STATUS_APPROVED');
+            $dbReadyData['approved_by'] = Auth::user()->id;
+            EmployeesLaptops::where('id', $id)
+                    ->update($dbReadyData);
+
+            Logs::createLog('Laptop', $log);
+
+            $recipient = Employees::where('id', $originalData['employee_id'])->first();
+
+            if($recipient->id != Auth::user()->id){
+                //send mail
+                $mailData = [
+                    'link' => "/laptops/{$originalData['laptop_id']}",
+                    'firstName' => $recipient['first_name'],
+                    'currentUserId' => Auth::user()->id,
+                    'module' => "Laptop",
+                ];
+    
+                $this->sendMailForLaptop($recipient['email'], $mailData, config('constants.MAIL_LAPTOP_LINKAGE_UPDATE_BY_MANAGER_NOTIF'));
+            }
+
+            session(['ul_alert'=> 'Laptop linkage was updated successfully.']);
+        }else{
+            EmployeesLaptops::where('id', $id)
+                    ->update([
+                        'approved_status' => config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE'),
+                        'update_data' => json_encode($dbReadyData, true),
+                        'updated_by' => Auth::user()->id
+                    ]);
+            Logs::createLog('Laptop', 'Latop Linkage Update: ' .json_encode($dbReadyData));
+
+            //send mail
+            $recipients = Employees::getEmailOfManagers();
+
+            $mailData = [
+                'link' => "/laptops/{$originalData['laptop_id']}",
+                'currentUserId' => Auth::user()->id,
+                'module' => "Laptop",
+            ];
+
+            $this->sendMailForLaptop($recipients, $mailData, config('constants.MAIL_LAPTOP_LINKAGE_UPDATE_BY_NON_MANAGER_REQUEST'));
+
+            session(['ul_alert'=> 'Request for Laptop Linkage Update has been sent.']);
+        }
+        
+
+        return response()->json([
+            'success' => true,
+        ]);
+    }
+
+    /**
+     * Registration of new laptop linkage
+     *
+     * @param LaptopLinkage $request
+     * @return void
+     */
+    public function registLaptopLinkage(LaptopLinkage $request){
+        $request->validated();
+        
+        $requestData = $request->except(['_token']);
+        $laptopData = Laptops::where('id', $requestData['id'])->first();
+        $employeeData = Employees::where('id', $requestData['assignee'])->first();
+
+        $insertData = [
+            'laptop_id' => $requestData['id'],
+            'employee_id' => $requestData['assignee'],
+            'brought_home_flag' => $requestData['brought_home_flag'],
+            'remarks' => $requestData['remarks'],
+            'vpn_flag' => $requestData['vpn_flag'],
+            'created_by' => Auth::user()->id,
+            'updated_by' => Auth::user()->id,
+        ];
+
+        if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
+
+            //add data
+            $insertData['approved_status'] = config('constants.APPROVED_STATUS_APPROVED');
+            $insertData['approved_by'] = Auth::user()->id;
+            EmployeesLaptops::create($insertData);
+
+            Logs::createLog('Laptop', "{$laptopData['tag_number']} laptop is linked to {$employeeData['last_name']}, {$employeeData['first_name']}");
+
+            if($employeeData->id != Auth::user()->id){
+                //send mail
+                $mailData = [
+                    'link' => "/laptops/{$requestData['id']}",
+                    'firstName' => $employeeData['first_name'],
+                    'currentUserId' => Auth::user()->id,
+                    'module' => "Laptop",
+                ];
+    
+                $this->sendMailForLaptop($employeeData['email'], $mailData, config('constants.MAIL_LAPTOP_NEW_LINKAGE_BY_MANAGER_NOTIF'));
+            }
+
+            session(['ll_alert'=> 'Laptop was linked successfully.']);
+
+            $this->rejectOtherLinkageRequest($requestData['id']);
+        }else{
+            //add data
+            $insertData['approved_status'] = config('constants.APPROVED_STATUS_PENDING');
+            EmployeesLaptops::create($insertData);
+
+            Logs::createLog('Laptop', "{$employeeData['last_name']}, {$employeeData['first_name']} requests to use {$laptopData['tag_number']} laptop");
+
+            //send mail
+            $recipients = Employees::getEmailOfManagers();
+
+            $mailData = [
+                'link' => "/laptops/{$requestData['id']}",
+                'currentUserId' => Auth::user()->id,
+                'module' => "Laptop",
+            ];
+
+            $this->sendMailForLaptop($recipients, $mailData, config('constants.MAIL_LAPTOP_NEW_LINKAGE_BY_NON_MANAGER_REQUEST'));
+
+            session(['ul_alert'=> 'Request for Laptop Linkage has been sent.']);
+        }
+
+        return response()->json([
+            'success' => true,
+        ]);
+    }
+
+    /**
+     * send laptop related email
+     * @param array $mailData
+     * @param int $mailType
+     * @return void
+     */
+    private function sendMailForLaptop($recipients, $mailData, $mailType){
+        Mail::to($recipients)->send(new MailLaptops($mailData, $mailType));
+    }
+
+    private function rejectOtherLinkageRequest($laptop_id){
+        $pendingApproval = EmployeesLaptops::getLinkRequestByLaptop($laptop_id, config('constants.APPROVED_STATUS_PENDING'));
+        if(!empty($pendingApproval)){
+            $reason = 'Laptop has been assigned to other employee';
+            $pendingIds = array_column($pendingApproval, 'id');
+            EmployeesLaptops::whereIn('id', $pendingIds)
+                                ->update([
+                                    'approved_status' => config('constants.APPROVED_STATUS_REJECTED'),
+                                    'approved_by' => Auth::user()->id,
+                                    'updated_by' => Auth::user()->id,
+                                    'reasons' => $reason,
+                                ]);
+    
+            Logs::createLog('Laptop', 'Laptop Linkage Request Rejection');
+    
+            //send mail
+            foreach($pendingApproval as $request => $data){
+                $mailData = [
+                    'link' => route('laptops.details', ['id' => $laptop_id]),
+                    'reason' => $reason,
+                    'firstName' => $data['first_name'],
+                    'currentUserId' => Auth::user()->id,
+                    'module' => "Laptop",
+                ];
+                Mail::to($data['email'])->send(new MailLaptops($mailData, config('constants.MAIL_LAPTOP_NEW_LINKAGE_BY_NON_MANAGER_REJECTION')));
+            }
+        }
+    }
+
+    /**
+     * Deactivate employee
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function deactivateEmployee(Request $request){
+        $employeeId = $request->input('id');
+        $message = '';
+        $success = false;
+        $notify = false;
+
+        if(empty($employeeId)){
+            $message = 'Invalid Request!';
+        }else{
+            $employee = Employees::where('id', $employeeId)
+                                ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+                                ->first();
+            if(empty($employee)){
+                $message = 'Invalid Request!';
+            }elseif($employee->active_status == 0){
+                $message = 'Employee has already been deactivated.';
+            }else{
+                //check if employee has no linked laptops
+                $laptops = EmployeesLaptops::getOwnedLaptopByEmployee($employeeId);
+                if(!empty($laptops)){
+                    $notify = true;
+                    $message = 'Deactivation is not allowed because laptop/s are still assigned to the employee.';
+
+                    $mailData = [
+                        'first_name' => $employee->first_name,
+                        'laptops' => $laptops,
+                        'module' => 'Employee',
+                        'currentUserId' => Auth::user()->id,
+                    ];
+
+                }else{
+                    $success = true;
+                    //deactivate employee
+                    $notify = true;
+                    Employees::where('id', $employeeId)
+                                ->update([
+                                    'active_status' => 0,
+                                    'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
+                                    'updated_by' => Auth::user()->id,
+                                    'approved_by' => Auth::user()->id,
+                                ]);
+                    
+                    Logs::createLog('Employee', "Deactivated {$employee->first_name} {$employee->last_name}'s account");
+                    
+                    $mailData = [
+                        'first_name' => $employee->first_name,
+                        'module' => 'Employee',
+                        'currentUserId' => Auth::user()->id,
+                    ];
+
+                    $this->sendMailForEmployeeUpdate($employee->email, $mailData, config('constants.MAIL_EMPLOYEE_DEACTIVATION'));
+                    session(['success' => $success, 'message'=> 'Employee was successfully deactivated.']);
+                }
+            }
+        }
+
+        return response()->json([
+            'success' => $success,
+            'notify' => $notify,
+            'message' => $message,
+        ]);
+    }
+
+    public function reactivateEmployee(Request $request){
+        $employeeId = $request->input('id');
+        $message = '';
+        $success = false;
+
+        if(empty($employeeId)){
+            $message = 'Invalid Request!';
+        }else{
+            $employee = Employees::where('id', $employeeId)
+                                ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+                                ->first();
+            if(empty($employee)){
+                $message = 'Invalid Request!';
+            }elseif($employee->active_status == 1){
+                $message = 'Employee is still active';
+            }else{
+                $success = true;
+                //reactivate employee
+
+                Employees::where('id', $employeeId)
+                            ->update([
+                                'active_status' => 1,
+                                'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
+                                'updated_by' => Auth::user()->id,
+                                'approved_by' => Auth::user()->id,
+                            ]);
+                
+                Logs::createLog('Employee', "Reactivated {$employee->first_name} {$employee->last_name}'s account");
+                
+
+                $mailData = [
+                    'first_name' => $employee->first_name,
+                    'module' => 'Employee',
+                    'currentUserId' => Auth::user()->id,
+                ];
+
+                $this->sendMailForEmployeeUpdate($employee->email, $mailData, config('constants.MAIL_EMPLOYEE_REACTIVATION'));
+                session(['success' => $success, 'message'=> 'Employee was successfully reactivated.']);
+
+            }
+        }
+
+        return response()->json([
+            'success' => $success,
+            'message' => $message,
+        ]);
+    }
+
+    public function notifySurrenderOfLaptops(Request $request){
+        $id = $request->input('id');
+        $message = 'Email has been sent.';
+        $success = false;
+        if(empty($id)){
+            $message = 'Invalid request!';
+        }else{
+            $employee = Employees::where('id', $id)
+                                    ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+                                    ->first();
+
+            if(empty($employee)){
+                $message = 'Invalid request!';
+            }else{
+                $success = true;
+                $laptops = EmployeesLaptops::getOwnedLaptopByEmployee($id);
+    
+                $mailData = [
+                    'first_name' => $employee->first_name,
+                    'module' => 'Employee',
+                    'currentUserId' => Auth::user()->id,
+                    'laptops' => $laptops
+                ];
+    
+                $this->sendMailForEmployeeUpdate($employee->email, $mailData, config('constants.MAIL_EMPLOYEE_SURRENDER_LAPTOP_NOTIFICATION'));
+
+                Logs::createLog('Employee', "Notified {$employee->first_name} {$employee->last_name} to surrender all linked laptops.");
+            }
+        }
+
+        return response()->json([
+            'success' => $success,
+            'message' => $message,
+        ]);
+    }
     
     public function getSoftwareByFilter(Request $request){
         $searchFilter = [
