@@ -1,5 +1,5 @@
 
-@if (in_array($mailType, [config('constants.MAIL_NEW_REGISTRATION_REQUEST'), config('constants.MAIL_EMPLOYEE_UPDATE_REQUEST'), config('constants.MAIL_EMPLOYEE_LAPTOP_LINK_REQUEST'), config('constants.MAIL_EMPLOYEE_PROJECT_LINK_REQUEST')]))
+@if (in_array($mailType, [config('constants.MAIL_NEW_REGISTRATION_REQUEST'), config('constants.MAIL_EMPLOYEE_UPDATE_REQUEST'), config('constants.MAIL_EMPLOYEE_LAPTOP_LINK_REQUEST'), config('constants.MAIL_EMPLOYEE_PROJECT_LINK_REQUEST'), config('constants.MAIL_EMPLOYEE_SURRENDER_LAPTOP_WHEN_USER_IS_DEACTIVATED')]))
     Hi Managers,<br>
 @else
     Hi {{ $mailData['first_name'] }},<br>
@@ -80,8 +80,28 @@
     The manager has linked a laptop to your account. <br>
     Check the details <a href="{{ url($mailData['link']) }}">here</a>.
 
-    
+@elseif ($mailType == config('constants.MAIL_EMPLOYEE_DEACTIVATION'))
+
+    This is to inform you that your Dev J Portal account has been deactivated.<br>
+    For any concerns, please contact your manager.
+
+@elseif ($mailType == config('constants.MAIL_EMPLOYEE_SURRENDER_LAPTOP_NOTIFICATION'))
+
+    Your manager requests to have your assets surrendered.<br>
+    Please surrender the laptops below and update the status in the Dev J Portal.<br>
+    <ol style="list-style-type: square">
+    @foreach ($mailData['laptops'] as $laptop)
+        <li>{{ $laptop['tag_number'] }}</li>
+    @endforeach
+    </ol>
+
+@elseif ($mailType == config('constants.MAIL_EMPLOYEE_REACTIVATION'))
+
+    This is to inform you that your Dev J Portal account has been reactivated.
+
 @endif
+@if ($mailType != config('constants.MAIL_EMPLOYEE_SURRENDER_LAPTOP_NOTIFICATION'))
 <br>
+@endif
 <br>
 Thank you!

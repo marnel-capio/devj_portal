@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Employees;
 use App\Models\Softwares;
+use App\Models\EmployeesLaptops;
+use App\Models\Laptops;
 use PhpParser\Node\Stmt\Return_;
 
 class HomeController extends Controller
@@ -18,11 +20,12 @@ class HomeController extends Controller
     	}
        
         $software_request = Softwares::getSoftwareRequest();
-
-        return view('home', [
-        	'employee_request' => $employee_request,
-        	'softwareRequest' => $software_request
-        	]);
+        return view('home', [   
+                                'employee_request' => $employee_request,
+                                'softwareRequest' => $software_request,
+                                'laptopRequest' => Laptops::getLaptopRequest(),
+                                'laptopLinkRequest' => EmployeesLaptops::getLinkLaptopRequest(),
+                            ]);
     }
 
     private function getEmployeeRequest() {
