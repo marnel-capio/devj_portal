@@ -2,7 +2,6 @@
     "/js/app.js": "/js/app.js",
     "/js/employee.js": "/js/employee.js",
     "/js/software.js": "/js/software.js",
-    "/js/laptop.js": "/js/laptop.js",
     "/css/software.css": "/css/software.css",
     "/css/employee.css": "/css/employee.css",
     "/css/app.css": "/css/app.css",
@@ -11,6 +10,5 @@
     "/js/employee.min.js": "/js/employee.min.js",
     "/css/employee.min.css": "/css/employee.min.css",
     "/js/software.min.js": "/js/software.min.js",
-    "/css/software.min.css": "/css/software.min.css",
-    "/js/laptop.min.js": "/js/laptop.min.js"
+    "/css/software.min.css": "/css/software.min.css"
 }

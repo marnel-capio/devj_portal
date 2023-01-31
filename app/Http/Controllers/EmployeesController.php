@@ -271,8 +271,6 @@ class EmployeesController extends Controller
             abort(404);
         }
 
-        $requestor = Employees::selectRaw('concat(first_name, " ", last_name) as requestor')->where('id', $employeeDetails->updated_by)->first();
-
         return view('employees.details')
         ->with([
             'allowedToEdit' => false,
@@ -281,7 +279,6 @@ class EmployeesController extends Controller
             'detailNote' => $detailNote,
             'showRejectCodeModal' => 1,
             'employee' => $employeeDetails,
-            'requestor' => $requestor
         ]);
     }
 
@@ -556,7 +553,7 @@ class EmployeesController extends Controller
                         $query->where('approved_status', 2)
                             ->orWhere('approved_status', 4);
                     })
-                    ->where('email',"!=",'devj-portal@awsys-i.com')->get();
+                    ->where('email',"!=",'devjportal@awsys-i.com')->get();
         // $query = DB::getQueryLog();
         // dd($query);            
         foreach ($employee as $key => $detail) {

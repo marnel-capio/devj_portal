@@ -6,10 +6,10 @@
 <link rel="stylesheet" href="{{ asset(mix('css/employee.min.css')) }}">
 <script src="{{ asset(mix('js/employee.min.js')) }}" defer></script>
 @include('headerMenu')
-<div id="alert-div"></div>
-@if (session()->pull('success')) 
+
+@if (session('success')) 
 	<div class="alert alert-success" role="alert">
-        <span class="ms-2">{{ session()->pull('message') }}</span>
+        <span class="ms-2">{{ session('message') }}</span>
 	</div>
 @endif
 
@@ -28,29 +28,8 @@
             @if($detailOnly && $userInfo->id == $employee->id)
             <button type="button" class="btn btn-success  ms-1" data-bs-toggle="modal" data-bs-target="#changePasswordModal" >Change Password</button>
             @endif
-            @if ($detailOnly && $userInfo->roles == config('constants.MANAGER_ROLE_VALUE'))
-                @if ($employee->active_status == 0)
-                    <button class="btn btn-success ms-1" id="employee-reactivate">Reactivate
-                        <div id="react-deact-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
-                            <span class="sr-only"></span>
-                        </div>
-                    </button>
-                @else
-                    <button class="btn btn-danger ms-1" id="employee-deactivate">Deactivate
-                        <div id="react-deact-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
-                            <span class="sr-only"></span>
-                        </div>
-                    </button>
-                @endif
-                <div id="react-deact-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
-                    <span class="sr-only"></span>
-                </div>
-                <form action="#" id="deact-react-form">
-                    @csrf
-                    <input hidden name="id" value="{{ $employee->id }}" type="text">
-                </form>
-            @endif
         </div>
+        
     </div>
     @if ($detailOnly)
     @if($userInfo->id == $employee->id)
@@ -109,16 +88,7 @@
 
 
 
-    <div class="pt-2">
-        @if(!$detailOnly)
-        <div class="row mb-2 ps-3 pe-3">
-            <div class="col-6 g-3">
-                <div class="row">
-                    <h6 class="text-danger">?Requested by {{ $requestor->requestor }}</h6>
-                </div>
-            </div>
-        </div>
-        @endif
+    <div class="pt-4">
         <form action="{{ route('employees.regist') }}" method="POST">
             @csrf
             <div class="emp-regist-category p-3 mb-4 rounded-3">
@@ -339,8 +309,8 @@
             </div>
         </form>
     </div>
-    @if ($detailOnly)
-    {{-- <div class="emp-regist-category mb-4 p-3 rounded-3">
+    {{-- @if ($detailOnly)
+    <div class="emp-regist-category mb-4 p-3 rounded-3">
         <div class="d-flex justify-content-between">
             <h4 class="text-start">Projects</h4>
             <button class="btn btn-primary" data-bs-target="#linkProjectModal" data-bs-toggle="modal">Add</button>
@@ -365,7 +335,7 @@
                 @endif
             </tbody>
         </table>
-    </div> --}}
+    </div>
     <div class="emp-regist-category mb-4 p-3 rounded-3">
         <div class="d-flex justify-content-between">
             <h4 class="text-start">Laptops</h4>
@@ -379,26 +349,24 @@
                     <th>LAPTOP MAKE</th>
                     <th>LAPTOP MODEL</th>
                     <th>VPN ACCESS</th>
-                    <th style="width:20%">REMARKS</th>
                 </tr>
             </thead>
             <tbody class="">
                 @if (!empty($empLaptop))
                     @foreach ($empLaptop as $laptop)
                     <tr>
-                        <td><a href="{{ route('laptops.details', ['id' => $laptop['id']]) }}" class="text-decoration-none">{{ $laptop['tag_number'] }}</a></td>
+                        <td><a href="{{ route('laptop.details', ['id' => $laptop['id']]) }}" class="text-decoration-none">{{ $laptop['tag_number'] }}</a></td>
                         <td>{{ $laptop['brought_home'] }}</td>
                         <td>{{ $laptop['laptop_make'] }}</td>
                         <td>{{ $laptop['laptop_model'] }}</td>
                         <td>{{ $laptop['use_vpn'] }}</td>
-                        <td>{{ $laptop['remarks'] }}</td>
                     </tr>
                     @endforeach
                 @endif
             </tbody>
         </table>
     </div>
-    @endif
+    @endif --}}
 
 
     @if (!$detailOnly)
@@ -434,8 +402,8 @@
     </div>
     @endif
 
-    @if ($detailOnly)
-    {{-- <div class="modal fade" tabindex="-1" id="linkProjectModal">
+    {{-- @if ($detailOnly)
+    <div class="modal fade" tabindex="-1" id="linkProjectModal">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -498,7 +466,7 @@
                 </div>
             </div>
         </div>
-    </div> --}}
+    </div>
 
     <div class="modal fade" tabindex="-1" id="linkLaptopModal">
         <div class="modal-dialog modal-dialog-centered">
@@ -523,7 +491,7 @@
                                     <p id="error-laptop-id"></p>
                                 </div>
                             </div>
-                            <div class="row mb-4 text-start">
+                            <div class="row mb-2 text-start">
                                 <div class="col-6 g-3">
                                     <div class="form-check">
                                         <label for="ll-brought-home" class="form-check-label">Brought Home?</label>
@@ -537,30 +505,17 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row mt-2 pt-2 text-start">
-                                <h6>Remarks</h6>
-                            </div>
-                            <div class="row text-start">
-                                <div class="gs-3 ge-3 gt-1">
-                                    <textarea name="remarks" id="ll-remarks" rows="3" class="form-control"></textarea>
-                                    <p id="error-ll-remarks"></p>
-                                </div>
-                            </div>
                         </form>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button class="btn btn-primary" type="submit" id="ll-submit-btn">Link
-                        <div id="ll-link-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
-                            <span class="sr-only"></span>
-                        </div>
-                    </button>
+                    <button class="btn btn-primary" type="submit" id="ll-submit-btn">Link</button>
                 </div>
             </div>
         </div>
     </div>
-    @endif
+    @endif --}}
 
 </div>
 

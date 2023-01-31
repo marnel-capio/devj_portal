@@ -26,9 +26,6 @@ class Employee extends Mailable
     const MAIL_9 = '【DEV J PORTAL】Employee Linking to a Laptop Request';
     const MAIL_10 = '【DEV J PORTAL】Project Linked';
     const MAIL_11 = '【DEV J PORTAL】Laptop Linked';
-    const MAIL_12 = '【DEV J PORTAL】Account Deactivation';
-    const MAIL_13 = '【DEV J PORTAL】Surrender of Assets';
-    const MAIL_14 = '【DEV J PORTAL】Account Reactivation';
 
     
 

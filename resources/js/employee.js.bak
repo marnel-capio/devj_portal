@@ -1,3 +1,9 @@
+const CHANGE_PASSWORD_LINK = '/api/changePassword';
+const LINK_LAPTOP_LINK = '/api/linkLaptop';
+const LINK_PROJECT_LINK = '/api/linkProject';
+const DEACTIVATE_EMPLOYEE_LINK = '/api/deactivateEmployee';
+const REACTIVATE_EMPLOYEE_LINK = '/api/reactivateEmployee';
+const NOTIFY_SURRENDER_OF_LAPTOPS_LINK = '/api/notifySurrender'
 
 $(document).ready(function () {
 
@@ -68,9 +74,6 @@ $(document).ready(function () {
        });
     }
 
-    const CHANGE_PASSWORD_LINK = '/api/changePassword';
-	const LINK_LAPTOP_LINK = '/api/linkLaptop';
-	const LINK_PROJECT_LINK = '/api/linkProject'
 
 	//start for employee registration
 
@@ -239,8 +242,8 @@ $(document).ready(function () {
 				//update projects table
 				projectTable.clear().draw();
 				data.update.forEach(function(project){
-					let url = window.location.origin + '/devj_portal/projects/' + project.project_id;
-					console.log(project);
+					let url = window.location.origin + '/projects/' + project.project_id;
+					// console.log(project);
 					sDate = new Date(project.start_date);
 					spanStart = sDate.getFullYear() + '/' + sDate.getMonth() + '/' + sDate.getDate() + ' - ';
 					spanEnd = '';
@@ -277,6 +280,7 @@ $(document).ready(function () {
 	});
 
 	$("#ll-submit-btn").click(function(e){
+		$("#ll-link-spinner").show();
 		$('#ll-submit-btn').prop('disabled', true);
 		var postData = {
 			_token: $("#linkLaptopForm > input[name=_token]").val(),
@@ -284,8 +288,7 @@ $(document).ready(function () {
 			laptop_id: $("#laptopList > option:selected").val(),
 			brought_home_flag: $("#ll-brought-home").is(':checked') ? 1 : 0,
 			vpn_access_flag: $("#ll-vpn").is(':checked') ? 1 : 0,
-			// surrender_flag: $("#ll-surrender").is(':checked') ? 1 : 0,
-			// surrender_date: $("#ll-surrender-date").val(),
+			remarks: $("#ll-remarks").val()
 		};
 
 
@@ -300,36 +303,38 @@ $(document).ready(function () {
 				//display error
 				$("#ll-success-msg").empty();
 				$("#error-laptop-id").empty();
+				$("#error-ll-remarks").empty();
 				var laptopIdError = data.data.laptop_id;
 				if(laptopIdError && laptopIdError.length > 0 ){
 					$("#error-laptop-id").html(laptopIdError[0]).addClass('text-danger text-start');
 				}
-
-				// var surrenderDateError = data.data.surrender_date;
-				// if(surrenderDateError && surrenderDateError.length > 0 ){
-				// 	$("#error-surrender-date").html(surrenderDateError[0]).addClass('text-danger text-start');
-				// }
+				var laptopRemarksError = data.data.remarks;
+				if(laptopRemarksError && laptopRemarksError.length > 0 ){
+					$("#error-ll-remarks").html(laptopRemarksError[0]).addClass('text-danger text-start');
+				}
 			}else{
 				$("#linkLaptopForm").trigger('reset');
 				$("#error-laptop-id").empty();
-				// $("#error-surrender-date").empty();
+				$("#error-ll-remarks").empty();
 				$("#laptopList > option[value=" + postData.laptop_id + "]").remove();
 				$("#ll-success-msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;' + data.message + '.').addClass("text-success mb-2 text-start");
 
 				//update laptops table
 				laptopTable.clear().draw();
 				data.update.forEach(function(laptop){
-					let url = window.location.origin + '/devj_portal/laptops/' + laptop.id;
+					let url = window.location.origin + '/laptops/' + laptop.id;
 					laptopTable.row.add([
 						'<a href="' + url + '" class="text-decoration-none">' + laptop.tag_number + '</a>',
 						laptop.brought_home,
 						laptop.laptop_make,
 						laptop.laptop_model,
-						laptop.use_vpn
+						laptop.use_vpn,
+						laptop.remarks
 					])
 					.draw(false);
 				});
 			}
+		$("#ll-link-spinner").hide();
 		$('#ll-submit-btn').prop('disabled', false);
 		}).fail(function(){
 			console.log('error');
@@ -341,7 +346,6 @@ $(document).ready(function () {
 	//reject modal
 	$("#reject-request-form").submit(function(){
 		if($("#reject-reason").val() == ""){
-			console.log("hello");
 			$("#reject-reason-error").html('The reason field is required.').addClass("text-danger text-start");
 			return false;
 		}else if($("#reject-reason").val().length > 1024){
@@ -371,16 +375,25 @@ $(document).ready(function () {
 		$('#emp-update-submit').prop('disabled', true);
 	});
 
-	$('linkProjectModal').on('hidden.bs.modal', function(){
+	$('#linkProjectModal').on('hidden.bs.modal', function(){
 		$("#lp-success-msg").empty();
+		$("#error-lp-proj-name").empty();
+		$("#error-lp-proj-role").empty();
+		$("#error-lp-proj-start").empty();
+		$("#error-lp-proj-end").empty();
 	});
 
 	$('#linkLaptopModal').on('hidden.bs.modal', function(){
 		$("#ll-success-msg").empty();
+		$("#ll-success-msg").empty();
+		$("#error-laptop-id").empty();
+		$("#error-ll-remarks").empty();
 	})
 	
 	$('#changePasswordModal').on('hidden.bs.modal', function(){
 		$("#cp-success-msg").empty();
+		$("#current-pass-error").empty();
+		$("#new-pass-error").empty();
 	})
 
 
@@ -422,4 +435,77 @@ $(document).ready(function () {
 			max:maxDate
 		});
 	}
+
+	//start for employee deactivation/reactivation
+
+	$("#employee-deactivate").click(function(e){
+		$("#react-deact-spinner").show();
+		$.ajax({
+			type: "POST",
+			url: DEACTIVATE_EMPLOYEE_LINK,
+			data: {id: $("#deact-react-form > input[name=id").val(), _token: $("#deact-react-form > input[name=_token").val()},
+			dataType: "json",
+			encode: true,
+		}).done(function(data){
+			if(data.success){
+				location.reload();
+			}else{
+				var notify = '';
+				//display error 
+				$("#deact-react-alert").remove();
+				if(data.notify){
+					notify = '<br><span id="span-on" class="ms-2">If you wish to notify the employee to surrender all the linked laptops, click <button id="notify-surrender" class="btn btn-link">request to surrender</button>.</span>'
+				}
+				$("#alert-div").append('<div id="deact-react-alert" class="alert alert-danger" role="alert"><span class="ms-2">' + data.message + '</span>' + notify + '</div>');
+			}
+			$("#react-deact-spinner").hide();
+		}).fail(function(){
+			console.log('error');
+		})
+	});
+
+	$("#employee-reactivate").click(function(e){
+		$("#react-deact-spinner").show();
+		$.ajax({
+			type: "POST",
+			url: REACTIVATE_EMPLOYEE_LINK,
+			data: {id: $("#deact-react-form > input[name=id").val(), _token: $("#deact-react-form > input[name=_token").val()},
+			dataType: "json",
+			encode: true,
+		}).done(function(data){
+			if(data.success){
+				location.reload();
+			}else{
+				//display error 
+				$("#deact-react-alert").remove();
+				$("#alert-div").append('<div id="deact-react-alert" class="alert alert-danger" role="alert"><span class="ms-2">' + data.message + '</span></div>');
+			}
+			$("#react-deact-spinner").hide();
+		}).fail(function(){
+			console.log('error');
+		})
+	});
+
+	$("#alert-div").on("click", "#notify-surrender", function(e){
+		$.ajax({
+			type: "POST",
+			url: NOTIFY_SURRENDER_OF_LAPTOPS_LINK,
+			data: {id: $("#deact-react-form > input[name=id").val(), _token: $("#deact-react-form > input[name=_token").val()},
+			dataType: "json",
+			encode: true,
+		}).done(function(data){
+			$("#deact-react-alert").remove();
+			if(data.success){
+				//display success message
+				$("#alert-div").append('<div id="deact-react-alert" class="alert alert-success" role="alert"><span class="ms-2">' + data.message + '</span></div>');
+			}else{
+				//display error 
+				$("#alert-div").append('<div id="deact-react-alert" class="alert alert-danger" role="alert"><span class="ms-2">' + data.message + '</span></div>');
+			}
+		}).fail(function(){
+			console.log('error');
+		})
+	});
+
+	//end for for employee deactivation/reactivation
 });

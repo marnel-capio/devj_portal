@@ -111,67 +111,6 @@
 			</table>
 		</div>
 	</div>
-
-	{{-- This section is for Laptop list --}}
-	<div class="row-req-table row group-category-home p-2"> 
-		<div class="col">
-		  <h3 class="mb-4"> Laptop Request </h3>
-			<table id="laptop-request" class="table table-striped request-table" >
-				<thead>
-					<tr>
-						<th style="width:18%">Tag Number</th>
-						<th style="width:18%">PEZA Form Number</th>
-						<th style="width:18%">PEZA Permit Number</th>
-						<th style="width:12%">Make</th>
-						<th style="width:12%">Model</th>
-						<th style="width:11%">Status</th>
-						<th style="width:11%">Action</th>
-					</tr>
-				</thead>
-				<tbody>
-					@foreach ($laptopRequest as $request)
-						<tr>
-							<td>{{ $request['tag_number'] }}</a></td>
-							<td>{{ $request['peza_form_number'] }}</td>
-							<td>{{ $request['peza_permit_number'] }}</td>
-							<td>{{ $request['laptop_make'] }}</td>
-							<td>{{ $request['laptop_model'] }}</td>
-							<td>{{ $request['status'] }}</td>
-							<td><a href="{{ route('laptops.request', ['id' => $request['id']]) }}"><i class="bi bi-eye"></i>View</a></td>
-						</tr>
-					@endforeach
-				</tbody>
-			</table>
-		</div>
-	</div>
-	<div class="row-req-table row group-category-home p-2">
-		<div class="col">
-		  <h3 class="mb-4"> Laptop Link Request </h3>
-			<table id="laptop-link-request" class="table table-striped request-table" >
-				<thead>
-					<tr>
-						<th style="width:26%">Employee Name</th>
-						<th style="width:21%">Tag Number</th>
-						<th style="width:21%">Make</th>
-						<th style="width:21%">Model</th>
-						<th style="width:11%">Action</th>
-					</tr>
-				</thead>
-				<tbody>
-					@foreach ($laptopLinkRequest as $request)
-						<tr>
-							<td>{{ $request['employee_name'] }}</a></td>
-							<td>{{ $request['tag_number'] }}</a></td>
-							<td>{{ $request['laptop_make'] }}</td>
-							<td>{{ $request['laptop_model'] }}</td>
-							<td><a href="{{ route('laptops.details', ['id' => $request['laptop_id']]) ."#link-req-tbl" }}"><i class="bi bi-eye"></i>View</a></td>
-						</tr>
-					@endforeach
-				</tbody>
-			</table>
-		</div>
-	</div>
 </div>
-
 
 @include('footer')

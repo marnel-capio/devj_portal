@@ -6,7 +6,6 @@ use App\Http\Controllers\EmployeesController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\SoftwaresController;
-use App\Http\Controllers\LaptopsController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
 use App\Http\Middleware\Authenticate;
@@ -39,7 +38,7 @@ Route::middleware(['guest', 'web'])->controller(EmployeesController::class)->pre
     
 });
 
-Route::middleware(['auth', 'web', 'isActive'])->group(function(){
+Route::middleware(['auth', 'web'])->group(function(){
     Route::get('logout', [LogoutController::class, 'execute'])->name('logout');
     Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -58,21 +57,16 @@ Route::middleware(['auth', 'web', 'isActive'])->group(function(){
         })->name('employees.update.complete');
     });
 
-    Route::prefix('/laptops')->controller(LaptopsController::class)->group(function(){
-        Route::get('/', 'index')->name('laptops.index');
-        Route::get('/download', 'download')->name('laptops.download');
-        Route::get('/create/{rejectCode?}', 'create')->name('laptops.create');
-        Route::post('/regist', 'regist')->name('laptops.regist');
-        Route::get('/{id}', 'details')->name('laptops.details');
-        Route::get('/{id}/request', 'request')->name('laptops.request');
-        Route::post('/store', 'store')->name('laptops.store');
-        Route::post('/reject', 'reject')->name('laptops.reject');
-        Route::post('/storeLinkage', 'storeLinkage')->name('laptops.storeLinkage');
-        Route::post('/rejectLinkage', 'rejectLinkage')->name('laptops.rejectLinkage');
-
-        Route::get('/regist/complete', function(){
-            return view('laptops.complete');
-        })->name('laptops.regist.complete');
+    Route::prefix('/laptops')->group(function(){
+        Route::get('/', function(){
+            return 'Welcome to Laptop List';
+        })->name('laptops');
+        Route::get('/create', function(){
+            return 'You can add laptop data here'; //dummy
+        })->name('laptops.create');
+        Route::get('/{id}', function(){
+            return 'laptop details ';
+         })->name('laptop.details');
     });
 
     Route::prefix('/softwares')->controller(SoftwaresController::class)->group(function(){
