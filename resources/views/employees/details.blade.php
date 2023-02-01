@@ -340,7 +340,7 @@
         </form>
     </div>
     @if ($detailOnly)
-    {{-- <div class="emp-regist-category mb-4 p-3 rounded-3">
+    {{-- <div class="emp-regist-category mb-4 p-3 rounded-3 table-avoid-overflow">
         <div class="d-flex justify-content-between">
             <h4 class="text-start">Projects</h4>
             <button class="btn btn-primary" data-bs-target="#linkProjectModal" data-bs-toggle="modal">Add</button>
@@ -366,7 +366,7 @@
             </tbody>
         </table>
     </div> --}}
-    <div class="emp-regist-category mb-4 p-3 rounded-3">
+    <div class="emp-regist-category mb-4 p-3 rounded-3 table-avoid-overflow">
         <div class="d-flex justify-content-between">
             <h4 class="text-start">Laptops</h4>
             <button class="btn btn-primary" data-bs-target="#linkLaptopModal" data-bs-toggle="modal">Add</button>
@@ -379,7 +379,7 @@
                     <th>LAPTOP MAKE</th>
                     <th>LAPTOP MODEL</th>
                     <th>VPN ACCESS</th>
-                    <th style="width:20%">REMARKS</th>
+                    <th style="width:30%">REMARKS</th>
                 </tr>
             </thead>
             <tbody class="">

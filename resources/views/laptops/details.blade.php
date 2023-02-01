@@ -366,7 +366,7 @@
             @endif
         </div>
 
-        <div class="ms-3">
+        <div class="ms-3 table-avoid-overflow">
             @if(!empty(session('ul_alert')))
                 <div class="alert alert-success mt-2" role="alert">
                     {{session()->pull('ul_alert')}}
@@ -412,7 +412,7 @@
             <h4 class="text-start">Link Requests</h4><span class="text-primary">&nbsp;&nbsp; {{ empty($linkageData) ? '※For new linkage' : '※For linkage udpate'   }}</span>
         </div>
 
-        <div class="ms-3">
+        <div class="ms-3 table-avoid-overflow">
             @if(!empty(session('lla_alert')))
                 <div class="alert alert-success mt-2" role="alert">
                     {{session()->pull('lla_alert')}}

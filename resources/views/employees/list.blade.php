@@ -78,7 +78,7 @@
 		</div>
 	</form>
 	<div class="row-list row">
-	    <div class="col ">
+	    <div class="col table-avoid-overflow">
 	    	<table id="employee-list" class="table table-striped" >
 		        <thead>
 		            <tr>

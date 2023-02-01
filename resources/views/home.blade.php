@@ -5,7 +5,7 @@
   @if(auth()->user()->roles == 2)
 
 	<div class="row-req-table row group-category-home p-2">
-	    <div class="col">
+	    <div class="col table-avoid-overflow">
 	      <h3 class="mb-4"> Employee Request </h3>
 			<table id="employee-request" class="table table-striped request-table" >
 		        <thead>
@@ -55,7 +55,7 @@
 	</div>
 	@endif
 	<div class="row-req-table row group-category-home p-2"> 
-		<div class="col">
+		<div class="col table-avoid-overflow">
 		  <h3 class="mb-4"> Laptop Request </h3>
 			<table id="laptop-request" class="table table-striped request-table" >
 				<thead>
@@ -86,7 +86,7 @@
 		</div>
 	</div>
 	<div class="row-req-table row group-category-home p-2">
-		<div class="col">
+		<div class="col table-avoid-overflow">
 		  <h3 class="mb-4"> Laptop Link Request </h3>
 			<table id="laptop-link-request" class="table table-striped request-table" >
 				<thead>
