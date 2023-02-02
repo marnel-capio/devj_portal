@@ -112,8 +112,6 @@ $(document).ready(function () {
 
 	$("#lp-submit-btn").click(function(e){
 		
-		$("#error-lp-proj-reason").empty();
-		$("#error-lp-proj-name").empty();
 		$('#lp-submit-btn').prop('disabled', true);
 		var postData = {
 			_token: $("#linkProjectForm > input[name=_token]").val(),
@@ -206,7 +204,6 @@ $(document).ready(function () {
 	$('#linkProjectModal').on('hidden.bs.modal', function(){
 		$("#lp-success-msg").empty();
 		$("#error-lp-proj-reason").empty();
-		$("#error-lp-proj-name").empty();
 	});
 
 
