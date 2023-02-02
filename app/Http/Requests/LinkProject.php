@@ -113,7 +113,7 @@ class LinkProject extends FormRequest
             $softrules = [
                 'project_id' =>['required', 'exists:projects,id', function($atribute, $value, $fail) use ($softwareId) {
                     if(ProjectSoftwares::checkIfSoftwareExists($value, $softwareId)){
-                        $fail('Software is already added to the current software.');
+                        $fail('Selected Project name is already linked.');
                     }
                 }],
                 'remarks' => 'max:1024',
