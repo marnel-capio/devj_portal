@@ -574,9 +574,28 @@ class SoftwaresController extends Controller
 
     public function index(Request $request){
         $software_request = $this->getSoftware();
-
-        return view('softwares/list', ['software_request' => $software_request]);
+       
+        $list_note =  $this->getLastSoftwareApproverNote();
+       
+        return view('softwares/list', [
+                                        'software_request' => $software_request,
+                                        'list_note' => $list_note]);
     }
+    
+    public function getLastSoftwareApproverNote()
+    {
+        $last_approved_software = Softwares::whereIn('approved_status',[1])
+        ->orderBy('update_time', 'ASC')->first();
+
+        $employee =  Employees::where('id', $last_approved_software->updated_by)->first();
+
+        $list_note = 'Last approved by: ' . $employee->first_name . ' ' . $employee->last_name;
+
+        //dd($list_note);
+
+        return $list_note;
+    }
+
 
     private function getSoftware() {
         $software = Softwares::whereIn('approved_status',[1,2,3,4])
@@ -586,6 +605,7 @@ class SoftwaresController extends Controller
         return $software;
     }
 
+    
     public function download(Request $request) {
         
         $current_date = date("Y-m");
