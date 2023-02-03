@@ -14,10 +14,50 @@
 		@endif
 	</div>
 	<br/>
-
 	<h3> Software List </h3>
     <div class="row row-list">
         <div class="col-1 filter-software">
+			Type: 
+		</div>
+		<div class="col-11">
+			<input class="soft-search-type-rdb-input" type="radio" name="softwaretype" id="type-all" value="7" checked>
+			<label class="soft-search-status-rdb-label  form-check-label" for="type-all">
+			    All
+			</label>
+			&nbsp;&nbsp;			
+			<input class="soft-search-type-rdb-input" type="radio" name="softwaretype" id="type-productivity-tools" value="1">
+			<label class="soft-search-status-rdb-label  form-check-label" for="type-productivity-tools">
+			    Productivity Tools
+			</label>
+			&nbsp;&nbsp;
+			<input class="soft-search-type-rdb-input" type="radio" name="softwaretype" id="type-messaging" value="2" >
+			<label class="soft-search-status-rdb-label form-check-label" for="type-messaging">
+			    Messaging
+			</label>
+			&nbsp;&nbsp;
+			<input class="soft-search-type-rdb-input" type="radio" name="softwaretype" id="type-browser" value="3" >
+			<label class="soft-search-status-rdb-label form-check-label" for="type-browser">
+			    Browser
+			</label>
+			&nbsp;&nbsp;
+			<input class="soft-search-type-rdb-input" type="radio" name="softwaretype" id="type-system-tilities" value="4" >
+			<label class="soft-search-status-rdb-label form-check-label" for="type-system-tilities">
+			    System Utility
+			</label>
+			&nbsp;&nbsp;
+			<input class="soft-search-type-rdb-input" type="radio" name="softwaretype" id="type-project-specific" value="5" >
+			<label class="soft-search-status-rdb-label form-check-label" for="type-project-specific">
+			    Project Specific Software
+			</label>
+			&nbsp;&nbsp;
+			<input class="soft-search-type-rdb-input" type="radio" name="softwaretype" id="type-phone-drivers" value="6" >
+			<label class="soft-search-status-rdb-label form-check-label" for="type-phone-drivers">
+			    Phone Driver
+			</label>			
+		</div>
+	</div>
+	<div class="row row-list">
+		<div class="col-1 filter-software">
 			Status: 
 		</div>
 		<div class="col-11">

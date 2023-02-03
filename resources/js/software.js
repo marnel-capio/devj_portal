@@ -24,11 +24,12 @@ $(document).ready(function () {
 	    }
 	});
 
+
     $(".soft-search-status-rdb-input").on("click", function(){
         filterSoftwareList();
     });
 
-    $(".soft-search-filter-rdb-input").on("click", function(){
+    $(".soft-search-type-rdb-input").on("click", function(){
         filterSoftwareList();
     });
 
@@ -39,12 +40,14 @@ $(document).ready(function () {
     function filterSoftwareList() {
       var keyword = $("input[name='softSearchInput']").val();
       var status = $("input[name='softwareStatus']:checked").val();
+	  var type = $("input[name='softwaretype']:checked").val();
         $.ajax({
             type:"get",
             url:"api/softwares/search",
             data :{
                     'keyword' : keyword , 
-                    'status' : status ,   
+                    'status' : status ,  
+					'type' :  type,
                 },          
             success:function(res){
                 software_list.clear().draw();

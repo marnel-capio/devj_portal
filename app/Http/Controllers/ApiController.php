@@ -283,9 +283,13 @@ class ApiController extends Controller
         $searchFilter = [
             'keyword' => $request->get('keyword'),
             'status' => $request->get('status'),
+            'type' => $request->get('type'),
         ];
         // DB::enableQueryLog();
-        $software = Softwares::whereIn('approved_status', [1,2,3,4]);
+        $software = Softwares::whereIn('approved_status', [config('constants.APPROVED_STATUS_REJECTED'),
+                                                            config('constants.APPROVED_STATUS_APPROVED'),
+                                                            config('constants.APPROVED_STATUS_PENDING'),
+                                                            config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
 
         // get software
         if (!empty($searchFilter['keyword'])) {
@@ -294,10 +298,18 @@ class ApiController extends Controller
         
         if(!empty($searchFilter['status']))
         {
-            if($searchFilter['status'] != 5)//status choses is all
+            if($searchFilter['status'] != config('constants.SOFTWARE_FILTER_STATUS_ALL'))//status choses is all
             {
                 $software = $software->where('approved_status','LIKE','%'.$searchFilter['status'].'%');
             }
+        }
+        if(!empty($searchFilter['type']))
+        {
+            if($searchFilter['type'] != config('constants.SOFTWARE_FILTER_TYPE_ALL'))//status choses is all
+            {
+                $software = $software->where('type','LIKE','%'.$searchFilter['type'].'%');
+            }
+
         }
         $software = $software->orderBy('software_name', 'ASC')
                 ->get();
