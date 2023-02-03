@@ -8,6 +8,13 @@
 	</div>
 @endif
 <div class="container container-list-table mt-3 ms-4 mb-5">
+	<div class="text-primary d-flex align-items-center">
+		@if (!empty($list_note))
+		<i class="bi bi-info-circle-fill"></i>&nbsp;{{ $list_note }}
+		@endif
+	</div>
+	<br/>
+
 	<h3> Software List </h3>
     <div class="row row-list">
         <div class="col-1 filter-software">
