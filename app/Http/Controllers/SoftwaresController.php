@@ -584,13 +584,13 @@ class SoftwaresController extends Controller
     
     public function getLastSoftwareApproverNote()
     {
-        $last_approved_software = Softwares::whereIn('approved_status',[1])
+        $last_approved_software = Softwares::whereIn('approved_status',[2])
         ->orderBy('update_time', 'ASC')->first();
-
         $employee =  Employees::where('id', $last_approved_software->updated_by)->first();
-
-        $list_note = 'Last approved by: ' . $employee->first_name . ' ' . $employee->last_name;
-
+        $list_note = '';
+        if($employee){
+            $list_note = 'Last approved by: ' . $employee->first_name . ' ' . $employee->last_name;
+        }
         //dd($list_note);
 
         return $list_note;
