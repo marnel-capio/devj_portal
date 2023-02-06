@@ -20,6 +20,11 @@ class HomeController extends Controller
     	}
        
         $software_request = Softwares::getSoftwareRequest();
+        return view('home', [
+        	'employee_request' => $employee_request,
+        	'softwareRequest' => $software_request
+        	]);
+
         return view('home', [   
                                 'employee_request' => $employee_request,
                                 'softwareRequest' => $software_request,

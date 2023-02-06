@@ -1,0 +1,28 @@
+.filter-software {
+	width: 60px;
+}
+
+/* software registration */
+.soft-regist-category{
+    background-color: #F2F2F2;
+}
+
+.softtext-danger{
+    text-align: left;
+}
+
+/* software details */
+input[readonly] {
+    background-color: #e9ecef;
+    opacity: 1;
+}
+
+.softrqst-btn {
+    width: 110px;
+}
+
+table#project-tbl  > thead > tr > th{
+    text-align: center;
+}
+
+

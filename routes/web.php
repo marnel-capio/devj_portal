@@ -5,6 +5,7 @@ use App\Http\Controllers\Employees;
 use App\Http\Controllers\EmployeesController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\SoftwaresController;
 use App\Http\Controllers\LaptopsController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
@@ -74,13 +75,23 @@ Route::middleware(['auth', 'web', 'isActive'])->group(function(){
         })->name('laptops.regist.complete');
     });
 
-    Route::prefix('/softwares')->group(function(){
-        Route::get('/', function(){
-            return 'Welcome to Softwares List'; //dummy
-        })->name('softwares');
-        Route::get('/create', function(){
-            return 'You can add software data here'; //dummy
-        })->name('softwares.create');
+    Route::prefix('/softwares')->controller(SoftwaresController::class)->group(function(){
+        Route::get('/',  'index')->name('softwares');
+        Route::get('/{id}/request', 'detailview')->name('softwares.request')->whereNumber('id');
+        Route::post('/store', 'store')->name('softwares.store');
+        Route::post('/reject', 'reject')->name('softwares.reject');
+        Route::post('/update', 'update')->name('softwares.update');
+        Route::get('/{id}', 'detail')->name('softwares.details')->whereNumber('id');
+        Route::get('/{id}/edit', 'edit')->name('softwares.edit')->whereNumber('id');
+        Route::post('/regist', 'regist')->name('softwares.regist');
+        Route::get('/create/{rejectCode?}', 'create')->name('softwares.create');
+        Route::get('/download',  'download')->name('softwares.download');
+        Route::get('/regist/complete', function(){
+            return view('softwares.complete');
+        })->name('softwares.regist.complete');
+        Route::get('/update/complete', function(){
+            return view('softwares.complete');
+        })->name('softwares.update.complete');        
     });
 
     Route::prefix('/projects')->group(function(){

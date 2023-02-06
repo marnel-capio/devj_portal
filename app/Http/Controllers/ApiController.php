@@ -9,13 +9,16 @@ use App\Http\Requests\LinkLaptop;
 use App\Http\Requests\LinkProject;
 use App\Http\Requests\LaptopLinkage;
 use App\Mail\Employee;
+use App\Mail\Software;
 use App\Mail\Laptops as MailLaptops;
 use App\Models\Employees;
 use App\Models\EmployeesLaptops;
 use App\Models\EmployeesProjects;
+use App\Models\ProjectSoftwares;
 use App\Models\Laptops;
 use App\Models\Logs;
 use App\Models\Projects;
+use App\Models\Softwares;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -96,6 +99,59 @@ class ApiController extends Controller
                                     'update' => EmployeesLaptops::getOwnedLaptopByEmployee($data['employee_id'])]
                                 , 200);
     }
+    
+
+    public function softwarelinkProject(LinkProject $request){
+        $request->validated();
+
+
+        //save data in db
+        $data = $request->except(['_token', ]);
+
+        $insertData = [
+            'project_id' => $data['project_id'],
+            'software_id' => $data['software_id'],
+            'reasons' => $data['remarks'],
+            'created_by' => Auth::user()->id,
+            'updated_by' => Auth::user()->id,
+        ];
+
+        $software = Softwares::where('id', $data['software_id'])->first();
+        $project = Projects::where('id', $data['project_id'])->first();
+
+        $message = '';
+        //check logined employee role
+        if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
+            //save directly in DB in db
+            $insertData['approved_status'] =  config('constants.APPROVED_STATUS_APPROVED');
+            $insertData['approved_by'] = Auth::user()->id;        
+
+            ProjectSoftwares::create($insertData);
+            $message = 'Added Successfully';
+        }else{
+            //if an employee edit sofwtare data and not the manager
+            $insertData['approved_status'] = config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE');
+
+            ProjectSoftwares::create($insertData);
+
+            //notify the managers of the request
+            $mailData = [
+                'link' => route('softwares.request', ['id' => $software->id]),
+                'requestor' => Auth::user()->first_name .' ' .Auth::user()->last_name,
+                'currentUserId' => Auth::user()->id,
+                'module' => "Software",
+            ];
+
+            $this->sendMailForSoftwareUpdate(Employees::getEmailOfManagers(), $mailData, config('constants.MAIL_SOFTWARE_PROJECT_LINK_REQUEST'));
+            $message = 'Your request has been sent';
+        }
+        
+        Logs::createLog("Software", "Link {$software->software_name} to {$project->name}");
+        return response()->json(['success' => true, 
+                                    'message' => $message, 
+                                    'update' => ProjectSoftwares::getProjectBySoftware($data['software_id'])]
+                                , 200);
+    }
 
     public function linkProject(LinkProject $request){
         $request->validated();
@@ -117,6 +173,7 @@ class ApiController extends Controller
         $employee = Employees::where('id', $data['employee_id'])->first();
         $project = Projects::where('id', $data['project_id'])->first();
 
+        $message = '';       
         //check logined employee role
         if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
             //save directly in DB in db
@@ -171,6 +228,18 @@ class ApiController extends Controller
         Mail::to($recipients)->send(new Employee($mailData, $mailType));
     }
 
+        /**
+     * sendMailForSoftwareUpdate
+     * @param array $mailData
+     * @param int $mailType
+     * @return void
+     */
+    private function sendMailForSoftwareUpdate($recipients, $mailData, $mailType){
+        if (!empty($recipients)) {
+            Mail::to($recipients)->send(new Software($mailData, $mailType));
+        } 
+    }
+
     public function getEmployeeByFilter(Request $request){
         $searchFilter = [
             'keyword' => $request->get('keyword'),
@@ -208,6 +277,44 @@ class ApiController extends Controller
                 ->get();
 
         return json_encode($employee);
+    }
+
+    public function getSoftwareByFilter(Request $request){
+        $searchFilter = [
+            'keyword' => $request->get('keyword'),
+            'status' => $request->get('status'),
+            'type' => $request->get('type'),
+        ];
+        // DB::enableQueryLog();
+        $software = Softwares::whereIn('approved_status', [config('constants.APPROVED_STATUS_REJECTED'),
+                                                            config('constants.APPROVED_STATUS_APPROVED'),
+                                                            config('constants.APPROVED_STATUS_PENDING'),
+                                                            config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
+
+        // get software
+        if (!empty($searchFilter['keyword'])) {
+            $software = $software->where('software_name','LIKE','%'.$searchFilter['keyword'].'%');
+        }
+        
+        if(!empty($searchFilter['status']))
+        {
+            if($searchFilter['status'] != config('constants.SOFTWARE_FILTER_STATUS_ALL'))//status choses is all
+            {
+                $software = $software->where('approved_status','LIKE','%'.$searchFilter['status'].'%');
+            }
+        }
+        if(!empty($searchFilter['type']))
+        {
+            if($searchFilter['type'] != config('constants.SOFTWARE_FILTER_TYPE_ALL'))//status choses is all
+            {
+                $software = $software->where('type','LIKE','%'.$searchFilter['type'].'%');
+            }
+
+        }
+        $software = $software->orderBy('software_name', 'ASC')
+                ->get();
+
+        return json_encode($software);
     }
 
     public function filterLaptopList(Request $request){
