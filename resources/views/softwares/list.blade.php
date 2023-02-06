@@ -103,11 +103,11 @@
 	    	<table id="software-list" class="table table-striped" >
 		        <thead>
 		            <tr>
-		                <th class="tbl-header-name">Software Name</th>
-		                <th>Type</th>
-		                <th>Status</th>
-		                <th>Rejection Reason</th>
-		                <th>Purpose</th>
+		                <th style="width:18%"class="tbl-header-name">Software Name</th>
+		                <th style="width:18%">Type</th>
+		                <th style="width:18%">Status</th>
+		                <th style="width:21%">Rejection Reason</th>
+		                <th style="width:25%">Purpose</th>
 		            </tr>
 		        </thead>
 		        <tbody>
