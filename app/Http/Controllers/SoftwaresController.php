@@ -131,7 +131,13 @@ class SoftwaresController extends Controller
         {
             $allowedToEdit = true;
         }
+        $is_project_display = false;
 
+        if($softwareDetails->approved_status == config('constants.APPROVED_STATUS_APPROVED') || 
+        $softwareDetails->approved_status == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE') )
+        {
+            $is_project_display = true;
+        }
  
         return view('softwares.details')
                     ->with([
@@ -147,6 +153,7 @@ class SoftwaresController extends Controller
                         'requestor' => $requesterName,
                         'approver' => $approverName,
                         'projectList' => Projects::getProjectDropdownPersoftware($id),
+                        'is_project_display' => $is_project_display,
                     ]);
     }
 
@@ -310,6 +317,14 @@ class SoftwaresController extends Controller
                 }
             }
         }
+
+        $is_project_display = false;
+
+        if($softwaresDetails->approved_status == config('constants.APPROVED_STATUS_APPROVED') || 
+        $softwaresDetails->approved_status == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE') )
+        {
+            $is_project_display = true;
+        }
         
         return view('softwares.details')
         ->with([
@@ -324,6 +339,7 @@ class SoftwaresController extends Controller
             'requestor' => $requesterName,
             'approver' => $approverName,
             'is_display_approver' => $is_display_approver,
+            'is_project_display' => $is_project_display,
         ]);
     }
 
@@ -587,7 +603,7 @@ class SoftwaresController extends Controller
         $last_approved_software = Softwares::whereIn('approved_status',[2])
         ->orderBy('update_time', 'ASC')->first();
         $employee =  Employees::where('id', $last_approved_software->updated_by)->first();
-        $list_note = '';
+        $list_note = '';    
         if($employee){
             $list_note = 'Last approved by: ' . $employee->first_name . ' ' . $employee->last_name;
         }
