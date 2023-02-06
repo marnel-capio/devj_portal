@@ -451,7 +451,7 @@ class SoftwaresController extends Controller
         else{
             Softwares::where('id', $software['id'])
                 ->update([
-                    'approved_status' => config('constants.APPROVED_STATUS_REJECTED'),
+                    'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
                     'reasons' => $reason,
                     'update_data' => NULL,
                     'updated_by' => Auth::user()->id,
