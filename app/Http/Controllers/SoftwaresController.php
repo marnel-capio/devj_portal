@@ -7,6 +7,7 @@ use App\Models\Logs;
 use App\Mail\Software;
 use App\Models\Projects;
 use App\Models\Softwares;
+use APP\Models\SoftwareTypes;
 use App\Models\Employees;
 use Illuminate\Http\Request;
 use App\Exports\SoftwaresExport;
@@ -25,6 +26,7 @@ class SoftwaresController extends Controller
     
     public function create($rejectCode = ""){
         $software = '';
+        $software_types = '';
         if($rejectCode){
  
             $software = Softwares::where('reject_code', $rejectCode)
@@ -34,7 +36,14 @@ class SoftwaresController extends Controller
             abort_if(empty($software), 404);
         }
 
-        return view('softwares.create')->with(['software' => $software]);
+        //get software_types
+        $software_types = SoftwareTypes::where('approved_status',  config('constants.APPROVED_STATUS_APPROVED'))
+                            ->get()->toArray();
+        dd($software_types);
+        
+
+        return view('softwares.create')->with(['software' => $software,
+                                                'software_types' => $software_types]);
     }
 
     public function regist(SoftwaresRequest $request){
@@ -47,7 +56,7 @@ class SoftwaresController extends Controller
         $insertData['created_by'] = Auth::user()->id;
         $insertData['updated_by'] = Auth::user()->id;
         $id = null;
-        //dd($insertData);
+        dd($insertData);
 
 
         //dd($insertData);
@@ -102,21 +111,18 @@ class SoftwaresController extends Controller
 
     public function detail($id){
 
-        $softwareDetails = Softwares::where('id', $id)->first();
+        //$softwareDetails = Softwares::where('id', $id)->first();
+        $softwareDetails = Softwares::getSoftwareDetail($id);
         $is_display_approver = true;
-
-        $requestorDetail = Employees::where('id', $softwareDetails->updated_by)->first();
-        $approverDetails = Employees::where('id', $softwareDetails->approved_by)->first();
-        $creatorDetail = Employees::where('id', $softwareDetails->created_by)->first();
-        $creatorName = $creatorDetail->last_name . ", " . $creatorDetail->first_name . " " . $creatorDetail->middle_name; 
-
-        $requesterName = $requestorDetail->last_name . ", " . $requestorDetail->first_name . " " . $requestorDetail->middle_name; 
-        $approverName = "";
-        if($approverDetails) {
-            $approverName = $approverDetails->last_name . ", " . $approverDetails->first_name . " " . $approverDetails->middle_name; 
-        }
+        $is_display_new_software_type = false;
 
         abort_if(empty($softwareDetails), 404); //software does not exist
+
+        //check if new software type should be displayed
+        if($softwareDetails ->type_approved_status != config('constants.APPROVED_STATUS_APPROVED'))
+        {
+            $is_display_new_software_type = true;
+        }
 
         //check if software has pending update,
         if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE') &&
@@ -138,7 +144,7 @@ class SoftwaresController extends Controller
         {
             $is_project_display = true;
         }
- 
+
         return view('softwares.details')
                     ->with([
                         'allowedToEdit' => $allowedToEdit,
@@ -149,9 +155,7 @@ class SoftwaresController extends Controller
                         'detailOnly' => true,
                         'current_status' => $this->transformStatusToText($softwareDetails),
                         'is_display_approver' => $is_display_approver,
-                        'creator' => $creatorName,
-                        'requestor' => $requesterName,
-                        'approver' => $approverName,
+                        'is_display_new_software_type' => $is_display_new_software_type,
                         'projectList' => Projects::getProjectDropdownPersoftware($id),
                         'is_project_display' => $is_project_display,
                     ]);
@@ -279,27 +283,22 @@ class SoftwaresController extends Controller
 
     public function request($id)
     {
+        $softwaresDetails = Softwares::getSoftwareDetail($id);
 
-        $softwaresDetails = Softwares::where('id', $id)->first();
-        $requestorDetail = Employees::where('id', $softwaresDetails->updated_by)->first();
-        $approverDetail = Employees::where('id', $softwaresDetails->approved_by)->first();
-        $creatorDetail = Employees::where('id', $softwaresDetails->created_by)->first();
-
-        $requesterName = $requestorDetail->last_name . ", " . $requestorDetail->first_name . " " . $requestorDetail->middle_name; 
-        $creatorName = $creatorDetail->last_name . ", " . $creatorDetail->first_name . " " . $creatorDetail->middle_name; 
-
-        $approverName = "";
-        if($approverDetail) {
-            $approverName = $approverDetail->last_name . ", " . $approverDetail->first_name . " " . $approverDetail->middle_name;  
-        }
         $is_display_approver = false;
 
+        $is_display_new_software_type = false;        
         //abort_if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE'), 403);   //can only be accessed by manager
 
         abort_if(empty($softwaresDetails), 404); //software does not exist
 
         $detailNote = $this->getSoftwareStatus($softwaresDetails);
-   
+        //check if new software type should be displayed
+        if($softwaresDetails ->type_approved_status != config('constants.APPROVED_STATUS_APPROVED'))
+        {
+            $is_display_new_software_type = true;
+        }
+        
         if($softwaresDetails->approved_status == config('constants.APPROVED_STATUS_PENDING')){
             $detailNote = 'Software is still pending for approval';
         }elseif($softwaresDetails->approved_status == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')){
@@ -320,12 +319,12 @@ class SoftwaresController extends Controller
 
         $is_project_display = false;
 
-        if($softwaresDetails->approved_status == config('constants.APPROVED_STATUS_APPROVED') || 
-        $softwaresDetails->approved_status == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE') )
-        {
-            $is_project_display = true;
-        }
-        
+        // if($softwaresDetails->approved_status == config('constants.APPROVED_STATUS_APPROVED') || 
+        // $softwaresDetails->approved_status == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE') )
+        // {
+        //     $is_project_display = true;
+        // }
+
         return view('softwares.details')
         ->with([
             'allowedToEdit' => false,
@@ -335,12 +334,11 @@ class SoftwaresController extends Controller
             'showRejectCodeModal' => 1,
             'software' => $softwaresDetails,
             'current_status' => $this->transformStatusToText($softwaresDetails),
-            'creator' => $creatorName,
-            'requestor' => $requesterName,
-            'approver' => $approverName,
             'is_display_approver' => $is_display_approver,
+            'is_display_new_software_type' => $is_display_new_software_type,            
             'is_project_display' => $is_project_display,
         ]);
+    
     }
 
     public function store(Request $request){
@@ -360,12 +358,27 @@ class SoftwaresController extends Controller
         
         //if no error, update employee details
         if($softwares->approved_status == config('constants.APPROVED_STATUS_PENDING')){
+            //approval of the new software_type
+            //check first the status of the selected software_type
+            $software_type = SoftwareTypes::where('id',$softwares->software_type_id)->first();
+            if($software_type->type_approved_status == config('constants.APPROVED_STATUS_PENDING'))
+            {
+                //update the software_type's status
+                SoftwareTypes::where('id',$softwares->software_type_id)
+                    ->update([
+                        'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
+                        'reasons' => NULL,
+                        'updated_by' => Auth::user()->id,
+                    ]);
+            }
+
+
             //if new registration
             Softwares::where('id', $softwares['id'])
                 ->update([
                     'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
                     'reasons' => NULL,
-                    'updated_by' => Auth::user()->id,
+                    'approve_time' => date('Y-m-d H:i:s'),
                     'approved_by' => Auth::user()->id,
                 ]);
 
@@ -378,13 +391,13 @@ class SoftwaresController extends Controller
             ];
             $this->sendMail($employee->email, $mailData, config('constants.MAIL_SOFTWARE_NEW_APPROVAL'));
                 
-                Logs::createLog("Software", "Approve software request for software {$softwares->id}");
+            Logs::createLog("Software", "Approve software request for software {$softwares->id}");
         
         }else{
             //update only
             $softwareUpdate = json_decode($softwares->update_data, true);
             $softwareUpdate['created_by'] = $softwares->created_by;
-            $softwareUpdate['updated_by'] = Auth::user()->id;
+            //$softwareUpdate['updated_by'] = Auth::user()->id; // no need to update the updated_by column
             $softwareUpdate['approved_by'] = Auth::user()->id;
             $softwareUpdate['update_data'] = NULL;
             $softwareUpdate['reasons'] = NULL;
@@ -591,33 +604,51 @@ class SoftwaresController extends Controller
     public function index(Request $request){
         $software_request = $this->getSoftware();
        
-        $list_note =  $this->getLastSoftwareApproverNote();
+        $list_note_approve_on = "";
+        $list_note_approve_by = "";
+
+        $this->getLastSoftwareApproverNote($list_note_approve_by, $list_note_approve_on);
        
         return view('softwares/list', [
                                         'software_request' => $software_request,
-                                        'list_note' => $list_note]);
+                                        'list_note_approve_by' => $list_note_approve_by,
+                                        'list_note_approve_on' => $list_note_approve_on]);
     }
-    
-    public function getLastSoftwareApproverNote()
-    {
-        $last_approved_software = Softwares::whereIn('approved_status',[2])
-        ->orderBy('update_time', 'ASC')->first();
-        $employee =  Employees::where('id', $last_approved_software->updated_by)->first();
-        $list_note = '';    
-        if($employee){
-            $list_note = 'Last approved by: ' . $employee->first_name . ' ' . $employee->last_name;
-        }
-        //dd($list_note);
 
-        return $list_note;
+    public function getLastSoftwareApproverNote(&$list_note_approve_by, &$list_note_approve_on)
+    {
+        $last_approved_software = Softwares::whereIn('approved_status',[config('constants.APPROVED_STATUS_APPROVED' ), 
+                                                                        config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+                                            ->orderBy('approve_time', 'DESC')->first();
+        //dd($last_approved_software);
+
+        if($last_approved_software)
+        {
+            $employee =  Employees::where('id', $last_approved_software->approved_by)->first();
+          
+            if($employee){
+                $list_note_approve_by = 'Last approved by: ' . $employee->first_name . ' ' . $employee->last_name;
+            }
+            
+            if($last_approved_software->approve_time)
+            {
+                $current_date = date("Y-m-d", strtotime($last_approved_software->approve_time) );
+               
+                $list_note_approve_on = 'Last approved on: ' . $current_date;
+            }
+            else 
+            {
+                $list_note_approve_on = 'Last approved on: <empty>' ;
+            }
+        }
+
+        
+
     }
 
 
     private function getSoftware() {
-        $software = Softwares::whereIn('approved_status',[1,2,3,4])
-                                ->orderBy('software_name', 'ASC')
-                                ->get();
-
+        $software = Softwares::getSoftwareForList();
         return $software;
     }
 

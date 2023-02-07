@@ -76,6 +76,7 @@ return [
     'SOFTWARE_TYPE_4' => 4,    //SOFTWARE_TYPE_SYSTEM_UTIL_VALUE
     'SOFTWARE_TYPE_5' => 5,    //SOFTWARE_TYPE_PROJECT_SPECIFIC_VALUE
     'SOFTWARE_TYPE_6' => 6,    //SOFTWARE_TYPE_PHONE_DRIVERS_VALUE
+    'SOFTWARE_TYPE_999' => 999,    //SOFTWARE_TYPE_PHONE_DRIVERS_VALUE
 
     //softwaretype name
     'SOFTWARE_TYPE_1_NAME' => 'Productivity Tools',
@@ -84,6 +85,7 @@ return [
     'SOFTWARE_TYPE_4_NAME' => 'System Utilities',
     'SOFTWARE_TYPE_5_NAME' => 'Project Specific Softwares',
     'SOFTWARE_TYPE_6_NAME' => 'Phone Drivers',
+    'SOFTWARE_TYPE_999_NAME' => 'Others',
 
     //software range buffers
     'SOFTWARE_RANGE_BUFFER' => 1,

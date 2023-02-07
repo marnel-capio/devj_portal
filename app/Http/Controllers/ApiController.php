@@ -135,14 +135,15 @@ class ApiController extends Controller
             ProjectSoftwares::create($insertData);
 
             //notify the managers of the request
-            $mailData = [
-                'link' => route('softwares.request', ['id' => $software->id]),
-                'requestor' => Auth::user()->first_name .' ' .Auth::user()->last_name,
-                'currentUserId' => Auth::user()->id,
-                'module' => "Software",
-            ];
+            //delete mail data since there is no need to send mail to manager for linking project to software - start
+            //$mailData = [
+            //    'link' => route('softwares.request', ['id' => $software->id]),
+            //    'requestor' => Auth::user()->first_name .' ' .Auth::user()->last_name,
+            //    'currentUserId' => Auth::user()->id,
+            //    'module' => "Software",
+            //];
 
-            $this->sendMailForSoftwareUpdate(Employees::getEmailOfManagers(), $mailData, config('constants.MAIL_SOFTWARE_PROJECT_LINK_REQUEST'));
+            //$this->sendMailForSoftwareUpdate(Employees::getEmailOfManagers(), $mailData, config('constants.MAIL_SOFTWARE_PROJECT_LINK_REQUEST'));
             $message = 'Your request has been sent';
         }
         
@@ -285,36 +286,43 @@ class ApiController extends Controller
             'status' => $request->get('status'),
             'type' => $request->get('type'),
         ];
-        // DB::enableQueryLog();
-        $software = Softwares::whereIn('approved_status', [config('constants.APPROVED_STATUS_REJECTED'),
-                                                            config('constants.APPROVED_STATUS_APPROVED'),
-                                                            config('constants.APPROVED_STATUS_PENDING'),
-                                                            config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
+        // // DB::enableQueryLog();
+        // $software = Softwares::whereIn('approved_status', [config('constants.APPROVED_STATUS_REJECTED'),
+        //                                                     config('constants.APPROVED_STATUS_APPROVED'),
+        //                                                     config('constants.APPROVED_STATUS_PENDING'),
+        //                                                     config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
 
-        // get software
-        if (!empty($searchFilter['keyword'])) {
-            $software = $software->where('software_name','LIKE','%'.$searchFilter['keyword'].'%');
-        }
+        // // get software
+        // if (!empty($searchFilter['keyword'])) {
+        //     $software = $software->where('software_name','LIKE','%'.$searchFilter['keyword'].'%');
+        // }
         
-        if(!empty($searchFilter['status']))
-        {
-            if($searchFilter['status'] != config('constants.SOFTWARE_FILTER_STATUS_ALL'))//status choses is all
-            {
-                $software = $software->where('approved_status','LIKE','%'.$searchFilter['status'].'%');
-            }
-        }
-        if(!empty($searchFilter['type']))
-        {
-            if($searchFilter['type'] != config('constants.SOFTWARE_FILTER_TYPE_ALL'))//status choses is all
-            {
-                $software = $software->where('type','LIKE','%'.$searchFilter['type'].'%');
-            }
+        // if(!empty($searchFilter['status']))
+        // {
+        //     if($searchFilter['status'] != config('constants.SOFTWARE_FILTER_STATUS_ALL'))//status choses is all
+        //     {
+        //         $software = $software->where('approved_status','LIKE','%'.$searchFilter['status'].'%');
+        //     }
+        // }
+        // if(!empty($searchFilter['type']))
+        // {
+        //     if($searchFilter['type'] != config('constants.SOFTWARE_FILTER_TYPE_ALL'))//status choses is all
+        //     {
+        //         $software = $software->where('software_type_id','LIKE','%'.$searchFilter['type'].'%');
+        //     }
 
-        }
-        $software = $software->orderBy('software_name', 'ASC')
-                ->get();
+        // }
 
-        return json_encode($software);
+        // $software = $software->orderBy('software_name', 'ASC')
+        //         ->get();
+  
+
+        $softwarelist = Softwares::getSoftwareForList($searchFilter['keyword'], $searchFilter['status'], $searchFilter['type']);
+
+        return response()->json([
+            'success' => true,
+            'update' => $softwarelist
+        ]);
     }
 
     public function filterLaptopList(Request $request){

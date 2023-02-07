@@ -41,30 +41,55 @@ $(document).ready(function () {
       var keyword = $("input[name='softSearchInput']").val();
       var status = $("input[name='softwareStatus']:checked").val();
 	  var type = $("input[name='softwaretype']:checked").val();
-        $.ajax({
+	  $.ajax({
             type:"get",
             url:"api/softwares/search",
             data :{
                     'keyword' : keyword , 
                     'status' : status ,  
 					'type' :  type,
-                },          
-            success:function(res){
-                software_list.clear().draw();
-                var result = JSON.parse(res);
-                // console.log(result);
-                result.forEach(function(software) {
-					const status = [STATUS_REJECTED_TEXT, STATUS_APPROVED_TEXT, STATUS_PENDING_TEXT, STATUS_PENDING_APPROVAL_FOR_UPDATE_TEXT];
-					const software_type = [SOFTWARE_TYPE_PRODUCTIVITY, SOFTWARE_TYPE_MESSAGING, SOFTWARE_TYPE_BROWSER, SOFTWARE_TYPE_UTIL, SOFTWARE_TYPE_PROJECT_SPECIFIC, SOFTWARE_TYPE_DRIVERS];
-					const status_index =  software['approved_status']-1;
-					const st_index = software['type']-1;
+                }, 
+		}).done(function(data){
+			// console.log(data);
+			if(data.success){
+				software_list.clear().draw();
 
+				data.update.forEach(function(software){
+					console.log(software);
+					const status = [STATUS_REJECTED_TEXT, STATUS_APPROVED_TEXT, STATUS_PENDING_TEXT, STATUS_PENDING_APPROVAL_FOR_UPDATE_TEXT];
+					//const software_type = [SOFTWARE_TYPE_PRODUCTIVITY, SOFTWARE_TYPE_MESSAGING, SOFTWARE_TYPE_BROWSER, SOFTWARE_TYPE_UTIL, SOFTWARE_TYPE_PROJECT_SPECIFIC, SOFTWARE_TYPE_DRIVERS];
+					const status_index =  software['approved_status']-1;
+					//const st_index = software['software_type_id']-1;
+					//get only YYYY-MM-DD from date
+					let createdate ="";
+					let update_date ="";
+					let approve_date ="";
+					if(software['create_time'] !== ""){
+						createdate = new Date(software['create_time']).toISOString().slice(0, 10);
+					}
+					if(software['update_time'] !== ""){
+						update_date = new Date(software['update_time']).toISOString().slice(0, 10);
+					}
+					if(software['approve_time'] !== ""){
+						approve_date = new Date(software['approve_time']).toISOString().slice(0, 10);
+					}					
 
                     url = window.location.href+"/"+software['id'];
-                    software_list.row.add(['<a href="'+url+'">'+software['software_name']+'</a>', software_type[st_index], status[status_index],software['reasons'],software['remarks']]).draw(false);
-                });
-            }
-       });
+                    software_list.row.add([
+						'<a href="'+url+'">'+software['software_name']+'</a>', 
+						software['type'], 
+						status[status_index],
+						software['reasons'],
+						software['remarks'], 
+						createdate, 
+						update_date, 
+						approve_date])
+						.draw(false);
+				});
+			}
+		}).fail(function(){
+			console.log('error');
+		});	  
     }
 
 

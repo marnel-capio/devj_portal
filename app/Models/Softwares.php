@@ -12,17 +12,20 @@ class Softwares extends Model
 
     const UPDATED_AT = 'update_time';
     const CREATED_AT = 'create_time';
+    const APPROVED_AT = 'approve_time'; 
     protected $guarded = [];
 
     static function getSoftwareRequest(){
         $query = self::selectRaw('
-                                id,
-                                software_name,
-                                approved_status,
-                                type,
-                                remarks
+                                softwares.id,
+                                softwares.software_name,
+                                software_types.type_name as type,
+                                softwares.approved_status,
+                                softwares.updated_by,
+                                softwares.remarks
                             ')
-                        ->whereIn('approved_status', [config('constants.APPROVED_STATUS_PENDING'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
+                        ->leftJoin('software_types', 'software_types.id',  'softwares.software_type_id')                            
+                        ->whereIn('softwares.approved_status', [config('constants.APPROVED_STATUS_PENDING'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
 
 
         if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE')){
@@ -32,4 +35,115 @@ class Softwares extends Model
         $query->orderBy('software_name', 'ASC');
         return $query->get()->toArray();
     }
+
+    static function getSoftwareForList($keyword = '', $status = '', $type = '')
+    {
+        $query = self::selectRaw('
+                                softwares.id,
+                                softwares.approved_by,
+                                softwares.approved_status,
+                                software_types.type_name as type,
+                                softwares.software_name,
+                                softwares.remarks,
+                                softwares.reasons,
+                                softwares.update_data,
+                                softwares.created_by,
+                                softwares.updated_by,
+                                softwares.create_time,
+                                softwares.update_time,
+                                softwares.reject_code,
+                                softwares.approve_time
+                            ')
+                        ->leftJoin('software_types', 'software_types.id',  'softwares.software_type_id')                            
+                        ->whereIn('software_types.approved_status', [config('constants.APPROVED_STATUS_APPROVED'),
+                                                      config('constants.APPROVED_STATUS_REJECTED'),
+                                                      config('constants.APPROVED_STATUS_PENDING'), 
+                                                      config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
+
+        if (!empty($keyword)) {
+            $query=  $query->where('software_name','LIKE','%'.$keyword.'%');
+        }
+        
+        if(!empty($status))
+        {
+            if($status != config('constants.SOFTWARE_FILTER_STATUS_ALL'))//status choses is all
+            {
+                $query = $query->where('approved_status','LIKE','%'.$status.'%');
+            }
+        }
+        if(!empty($type))
+        {
+            if($type != config('constants.SOFTWARE_FILTER_TYPE_ALL'))//status choses is all
+            {
+                $query = $query->where('software_type_id','LIKE','%'.$type.'%');
+            }
+
+        }                                                      
+
+        $query->orderBy('software_name', 'ASC');
+        return $query->get()->toArray();
+
+    }
+
+    static function getSoftwareForDownload()
+    {
+        $query = self::selectRaw('
+                            softwares.id,
+                            softwares.approved_by,
+                            softwares.approved_status,
+                            software_types.type_name as type,
+                            softwares.software_name,
+                            softwares.remarks,
+                            softwares.reasons,
+                            softwares.update_data,
+                            softwares.created_by,
+                            softwares.updated_by,
+                            softwares.create_time,
+                            softwares.update_time,
+                            softwares.reject_code,
+                            softwares.approve_time
+                            softwares.software_type_id
+                        ')
+                        ->leftJoin('software_types', 'software_types.id',  'softwares.software_type_id')                            
+                        ->where('software_types.approved_status', config('constants.APPROVED_STATUS_APPROVED'))
+                        ->orderBy('software_type_id', 'ASC')
+                        ->orderBy('software_name', 'ASC');
+        
+        return $query->get()->toArray();
+
+    }
+
+    static function getSoftwareDetail($current_id)
+    {
+        $query = self::selectRaw('
+                        softwares.id,
+                        softwares.approved_status,
+                        software_types.type_name as type,
+                        software_types.approved_status as type_approved_status,
+                        softwares.software_name,
+                        softwares.remarks,
+                        softwares.reasons,
+                        softwares.update_data,
+                        softwares.create_time,
+                        softwares.update_time,
+                        softwares.reject_code,
+                        softwares.approve_time,
+                        softwares.software_type_id,
+                        CONCAT(e1.last_name, ", ", e1.first_name) AS creator,
+                        CONCAT(e2.last_name, ", ", e2.first_name) AS updater,
+                        CASE WHEN softwares.approved_by THEN CONCAT(e3.last_name, ", ", e3.first_name) ELSE "" END AS approver
+                    ')
+                ->leftJoin('software_types', 'software_types.id',  'softwares.software_type_id')  
+                ->leftJoin('employees as e1', 'e1.id', 'softwares.created_by')
+                ->leftJoin('employees as e2', 'e2.id', 'softwares.updated_by')
+                ->leftJoin('employees as e3', 'e3.id', 'softwares.approved_by')                
+                ->where('softwares.id', $current_id)
+                ->orderBy('softwares.software_type_id', 'ASC')
+                ->first();
+
+                
+        return $query;
+    }
+
+
 }

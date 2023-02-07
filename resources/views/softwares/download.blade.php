@@ -10,7 +10,7 @@
     <tbody>
         @foreach ($detail as $item)
             <tr>
-                <td>{{ config('constants.SOFTWARE_TYPE_' . strVal($item['type']) . '_NAME') }}</td>
+                <td>{{ $item['type'] }}</td>
                 <td>{{ $item['software_name'] }}</td>
                 <td>{{ $item['remarks'] }}</td>                
             </tr>

@@ -1,15 +1,14 @@
 @include('header')
-<link rel="stylesheet" href="{{ asset(mix('css/software.min.css')) }}">
-<script src="{{ asset(mix('js/software.min.js')) }}" defer></script>
-<div class="container text-center ps-3 pe-3 pt-5">
-    <h3 class="text-start">Software Registration</h3>
+@include('headerMenu')
+<div class="container ps-3 pe-3 pt-5">
+    <h3>Software Registration</h3>
     <div class="pt-4">
         <form action="{{ route('softwares.regist') }}" method="POST">
             @csrf
             <input type="text" name="id" value="{{ isset($software->id) ? $software->id : '' }}" hidden >
-            <div class="soft-regist-category p-3 mb-4 rounded-3">
+            <div class="group-category p-3 mb-4 rounded-3">
                 <h4 class="text-start">Software Details</h4>
-                <div class="row mb-2 ps-3 pe-3">
+                <div class="row mb-2 ps-5 pe-3">
                     <div class="col-4 g-3 form-floating">
                         <input type="text" class="form-control" name="software_name" id="software_name" placeholder="Software Name" value="{{ old('software_name', $software ? $software->software_name : '') }}" required>
                         <label class="text-center" for="software_name">Software Name</label>
@@ -18,9 +17,12 @@
                         @endif
                     </div>
                 </div>
-                <div class="row mb-2 ps-3 pe-3">
+                <div class="row mb-2 ps-5 pe-3">
                     <div class="col-4 g-3 form-floating">
                         <select name="type" id="type" class="form-select form-control">
+                            @foreach ($software_types as $software_type)
+                                <option {{ old('type', $software ? $software->type : '') == 1 ? "selected" : "" }} value="1">{{ config('constants.SOFTWARE_TYPE_1_NAME') }}</option>
+                            @endforeach
                             <option {{ old('type', $software ? $software->type : '') == 1 ? "selected" : "" }} value="1">{{ config('constants.SOFTWARE_TYPE_1_NAME') }}</option>
                             <option {{ old('type', $software ? $software->type : '') == 2 ? "selected" : "" }} value="2">{{ config('constants.SOFTWARE_TYPE_2_NAME') }}</option>
                             <option {{ old('type', $software ? $software->type : '') == 3 ? "selected" : "" }} value="3">{{ config('constants.SOFTWARE_TYPE_3_NAME') }}</option>
@@ -34,7 +36,7 @@
                         @endif
                     </div>
                 </div>
-                <div class="row mb-2 ps-3 pe-3">
+                <div class="row mb-2 ps-5 pe-3">
                     <div class="col-4 g-3 form-floating">
                         <input type="text" class="form-control" name="remarks" id="remarks" placeholder="Purpose" value="{{ old('remarks', $software ? $software->remarks : '') }}" required>
                         <label class="text-center" for="remarks">Purpose</label>

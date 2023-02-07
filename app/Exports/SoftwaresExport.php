@@ -21,6 +21,7 @@ use PhpOffice\PhpSpreadsheet\Style\Color;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup as WorksheetPageSetup;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
+
 class SoftwaresExport implements FromView, WithHeadings, WithMapping, WithEvents, ShouldAutoSize, WithColumnWidths, WithStyles, WithTitle
 {
     use Exportable;
@@ -40,10 +41,7 @@ class SoftwaresExport implements FromView, WithHeadings, WithMapping, WithEvents
 
     public function view(): View
     {
-        $data = Softwares::whereIn('approved_status', [2])
-                            ->orderBy('type', 'ASC')
-                            ->orderBy('software_name', 'ASC')
-                            ->get()->toArray();
+        $data = Softwares::getSoftwareForDownload();
 
        
  /*       foreach($data as $idx => $item){
@@ -140,14 +138,14 @@ class SoftwaresExport implements FromView, WithHeadings, WithMapping, WithEvents
         //Merge cell processing  - start
 
         $software = Softwares::whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED')])
-                 ->orderBy('type', 'ASC')
+                 ->orderBy('software_type_id', 'ASC')
                  ->orderBy('software_name', 'ASC')
                  ->get()->toArray();
 
         $type_count = array(0,0,0,0,0,0);
         //check how many of each type are there in the array
         foreach($software as $value){
-            $type_count[$value['type'] - config('constants.SOFTWARE_RANGE_BUFFER')] =  $type_count[$value['type'] - config('constants.SOFTWARE_RANGE_BUFFER')] + config('constants.SOFTWARE_TYPE_COUNTER_INCREMENT');      
+            $type_count[$value['software_type_id'] - config('constants.SOFTWARE_RANGE_BUFFER')] =  $type_count[$value['software_type_id'] - config('constants.SOFTWARE_RANGE_BUFFER')] + config('constants.SOFTWARE_TYPE_COUNTER_INCREMENT');      
         }
 
 
@@ -169,6 +167,7 @@ class SoftwaresExport implements FromView, WithHeadings, WithMapping, WithEvents
             $setting = [
                 AfterSheet::class => function(AfterSheet $event) use($type_range) {
                     $event->sheet
+                        ->setSelectedCell('A1')
                         ->getPageSetup()
                         ->setOrientation(WorksheetPageSetup::ORIENTATION_LANDSCAPE)
                         ->setPaperSizeDefault(WorksheetPageSetup::PAPERSIZE_A4);
@@ -186,6 +185,7 @@ class SoftwaresExport implements FromView, WithHeadings, WithMapping, WithEvents
             $setting = [
                 AfterSheet::class => function(AfterSheet $event) use($type_range) {
                         $event->sheet
+                            ->setSelectedCell('A1')
                             ->getPageSetup()
                             ->setOrientation(WorksheetPageSetup::ORIENTATION_LANDSCAPE)
                             ->setPaperSizeDefault(WorksheetPageSetup::PAPERSIZE_A4);

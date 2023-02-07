@@ -130,7 +130,8 @@
 					@foreach ($softwareRequest as $software)
 						<tr>
 							<td>{{ $software['software_name'] }}</td>
-							<td>
+							<td>{{ $software['type'] }}</td>
+							{{-- <td>
 								@if ($software['type'] == config('constants.SOFTWARE_TYPE_1')) 
 									{{config('constants.SOFTWARE_TYPE_1_NAME')}}
 								@elseif ($software['type'] == config('constants.SOFTWARE_TYPE_2')) 
@@ -147,6 +148,7 @@
 										-
 								@endif
 							</td>
+						--}}
 							<td>
 								@if ($software['approved_status'] == config('constants.APPROVED_STATUS_REJECTED')) 
 									{{config('constants.APPROVED_STATUS_REJECTED_TEXT')}}
