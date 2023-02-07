@@ -87,11 +87,11 @@
 			</label>
 		</div>
 	</div>
-	<div class="row row-list">
-		<div class="col-10">
+	<div class="row row-list mb-2 mt-2 align-middle">
+		<div class="col-8">
 			<input type="text" name="softSearchInput" class="search-input-text" id="soft-search-input" placeholder="Search">
 		</div>
-		<div class="col">
+		<div class="col-4 text-end">
 			<a href="{{ route('softwares.create') }}" class="btn btn-success me-1" id='send-notif'>Create</a>
 			<button type="submit" class="btn btn-primary ms-1" form="download" >Download</button>
 			<form action="{{  route('softwares.download')  }}" method="GET" id="download">
