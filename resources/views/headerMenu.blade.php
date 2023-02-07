@@ -32,7 +32,7 @@
                         <li><a href="{{ route('softwares.create') }}" class="dropdown-item small text-white">Create Software</a></li>
                     </ul>
                 </li>
-                {{-- 
+ 
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link text-white"  role="button">Projects</a>
                     <ul class="dropdown-menu">
@@ -54,7 +54,7 @@
                             @endif
                         </ul>
                     </li>
-                @endif --}}
+                @endif 
             </ul>
             <ul class="navbar-nav mb-2 mb-lg-0">
                 <li class="nav-item dropdown">

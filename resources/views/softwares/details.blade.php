@@ -120,7 +120,7 @@
             </div>
         </form>
     </div>
-    @if ($detailOnly && $is_project_display)
+   {{-- @if ($detailOnly && $is_project_display)
     <div class="soft-regist-category mb-4 p-3 rounded-3 table-avoid-overflow">
         <div class="d-flex justify-content-between">
             <h4 class="text-start">Projects</h4>
@@ -147,7 +147,7 @@
             </tbody>
         </table>
     </div>
-    @endif
+    @endif--}}
 
     @if (!$detailOnly)
     <div class="text-center p-4">
@@ -182,7 +182,7 @@
     </div>
     @endif
 
-    @if ($detailOnly && $is_project_display)
+    {-- @if ($detailOnly && $is_project_display)
     <div class="modal fade" tabindex="-1" id="linkProjectModal">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -224,7 +224,7 @@
             </div>
         </div>
     </div>
-    @endif
+    @endif--}}
 
 
 </div>
