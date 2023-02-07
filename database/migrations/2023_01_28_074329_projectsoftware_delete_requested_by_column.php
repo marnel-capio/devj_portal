@@ -29,5 +29,8 @@ return new class extends Migration
     public function down()
     {
         //
+        Schema::table('projects_softwares', function (Blueprint $table) {
+            $table->integer('requested_by')->nullable();
+        });        
     }
 };
