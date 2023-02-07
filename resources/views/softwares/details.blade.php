@@ -182,7 +182,7 @@
     </div>
     @endif
 
-    {-- @if ($detailOnly && $is_project_display)
+    {{-- @if ($detailOnly && $is_project_display)
     <div class="modal fade" tabindex="-1" id="linkProjectModal">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
