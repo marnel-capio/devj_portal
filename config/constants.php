@@ -111,5 +111,15 @@ return [
     //Search filter constant
     'SOFTWARE_FILTER_STATUS_ALL' => 5,
     'SOFTWARE_FILTER_TYPE_ALL' => 7,
+
+    //Server Module
+    'SIZE_UNITS' => [
+        1 => 'B',
+        2 => 'kB',
+        3 => 'MB',
+        4 => 'GB',
+        5 => 'TB'
+    ],
+
     
 ];

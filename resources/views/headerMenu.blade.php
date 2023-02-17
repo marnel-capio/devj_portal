@@ -42,19 +42,19 @@
                             <li><a href="{{ route('projects.create') }}" class="dropdown-item small text-white">Create Project</a></li>
                         @endif
                     </ul>
-                </li>
+                </li> --}}
                 @if ($userInfo->roles === config('constants.MANAGER_ROLE_VALUE') ||  $userInfo->server_manage_flag)
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link text-white"  role="button">Servers</a>
                         <ul class="dropdown-menu">
-                            <li><a href="{{ route('servers') }}" class="dropdown-item small text-white">View List</a></li>
+                            <li><a href="{{ route('servers.index') }}" class="dropdown-item small text-white">View List</a></li>
                             @if (in_array($userInfo->roles, [config('constants.ADMIN_ROLE_VALUE'), config('constants.MANAGER_ROLE_VALUE')]))
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a href="{{ route('servers.create') }}" class="dropdown-item small text-white">Create Server</a></li>
                             @endif
                         </ul>
                     </li>
-                @endif --}}
+                @endif
             </ul>
             <ul class="navbar-nav mb-2 mb-lg-0">
                 <li class="nav-item dropdown">
