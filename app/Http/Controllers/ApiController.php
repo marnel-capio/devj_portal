@@ -320,7 +320,7 @@ class ApiController extends Controller
     public function filterLaptopList(Request $request){
         $data = $request->all();
 
-        $laptopList = Laptops::getLaptopList($data['keyword'], $data['availability'], $data['status']);
+        $laptopList = Laptops::getLaptopList($data['keyword'], $data['availability'], $data['status'], $data['searchFilter']);
 
         return response()->json([
                                 'success' => true,

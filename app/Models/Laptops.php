@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class Laptops extends Model
 {
@@ -13,6 +14,15 @@ class Laptops extends Model
     const UPDATED_AT = 'update_time';
     const CREATED_AT = 'create_time';
     protected $guarded = [];
+
+    const LAPTOP_SEARCH_FILTER = [
+        1 => 'tag_number',
+        2 => 'laptop_make',
+        3 => 'laptop_model',
+        4 => 'laptop_cpu',
+        5 => 'laptop_clock_speed',
+        6 => 'laptop_ram',
+    ];
 
     static function getLaptopDropdown($employeeId){
 
@@ -52,40 +62,64 @@ class Laptops extends Model
      * Filters:
      * status: 1:all, 2:active, 3:inacive 
      * availability: 1:all, 2:owned, 3:not owned
+     * srchFilter: 1:tag number, 2:make, 3:model, 4:processor/cpu, 5:clock speed, 6: ram
      *
      * @param string $keyword
      * @param string $availability
      * @param string $status
-     * @return void
+     * @return array
      */
-    static function getLaptopList($keyword = '', $availability = '', $status = ''){
+    static function getLaptopList($keyword = '', $availability = '', $status = '', $srchFilter = '', $forScreen = true){
         $query = self::selectRaw('
-                            id
-                            ,tag_number
-                            ,peza_form_number
-                            ,peza_permit_number
-                            ,laptop_make
-                            ,laptop_model
-                            ,CASE  WHEN status = 1 THEN "Active" ELSE "Inactive" END AS status');
+                            l.id
+                            ,el.id AS linkage_id
+                            ,e.id AS linked_employee_id
+                            ,e.active_status AS linked_employee_status
+                            ,l.tag_number
+                            ,l.peza_form_number
+                            ,l.peza_permit_number
+                            ,l.laptop_make
+                            ,l.laptop_model
+                            ,l.laptop_cpu
+                            ,l.laptop_clock_speed
+                            ,l.laptop_ram
+                            ,CASE WHEN el.brought_home_flag THEN "Y" ELSE "N" END AS brought_home_flag
+                            ,CASE WHEN el.vpn_flag THEN "Y" ELSE "N" END AS vpn_access
+                            ,el.remarks
+                            ,el.surrender_flag
+                            ,el.update_time as last_update
+                            ,CONCAT(e.last_name, ", ", e.first_name) as owner
+                            ,CASE  WHEN l.status = 1 THEN "Active" ELSE "Inactive" END AS status')
+                        ->from('laptops AS l')
+                        ->leftJoin('employees_laptops AS el', function ($join) use ($forScreen) {
+                            $join->on('el.laptop_id', 'l.id')
+                                    ->whereIn('el.approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+                                    ->where('el.surrender_flag', 0);
+                        })
+                        ->leftJoin('employees AS e', function ($join) {
+                            $join->on('e.id', 'el.employee_id')
+                                    ->where('e.active_status', 1)
+                                    ->whereIn('e.approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
+                        });
 
         if(!empty($status) && $status != 1){
             if($status == 2){ 
-                $query->where('status', 1);
+                $query->where('l.status', 1);
             }elseif($status == 3){
-                $query->where('status', 0);
+                $query->where('l.status', 0);
             }
         }
 
         if(!empty($availability) && $availability != 1){
             if($availability == 2){
-                $query->whereIn('id', function($query){
+                $query->whereIn('l.id', function($query){
                     $query->select('laptop_id')
                     ->from('employees_laptops')
                     ->where('surrender_flag', 0)
                     ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
                 });
             }elseif($availability == 3){
-                $query->whereNotIn('id', function($query){
+                $query->whereNotIn('l.id', function($query){
                     $query->select('laptop_id')
                     ->from('employees_laptops')
                     ->where('surrender_flag', 0)
@@ -94,18 +128,23 @@ class Laptops extends Model
             }
         }
 
-        if(!empty($keyword)){
-            $query->where(function($query) use ($keyword){
-                $query->where('tag_number', 'LIKE', "%{$keyword}%")
-                        ->orWhere('peza_form_number', 'LIKE', "%{$keyword}%")
-                        ->orWhere('peza_permit_number', 'LIKE', "%{$keyword}%")
-                        ->orWhere('laptop_make', 'LIKE', "%{$keyword}%")
-                        ->orWhere('laptop_model', 'LIKE', "%{$keyword}%");
-            });
+        if(!empty($keyword) && !empty($srchFilter) && in_array($srchFilter, array_keys(self::LAPTOP_SEARCH_FILTER))){
+            $query->where('l.' .self::LAPTOP_SEARCH_FILTER[$srchFilter], 'LIKE', "%{$keyword}%");
         }
         
-        $query->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
-                ->orderBy('tag_number', 'asc');
+        $query->whereIn('l.approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
+
+        if($forScreen){
+            $query->orderBy('tag_number', 'asc');
+        }else{
+            //order by for download
+            $query->orderByRaw('CASE WHEN el.id is NULL or e.id is NULL THEN 1 ELSE 0 END ASC')
+                    ->orderBy('e.last_name', 'asc')
+                    ->orderBy('e.first_name', 'asc')
+                    ->orderBy('el.surrender_flag', 'asc')
+                    ->orderBy('l.tag_number');
+                   
+        }
 
         return $query->get()->toArray();
     }

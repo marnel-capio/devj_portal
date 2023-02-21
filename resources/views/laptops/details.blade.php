@@ -216,6 +216,33 @@
             </div>
         </form>
     </div>
+    @if (!$detailOnly && !empty($linkage))
+    <div class="group-category p-3 mb-4 rounded-3">
+        <h4 class="text-start d-inline-block">Linkage Data</h4>
+        <div>
+            <div class="row mb-1 ps-5 pt-3 pe-3">
+                <div class="col-xl-2 col-lg-3 col-4 form-check form-check-inline">
+                    <label class="form-check-label" for="brought_home_flag">Brought home?</label>
+                    <input type="checkBox" class="form-check-input" name="brought_home_flag" id="brought_home_flag" value="1" {{ $linkage->brought_home_flag ? "checked" : "" }} >
+                    <input type="text" hidden value="0" name="brought_home_flag" id="brought_home_flag_hidden">
+                </div>
+                <div class="col-xl-2 col-lg-3 col-4 form-check form-check-inline">
+                    <label class="form-check-label" for="vpn_flag">VPN Access</label>
+                    <input type="checkBox" class="form-check-input" name="vpn_flag" id="vpn_flag" value="1" {{ $linkage->vpn_flag ? "checked" : "" }} >
+                    <input type="text" hidden value="0" name="vpn_flag" id="vpn_flag_hidden">
+                </div>
+            </div>
+            <div class="row pt-4 ps-3 pe-3">
+                <h5>Remarks</h5>
+            </div>
+            <div class="row mb-2 ps-5 pe-3">
+                <div class="col-md-6 g-3">
+                    <textarea class="form-control" name="remarks"  rows="3" id="linkage_remarks">{{ $linkage->remarks }}</textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
     @if ($detailOnly)
     <div class="group-category mb-4 p-3 rounded-3">
         <div class="d-flex justify-content-between">

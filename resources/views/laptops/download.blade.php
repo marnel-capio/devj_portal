@@ -22,19 +22,19 @@
     <tbody>
         @foreach ($detail as $item)
             <tr>
-                <td>{{ $item['employee_name'] }}</td>
-                <td>{{ $item['brought_home_flag'] }}</td>
+                <td>{{ !empty($item['owner']) ? $item['owner'] : '※No Assignee' }}</td>
+                <td>{{ !empty($item['linkage_id']) ? $item['brought_home_flag'] : '' }}</td>
                 <td>{{ $item['peza_form_number'] }}</td>
                 <td>{{ $item['peza_permit_number'] }}</td>
-                <td>{{ $item['vpn_access'] }}</td>
+                <td>{{ !empty($item['linkage_id']) ? $item['vpn_access'] : '' }}</td>
                 <td>{{ $item['tag_number'] }}</td>
                 <td>{{ $item['laptop_make'] }}</td>
                 <td>{{ $item['laptop_model'] }}</td>
                 <td>{{ $item['laptop_cpu'] }}</td>
                 <td>{{ $item['laptop_clock_speed'] }}</td>
                 <td>{{ $item['laptop_ram'] }}</td>
-                <td>{{ $item['remarks'] }}</td>
-                <td>{{ date('Y-m-d', strtotime($item['last_update'])) }}</td>
+                <td>{{ !empty($item['remarks']) ? $item['remarks'] : '' }}</td>
+                <td>{{ !empty($item['last_update']) ? date('Y-m-d', strtotime($item['last_update'])) : '' }}</td>
             </tr>
         @endforeach
     </tbody>
