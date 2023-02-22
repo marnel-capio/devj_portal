@@ -101,7 +101,7 @@
                 @if (auth()->user()->roles != config('constants.ENGINEER_ROLE_VALUE'))
                     &nbsp;&nbsp;&nbsp;
                     <div class="form-check form-check-inline">
-                        <label class="form-check-label" for="link_to_self">Link to self</label>
+                        <label class="form-check-label" for="link_to_self">Link laptop to own account</label>
                         <input type="checkBox" class="form-check-input" name="linkage[link_to_self]" id="link_to_self" value="1" {{ old('linkage[link_to_self]', !empty($linkage)) == 1 ? "checked" : "" }}>
                         <input type="text" hidden value="0" name="linkage[link_to_self]" id="link_to_self_hidden">
                     </div>
