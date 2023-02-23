@@ -32,7 +32,7 @@
     </div>
     <div class="row row-list mb-2 mt-2 align-middle">
         <div class="col-8">
-            <input type="text" name="searchInput" class="search-input-text" id="search-input" placeholder="Search">
+            <input type="text" name="searchInput" class="search-input-text form-control" id="search-input" placeholder="Search">
         </div>
         <div class=" col-4 text-end">
             <a href="{{ route('servers.create') }}" class="btn btn-success me-1">Create</a>

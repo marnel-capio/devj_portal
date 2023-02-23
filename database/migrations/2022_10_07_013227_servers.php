@@ -34,7 +34,7 @@ return new class extends Migration
             $table->string('os_type', 80)->comment( '1:Linux, 2:Others');
             $table->decimal('other_os_percentage')->default(NULL)->nullable();
             $table->decimal('linux_us_percentage')->default(NULL)->nullable();
-            $table->decimal('linux_ni_percentage')->default(NULL)->nullable();
+            $table->decimal('linux_ny_percentage')->default(NULL)->nullable();
             $table->decimal('linux_sy_percentage')->default(NULL)->nullable();
             $table->string('hdd_status', 20)->comment('1:Normal, 2:Stable, 3:Critical');
             $table->string('ram_status', 20)->comment('1:Normal, 2:Stable, 3:Critical');

@@ -53,7 +53,7 @@ $(document).ready(function () {
     
 //******************************************** Server Regist/Update ********************************************/
 
-    const BYTES_CONVERTION_MULTIPLIER = 1024;
+    //===================================================HDD USAGE===================================================
 
     /**
      * add new partition
@@ -62,6 +62,11 @@ $(document).ready(function () {
         
         //get last partition to clone
         var elementToClone = $(".partition_section").last();
+
+        if($(".partition_section").length == 1){
+            elementToClone.find('.remove_partition').show();
+        }
+
         var clonedElement = elementToClone.clone();
         console.log(clonedElement);
 
@@ -103,8 +108,19 @@ $(document).ready(function () {
      */
     $("#hdd_partitions").on('click', '.remove_partition', function (e) {
         $(this).parents('.partition_section').remove();
+        hideRemoveButton();
         e.preventDefault();
     });
+
+    hideRemoveButton();
+    function hideRemoveButton(){
+        if($(".partition_section").length == 1){
+            //hide remove button if only 1 hdd partition is displayed
+            $(".partition_section .remove_partition").hide();
+        }else{
+            $(".partition_section .remove_partition").show();
+        }
+    }
 
     /**
      * disabling size/percentage input in hdd partition section
@@ -150,14 +166,17 @@ $(document).ready(function () {
         var percentProp = sizeSelected ? true : false;
 
         //percentage inputs
-        $("#memory_used_percentage").prop('disabled', percentProp);
-        $("#memory_free_percentage").prop('disabled', percentProp);
+        $("#memory_percentage_section").find('input[type=text]').each( function () { 
+            $(this).prop('disabled', percentProp);
+        });
 
         //used inputs
-        $("#memory_used").prop('disabled', sizeProp);
-        $("#memory_used_unit").prop('disabled', sizeProp);
-        $("#memory_free").prop('disabled', sizeProp);
-        $("#memory_free_unit").prop('disabled', sizeProp);
+        $("#memory_size_section").find('input[type=text]').each( function () { 
+            $(this).prop('disabled', sizeProp);
+        });
+        $("#memory_size_section").find('select').each( function () { 
+            $(this).prop('disabled', sizeProp);
+        });
     }
 
     /**
@@ -176,9 +195,12 @@ $(document).ready(function () {
         var othersProp = linuxSelected ? true : false;
 
         //linux inputs
-        $("#us").prop('disabled', linuxProp);
-        $("#ny").prop('disabled', linuxProp);
-        $("#sy").prop('disabled', linuxProp);
+        // $("#us").prop('disabled', linuxProp);
+        // $("#ny").prop('disabled', linuxProp);
+        // $("#sy").prop('disabled', linuxProp);
+        $("#linux_usage").find('input[type=text]').each( function() {
+            $(this).prop('disabled', linuxProp);
+        });
 
         //others inputs
         $("input[name=other_os_percentage").prop('disabled', othersProp);
@@ -270,20 +292,11 @@ $(document).ready(function () {
                 $("input[name=memory_used_percentage]").val(percentage);
                 $("input[name=memory_free_percentage]").val(freePercentage);
 
-                console.log('percentage');
-                console.log('used:  ' +percentage);
-                console.log('free:  ' +freePercentage);
-                
-                console.log('size');
-                console.log('used in bytes:  ' +useValueInBytes);
-                console.log('free in selected unit:  ' +freeValue);
-
             } else if ($("#memory_percentage_radio").is(':checked') && $("#memory_used_percentage").val() != '') {
                 percentage = parseFloat($("#memory_used_percentage").val().toString());
                 //set value of free percentage
                 var freePercentage = parseFloat(100 - percentage).toFixed(2);
                 $("#memory_free_percentage").val(freePercentage);
-
 
                 //set unit of free size and used size
                 $("#memory_free_unit option[value=" + totalUnit + "]").prop('selected', true);
@@ -295,10 +308,6 @@ $(document).ready(function () {
                 //set value on screen
                 $("#memory_used").val(useValue);
                 $("#memory_free").val(freeValue);
-
-                console.log('converted size from percentage');
-                console.log('used:  ' +useValue);
-                console.log('free:  ' +freeValue);
             }
 
             //get status
@@ -336,7 +345,7 @@ $(document).ready(function () {
     }
 
     /**
-     * 
+     * Change status based on usage value, used for hdd, memory and cpu usage
      * @param {jquery selector for status display} statusSelector 
      * @param {jquery selector for status input} inputSelector 
      * @param {int/float} percentage 
@@ -363,6 +372,21 @@ $(document).ready(function () {
         }
     }
 
+    function enableAllFields(){
+        //all
+        $("#usage").find('input').each( function () {
+            $(this).prop('disabled', false);
+        });
+    }
+
+
+    //==================================form submission
+    $("#server_reg_form").on('submit', function () {
+
+        //enable disabled fields before submission
+        enableAllFields();
+
+    });
 
 
 });
