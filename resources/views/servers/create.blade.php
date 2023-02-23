@@ -111,12 +111,15 @@
 {{-- ==================================== HDD Usage ==================================== --}}      
       
             <div class="group-category p-3 mb-4 mt-2 pt-3 rounded-3">
-                <div>
-                    <h4 class="subheader">HDD</h4>&nbsp;&nbsp;  
-                    <div class="status_group fs-6 fw-bold">
-                        Status: <span id="hdd_status">Normal</span>
+                <div class="row">
+                    <div class="col">
+                        <h4 class="subheader">HDD</h4>&nbsp;&nbsp;  
+                        <div class="status_group fs-6 fw-bold">
+                            Status: <span id="hdd_status">Normal</span>
+                            <input type="text" hidden name="hdd_status">
+                        </div>
                     </div>
-                    <div class="float-end">
+                    <div class="col text-end">
                         <button class="btn btn-primary text-end" id="add_partition">Add</button>
                     </div>
                 </div>
@@ -136,7 +139,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-4 col-3 text-end">
-                                    <button class="btn btn-danger remove_partition" data-index="1">Remove</button>
+                                    <button class="btn btn-danger remove_partition">Remove</button>
                                 </div>
                             </div>
                             <div class="p-2">
@@ -157,7 +160,7 @@
                                 <div class="row g-1 pt-2">
                                     <div class="col">
                                         <div class="form-check form-check-inline">
-                                            <input type="radio" class="form-check-input" name="hdd[1][input_type]" id="hdd_size_radio_1" value="1">
+                                            <input type="radio" class="form-check-input hdd_select_radio" name="hdd[1][input_type]" id="hdd_size_radio_1" value="1" checked>
                                             <label class="form-check-label text-start" for="hdd_size_radio_1">Size</label>
                                         </div>
                                         <div class="row g-0 pt-2 text-center">
@@ -191,18 +194,18 @@
                                     </div>
                                     <div class="col">
                                         <div class="form-check form-check-inline">
-                                            <input type="radio" class="form-check-input" name="hdd[1][input_type]" id="hdd_percentage_radio_1" value="2">
+                                            <input type="radio" class="form-check-input hdd_select_radio" name="hdd[1][input_type]" id="hdd_percentage_radio_1" value="2">
                                             <label class="form-check-label text-start" for="hdd_percentage_radio_1">Percentage</label>
                                         </div>
                                         <div class="row g-0 pt-2 text-center">
                                             <div class="col-6 form-floating">
-                                                <input name="hdd[1][used_percentage]" type="text" class="form-control" id="hdd_used_percentage_1" placeholder="used">
+                                                <input name="hdd[1][used_percentage]" type="text" class="form-control" id="hdd_used_percentage_1" placeholder="used" disabled>
                                                 <label for="hdd_used_percentage_1">Used</label>
                                             </div>
                                         </div>
                                         <div class="row g-0 pt-2 text-center">
                                             <div class="col-6 form-floating">
-                                                <input name="hdd[1][free_percentage]" type="text" class="form-control" id="hdd_free_percentage_1" placeholder="Free">
+                                                <input name="hdd[1][free_percentage]" type="text" class="form-control" id="hdd_free_percentage_1" placeholder="Free" disabled>
                                                 <label for="hdd_free_percentage_1">Free</label>
                                             </div>
                                         </div>
@@ -211,93 +214,6 @@
                             </div>
                         </div>
                     </div>
-                    {{-- <div class="partition_section fe col-md-6">
-                        <div class="hdd_partition p-2 pt-2">
-                            <div class="row p-2">
-                                <div class="col-md-8 col-9">
-                                    <div class="row">
-                                        <label for="partition_2" class="col-auto fs-5 fw-bold align-baselineradio">Partition</label>
-                                        <div class="col-auto">
-                                          <input name="hdd[2][partition_name]" type="text" class="form-control" id="partition_2">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-3 text-end">
-                                    <button class="btn btn-danger" id="remove_partition_1">Remove</button>
-                                </div>
-                            </div>
-                            <div class="p-2">
-                                <div class="row g-0 pt-3">
-                                    <div class="col-3 form-floating">
-                                        <input name="hdd[2][total]" type="text" class="form-control" id="hdd_total_2" placeholder="total">
-                                        <label for="hdd_total_2">Total</label>
-                                    </div>
-                                    <div class="col-2 form-floating">
-                                        <select name="hdd[2][total_unit]" id="hdd_total_unit_2" class="form-select form-control">
-                                            @foreach (config('constants.SIZE_UNITS') as $idx => $val)
-                                                <option value="{{ $idx }}">{{ $val }}</option>
-                                            @endforeach
-                                        </select>
-                                        <label for="hdd_total_unit_2">Unit</label>
-                                    </div>
-                                </div>
-                                <div class="row g-2 pt-2">
-                                    <div class="col">
-                                        <div class="form-check form-check-inline">
-                                            <input type="radio" class="form-check-input" name="hdd[2][input_type]" id="hdd_size_radio_2" value="2">
-                                            <label class="form-check-label text-start" for="hdd_size_radio_2">Size</label>
-                                        </div>
-                                        <div class="row g-0 pt-2 text-center">
-                                            <div class="col-6 form-floating">
-                                                <input name="hdd[2][used]" type="text" class="form-control" id="hdd_used_2" placeholder="used">
-                                                <label for="hdd_used_2">Used</label>
-                                            </div>
-                                            <div class="col-4 form-floating">
-                                                <select name="hdd[2][used_unit]" id="hdd_used_unit_2" class="form-select form-control">
-                                                    @foreach (config('constants.SIZE_UNITS') as $idx => $val)
-                                                        <option value="{{ $idx }}">{{ $val }}</option>
-                                                    @endforeach
-                                                </select>
-                                                <label for="hdd_used_unit_2">Unit</label>
-                                            </div>
-                                        </div>
-                                        <div class="row g-0 pt-2 text-center">
-                                            <div class="col-6 form-floating">
-                                                <input name="hdd[2][free]" type="text" class="form-control" id="hdd_free_2" placeholder="Free">
-                                                <label for="hdd_free_2">Free</label>
-                                            </div>
-                                            <div class="col-4 form-floating">
-                                                <select name="hdd[2][free_unit]" id="hdd_free_unit_2" class="form-select form-control">
-                                                    @foreach (config('constants.SIZE_UNITS') as $idx => $val)
-                                                        <option value="{{ $idx }}">{{ $val }}</option>
-                                                    @endforeach
-                                                </select>
-                                                <label for="hdd_free_unit_2">Unit</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="form-check form-check-inline">
-                                            <input type="radio" class="form-check-input" name="hdd[2][input_type]" id="hdd_percentage_radio_2" value="2">
-                                            <label class="form-check-label text-start" for="hdd_percentage_radio_2">Percentage</label>
-                                        </div>
-                                        <div class="row g-0 pt-2 text-center">
-                                            <div class="col-6 form-floating">
-                                                <input name="hdd[2][used_percentage]" type="text" class="form-control" id="hdd_used_percentage_2" placeholder="used">
-                                                <label for="hdd_used_percentage_2">Used</label>
-                                            </div>
-                                        </div>
-                                        <div class="row g-0 pt-2 text-center">
-                                            <div class="col-6 form-floating">
-                                                <input name="hdd[2][free_percentage]" type="text" class="form-control" id="hdd_free_percentage_2" placeholder="Free">
-                                                <label for="hdd_free_percentage_2">Free</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div> --}}
                     {{-- partition end --}}
                 </div>
             </div>
@@ -309,7 +225,8 @@
                     <div class="group-category p-3 mb-4 pt-3 rounded-3">
                         <h4 class="subheader">Memory</h4>&nbsp;&nbsp;  
                         <div class="status_group fs-6 fw-bold">
-                            Status: <span id="memory_status">Normal</span>
+                            Status: <span id="memory_status"></span>
+                            <input type="text" hidden name="memory_status">
                         </div>
                         <div class="row g-0 pt-3">
                             <div class="col-3 form-floating">
@@ -328,8 +245,8 @@
                         <div class="row g-1 pt-2">
                             <div class="col memory_size_section">
                                 <div class="form-check form-check-inline">
-                                    <input type="radio" class="form-check-input" name="memory_input_type" id="memorySizeRadio" value="1">
-                                    <label class="form-check-label text-start" for="memorySizeRadio">Size</label>
+                                    <input type="radio" class="form-check-input" name="memory_input_type" id="memory_size_radio" value="1" checked>
+                                    <label class="form-check-label text-start" for="memory_size_radio">Size</label>
                                 </div>
                                 <div class="row g-0 pt-2 text-center">
                                     <div class="col-6 form-floating">
@@ -367,13 +284,13 @@
                                 </div>
                                 <div class="row g-0 pt-2 text-center">
                                     <div class="col-6 form-floating">
-                                        <input name="memory_used_percentage" type="text" class="form-control" id="memory_used_percentage" placeholder="used">
+                                        <input name="memory_used_percentage" type="text" class="form-control" id="memory_used_percentage" placeholder="used" disabled>
                                         <label for="memory_used_percentage">Used</label>
                                     </div>
                                 </div>
                                 <div class="row g-0 pt-2 text-center">
                                     <div class="col-6 form-floating">
-                                        <input name="memory_free_percentage" type="text" class="form-control" id="memory_free_percentage" placeholder="Free">
+                                        <input name="memory_free_percentage" type="text" class="form-control" id="memory_free_percentage" placeholder="Free" disabled>
                                         <label for="memory_free_percentage">Free</label>
                                     </div>
                                 </div>
@@ -385,13 +302,14 @@
                     <div class="group-category p-3 mb-4 pt-3 rounded-3">
                         <h4 class="subheader">CPU (%)</h4>&nbsp;&nbsp;  
                         <div class="status_group fs-6 fw-bold">
-                            Status: <span id="cpu_status">Normal</span>
+                            Status: <span id="cpu_status"></span>
+                            <input type="text" hidden name="cpu_status">
                         </div>
                         <div class="row g-1 pt-3">
                             <div class="col">
                                 <div class="form-check form-check-inline">
-                                    <input type="radio" class="form-check-input" name="os_type" id="linuxRadio" value="1">
-                                    <label class="form-check-label text-start" for="linuxRadio">Linux</label>
+                                    <input type="radio" class="form-check-input" name="os_type" id="linux_radio" value="1" checked>
+                                    <label class="form-check-label text-start" for="linux_radio">Linux</label>
                                 </div>
                                 <div class="row g-0 pt-2 text-center">
                                     <div class="col-6 form-floating">
@@ -419,7 +337,7 @@
                                 </div>
                                 <div class="row g-0 pt-2 text-center">
                                     <div class="col-6 form-floating">
-                                        <input name="other_os_percentage" type="text" class="form-control">
+                                        <input name="other_os_percentage" type="text" class="form-control" disabled>
                                     </div>
                                 </div>
                             </div>

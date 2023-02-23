@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Servers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ServerController extends Controller
 {
@@ -14,6 +15,7 @@ class ServerController extends Controller
      * @return void
      */
     public function index(){
+        abort_if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE') && !Auth::user()->server_admin_flag, 403);
 
         return view('servers.index', [
             'serverData' => Servers::getAllServer(),
@@ -25,11 +27,15 @@ class ServerController extends Controller
     }
 
     public function details($id){
+        abort_if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE') && !Auth::user()->server_admin_flag, 403);
+
         dd('welcome to server detail page of ' .$id);
     
     }
 
     public function create(){
+        abort_if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE') && !Auth::user()->server_admin_flag, 403);
+
         return view('servers.create', [
             'serverData' => []
         ]);
