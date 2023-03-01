@@ -42,7 +42,6 @@ $(document).ready(function () {
 
     $("#search-input").on('input', function () {
         var filterVal = $(this).val();
-        console.log(filterVal);
         serverList.search(filterVal).draw();
     })
 
@@ -68,15 +67,14 @@ $(document).ready(function () {
         }
 
         var clonedElement = elementToClone.clone();
-        console.log(clonedElement);
 
         clonedElement.find('[id]').each(function(){
             //update indices in ids
-            $(this).attr('id', $(this).attr('id').replace(/(\d+)/,function(str,substr){return (parseInt(substr,10)+1)}));
+            $(this).attr('id', $(this).attr('id').replace(/(\d+)/, function(str, substr){return (parseInt(substr) + 1)}));
         });
         clonedElement.find('[name]').each(function(){
             //increment index
-            $(this).attr('name', $(this).attr('name').replace(/(\d+)/,function(str,substr){return (parseInt(substr,10)+1)}));
+            $(this).attr('name', $(this).attr('name').replace(/(\d+)/, function(str, substr){return (parseInt(substr) + 1)}));
 
             //reset inputs
             if($(this).attr('type') == 'radio') {
@@ -86,19 +84,30 @@ $(document).ready(function () {
                     $(this).prop('checked', false);
                 }
             }else if($(this).attr('type') == 'text'){
-                $(this).attr('value', '');
+                $(this).val('');
             }else{
                 //unit dropdown
-                $(this).attr('value', 1);
+                $(this).val(1);
             }
+
+            //enable size inputs, disable inputs for oercentage
         });
         clonedElement.find('[for]').each(function(){
             //update indices in for attribute
-            $(this).attr('for', $(this).attr('for').replace(/(\d+)/,function(str,substr){return (parseInt(substr,10)+1)}));
+            $(this).attr('for', $(this).attr('for').replace(/(\d+)/, function(str, substr){return (parseInt(substr) + 1)}));
+        });
+
+        //remove errors in cloned elements
+        clonedElement.find('.text-danger').each( function () {
+            $(this).html('');
         });
 
         //add new element
         elementToClone.after(clonedElement);
+
+        //get input index
+        var partitionIndex = parseInt(clonedElement.find('.partition_name').attr('id').match(/\d+/));
+        enableDisableHDDInputs(partitionIndex, true);
 
         e.preventDefault();
     });
@@ -109,6 +118,7 @@ $(document).ready(function () {
     $("#hdd_partitions").on('click', '.remove_partition', function (e) {
         $(this).parents('.partition_section').remove();
         hideRemoveButton();
+        resetHddPartitionIndex();
         e.preventDefault();
     });
 
@@ -122,18 +132,48 @@ $(document).ready(function () {
         }
     }
 
+    function resetHddPartitionIndex () {
+        var index = 1;
+        $(".partition_section").each( function () {
+            var partition = $(this);
+
+            partition.find('[id]').each(function(){
+                //update indices in ids
+                $(this).attr('id', $(this).attr('id').replace(/(\d+)/, index));
+            });
+            partition.find('[name]').each(function(){
+                //update indices in inputs
+                $(this).attr('name', $(this).attr('name').replace(/(\d+)/, index));
+            });
+            partition.find('[for]').each(function(){
+                //update indices in labels
+                $(this).attr('for', $(this).attr('for').replace(/(\d+)/, index));
+            });
+
+            index++;
+        });
+    }
+
     /**
      * disabling size/percentage input in hdd partition section
      */
+    $(".partition_section").each( function () {
+        checkAndSetHddInputOption($(this).find(".hdd_select_radio"));
+    });
     $("#hdd_partitions").on('click', '.hdd_select_radio', function () {
-        var partitionIndex = $(this).attr('id').slice(-1);
+        checkAndSetHddInputOption($(this));
+    });
+
+    function checkAndSetHddInputOption (radioSelector) {
+        var partitionIndex = radioSelector.attr('id').match(/\d+/);
+        partitionIndex = parseInt(partitionIndex);
 
         if($("#hdd_size_radio_" + partitionIndex).is(':checked')){
             enableDisableHDDInputs(partitionIndex);
         } else if($("#hdd_percentage_radio_" + partitionIndex).is(':checked')){
             enableDisableHDDInputs(partitionIndex, false);
         }
-    });
+    }
 
     function enableDisableHDDInputs(pIndex, sizeSelected = true) {
         var sizeProp = sizeSelected ? false : true;
@@ -153,13 +193,18 @@ $(document).ready(function () {
     /**
      * disabling size/percentage input in memory section
      */
+    checkAndSetMemoryInputOption();
     $("input[name=memory_input_type]").change(function () {
+        checkAndSetMemoryInputOption();
+    });
+
+    function checkAndSetMemoryInputOption () {
         if($("#memory_size_radio").is(':checked')){
             enableDisableMemoryInputs();
         } else if($("#memory_percentage_radio").is(':checked')){
             enableDisableMemoryInputs(false);
         }
-    });
+    }
 
     function enableDisableMemoryInputs(sizeSelected = true) {
         var sizeProp = sizeSelected ? false : true;
@@ -182,22 +227,24 @@ $(document).ready(function () {
     /**
      * disabling linux/others input in memory section
      */
+    checkAndSetOsType();
     $("input[name=os_type]").change(function () {
+        checkAndSetOsType();
+    });
+
+    function checkAndSetOsType () {
         if($("#linux_radio").is(':checked')){
             enableDisableCPUInputs();
         } else if($("#other_os_radio").is(':checked')){
             enableDisableCPUInputs(false);
         }
-    });
+    }
 
     function enableDisableCPUInputs(linuxSelected = true) {
         var linuxProp = linuxSelected ? false : true;
         var othersProp = linuxSelected ? true : false;
 
         //linux inputs
-        // $("#us").prop('disabled', linuxProp);
-        // $("#ny").prop('disabled', linuxProp);
-        // $("#sy").prop('disabled', linuxProp);
         $("#linux_usage").find('input[type=text]').each( function() {
             $(this).prop('disabled', linuxProp);
         });
@@ -207,6 +254,125 @@ $(document).ready(function () {
     }
 
     //Values calculations/conversions for HDD usage and Memory usage and CPU Usage
+
+    /**
+     * HDD Status Calculation
+     */
+
+    $('#hdd_partitions').on('change', '.hdd_select_radio', function () {
+        calculatSetHDDPartitionFreeSize($(this).parents('.partition_section'));
+        calculateHDDStatus();
+    });
+
+    $('#hdd_partitions').on('input', '.hdd_total', function () {
+        calculatSetHDDPartitionFreeSize($(this).parents('.partition_section'));
+        calculateHDDStatus();
+    });
+
+    $('#hdd_partitions').on('change', '.hdd_total_unit', function () {
+        calculatSetHDDPartitionFreeSize($(this).parents('.partition_section'));
+        calculateHDDStatus();
+    });
+
+    $('#hdd_partitions').on('input', '.hdd_used', function () {
+        calculatSetHDDPartitionFreeSize($(this).parents('.partition_section'));
+        calculateHDDStatus();
+    });
+
+    $('#hdd_partitions').on('change', '.hdd_used_unit', function () {
+        calculatSetHDDPartitionFreeSize($(this).parents('.partition_section'));
+        calculateHDDStatus();
+    });
+
+    $('#hdd_partitions').on('input', '.hdd_used_percentage', function () {
+        calculatSetHDDPartitionFreeSize($(this).parents('.partition_section'));
+        calculateHDDStatus();
+    });
+
+    function calculatSetHDDPartitionFreeSize (parent) {
+
+        if (parent.find('.hdd_total').val() != '' && parent.find('.hdd_total_unit').val() != ''){
+            var totalUnit = getIntValueForHDD(parent.find('.hdd_total_unit').val());
+            var totalvalue = getIntValueForHDD(parent.find('.hdd_total').val());
+            var totalValueInBytes = convertToBytes(totalvalue, totalUnit);
+
+            if (parent.find('.hdd_size_radio').is(':checked') && parent.find('.hdd_used').val() != '' && parent.find('.hdd_used_unit').val() != '') {
+                //get the memory values for calculation
+                var useUnit = getIntValueForHDD(parent.find('.hdd_used_unit').val());
+                var useValueInBytes = convertToBytes(getIntValueForHDD(parent.find('.hdd_used').val()), useUnit);
+                var freeUnit = useUnit;
+                var freeValue = getFreeSizeValue(totalValueInBytes, useValueInBytes, freeUnit);
+
+                //set value of free size
+                parent.find('.hdd_free_unit > option[value=' + useUnit + ']').prop('selected', true);
+                parent.find('.hdd_free').val(freeValue);
+
+                //set value of percentage
+                percentage = parseFloat(((useValueInBytes *  100)/ totalValueInBytes)).toFixed(2);
+                var freePercentage = parseFloat(100 - percentage).toFixed(2);
+                parent.find('.hdd_used_percentage').val(percentage);
+                parent.find('.hdd_free_percentage').val(freePercentage);
+
+            } else if (parent.find('.hdd_percentage_radio').is(':checked') && parent.find('.hdd_used_percentage').val() != ''){
+
+                percentage = parseFloat(parent.find('.hdd_used_percentage').val().toString());
+                //set value of free percentage
+                var freePercentage = parseFloat(100 - percentage).toFixed(2);
+                parent.find('.hdd_free_percentage').val(freePercentage); 
+
+                //set unit of free size and used size
+                parent.find('.hdd_free_unit > option[value=' + totalUnit + ']').prop('selected', true);
+                parent.find('.hdd_used_unit > option[value=' + totalUnit + ']').prop('selected', true);
+
+                
+                //calculate the used and free size
+                var useValue = ((percentage * totalvalue) / 100).toFixed(2);
+                var freeValue = (totalvalue - useValue).toFixed(2);
+                //set value on screen
+                parent.find('.hdd_used').val(useValue);
+                parent.find('.hdd_free').val(freeValue);
+            }
+        }
+    }
+
+    function calculateHDDStatus () {
+        var hddTotalSummation = 0;
+        var hddUsedSummation = 0;
+        var totalValueInBytes;
+        var useValueInBytes;
+
+        $(".partition_section").each( function () {
+            var partition = $(this);
+            totalValueInBytes = 0;
+            useValueInBytes = 0;
+
+            if (partition.find('.hdd_total').val() != '' && partition.find('.hdd_total_unit').val() != '' 
+                && partition.find('.hdd_used').val() != '' && partition.find('.hdd_used_unit').val() != '') {
+                    //convert total hdd size to Bytes
+                    totalValueInBytes = convertToBytes(getIntValueForHDD(partition.find('.hdd_total').val()), getIntValueForHDD(partition.find('.hdd_total_unit').val()));
+                    //convert parition usage size to Bytes
+                    useValueInBytes = convertToBytes(getIntValueForHDD(getIntValueForHDD(partition.find('.hdd_used').val())), getIntValueForHDD(partition.find('.hdd_used_unit').val()));
+
+                    hddTotalSummation += totalValueInBytes;
+                    hddUsedSummation += useValueInBytes;
+                }
+        });
+
+        if (hddTotalSummation != 0) {
+            //calculate total hdd usage
+            var totalUsagePercentage = (hddUsedSummation / hddTotalSummation) * 100;
+            totalUsagePercentage = totalUsagePercentage.toFixed(2);  
+
+            //get status
+            changeStatusBasedOnUsage($("#hdd_status"), $("input[name=hdd_status]"), totalUsagePercentage);
+        }
+
+    }
+
+    function getIntValueForHDD (value) {
+        var parsed = value.toString();
+        return isNaN(parsed) ? 0 : parsed;
+    }
 
     /**
      * CPU Status calculations
@@ -372,9 +538,16 @@ $(document).ready(function () {
         }
     }
 
+    /**
+     * enable all the fields on screen before form submission
+     */
     function enableAllFields(){
         //all
         $("#usage").find('input').each( function () {
+            $(this).prop('disabled', false);
+        });
+
+        $("#usage").find('select').each( function () {
             $(this).prop('disabled', false);
         });
     }
@@ -385,9 +558,9 @@ $(document).ready(function () {
 
         //enable disabled fields before submission
         enableAllFields();
+        $("input[name=partitions_count]").val($(".partition_section").length);
 
     });
-
 
 });
 

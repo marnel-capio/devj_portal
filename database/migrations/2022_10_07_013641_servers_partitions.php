@@ -25,7 +25,6 @@ return new class extends Migration
             $table->decimal('hdd_total');
             $table->unsignedTinyInteger('hdd_total_size_type')->comment( '1:B,2:KB,3:MB,4:GB,5:TB');
             $table->unsignedBigInteger('server_id');
-            $table->unsignedTinyInteger('delete_flag')->default(0)->nullable()->comment( '1: deleted , 0: not deleted');
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->dateTime('create_time')->nullable();

@@ -121,5 +121,17 @@ return [
         5 => 'TB'
     ],
 
+    'STATUS_NAMES' => [
+        1 => 'Normal',
+        2 => 'Stable',
+        3 => 'Critical'
+    ],
+
+    'STATUS_CLASS' => [
+        1 => 'text-black',
+        2 => 'text-primary',
+        3 => 'text-danger',
+    ],
+
     
 ];

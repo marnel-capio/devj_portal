@@ -114,7 +114,11 @@ Route::middleware(['auth', 'web', 'isActive'])->group(function(){
         Route::get('/download', 'download')->name('servers.download');
         Route::get('/create/{rejectCode?}', 'create')->name('servers.create');
         Route::post('/regist', 'regist')->name('servers.regist');
-        Route::get('/{id}', 'details')->name('servers.details');
+        Route::get('/{id}', 'details')->name('servers.details')->whereNumber('id');
+        Route::get('/{id}/edit', 'edit')->name('servers.edit')->whereNumber('id');
+        Route::post('/store', 'store')->name('servers.store');
+
+
 
 
         // Route::get('/regist/complete', function(){
