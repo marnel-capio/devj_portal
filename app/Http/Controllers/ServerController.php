@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ServerExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ServerRequest;
 use App\Models\Logs;
@@ -26,7 +27,11 @@ class ServerController extends Controller
     }
 
     public function download () {
-        dd('Pending download function');
+        Logs::createLog('Server', 'Downloaded Server Details for ' .date('F Y'));
+
+        $fileName = 'Dev J Server Capacity Monitoring_' .date('MY') .'.xlsx';
+
+        return (new ServerExport())->download($fileName);
     }
 
     /**

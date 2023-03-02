@@ -109,6 +109,7 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithEvent
                         ->getPageSetup()
                         ->setOrientation(WorksheetPageSetup::ORIENTATION_LANDSCAPE)
                         ->setPaperSizeDefault(WorksheetPageSetup::PAPERSIZE_A4);
+                    $event->sheet->setSelectedCell('A1');
                 },
             ];
 
@@ -118,6 +119,7 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithEvent
                     $event->sheet
                         ->getPageSetup()
                         ->setOrientation(WorksheetPageSetup::ORIENTATION_LANDSCAPE);
+                    $event->sheet->setSelectedCell('A1');
                 },
             ];
         }

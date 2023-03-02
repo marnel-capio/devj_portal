@@ -292,14 +292,14 @@ $(document).ready(function () {
     function calculatSetHDDPartitionFreeSize (parent) {
 
         if (parent.find('.hdd_total').val() != '' && parent.find('.hdd_total_unit').val() != ''){
-            var totalUnit = getIntValueForHDD(parent.find('.hdd_total_unit').val());
-            var totalvalue = getIntValueForHDD(parent.find('.hdd_total').val());
-            var totalValueInBytes = convertToBytes(totalvalue, totalUnit);
+            var totalUnit = getFloatValueForHDD(parent.find('.hdd_total_unit').val());
+            var totalValue = getFloatValueForHDD(parent.find('.hdd_total').val());
+            var totalValueInBytes = convertToBytes(totalValue, totalUnit);
 
             if (parent.find('.hdd_size_radio').is(':checked') && parent.find('.hdd_used').val() != '' && parent.find('.hdd_used_unit').val() != '') {
                 //get the memory values for calculation
-                var useUnit = getIntValueForHDD(parent.find('.hdd_used_unit').val());
-                var useValueInBytes = convertToBytes(getIntValueForHDD(parent.find('.hdd_used').val()), useUnit);
+                var useUnit = getFloatValueForHDD(parent.find('.hdd_used_unit').val());
+                var useValueInBytes = convertToBytes(getFloatValueForHDD(parent.find('.hdd_used').val()), useUnit);
                 var freeUnit = useUnit;
                 var freeValue = getFreeSizeValue(totalValueInBytes, useValueInBytes, freeUnit);
 
@@ -326,8 +326,8 @@ $(document).ready(function () {
 
                 
                 //calculate the used and free size
-                var useValue = ((percentage * totalvalue) / 100).toFixed(2);
-                var freeValue = (totalvalue - useValue).toFixed(2);
+                var useValue = ((percentage * totalValue) / 100).toFixed(2);
+                var freeValue = (totalValue - useValue).toFixed(2);
                 //set value on screen
                 parent.find('.hdd_used').val(useValue);
                 parent.find('.hdd_free').val(freeValue);
@@ -349,9 +349,9 @@ $(document).ready(function () {
             if (partition.find('.hdd_total').val() != '' && partition.find('.hdd_total_unit').val() != '' 
                 && partition.find('.hdd_used').val() != '' && partition.find('.hdd_used_unit').val() != '') {
                     //convert total hdd size to Bytes
-                    totalValueInBytes = convertToBytes(getIntValueForHDD(partition.find('.hdd_total').val()), getIntValueForHDD(partition.find('.hdd_total_unit').val()));
+                    totalValueInBytes = convertToBytes(getFloatValueForHDD(partition.find('.hdd_total').val()), getFloatValueForHDD(partition.find('.hdd_total_unit').val()));
                     //convert parition usage size to Bytes
-                    useValueInBytes = convertToBytes(getIntValueForHDD(getIntValueForHDD(partition.find('.hdd_used').val())), getIntValueForHDD(partition.find('.hdd_used_unit').val()));
+                    useValueInBytes = convertToBytes(getFloatValueForHDD(getFloatValueForHDD(partition.find('.hdd_used').val())), getFloatValueForHDD(partition.find('.hdd_used_unit').val()));
 
                     hddTotalSummation += totalValueInBytes;
                     hddUsedSummation += useValueInBytes;
@@ -369,8 +369,8 @@ $(document).ready(function () {
 
     }
 
-    function getIntValueForHDD (value) {
-        var parsed = value.toString();
+    function getFloatValueForHDD (value) {
+        var parsed = parseFloat(value.toString());
         return isNaN(parsed) ? 0 : parsed;
     }
 
@@ -388,7 +388,7 @@ $(document).ready(function () {
     $("#sy").on('input', function () { 
         calculateAndSetCPUStatus();
     });
-    $("#ny").on('input', function () { 
+    $("#ni").on('input', function () { 
         calculateAndSetCPUStatus();
     });
 
@@ -400,9 +400,9 @@ $(document).ready(function () {
         var percentage;
         //get percentage
         if ($("#other_os_radio").is(':checked') && $("input[name=other_os_percentage]").val() != ''){
-            percentage = getIntValue($("input[name=other_os_percentage]"));
-        } else if ($("#linux_radio").is(':checked')  && ($("#us").val() != '' || $("#ny").val() != '' || $("#sy").val() != '')) {
-            percentage = (getIntValue($("#us")) + getIntValue($("#ny")) + getIntValue($("#sy")))/3;
+            percentage = getFloatValue($("input[name=other_os_percentage]"));
+        } else if ($("#linux_radio").is(':checked')  && ($("#us").val() != '' || $("#ni").val() != '' || $("#sy").val() != '')) {
+            percentage = (getFloatValue($("#us")) + getFloatValue($("#ni")) + getFloatValue($("#sy")))/3;
         }
         //get status
         changeStatusBasedOnUsage($("#cpu_status"), $("input[name=cpu_status]"), percentage);
@@ -436,15 +436,15 @@ $(document).ready(function () {
     function calculateAndSetMemoryStatus () {
         var percentage;
         if ($("#memory_total").val() != '') {
-            var totalUnit = getIntValue($("#memory_total_unit > option:selected"));
-            var totalvalue = getIntValue($("#memory_total"));
-            var totalValueInBytes = convertToBytes(totalvalue, totalUnit);
+            var totalUnit = getFloatValue($("#memory_total_unit > option:selected"));
+            var totalValue = getFloatValue($("#memory_total"));
+            var totalValueInBytes = convertToBytes(totalValue, totalUnit);
 
             if ($("#memory_size_radio").is(':checked') && $("#memory_used").val() != '' && $("#memory_used_unit").val() != '') {
 
                 //get the memory values for calculation
-                var useUnit = getIntValue($("#memory_used_unit > option:selected"));
-                var useValueInBytes = convertToBytes(getIntValue($("#memory_used")), useUnit);
+                var useUnit = getFloatValue($("#memory_used_unit > option:selected"));
+                var useValueInBytes = convertToBytes(getFloatValue($("#memory_used")), useUnit);
                 var freeUnit = useUnit;
                 var freeValue = getFreeSizeValue(totalValueInBytes, useValueInBytes, freeUnit);
 
@@ -469,8 +469,9 @@ $(document).ready(function () {
                 $("#memory_used_unit option[value=" + totalUnit + "]").prop('selected', true);
 
                 //calculate the used and free size
-                var useValue = ((percentage * totalvalue) / 100).toFixed(2);
-                var freeValue = (totalvalue - useValue).toFixed(2);
+                var useValue = ((percentage * totalValue) / 100).toFixed(2);
+                var freeValue = (totalValue - useValue).toFixed(2);
+
                 //set value on screen
                 $("#memory_used").val(useValue);
                 $("#memory_free").val(freeValue);
@@ -505,8 +506,8 @@ $(document).ready(function () {
      * @param {jquery selector} selector 
      * @returns 
      */
-    function getIntValue(selector) {
-        var parsed = parseInt(selector.val().toString());
+    function getFloatValue(selector) {
+        var parsed = parseFloat(selector.val().toString());
         return isNaN(parsed) ? 0 : parsed;
     }
 

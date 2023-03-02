@@ -133,5 +133,8 @@ return [
         3 => 'text-danger',
     ],
 
-    
+    'KB_TO_BYTES' => 1024,
+
+    'SERVER_FILE_SHEET_COVER' => 1,
+    'SERVER_FILE_SHEET_REVISION' => 2,
 ];
