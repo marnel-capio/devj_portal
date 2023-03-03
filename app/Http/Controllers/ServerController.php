@@ -8,7 +8,6 @@ use App\Http\Requests\ServerRequest;
 use App\Models\Logs;
 use App\Models\Servers;
 use App\Models\ServersPartitions;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ServerController extends Controller
@@ -43,12 +42,18 @@ class ServerController extends Controller
     public function details ($id) {
         abort_if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE') && !Auth::user()->server_admin_flag, 403);
 
-        $serverData = Servers::where('id', $id)->first();
-        $partitionData = ServersPartitions::where('server_id', $id)->where('delete_flag', 0)->get()->toArray();
+        $serverData = Servers::selectRaw('s.*, CONCAT(e.first_name, " ", e.last_name) AS updater')
+                                ->from('servers AS s')
+                                ->leftjoin('employees AS e', 'e.id', 's.updated_by')
+                                ->where('s.id', $id)
+                                ->first();
+
+        $partitionData = ServersPartitions::where('server_id', $id)->get()->toArray();
 
         return view('servers.details', [
             'serverData' => $serverData,
             'partitionData' => $partitionData,
+            'detailNote' => 'Last updated by ' .$serverData->updater,
         ]);
     }
 
@@ -102,7 +107,7 @@ class ServerController extends Controller
         abort_if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE') && !Auth::user()->server_admin_flag, 403);
 
         $serverData = Servers::where('id', $id)->first();
-        $partitionData = ServersPartitions::where('server_id', $id)->where('delete_flag', 0)->get()->toArray();
+        $partitionData = ServersPartitions::where('server_id', $id)->get()->toArray();
 
         return view('servers.create', [
             'serverData' => $serverData,

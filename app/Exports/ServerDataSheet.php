@@ -35,11 +35,6 @@ class ServerDataSheet implements
     use Exportable;
     protected $maxRow = 7;
 
-    public function __construct()
-    {
-
-    }
-
     public function view(): View
     {
         $downloadData = Servers::selectRaw('
@@ -86,7 +81,8 @@ class ServerDataSheet implements
                         ->from('servers as s')
                         ->leftJoin('servers_partitions as sp', 's.id', 'sp.server_id')
                         ->leftjoin('employees as e', 'e.id', 's.updated_by')
-                        ->orderBy('s.id', 'asc')
+                        ->where('status', 1)
+                        ->orderBy('s.server_name', 'asc')
                         ->orderBy('sp.id', 'asc')
                         ->get()
                         ->toArray();
@@ -245,6 +241,12 @@ class ServerDataSheet implements
                                     ->setOperatorType(Conditional::OPERATOR_CONTAINSTEXT)
                                     ->setText('Critical')
                                     ->getStyle()->getFont()->getColor()->setARGB(Color::COLOR_RED);
+
+                $event->sheet->getStyle('U4:W' .$this->maxRow)
+                            ->setConditionalStyles([
+                                $stableCondition,
+                                $criticalCondition,
+                            ]);
                 
                 $event->sheet->setSelectedCell('A1');
             },

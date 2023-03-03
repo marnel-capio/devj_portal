@@ -117,6 +117,10 @@ Route::middleware(['auth', 'web', 'isActive'])->group(function(){
         Route::get('/{id}', 'details')->name('servers.details')->whereNumber('id');
         Route::get('/{id}/edit', 'edit')->name('servers.edit')->whereNumber('id');
         Route::post('/store', 'store')->name('servers.store');
+        Route::get('/help', function () {
+            //input guide
+            return view('servers.help');
+        })->name('servers.help');
     });
 
 });

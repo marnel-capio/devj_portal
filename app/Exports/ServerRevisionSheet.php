@@ -5,21 +5,23 @@ namespace App\Exports;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromView;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\WithColumnLimit;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Events\AfterSheet;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Style\Color;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
-
-class ServerRevisionSheet implements WithEvents, WithTitle, FromView, WithStyles, WithColumnWidths
+class ServerRevisionSheet implements WithEvents, WithTitle, FromView, WithStyles, WithColumnWidths, WithColumnFormatting
 {   
     use Exportable;
     protected $lastRow = 4;    //update when updating the file's revision history
@@ -36,6 +38,13 @@ class ServerRevisionSheet implements WithEvents, WithTitle, FromView, WithStyles
             'C' => 16,
             'D' => 15,
             'E' => 32,
+        ];
+    }
+
+    public function columnFormats(): array
+    {
+        return [
+            'B3:B' .$this->lastRow => NumberFormat::FORMAT_NUMBER_0,
         ];
     }
 

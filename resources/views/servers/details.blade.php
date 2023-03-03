@@ -1,16 +1,16 @@
 @include('header')
-<link rel="stylesheet" href="{{ asset('css/server.css') }}">
+{{-- <link rel="stylesheet" href="{{ asset('css/server.css') }}"> --}}
+<link rel="stylesheet" href="{{ asset(mix('css/server.min.css')) }}">
 @include('headerMenu')
 @if(!empty(session('regist_update_alert')))
 <div class="alert alert-success" role="alert">
     {{session()->pull('regist_update_alert')}}
 </div>
-<div class="container-md ps-md-3 pe-md-3 pt-2">
+<div class="container-md ps-md-3 pe-md-3 pt-2 mb-3">
 @else
-<div class="container-md ps-md-3 pe-md-3 pt-5  mb-3">
+<div class="container-md ps-md-3 pe-md-3 pt-5 mb-3">
 @endif
-{{-- <div class="container ps-md-3 pe-md-3 pt-5 mb-3"> --}}
-    <div class="d-flex justify-content-between mb-2">
+    <div class="d-flex justify-content-between mb-3">
         <div class="text-primary d-flex align-items-center">
             @if (!empty($detailNote))
             <i class="bi bi-info-circle-fill"></i>&nbsp;{{ $detailNote }}
@@ -291,19 +291,19 @@
                                 </div>
                                 <div class="row g-0 pt-2 text-center">
                                     <div class="col-lg-8 col-md-6 col-8 form-floating">
-                                        <input name="us" type="text" class="form-control" id="us" placeholder="us" value="{{ !empty($serverData->linux_us_percentage) ? $serverData->linux_us_percentage : '' }}" readonly>
+                                        <input name="us" type="text" class="form-control" id="us" placeholder="us" value="{{ !empty($serverData->linux_us_percentage) ? $serverData->linux_us_percentage : '' }}" {{ $serverData->os_type == 1 ? '' : 'disabled' }}>
                                         <label for="us">% us</label>
                                     </div>
                                 </div>
                                 <div class="row g-0 pt-2 text-center">
                                     <div class="col-lg-8 col-md-6 col-8 form-floating">
-                                        <input name="ni" type="text" class="form-control" id="ni" placeholder="ni" value="{{ !empty($serverData->linux_ni_percentage) ? $serverData->linux_ni_percentage : '' }}" readonly>
+                                        <input name="ni" type="text" class="form-control" id="ni" placeholder="ni" value="{{ !empty($serverData->linux_ni_percentage) ? $serverData->linux_ni_percentage : '' }}" {{ $serverData->os_type == 1 ? '' : 'disabled' }}>
                                         <label for="ni">% ni</label>
                                     </div>
                                 </div>
                                 <div class="row g-0 pt-2 text-center">
                                     <div class="col-lg-8 col-md-6 col-8 form-floating">
-                                        <input name="sy" type="text" class="form-control" id="sy" placeholder="sy" value="{{ !empty($serverData->linux_sy_percentage) ? $serverData->linux_sy_percentage : '' }}" readonly>
+                                        <input name="sy" type="text" class="form-control" id="sy" placeholder="sy" value="{{ !empty($serverData->linux_sy_percentage) ? $serverData->linux_sy_percentage : '' }}" {{ $serverData->os_type == 1 ? '' : 'disabled' }}>
                                         <label for="sy">% sy</label>
                                     </div>
                                 </div>
@@ -314,7 +314,7 @@
                                 </div>
                                 <div class="row g-0 pt-2 text-center">
                                     <div class="col-lg-8 col-md-6 col-8 form-floating">
-                                        <input name="other_os_percentage" type="text" class="form-control"  value="{{ !empty($serverData->other_os_percentage) ? $serverData->other_os_percentage : '' }}" readonly>
+                                        <input name="other_os_percentage" type="text" class="form-control"  value="{{ !empty($serverData->other_os_percentage) ? $serverData->other_os_percentage : '' }}" {{ $serverData->os_type == 2 ? '' : 'disabled' }}>
                                     </div>
                                 </div>
                             </div>
@@ -323,10 +323,6 @@
                 </div>
             </div>
         </section>
-
-        {{-- <div class="text-center p-3">
-            <button class="btn btn-primary btn-lg mb-5" id="server-reg-submit" type="submit">Submit</button>
-        </div> --}}
     </form>
 </div>
 

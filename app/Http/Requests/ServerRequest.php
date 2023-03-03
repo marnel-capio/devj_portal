@@ -42,8 +42,6 @@ class ServerRequest extends FormRequest
             'os' => 'OS',
             'cpu' => 'processor',
             'server_hdd' => 'HDD',
-            
-
         ];
 
         //hdd partitions
@@ -65,6 +63,18 @@ class ServerRequest extends FormRequest
     }
 
     /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'hdd.min' => 'The server cannot be registered without an HDD partition.'
+        ];
+    }
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, mixed>
@@ -82,6 +92,7 @@ class ServerRequest extends FormRequest
             'server_hdd' => 'required|max:80',
             'function_role' => 'required|max:1024',
             'os_type' => 'in:1,2',
+            'remarks' => 'max:1024',
             //memory usage details
             'memory_used' => 'required|decimal',
             'memory_used_unit' => 'required|in:1,2,3,4,5',
@@ -91,6 +102,7 @@ class ServerRequest extends FormRequest
             'memory_free_percentage' => 'required|decimal',
             'memory_total' => 'required|decimal',
             'memory_total_unit' => 'required|in:1,2,3,4,5',
+            'hdd' => 'min:1',
         ];
 
         //cpu usage

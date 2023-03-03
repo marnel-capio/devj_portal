@@ -1,0 +1,57 @@
+
+/* General */
+
+.form-floating>label {
+    text-align: center;
+}
+
+#legend_text {
+    font-weight: 550;
+}
+
+#status_legend {
+    background-color: #F2CD5C;
+    padding: 0 5px;
+    border-radius: 2px;
+    font-weight: bold;
+}
+
+.status_stable {
+    color: #1746EC;
+}
+
+.status_critical {
+    color: #FF0000;
+}
+
+.status_group {
+    display: inline-block;
+    background: rgba(58, 79, 122, 0.4);
+    border-radius: 4px;
+    padding: 0 20px;
+    
+}
+
+.subheader {
+    display: inline-block;
+    font-weight: 700;
+}
+
+
+/* HDD Partitions */
+
+.hdd_partition {
+    background: rgba(156, 180, 204, 0.24);
+    border-radius: 9px;
+}
+
+.custom-tooltip {
+    --bs-tooltip-bg: var(--bs-secondary);
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .util_header {
+        display: block;
+    }
+}
