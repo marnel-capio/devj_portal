@@ -112,7 +112,7 @@ Route::middleware(['auth', 'web', 'isActive'])->group(function(){
 
         Route::get('/', 'index')->name('servers.index');
         Route::get('/download', 'download')->name('servers.download');
-        Route::get('/create/{rejectCode?}', 'create')->name('servers.create');
+        Route::get('/create', 'create')->name('servers.create');
         Route::post('/regist', 'regist')->name('servers.regist');
         Route::get('/{id}', 'details')->name('servers.details')->whereNumber('id');
         Route::get('/{id}/edit', 'edit')->name('servers.edit')->whereNumber('id');
