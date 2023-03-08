@@ -8,21 +8,18 @@ const KB_TO_BYTES = 1024; //binary system is used
 
 $(document).ready(function () {
 
-    var tooltipTriggerList = [].slice.call($('[data-bs-toggle="tooltip"]'));
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-      return new bootstrap.Tooltip(tooltipTriggerEl)
-    });
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 
 //******************************************** Server List ********************************************/
 
     var serverList = $("#server-list").DataTable({
         "stateSave": true,
-        // "searching": false,
         "pageLength": 25,
         "oLanguage": {
             "sEmptyTable": "No Data"
         },
-        "sDom": "rtip"
+        "sDom": "lrt<'#bottom.row'<'#info.col'i><'#pagination.col'p>>",
     });
 
     clearFilter();

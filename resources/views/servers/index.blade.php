@@ -1,12 +1,6 @@
 @include('header')
-{{-- <script src="{{ asset(mix('js/laptop.min.js')) }}" defer></script> --}}
-<script src="{{ asset('js/servers_dum.js') }}"></script>
+<script src="{{ asset(mix('js/server.min.js')) }}" defer></script>
 @include('headerMenu')
-{{-- @if (session('success')) 
-	<div class="alert alert-success " role="alert">
-	  {{session('message')}}
-	</div>
-@endif --}}
 <div class="container container-list-table mt-3 ms-4 mb-5">
 	<h3> Server List </h3>
     <div class="row row-list">
@@ -43,7 +37,7 @@
         </div>
     </div>
 	<div class="row-list row">
-	    <div class="col table-avoid-overflow">
+	    <div class="col-12 table-avoid-overflow">
 	    	<table id="server-list" class="table table-striped" >
 		        <thead>
 		            <tr>
@@ -54,14 +48,16 @@
 		            </tr>
 		        </thead>
 		        <tbody>
-                    @foreach ($serverData as $server)
-                        <tr>
-                            <td><a href="{{ route('servers.details', ['id' => $server['id']]) }}">{{ $server['server_name'] }}</a></td>
-                            <td>{{ $server['server_ip'] }}</td>
-                            <td>{{ $server['function_role'] }}</td>
-                            <td>{{ $server['status'] }}</td>
-                        </tr>
-                    @endforeach
+                    @if (!empty($serverData))
+                        @foreach ($serverData as $server)
+                            <tr>
+                                <td><a href="{{ route('servers.details', ['id' => $server['id']]) }}">{{ $server['server_name'] }}</a></td>
+                                <td>{{ $server['server_ip'] }}</td>
+                                <td>{{ $server['function_role'] }}</td>
+                                <td>{{ $server['status'] }}</td>
+                            </tr>
+                        @endforeach
+                    @endif
 		        </tbody>
 		    </table>
 	    </div>
