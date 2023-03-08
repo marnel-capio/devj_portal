@@ -76,6 +76,7 @@ class Laptops extends Model
                             ,e.id AS linked_employee_id
                             ,e.active_status AS linked_employee_status
                             ,l.tag_number
+                            ,l.status as status_num
                             ,l.peza_form_number
                             ,l.peza_permit_number
                             ,l.laptop_make
@@ -141,6 +142,7 @@ class Laptops extends Model
             $query->orderByRaw('CASE WHEN el.id is NULL or e.id is NULL THEN 1 ELSE 0 END ASC')
                     ->orderBy('e.last_name', 'asc')
                     ->orderBy('e.first_name', 'asc')
+                    ->orderBy('l.status', 'desc')
                     ->orderBy('el.surrender_flag', 'asc')
                     ->orderBy('l.tag_number');
                    

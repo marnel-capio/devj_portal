@@ -175,6 +175,8 @@ class LaptopsExport implements
                         ->getPageSetup()
                         ->setOrientation(WorksheetPageSetup::ORIENTATION_LANDSCAPE)
                         ->setPaperSizeDefault(WorksheetPageSetup::PAPERSIZE_A4);
+                    
+                    $event->sheet->setSelectedCell('A1');
                 },
             ];
         }else{
@@ -183,7 +185,8 @@ class LaptopsExport implements
                     $event->sheet
                         ->getPageSetup()
                         ->setOrientation(WorksheetPageSetup::ORIENTATION_LANDSCAPE);
-
+                    
+                    $event->sheet->setSelectedCell('A1');
                 },
             ];
         }
