@@ -273,7 +273,6 @@ $(document).ready(function(){
             $("#link_to_self_hidden").prop("disabled", true);
         }
         if($("#brought_home_flag").is(":checked")){
-            console.log('brought home');
             $("#brought_home_flag_hidden").prop("disabled", true);
         }
         if($("#vpn_flag").is(":checked")){

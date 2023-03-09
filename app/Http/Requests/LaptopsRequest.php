@@ -29,6 +29,7 @@ class LaptopsRequest extends FormRequest
         return [
             'peza_form_number' => 'PEZA form number',
             'peza_permit_number' => 'PEZA permit number',
+            'linkage.remarks' => 'remarks',
         ];
     }
 
@@ -80,7 +81,7 @@ class LaptopsRequest extends FormRequest
             'laptop_clock_speed' => 'required',
             'laptop_ram' => 'required',
             'remarks' => 'max:1024',
-            'linkage[remarks]' => 'max:1024',
+            'linkage.remarks' => 'max:1024',
         ];
 
         if(strpos($this->header('referer'), route('laptops.create')) !== FALSE){

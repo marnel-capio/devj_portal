@@ -109,7 +109,7 @@
                                         </div>
                                         <div class="row mb-2 ps-5 pe-3">
                                             <div class="">
-                                                <textarea class="form-control" name="remarks"  rows="3" id="remarks" required>{{ $detail->remarks }}</textarea>
+                                                <textarea class="form-control" name="remarks"  rows="3" id="remarks">{{ $detail->remarks }}</textarea>
                                                 <p class="text-danger" id="remarks-error"></p>
                                             </div>
                                         </div>

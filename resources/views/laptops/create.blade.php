@@ -102,7 +102,7 @@
                     &nbsp;&nbsp;&nbsp;
                     <div class="form-check form-check-inline">
                         <label class="form-check-label" for="link_to_self">Link laptop to own account</label>
-                        <input type="checkBox" class="form-check-input" name="linkage[link_to_self]" id="link_to_self" value="1" {{ old('linkage[link_to_self]', !empty($linkage)) == 1 ? "checked" : "" }}>
+                        <input type="checkBox" class="form-check-input" name="linkage[link_to_self]" id="link_to_self" value="1" {{ old('linkage.link_to_self', !empty($linkage)) == 1 ? "checked" : "" }}>
                         <input type="text" hidden value="0" name="linkage[link_to_self]" id="link_to_self_hidden">
                     </div>
                 @else
@@ -112,12 +112,12 @@
                     <div class="row mb-1 ps-5 pt-3 pe-3">
                         <div class="col-xl-2 col-lg-3 col-4 form-check form-check-inline">
                             <label class="form-check-label" for="brought_home_flag">Brought home?</label>
-                            <input type="checkBox" class="form-check-input" name="linkage[brought_home_flag]" id="brought_home_flag" value="1" {{ old('linkage[brought_home_flag]', !empty($linkage) ? $linkage->brought_home_flag : 0) == 1 ? "checked" : "" }} >
+                            <input type="checkBox" class="form-check-input" name="linkage[brought_home_flag]" id="brought_home_flag" value="1" {{ old('linkage.brought_home_flag', !empty($linkage) ? $linkage->brought_home_flag : 0) == 1 ? "checked" : "" }} >
                             <input type="text" hidden value="0" name="linkage[brought_home_flag]" id="brought_home_flag_hidden">
                         </div>
                         <div class="col-xl-2 col-lg-3 col-4 form-check form-check-inline">
                             <label class="form-check-label" for="vpn_flag">VPN Access</label>
-                            <input type="checkBox" class="form-check-input" name="linkage[vpn_flag]" id="vpn_flag" value="1" {{ old('linkage[vpn_flag]', !empty($linkage) ? $linkage->vpn_flag : 0) == 1 ? "checked" : "" }} >
+                            <input type="checkBox" class="form-check-input" name="linkage[vpn_flag]" id="vpn_flag" value="1" {{ old('linkage.vpn_flag', !empty($linkage) ? $linkage->vpn_flag : 0) == 1 ? "checked" : "" }} >
                             <input type="text" hidden value="0" name="linkage[vpn_flag]" id="vpn_flag_hidden">
                         </div>
                     </div>
@@ -126,10 +126,10 @@
                     </div>
                     <div class="row mb-2 ps-5 pe-3">
                         <div class="col-md-6 g-3">
-                            <textarea class="form-control" name="linkage[remarks]"  rows="3" id="linkage_remarks">{{ old('linkage[remarks]', !empty($linkage) ? $linkage->remarks : '') }}</textarea>
+                            <textarea class="form-control" name="linkage[remarks]"  rows="3" id="linkage_remarks">{{ old('linkage.remarks', !empty($linkage) ? $linkage->remarks : '') }}</textarea>
                         </div>
-                        @if ($errors->has('linkage[remarks]'))
-                        <p class="text-danger">{{ $errors->first('linkage[remarks]') }}</p>
+                        @if ($errors->has('linkage.remarks'))
+                        <p class="text-danger">{{ $errors->first('linkage.remarks') }}</p>
                         @endif
                     </div>
                 </div>

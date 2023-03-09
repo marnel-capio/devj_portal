@@ -89,11 +89,9 @@ class LaptopsController extends Controller
                 'updated_by' => Auth::user()->id,
                 'employee_id' => Auth::user()->id,
             ];
-
-            //unset data for linkage
-            unset($data['linkage']);
         }
-        // dd($data);
+        //unset data for linkage
+        unset($data['linkage']);
 
         if(empty($data['id'])){
             //new registration

@@ -120,29 +120,42 @@ class LaptopsExport implements
                         'vertical' => Alignment::VERTICAL_CENTER,
                         'wrapText' => true,
                     ],
-                ],
-            "A3:M" .$this->maxRow =>[
-              'alignment' => [
-                    'horizontal' => Alignment::HORIZONTAL_LEFT,
-                    'vertical' => Alignment::VERTICAL_CENTER,
-                    'wrapText' => true
-                ],
-            ],
-            "A1:M" .$this->maxRow =>[
-                'borders' => [
-                    'allBorders' => [
-                        'borderStyle' => Border::BORDER_THIN,
-                        'color' => [
-                            'argb' => Color::COLOR_BLACK
-                        ],
-                        'colorIndex' => [
-                            'argb' => Color::COLOR_BLACK
+                    'borders' => [
+                        'allBorders' => [
+                            'borderStyle' => Border::BORDER_THIN,
+                            'color' => [
+                                'argb' => Color::COLOR_BLACK
+                            ],
+                            'colorIndex' => [
+                                'argb' => Color::COLOR_BLACK
+                            ]
                         ]
-                    ]
-                ]
-            ]
+                    ],
+                ],
         ];
 
+        if ( $this->maxRow >= $this->startRowForData ) {
+            $style["A3:M" .$this->maxRow] = [
+                                                'alignment' => [
+                                                    'horizontal' => Alignment::HORIZONTAL_LEFT,
+                                                    'vertical' => Alignment::VERTICAL_CENTER,
+                                                    'wrapText' => true
+                                                ],
+                                                'borders' => [
+                                                    'allBorders' => [
+                                                        'borderStyle' => Border::BORDER_THIN,
+                                                        'color' => [
+                                                            'argb' => Color::COLOR_BLACK
+                                                        ],
+                                                        'colorIndex' => [
+                                                            'argb' => Color::COLOR_BLACK
+                                                        ]
+                                                    ]
+                                                ],
+                                            ];
+        }
+
+        // dd($style);
         foreach($this->grayRows as $idx => $value){
             $style["A" .$value .":M" .$value] = [
                 'fill' => [
