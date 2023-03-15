@@ -38,26 +38,34 @@
                 </div>
                 <div class="row mb-2 ps-3 pe-3  align-middle">
                     <div class="col-4 g-3 form-floating">
-                        <select name="type" id="type" class="form-select form-control">
-                            <option {{ old('type', $software->type) == 1 ? "selected" : "" }} value="1">{{ config('constants.SOFTWARE_TYPE_1_NAME') }}</option>
-                            <option {{ old('type', $software->type) == 2 ? "selected" : "" }} value="2">{{ config('constants.SOFTWARE_TYPE_2_NAME') }}</option>
-                            <option {{ old('type', $software->type) == 3 ? "selected" : "" }} value="3">{{ config('constants.SOFTWARE_TYPE_3_NAME') }}</option>
-                            <option {{ old('type', $software->type) == 4 ? "selected" : "" }} value="4">{{ config('constants.SOFTWARE_TYPE_4_NAME') }}</option>
-                            <option {{ old('type', $software->type) == 5 ? "selected" : "" }} value="5">{{ config('constants.SOFTWARE_TYPE_5_NAME') }}</option>
-                            <option {{ old('type', $software->type) == 6 ? "selected" : "" }} value="6">{{ config('constants.SOFTWARE_TYPE_6_NAME') }}</option>
+                        <select name="software_type_id" id="software_type_id" class="form-select form-control">
+                            @foreach ($software_types as $software_type)
+                                <option {{ old('software_type_id', $software ? $software->software_type_id : '') == $software_type['id'] ? "selected" : "" }} value={{  $software_type['id']  }}>{{ $software_type['type_name'] }}</option>
+                            @endforeach
+                            <option 
+                                {{ (old('software_type_id', $software ? $software->software_type_id : '') == config('constants.SOFTWARE_TYPE_999') || ($new_software_type) )   ? "selected" : "" }} 
+                                value={{ config('constants.SOFTWARE_TYPE_999') }}>{{ config('constants.SOFTWARE_TYPE_999_NAME') }}</option>
                         </select>
-                        <label  class="text-center" for="type">type</label>
-                        @if ($errors->has('type'))
-                        <p class="text-danger">{{ $errors->first('type') }}</p>
+                        <label  class="text-center" for="software_type_id">Software Type</label>
+                        @if ($errors->has('software_type_id'))
+                            <p class="text-danger">{{ $errors->first('software_type_id') }}</p>
                         @endif
                     </div>
-                        <div class="col-1">
-                            <button class="btn btn-primary" data-bs-target="#addtype" data-bs-toggle="modal">Add</button>
-                        </div> 
+                    <div class="col-4 g-3 form-floating">
+                        <input 
+                            {{ (old('software_type_id', $software ? $software->software_type_id : '') == config('constants.SOFTWARE_TYPE_999') ||  ($new_software_type) ) ? "" : "hidden" }} 
+                            type="text" class="form-control" name="new_software_type" id="new_software_type" placeholder="Purpose" 
+                            value="{{ ($new_software_type) ? $new_software_type['type_name'] : old('new_software_type') }}">
+                        <label {{ ( old('software_type_id', $software ? $software->software_type_id : '') == config('constants.SOFTWARE_TYPE_999') ||  ($new_software_type) ) ? "" : "hidden" }} 
+                            class="text-center" for="new_software_type" id="new_software_type_label">New Software Type</label>
+                        @if ($errors->has('new_software_type'))
+                            <p class="text-danger" id = "new_software_type_error">{{ $errors->first('new_software_type') }}</p>
+                        @endif
+                    </div>                    
                 </div>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="remarks" id="remarks" placeholder="Purpose" value="{{ old('remarks', $software->remarks) }}" required>
+                        <textarea class="form-control" name="remarks" id="remarks" placeholder="Purpose" required> {{ old('remarks', $software->remarks) }}</textarea>
                         <label class="text-center" for="remarks">Purpose</label>
                         @if ($errors->has('remarks'))
                         <p class="text-danger">{{ $errors->first('remarks') }}</p>
@@ -66,30 +74,30 @@
                 </div>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="created_by" id="created_by" placeholder="Created By" value="{{ $creator }}" readonly>
+                        <input type="text" class="form-control" name="created_by" id="created_by" placeholder="Created By" value="{{ $software->creator }}" readonly>
                         <label class="text-center" for="created_by">Created By</label>
                         @if ($errors->has('created_by'))
                         <p class="text-danger">{{ $errors->first('created_by') }}</p>
                         @endif
                     </div>
                     <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="created_date" id="created_date" placeholder="Create Date" value="{{ $creator }}" readonly>
-                        <label class="text-center" for="created_date">Create Date</label>
-                        @if ($errors->has('created_date'))
-                        <p class="text-danger">{{ $errors->first('created_date') }}</p>
+                        <input type="text" class="form-control" name="create_date" id="create_date" placeholder="Create Date" value="{{ $software->create_time }}" readonly>
+                        <label class="text-center" for="create_date">Create Date</label>
+                        @if ($errors->has('create_date'))
+                        <p class="text-danger">{{ $errors->first('create_date') }}</p>
                         @endif
                     </div>                    
                 </div>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="updated_by" id="updated_by" placeholder="Updated By" value="{{ $requestor }}" readonly>
+                        <input type="text" class="form-control" name="updated_by" id="updated_by" placeholder="Updated By" value="{{ $software->updater }}" readonly>
                         <label class="text-center" for="updated_by">Updated By</label>
                         @if ($errors->has('updated_by'))
                         <p class="text-danger">{{ $errors->first('updated_by') }}</p>
                         @endif
                     </div>
                     <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="update_date" id="update_date" placeholder="Update Date" value="{{ $creator }}" readonly>
+                        <input type="text" class="form-control" name="update_date" id="update_date" placeholder="Update Date" value="{{ $software->update_time }}" readonly>
                         <label class="text-center" for="update_date">Update Date</label>
                         @if ($errors->has('update_date'))
                         <p class="text-danger">{{ $errors->first('update_date') }}</p>
@@ -98,14 +106,14 @@
                 </div>                
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="approved_by" id="approved_by" placeholder="Approved By" value="{{ $approver }}" readonly>
+                        <input type="text" class="form-control" name="approved_by" id="approved_by" placeholder="Approved By" value="{{ $software->approver }}" readonly>
                         <label class="text-center" for="approved_by">Approved By</label>
                         @if ($errors->has('approved_by'))
                         <p class="text-danger">{{ $errors->first('approved_by') }}</p>
                         @endif
                     </div>
                     <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="approve_date" id="approve_date" placeholder="Approve Date" value="{{ $creator }}" readonly>
+                        <input type="text" class="form-control" name="approve_date" id="approve_date" placeholder="Approve Date" value="{{ $software->approve_time }}" readonly>
                         <label class="text-center" for="approve_date">Approve Date</label>
                         @if ($errors->has('approve_date'))
                         <p class="text-danger">{{ $errors->first('approve_date') }}</p>

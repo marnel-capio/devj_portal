@@ -30,9 +30,9 @@ class Softwares extends Model
 
         if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE')){
             //get all software request of the current user only
-            $query->where('updated_by', Auth::user()->id);
+            $query->where('softwares.updated_by', Auth::user()->id);
         }
-        $query->orderBy('software_name', 'ASC');
+        $query->orderBy('softwares.software_name', 'ASC');
         return $query->get()->toArray();
     }
 
@@ -61,26 +61,26 @@ class Softwares extends Model
                                                       config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
 
         if (!empty($keyword)) {
-            $query=  $query->where('software_name','LIKE','%'.$keyword.'%');
+            $query=  $query->where('softwares.software_name','LIKE','%'.$keyword.'%');
         }
         
         if(!empty($status))
         {
             if($status != config('constants.SOFTWARE_FILTER_STATUS_ALL'))//status choses is all
             {
-                $query = $query->where('approved_status','LIKE','%'.$status.'%');
+                $query = $query->where('softwares.approved_status','LIKE','%'.$status.'%');
             }
         }
         if(!empty($type))
         {
             if($type != config('constants.SOFTWARE_FILTER_TYPE_ALL'))//status choses is all
             {
-                $query = $query->where('software_type_id','LIKE','%'.$type.'%');
+                $query = $query->where('softwares.software_type_id','LIKE','%'.$type.'%');
             }
 
         }                                                      
 
-        $query->orderBy('software_name', 'ASC');
+        $query->orderBy('softwares.software_name', 'ASC');
         return $query->get()->toArray();
 
     }

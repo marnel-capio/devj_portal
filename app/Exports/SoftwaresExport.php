@@ -43,14 +43,6 @@ class SoftwaresExport implements FromView, WithHeadings, WithMapping, WithEvents
     {
         $data = Softwares::getSoftwareForDownload();
 
-       
- /*       foreach($data as $idx => $item){
-            if($item['surrender_flag']){
-                $this->grayRows[] = $idx + $this->startRowForData;
-            }
-        }
-        $this->maxRow = $this->startRowForData + count($data) - 1; 
-*/
         return view('softwares.download')->with(['detail' => $data]);
     }
 
@@ -203,54 +195,5 @@ class SoftwaresExport implements FromView, WithHeadings, WithMapping, WithEvents
 
         return $setting;
     }
-
-/*    public function query()
-    {	
-        $keyword = $this->keyword;
-        $status = $this->status;
-
-        $software = Softwares::whereIn('approved_status', [2]);
-
-        if (!empty($keyword)) {
-            $software = $software->where(function($query) use ($keyword) {
-                    $query->where('software_name','LIKE','%'.$keyword.'%');
-                });
-        }
-
-        $software = $software
-                            ->orderBy('type', 'ASC')
-                            ->orderBy('software_name', 'ASC');
-
-         //change the type into string
-        foreach($software as $value){
-            if($value['type'] == config('constants.SOFTWARE_TYPE_1'))
-            { 
-                $value['type'] = config('constants.SOFTWARE_TYPE_1_NAME');
-            }
-            else if($value['type'] == config('constants.SOFTWARE_TYPE_2'))
-            { 
-                $value['type'] = config('constants.SOFTWARE_TYPE_2_NAME');
-            }
-            else if($value['type'] == config('constants.SOFTWARE_TYPE_3'))
-            { 
-                $value['type'] = config('constants.SOFTWARE_TYPE_3_NAME');
-            }
-            else if($value['type'] == config('constants.SOFTWARE_TYPE_4'))
-            { 
-                $value['type'] = config('constants.SOFTWARE_TYPE_4_NAME');
-            }
-            else if($value['type'] == config('constants.SOFTWARE_TYPE_5'))
-            { 
-                $value['type'] = config('constants.SOFTWARE_TYPE_5_NAME');
-            }
-            else if($value['type'] == config('constants.SOFTWARE_TYPE_6'))
-            { 
-                $value['type'] = config('constants.SOFTWARE_TYPE_6_NAME');
-            }
-        }
-        return $software;
-    }
-    */
-
 
 }

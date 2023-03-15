@@ -57,9 +57,10 @@ $(document).ready(function () {
 				data.update.forEach(function(software){
 					console.log(software);
 					const status = [STATUS_REJECTED_TEXT, STATUS_APPROVED_TEXT, STATUS_PENDING_TEXT, STATUS_PENDING_APPROVAL_FOR_UPDATE_TEXT];
-					//const software_type = [SOFTWARE_TYPE_PRODUCTIVITY, SOFTWARE_TYPE_MESSAGING, SOFTWARE_TYPE_BROWSER, SOFTWARE_TYPE_UTIL, SOFTWARE_TYPE_PROJECT_SPECIFIC, SOFTWARE_TYPE_DRIVERS];
 					const status_index =  software['approved_status']-1;
-					//const st_index = software['software_type_id']-1;
+
+					console.log(status_index);
+
 					//get only YYYY-MM-DD from date
 					let createdate ="";
 					let update_date ="";
@@ -87,36 +88,13 @@ $(document).ready(function () {
 						.draw(false);
 				});
 			}
-		}).fail(function(){
+		}).fail(function(data){
 			console.log('error');
+			console.log(data);
 		});	  
     }
 
 
-
-	//start for software registration
-
-	//disable submit button if not all required fields have value
-	//softcheckRequiredFields();
-
-	//$(":input[required]").change(function(){
-	//	softcheckRequiredFields();
-	//});
-
-
-	//function softcheckRequiredFields(){
-	//	var empty = false;
-	//	$(":input[required]").each(function(){
-	//		if($(this).val() == ''){
-	//			empty = true;
-	//		}
-	//	})
-	//	if(empty){
-	//		$("#soft-reg-submit").prop('disabled', true);
-	//	}else{
-	//		$("#soft-reg-submitt").prop('disabled', false);
-	//	}
-	//}
 
 	$('.btn-prevent-multiple-submit').on('submit', function($e){
 		e.preventDefault()
@@ -256,6 +234,23 @@ $(document).ready(function () {
 		}
 	}
 
-	//end for employee details/request
+	$("#software_type_id").on('change', function () {
+        if($(this).val() == 999){
+            $("#new_software_type").prop('hidden', false);
+			$("#new_software_type").prop('disabled', false)
+			$("#new_software_type").prop('required', false)
+			$("#new_software_type_label").prop('hidden', false);
+			$("#new_software_type_label").prop('disabled', false);
+			$("#new_software_type_error").prop('hidden', false);
+        }else{
+            $("#new_software_type").prop('hidden', true);
+            $("#new_software_type").prop('disabled', true);
+			$("#new_software_type").prop('required', true)
+            $("#new_software_type_label").prop('hidden', true);
+            $("#new_software_type_label").prop('disabled', true);	
+			$("#new_software_type_error").prop('hidden', true);		
+        }
+    });
+	//end for software details/request
 
 });

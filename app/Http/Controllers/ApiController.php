@@ -286,37 +286,7 @@ class ApiController extends Controller
             'status' => $request->get('status'),
             'type' => $request->get('type'),
         ];
-        // // DB::enableQueryLog();
-        // $software = Softwares::whereIn('approved_status', [config('constants.APPROVED_STATUS_REJECTED'),
-        //                                                     config('constants.APPROVED_STATUS_APPROVED'),
-        //                                                     config('constants.APPROVED_STATUS_PENDING'),
-        //                                                     config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
-
-        // // get software
-        // if (!empty($searchFilter['keyword'])) {
-        //     $software = $software->where('software_name','LIKE','%'.$searchFilter['keyword'].'%');
-        // }
-        
-        // if(!empty($searchFilter['status']))
-        // {
-        //     if($searchFilter['status'] != config('constants.SOFTWARE_FILTER_STATUS_ALL'))//status choses is all
-        //     {
-        //         $software = $software->where('approved_status','LIKE','%'.$searchFilter['status'].'%');
-        //     }
-        // }
-        // if(!empty($searchFilter['type']))
-        // {
-        //     if($searchFilter['type'] != config('constants.SOFTWARE_FILTER_TYPE_ALL'))//status choses is all
-        //     {
-        //         $software = $software->where('software_type_id','LIKE','%'.$searchFilter['type'].'%');
-        //     }
-
-        // }
-
-        // $software = $software->orderBy('software_name', 'ASC')
-        //         ->get();
-  
-
+ 
         $softwarelist = Softwares::getSoftwareForList($searchFilter['keyword'], $searchFilter['status'], $searchFilter['type']);
 
         return response()->json([

@@ -83,7 +83,7 @@ Route::middleware(['auth', 'web', 'isActive'])->group(function(){
         Route::post('/update', 'update')->name('softwares.update');
         Route::get('/{id}', 'detail')->name('softwares.details')->whereNumber('id');
         Route::get('/{id}/edit', 'edit')->name('softwares.edit')->whereNumber('id');
-        Route::post('/regist', 'regist')->name('d');
+        Route::post('/regist', 'regist')->name('softwares.regist');
         Route::get('/create/{rejectCode?}', 'create')->name('softwares.create');
         Route::get('/download',  'download')->name('softwares.download');
         Route::get('/regist/complete', function(){
