@@ -23,7 +23,7 @@
                     <div class="col-4 g-3 form-floating">
                         <select name="software_type_id" id="software_type_id" class="form-select form-control">
                             @foreach ($software_types as $software_type)
-                                <option {{ old('software_type_id', $software ? $software->software_type_id : '') == $software_type['id'] ? "selected" : "" }} value={{  $software_type['id']  }}>{{ $software_type['type_name'] }}</option>
+                                <option {{ old('software_type_id', $software ? $software->software_type_id : '') == $software_type['id'] ? "selected" : "" }} value="{{  $software_type['id']  }}">{{ $software_type['type_name'] }}</option>
                             @endforeach
                             <option 
                                 {{ (old('software_type_id', $software ? $software->software_type_id : '') == config('constants.SOFTWARE_TYPE_999') || ($new_software_type) )   ? "selected" : "" }} 
@@ -48,7 +48,7 @@
                 </div>
                 <div class="row mb-2 ps-5 pe-3">
                     <div class="col-4 g-3 form-floating">
-                        <textarea class="form-control" name="remarks" id="remarks" placeholder="Purpose" value="{{ old('remarks', $software ? $software->remarks : '') }}" required> </textarea>
+                        <textarea class="form-control" name="remarks" id="remarks" placeholder="Purpose" required> {{ old('remarks', $software ? $software->remarks : '') }}</textarea>
                         <label class="text-center" for="remarks">Purpose</label>
                         @if ($errors->has('remarks'))
                         <p class="text-danger">{{ $errors->first('remarks') }}</p>

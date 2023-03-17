@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Excel;
 use App\Models\Logs;
 use App\Mail\Software;
 use App\Models\Projects;
@@ -58,7 +57,6 @@ class SoftwaresController extends Controller
         $request->validated();
 
 
-        $insertData = $request->input();
         $insertData = $request->except("_token");
         $insertData['created_by'] = Auth::user()->id;
         $insertData['updated_by'] = Auth::user()->id;
@@ -263,18 +261,12 @@ class SoftwaresController extends Controller
 
      public function update(SoftwaresRequest $request){
         $request->validated();
-        $updateData = $request->except("_token");
+        $updateData = $request->only(["id", "software_name", "software_type_id", "new_software_type", "remarks"]);
+        
         $id = $updateData['id'];
         $originalData = Softwares::where('id', $id)->first();
 
         unset($updateData['id']);
-        unset($updateData['created_by']);
-        unset($updateData['updated_by']);
-        unset($updateData['approved_by']);
-        unset($updateData['create_date']);
-        unset($updateData['update_date']);
-        unset($updateData['approve_date']);
-        unset($updateData['approved_status']);
 
         //process first software type if software type selected is others
         if($updateData['software_type_id'] == config('constants.SOFTWARE_TYPE_999'))
@@ -688,7 +680,7 @@ class SoftwaresController extends Controller
         str_replace(["\n\r", "\n", "\r"], ' ', $string);
     }
 
-    public function index(Request $request){
+    public function index(){
         $software_request = $this->getSoftware();
        
         $list_note_approve_on = "";
@@ -707,8 +699,7 @@ class SoftwaresController extends Controller
         $last_approved_software = Softwares::whereIn('approved_status',[config('constants.APPROVED_STATUS_APPROVED' ), 
                                                                         config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
                                             ->orderBy('approve_time', 'DESC')->first();
-        //dd($last_approved_software);
-
+   
         if($last_approved_software)
         {
             $employee =  Employees::where('id', $last_approved_software->approved_by)->first();
@@ -740,7 +731,7 @@ class SoftwaresController extends Controller
     }
 
     
-    public function download(Request $request) {
+    public function download() {
         
         $current_date = date("Y-m");
         Logs::createLog("Software", "Downloaded list of software");

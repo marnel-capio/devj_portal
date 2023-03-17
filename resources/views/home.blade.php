@@ -131,24 +131,6 @@
 						<tr>
 							<td>{{ $software['software_name'] }}</td>
 							<td>{{ $software['type'] }}</td>
-							{{-- <td>
-								@if ($software['type'] == config('constants.SOFTWARE_TYPE_1')) 
-									{{config('constants.SOFTWARE_TYPE_1_NAME')}}
-								@elseif ($software['type'] == config('constants.SOFTWARE_TYPE_2')) 
-									{{config('constants.SOFTWARE_TYPE_2_NAME')}}
-								@elseif ($software['type'] == config('constants.SOFTWARE_TYPE_3')) 
-									{{config('constants.SOFTWARE_TYPE_3_NAME')}}
-								@elseif ($software['type'] == config('constants.SOFTWARE_TYPE_4')) 
-									{{config('constants.SOFTWARE_TYPE_4_NAME')}}
-								@elseif ($software['type'] == config('constants.SOFTWARE_TYPE_5')) 
-									{{config('constants.SOFTWARE_TYPE_5_NAME')}}
-								@elseif ($software['type'] == config('constants.SOFTWARE_TYPE_6')) 
-									{{config('constants.SOFTWARE_TYPE_6_NAME')}}
-								@else
-										-
-								@endif
-							</td>
-						--}}
 							<td>
 								@if ($software['approved_status'] == config('constants.APPROVED_STATUS_REJECTED')) 
 									{{config('constants.APPROVED_STATUS_REJECTED_TEXT')}}

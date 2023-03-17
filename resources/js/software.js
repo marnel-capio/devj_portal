@@ -50,16 +50,12 @@ $(document).ready(function () {
 					'type' :  type,
                 }, 
 		}).done(function(data){
-			// console.log(data);
 			if(data.success){
 				software_list.clear().draw();
 
 				data.update.forEach(function(software){
-					console.log(software);
 					const status = [STATUS_REJECTED_TEXT, STATUS_APPROVED_TEXT, STATUS_PENDING_TEXT, STATUS_PENDING_APPROVAL_FOR_UPDATE_TEXT];
 					const status_index =  software['approved_status']-1;
-
-					console.log(status_index);
 
 					//get only YYYY-MM-DD from date
 					let createdate ="";
@@ -88,9 +84,8 @@ $(document).ready(function () {
 						.draw(false);
 				});
 			}
-		}).fail(function(data){
+		}).fail(function(){
 			console.log('error');
-			console.log(data);
 		});	  
     }
 
@@ -182,7 +177,6 @@ $(document).ready(function () {
     //reject modal
 	$("#soft-reject-request-form").submit(function(){
 		if($("#soft-reject-reason").val() == ""){
-			console.log("hello");
 			$("#soft-reject-reason-error").html('The reason field is required.').addClass("text-danger text-start");
 			return false;
 		}else if($("#soft-reject-reason").val().length > 1024){
@@ -240,14 +234,12 @@ $(document).ready(function () {
 			$("#new_software_type").prop('disabled', false)
 			$("#new_software_type").prop('required', false)
 			$("#new_software_type_label").prop('hidden', false);
-			$("#new_software_type_label").prop('disabled', false);
 			$("#new_software_type_error").prop('hidden', false);
         }else{
             $("#new_software_type").prop('hidden', true);
             $("#new_software_type").prop('disabled', true);
 			$("#new_software_type").prop('required', true)
             $("#new_software_type_label").prop('hidden', true);
-            $("#new_software_type_label").prop('disabled', true);	
 			$("#new_software_type_error").prop('hidden', true);		
         }
     });

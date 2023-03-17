@@ -33,7 +33,7 @@
                     </ul>
                 </li>
  
-                <li class="nav-item dropdown">
+                {{-- <li class="nav-item dropdown">
                     <a href="#" class="nav-link text-white"  role="button">Projects</a>
                     <ul class="dropdown-menu">
                         <li><a href="{{ route('projects') }}" class="dropdown-item small text-white">View Projects</a></li>
@@ -43,6 +43,7 @@
                         @endif
                     </ul>
                 </li>
+                 --}}
                 @if ($userInfo->roles === config('constants.MANAGER_ROLE_VALUE') ||  $userInfo->server_manage_flag)
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link text-white"  role="button">Servers</a>

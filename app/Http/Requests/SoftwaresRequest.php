@@ -63,7 +63,7 @@ class SoftwaresRequest extends FormRequest
                                             //if selected software type is others and new software name is empty
                                             if($software_type == config('constants.SOFTWARE_TYPE_999') && ($value == "" || $value == null))
                                             {
-                                                $fail("The New Software Type field is required.");
+                                                $fail("The new software type field is required.");
                                             }
                                         }, 
                                         //checking if entered value is already existing in the approved software type

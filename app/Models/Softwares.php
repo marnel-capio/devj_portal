@@ -12,7 +12,6 @@ class Softwares extends Model
 
     const UPDATED_AT = 'update_time';
     const CREATED_AT = 'create_time';
-    const APPROVED_AT = 'approve_time'; 
     protected $guarded = [];
 
     static function getSoftwareRequest(){
@@ -54,11 +53,7 @@ class Softwares extends Model
                                 softwares.reject_code,
                                 softwares.approve_time
                             ')
-                        ->leftJoin('software_types', 'software_types.id',  'softwares.software_type_id')                            
-                        ->whereIn('software_types.approved_status', [config('constants.APPROVED_STATUS_APPROVED'),
-                                                      config('constants.APPROVED_STATUS_REJECTED'),
-                                                      config('constants.APPROVED_STATUS_PENDING'), 
-                                                      config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
+                        ->leftJoin('software_types', 'software_types.id',  'softwares.software_type_id');
 
         if (!empty($keyword)) {
             $query=  $query->where('softwares.software_name','LIKE','%'.$keyword.'%');
@@ -101,7 +96,7 @@ class Softwares extends Model
                             softwares.create_time,
                             softwares.update_time,
                             softwares.reject_code,
-                            softwares.approve_time
+                            softwares.approve_time,
                             softwares.software_type_id
                         ')
                         ->leftJoin('software_types', 'software_types.id',  'softwares.software_type_id')                            

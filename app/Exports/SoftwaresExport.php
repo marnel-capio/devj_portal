@@ -6,7 +6,6 @@ use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -22,7 +21,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup as WorksheetPageSetup;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 
-class SoftwaresExport implements FromView, WithHeadings, WithMapping, WithEvents, ShouldAutoSize, WithColumnWidths, WithStyles, WithTitle
+class SoftwaresExport implements FromView, WithHeadings, WithEvents, ShouldAutoSize, WithColumnWidths, WithStyles, WithTitle
 {
     use Exportable;
 
@@ -107,18 +106,6 @@ class SoftwaresExport implements FromView, WithHeadings, WithMapping, WithEvents
         ];
     }
 
-    /**
-    * @var Softwares $software
-    */
-    public function map($software): array
-    {	
-
-        return [
-            $software->type,
-            $software->software_name,
-            $software->remarks,
-        ];
-    }	
 
     /**
      * @return array

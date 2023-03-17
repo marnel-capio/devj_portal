@@ -134,16 +134,6 @@ class ApiController extends Controller
 
             ProjectSoftwares::create($insertData);
 
-            //notify the managers of the request
-            //delete mail data since there is no need to send mail to manager for linking project to software - start
-            //$mailData = [
-            //    'link' => route('softwares.request', ['id' => $software->id]),
-            //    'requestor' => Auth::user()->first_name .' ' .Auth::user()->last_name,
-            //    'currentUserId' => Auth::user()->id,
-            //    'module' => "Software",
-            //];
-
-            //$this->sendMailForSoftwareUpdate(Employees::getEmailOfManagers(), $mailData, config('constants.MAIL_SOFTWARE_PROJECT_LINK_REQUEST'));
             $message = 'Your request has been sent';
         }
         
