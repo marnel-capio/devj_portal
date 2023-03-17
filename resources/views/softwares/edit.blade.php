@@ -40,11 +40,11 @@
                     <div class="col-4 g-3 form-floating">
                         <select name="software_type_id" id="software_type_id" class="form-select form-control">
                             @foreach ($software_types as $software_type)
-                                <option {{ old('software_type_id', $software ? $software->software_type_id : '') == $software_type['id'] ? "selected" : "" }} value={{  $software_type['id']  }}>{{ $software_type['type_name'] }}</option>
+                                <option {{ old('software_type_id', $software ? $software->software_type_id : '') == $software_type['id'] ? "selected" : "" }} value="{{  $software_type['id']  }}">{{ $software_type['type_name'] }}</option>
                             @endforeach
                             <option 
                                 {{ (old('software_type_id', $software ? $software->software_type_id : '') == config('constants.SOFTWARE_TYPE_999') || ($new_software_type) )   ? "selected" : "" }} 
-                                value={{ config('constants.SOFTWARE_TYPE_999') }}>{{ config('constants.SOFTWARE_TYPE_999_NAME') }}</option>
+                                value="{{ config('constants.SOFTWARE_TYPE_999') }}">{{ config('constants.SOFTWARE_TYPE_999_NAME') }}</option>
                         </select>
                         <label  class="text-center" for="software_type_id">Software Type</label>
                         @if ($errors->has('software_type_id'))

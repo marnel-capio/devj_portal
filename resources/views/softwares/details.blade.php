@@ -56,9 +56,9 @@
                     <div class="col-4 g-3 form-floating">
                         <select name="type" id="type" class="form-select form-control" {{ $readOnly ? 'disabled' : '' }}>
                             @if($is_display_new_software_type)
-                                <option selected value={{ config('constants.SOFTWARE_TYPE_999')}}>{{ config('constants.SOFTWARE_TYPE_999_NAME')}}</option>
+                                <option selected value="{{ config('constants.SOFTWARE_TYPE_999')}}">{{ config('constants.SOFTWARE_TYPE_999_NAME')}}</option>
                             @else
-                                <option selected value={{ $software->software_type_id}}>{{ $software->type}}</option>
+                                <option selected value="{{ $software->software_type_id}}">{{ $software->type}}</option>
                             @endif
                         </select>
                         <label  class="text-center" for="type">Software Type</label>
