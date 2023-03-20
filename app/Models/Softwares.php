@@ -140,5 +140,17 @@ class Softwares extends Model
         return $query;
     }
 
-
+    static function GetLastApproverDetail()
+    {
+        $query = self::selectRaw('
+                        softwares.approve_time,
+                        CONCAT(employees.last_name, ", ", employees.first_name) AS approver
+                    ')
+                ->leftJoin('employees', 'employees.id', 'softwares.approved_by')
+                ->whereIn('softwares.approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+                ->orderBy('approve_time', 'DESC')
+                ->first();
+       
+        return $query;
+    }
 }

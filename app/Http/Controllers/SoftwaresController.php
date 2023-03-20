@@ -696,16 +696,16 @@ class SoftwaresController extends Controller
 
     public function getLastSoftwareApproverNote(&$list_note_approve_by, &$list_note_approve_on)
     {
-        $last_approved_software = Softwares::whereIn('approved_status',[config('constants.APPROVED_STATUS_APPROVED' ), 
-                                                                        config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
-                                            ->orderBy('approve_time', 'DESC')->first();
+        // $last_approved_software = Softwares::whereIn('approved_status',[config('constants.APPROVED_STATUS_APPROVED' ), 
+        //                                                                config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+        //                                    ->orderBy('approve_time', 'DESC')->first();
    
+        $last_approved_software = Softwares::GetLastApproverDetail();
+
         if($last_approved_software)
         {
-            $employee =  Employees::where('id', $last_approved_software->approved_by)->first();
-          
-            if($employee){
-                $list_note_approve_by = 'Last approved by: ' . $employee->first_name . ' ' . $employee->last_name;
+            if($last_approved_software->approver){
+                $list_note_approve_by = 'Last approved by: ' . $last_approved_software->approver;
             }
             
             if($last_approved_software->approve_time)
