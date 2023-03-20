@@ -9,6 +9,7 @@ use App\Http\Controllers\SoftwaresController;
 use App\Http\Controllers\LaptopsController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
+use App\Http\Controllers\ProjectsController;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Support\Facades\Route;
@@ -94,17 +95,12 @@ Route::middleware(['auth', 'web', 'isActive'])->group(function(){
         })->name('softwares.update.complete');        
     });
 
-    Route::prefix('/projects')->group(function(){
-        Route::get('/', function(){
-            return 'Welcome to projects List'; //dummy
-        })->name('projects');
-        Route::get('/{id}', function(){
-           return 'project details ';
-        })->name('project.details');
-
-        Route::get('/create', function(){
-            return 'You can add projects data here'; //dummy
-        })->name('projects.create');
+    Route::prefix('/projects')->controller(ProjectsController::class)->group(function(){
+        Route::get('/',  'index')->name('projects');
+        Route::get('/create', 'create')->name('projects.create');
+        Route::post('/regist', 'regist')->name('projects.regist');
+        Route::get('/{id}', 'detail')->name('projects.details')->whereNumber('id');
+        Route::get('/{id}/edit', 'edit')->name('projects.edit')->whereNumber('id');
     });
 
     Route::prefix('/servers')->group(function(){

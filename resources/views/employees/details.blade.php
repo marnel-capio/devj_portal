@@ -340,7 +340,7 @@
         </form>
     </div>
     @if ($detailOnly)
-    {{-- <div class="emp-regist-category mb-4 p-3 rounded-3 table-avoid-overflow">
+    <div class="emp-regist-category mb-4 p-3 rounded-3 table-avoid-overflow">
         <div class="d-flex justify-content-between">
             <h4 class="text-start">Projects</h4>
             <button class="btn btn-primary" data-bs-target="#linkProjectModal" data-bs-toggle="modal">Add</button>
@@ -357,7 +357,7 @@
                 @if(!empty($empProject))
                     @foreach ($empProject as $project)
                         <tr>
-                            <td><a href="{{ route('project.details', ['id' => $project['project_id']]) }}" class="text-decoration-none">{{ $project['name'] }}</a></td>
+                            <td><a href="{{ route('projects.details', ['id' => $project['project_id']]) }}" class="text-decoration-none">{{ $project['name'] }}</a></td>
                             <td>{{ date("Y/m/d", strtotime($project['start_date']))  }} - {{ $project['end_date'] ? date("Y/m/d", strtotime($project['end_date'])) : '' }}</td>
                             <td>{{ $project['project_status'] }}</td>
                         </tr>
@@ -365,7 +365,7 @@
                 @endif
             </tbody>
         </table>
-    </div> --}}
+    </div>
     <div class="emp-regist-category mb-4 p-3 rounded-3 table-avoid-overflow">
         <div class="d-flex justify-content-between">
             <h4 class="text-start">Laptops</h4>
@@ -435,7 +435,7 @@
     @endif
 
     @if ($detailOnly)
-    {{-- <div class="modal fade" tabindex="-1" id="linkProjectModal">
+    <div class="modal fade" tabindex="-1" id="linkProjectModal">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -498,7 +498,7 @@
                 </div>
             </div>
         </div>
-    </div> --}}
+    </div>
 
     <div class="modal fade" tabindex="-1" id="linkLaptopModal">
         <div class="modal-dialog modal-dialog-centered">

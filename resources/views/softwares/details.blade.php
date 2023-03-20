@@ -120,7 +120,7 @@
             </div>
         </form>
     </div>
-   {{-- @if ($detailOnly && $is_project_display)
+   @if ($detailOnly && $is_project_display)
     <div class="soft-regist-category mb-4 p-3 rounded-3 table-avoid-overflow">
         <div class="d-flex justify-content-between">
             <h4 class="text-start">Projects</h4>
@@ -138,7 +138,7 @@
                 @if(!empty($softProject))
                     @foreach ($softProject as $project)
                         <tr>
-                            <td><a href="{{ route('project.details', ['id' => $project['project_id']]) }}" class="text-decoration-none">{{ $project['name'] }}</a></td>
+                            <td><a href="{{ route('projects.details', ['id' => $project['project_id']]) }}" class="text-decoration-none">{{ $project['name'] }}</a></td>
                             <td>{{ date("Y/m/d", strtotime($project['start_date']))  }} - {{ $project['end_date'] ? date("Y/m/d", strtotime($project['end_date'])) : '' }}</td>
                             <td>{{ $project['project_status'] }}</td>
                         </tr>
@@ -147,7 +147,7 @@
             </tbody>
         </table>
     </div>
-    @endif--}}
+    @endif
 
     @if (!$detailOnly)
     <div class="text-center p-4">
@@ -182,7 +182,7 @@
     </div>
     @endif
 
-    {{-- @if ($detailOnly && $is_project_display)
+    @if ($detailOnly && $is_project_display)
     <div class="modal fade" tabindex="-1" id="linkProjectModal">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -224,7 +224,7 @@
             </div>
         </div>
     </div>
-    @endif--}}
+    @endif
 
 
 </div>
