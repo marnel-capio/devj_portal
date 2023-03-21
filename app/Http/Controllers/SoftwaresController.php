@@ -75,12 +75,63 @@ class SoftwaresController extends Controller
                 $insertData['approved_status'] = config('constants.APPROVED_STATUS_PENDING');
             }
 
-            //check the software_type. if software_type = others, 
-            if($insertData['software_type_id'] == config('constants.SOFTWARE_TYPE_999'))
+            //process software Type 
+            $insertData = $this->processNewSoftwareType($insertData);
+            //then uset "new_software_type"
+            unset($insertData['new_software_type']);
+            $id = Softwares::create($insertData)->id;
+        }        
+        else{
+            //registration update
+            $id = $insertData['id'];
+            unset($insertData['id']);
+            $insertData['approved_status'] = config('constants.APPROVED_STATUS_PENDING');
+            $insertData['reject_code'] = NULL;
+            $insertData['reasons'] = NULL;
+            $insertData['updated_by'] = Auth::user()->id;
+
+            //process software Type 
+            $insertData = $this->processNewSoftwareType($insertData);
+
+            //then uset "new_software_type"
+            unset($insertData['new_software_type']);
+            Softwares::where('id', $id)
+                    ->update($insertData);
+        }
+        //create logs
+        Logs::createLog("Software", 'Created Software Approval Request for software ' . strval($id) );
+
+        // //send mail if current user is not manager
+        // if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE')){
+        //     //send mail to managers
+        //     $recipients = Employees::getEmailOfManagers();
+
+        //     $mailData = [
+        //         'link' => route('softwares.request', ['id' => $id]),
+        //         'currentUserId' => Auth::user()->id,
+        //         'module' => "Software",
+        //     ];
+        //     $this->sendMail($recipients, $mailData, config('constants.MAIL_SOFTWARE_NEW_REQUEST'));
+        // }
+        
+        return redirect(route('softwares.regist.complete'));
+    }
+
+    public function processNewSoftwareType($data)
+    {
+        //check the software_type. if software_type = others, 
+        if($data['software_type_id'] == config('constants.SOFTWARE_TYPE_999'))
+        {
+            //check first if the current software type has a pending approval request
+            $current_software_type = SoftwareTypes::where('type_name',$data['new_software_type'] )->first();
+            if($current_software_type && $current_software_type->approved_status == config('constants.APPROVED_STATUS_PENDING') )
             {
+                $software_type_id = $current_software_type->id;
+            }
+            else{
                 //save first the new software type to software_types table
                 
-                $insertSoftwareTypeData["type_name"] = $insertData['new_software_type'];
+                $insertSoftwareTypeData["type_name"] = $data['new_software_type'];
                 $insertSoftwareTypeData['created_by'] = Auth::user()->id;
                 $insertSoftwareTypeData['updated_by'] = Auth::user()->id;
                 if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
@@ -95,80 +146,14 @@ class SoftwaresController extends Controller
 
                 //create logs
                 Logs::createLog("Software", 'Added Software Type id: ' . strval($software_type_id). ", type name: ".  $insertSoftwareTypeData["type_name"]);
-
-                //use the new software_type_id as the value ot softwares' software_type_id
-                $insertData['software_type_id'] = $software_type_id;
-                
             }
-            //then uset "new_software_type"
-            unset($insertData['new_software_type']);
-            $id = Softwares::create($insertData)->id;
-        }        
-        else{
-            //registration update
-            $id = $insertData['id'];
-            unset($insertData['id']);
-            $insertData['approved_status'] = config('constants.APPROVED_STATUS_PENDING');
-            $insertData['reject_code'] = NULL;
-            $insertData['reasons'] = NULL;
-            $insertData['updated_by'] = Auth::user()->id;
 
-            //check the software_type. if software_type = others, 
-            if($insertData['software_type_id'] == config('constants.SOFTWARE_TYPE_999'))
-            {
-                //save first the new software type to software_types table
-                $software_type = SoftwareTypes::where('type_name',$insertData['new_software_type'] )->first();
-                if(!$software_type)
-                {
-                    
-                    $insertSoftwareTypeData["type_name"] = $insertData['new_software_type'];
-                    $insertSoftwareTypeData['created_by'] = Auth::user()->id;
-                    $insertSoftwareTypeData['updated_by'] = Auth::user()->id;
-                    if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
-                        $insertSoftwareTypeData['approved_status'] = config('constants.APPROVED_STATUS_APPROVED');
-                    }
-                    else{
-                        $insertSoftwareTypeData['approved_status'] = config('constants.APPROVED_STATUS_PENDING');
-                    }
-                    //then get the new id of the new created software type and st it to the insert data
-                    $software_type_id = SoftwareTypes::create($insertSoftwareTypeData)->id;
-
-                    //create logs
-                    Logs::createLog("Software", 'Added Software Type id: ' . strval($software_type_id). ", type name: ".  $insertSoftwareTypeData["type_name"]);
-
-                    //use the new software_type_id as the value ot softwares' software_type_id
-                    $insertData['software_type_id'] = $software_type_id;
-                }
-                else{
-                    //just unset software_type_id of insert data
-                    unset($insertData['software_type_id']);
-                }
-                
-            }            
-            //then uset "new_software_type"
-            unset($insertData['new_software_type']);
-            Softwares::where('id', $id)
-                    ->update($insertData);
+            //use the new software_type_id as the value ot softwares' software_type_id
+            $data['software_type_id'] = $software_type_id; 
+            
         }
-        //create logs
-        Logs::createLog("Software", 'Created Software Approval Request for software ' . strval($id) );
-
-        //send mail if current user is not manager
-        if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE')){
-            //send mail to managers
-            $recipients = Employees::getEmailOfManagers();
-
-            $mailData = [
-                'link' => route('softwares.request', ['id' => $id]),
-                'currentUserId' => Auth::user()->id,
-                'module' => "Software",
-            ];
-            $this->sendMail($recipients, $mailData, config('constants.MAIL_SOFTWARE_NEW_REQUEST'));
-        }
-        
-        return redirect(route('softwares.regist.complete'));
+        return $data;
     }
-
     public function detail($id){
 
         $softwareDetails = Softwares::getSoftwareDetail($id);
@@ -268,34 +253,11 @@ class SoftwaresController extends Controller
 
         unset($updateData['id']);
 
-        //process first software type if software type selected is others
-        if($updateData['software_type_id'] == config('constants.SOFTWARE_TYPE_999'))
-        {
-            //save first the new software type to software_types table
-            $insertSoftwareTypeData["type_name"] = $updateData['new_software_type'];
-            $insertSoftwareTypeData['created_by'] = Auth::user()->id;
-            $insertSoftwareTypeData['updated_by'] = Auth::user()->id;
-            if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE'))
-            {
-                $insertSoftwareTypeData['approved_status'] = config('constants.APPROVED_STATUS_APPROVED');
-            }
-            else{
-                $insertSoftwareTypeData['approved_status'] = config('constants.APPROVED_STATUS_PENDING');
-            }
-                
-            //then get the new id of the new created software type and st it to the insert data
-            $software_type_id = SoftwareTypes::create($insertSoftwareTypeData)->id;
 
-            //create logs
-            Logs::createLog("Software", 'Added Software Type id: ' . strval($software_type_id). ", type name: ".  $insertSoftwareTypeData["type_name"]);
-
-            //use the new software_type_id as the value ot softwares' software_type_id
-            $updateData['software_type_id'] = $software_type_id;
-                
-        }
+        //process software Type 
+        $updateData = $this->processNewSoftwareType($updateData);
         //then unset "new_software_type"
         unset($updateData['new_software_type']);
-
 
         //check logined employee role
         if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){

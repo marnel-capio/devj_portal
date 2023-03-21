@@ -276,7 +276,7 @@ class ApiController extends Controller
             'status' => $request->get('status'),
             'type' => $request->get('type'),
         ];
- 
+
         $softwarelist = Softwares::getSoftwareForList($searchFilter['keyword'], $searchFilter['status'], $searchFilter['type']);
 
         return response()->json([
