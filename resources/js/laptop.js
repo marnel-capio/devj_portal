@@ -21,6 +21,9 @@ $(document).ready(function(){
     $(".laptop-status").click(function(){
         filterLaptopList();
     })
+    $(".laptop-filter").click(function(){
+        filterLaptopList();
+    })
     $("#search-input").on('input', function(){
         filterLaptopList();
     })
@@ -35,6 +38,7 @@ $(document).ready(function(){
                 keyword: $('input[name=searchInput]').val(),
                 availability: $('input[name=laptopAvailability]:checked').val(),
                 status: $('input[name=laptopStatus]:checked').val(),
+                searchFilter: $('input[name=searchFilter]:checked').val(),
             },
             dataType: "json",
             encode: true
@@ -46,10 +50,12 @@ $(document).ready(function(){
                 data.update.forEach(function(laptop){
                     laptopList.row.add([
                         '<a href="' + window.location.href + '/' + laptop.id + '">' + laptop.tag_number + '</a>',
-                        laptop.peza_form_number,
-                        laptop.peza_permit_number,
                         laptop.laptop_make,
                         laptop.laptop_model,
+                        laptop.laptop_cpu,
+                        laptop.laptop_clock_speed,
+                        laptop.laptop_ram,
+                        laptop.owner,
                         laptop.status
                     ])
                     .draw(false);
@@ -247,4 +253,31 @@ $(document).ready(function(){
         var linkId = $(this).data('linkid');
         $("#approve-link-in").val(linkId);
     })
+
+    setDisplayOfLinkage();
+    $("#link_to_self").click(function (e) {
+        setDisplayOfLinkage();
+    });
+
+    function setDisplayOfLinkage(){
+        if($("#link_to_self").is(":checked")){
+            $("#linkage_form").removeClass('d-none');
+        }else{
+            $("#linkage_form").addClass('d-none');
+        }
+    }
+
+    $("#lapreg_form").submit(function () {
+        console.log('submission');
+        if($("#link_to_self").length && $("#link_to_self").is(":checked")){
+            $("#link_to_self_hidden").prop("disabled", true);
+        }
+        if($("#brought_home_flag").is(":checked")){
+            $("#brought_home_flag_hidden").prop("disabled", true);
+        }
+        if($("#vpn_flag").is(":checked")){
+            $("#vpn_flag_hidden").prop("disabled", true);
+        }
+    });
+
 });

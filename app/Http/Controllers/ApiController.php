@@ -247,7 +247,6 @@ class ApiController extends Controller
             'filter' => $request->get('filter'),
             'status' => $request->get('status'),
         ];
-        // DB::enableQueryLog();
         $employee = Employees::whereIn('approved_status', [2,4]);
                     
        // get employees
@@ -286,7 +285,6 @@ class ApiController extends Controller
             'status' => $request->get('status'),
             'type' => $request->get('type'),
         ];
-        // DB::enableQueryLog();
         $software = Softwares::whereIn('approved_status', [config('constants.APPROVED_STATUS_REJECTED'),
                                                             config('constants.APPROVED_STATUS_APPROVED'),
                                                             config('constants.APPROVED_STATUS_PENDING'),
@@ -321,7 +319,7 @@ class ApiController extends Controller
     public function filterLaptopList(Request $request){
         $data = $request->all();
 
-        $laptopList = Laptops::getLaptopList($data['keyword'], $data['availability'], $data['status']);
+        $laptopList = Laptops::getLaptopList($data['keyword'], $data['availability'], $data['status'], $data['searchFilter']);
 
         return response()->json([
                                 'success' => true,
