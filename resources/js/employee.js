@@ -179,6 +179,7 @@ $(document).ready(function () {
 		"stateSave": true,
 		"bFilter": false,
 		"bPaginate": false,
+		"ordering": false,
 		"bInfo": false,
 		"oLanguage": {
 	        "sEmptyTable": "No Data"
@@ -195,6 +196,7 @@ $(document).ready(function () {
 			project_end: $("#project-end").val(),
 			project_role: $("#projectRoleList > option:selected").val(),
 			project_onsite: $("#project-onsite").is(':checked') ? 1 : 0,
+			remarks: $("#link_remarks").val()
 		};
 
 		$.ajax({
@@ -211,6 +213,8 @@ $(document).ready(function () {
 				$("#error-lp-proj-role").empty();
 				$("#error-lp-proj-start").empty();
 				$("#error-lp-proj-end").empty();
+				$("#error-lp-remarks").empty();
+				//error-lp-remarks
 				var projectError = data.data.project_id;
 				if(projectError && projectError.length > 0 ){
 					$("#error-lp-proj-name").html(projectError[0]).addClass('text-danger text-start');
@@ -230,12 +234,18 @@ $(document).ready(function () {
 				if(projectEndError && projectEndError.length > 0 ){
 					$("#error-lp-proj-end").html(projectEndError[0]).addClass('text-danger text-start');
 				}
+
+				var remarksError = data.data.remarks;
+				if(remarksError && remarksError.length > 0 ){
+					$("#error-lp-remarks").html(remarksError[0]).addClass('text-danger text-start');
+				}
 			}else{
 				$("#linkProjectForm").trigger('reset');
 				$("#error-lp-proj-name").empty();
 				$("#error-lp-proj-role").empty();
 				$("#error-lp-proj-start").empty();
 				$("#error-lp-proj-end").empty();
+				$("#error-lp-remarks").empty();
 				$("#projectList > option[value=" + postData.project_id + "]").remove();
 				$("#lp-success-msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;' + data.message + '.').addClass("text-success mb-2 text-start");
 

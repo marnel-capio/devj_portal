@@ -91,6 +91,7 @@ class LinkProject extends FormRequest
                 }],
     
                 'project_role' => 'required|in:1,2,3',
+                'remarks' => 'max:1024,'
             ];
     
             if(!empty($projectDetails)){

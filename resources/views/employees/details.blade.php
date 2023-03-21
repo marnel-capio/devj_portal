@@ -451,7 +451,7 @@
                                 <div class="col-12 g-3 form-floating">
                                     <select name="project_id" class="form-select" id="projectList" required>
                                         @foreach ( $projectList as $project )
-                                            <option data-mindate="{{ date('Y-m-d', strtotime($project['start_date']))  }}" data-maxdate="{{ !empty($project['end_date']) ? date('Y-m-d', strtotime($project['end_date'])) : date("Y-m-d")  }}" value="{{ $project['id'] }}">{{ $project['name'] }}</option>
+                                            <option data-mindate="{{ date('Y-m-d', strtotime($project['start_date']))  }}" data-maxdate="{{ !empty($project['end_date']) ? date('Y-m-d', strtotime($project['end_date'])) : ""  }}" value="{{ $project['id'] }}">{{ $project['name'] }}</option>
                                         @endforeach
                                     </select>
                                     <label for="projectList" class="text-center">Project Name</label>
@@ -471,22 +471,30 @@
                                 </div>
                             </div>
                             <div class="row mb-2">
-                                <div class="col-12 g-3 form-floating">
+                                <div class="col-6 g-3 form-floating">
                                     <select name="project_role" id="projectRoleList" class="form-select" required>
-                                        <option value="{{ config('constants.PROJECT_ROLE_TEAM_LEAD') }}">Team Lead</option>
-                                        <option value="{{ config('constants.PROJECT_ROLE_PROGRAMMER') }}">Programmer</option>
-                                        <option value="{{ config('constants.PROJECT_ROLE_QA') }}">QA</option>
+                                        @foreach (config('constants.PROJECT_ROLES') as $val => $text )
+                                        <option value="{{ $val }}">{{ $text }}</option>
+                                        @endforeach
                                     </select>
                                     <label for="projectRoleList" class="text-center">Role</label>
                                     <p id="error-lp-proj-role"></p>
                                 </div>
-                            </div>
-                            <div class="row mb-2">
                                 <div class="col-6 g-3 text-start">
+                                    <p></p>
                                     <div class="form-check">
-                                        <label for="project_onsite" class="form-check-label">Onsite</label>
-                                        <input type="checkbox" class="form-check-input" name="project_onsite" id="project-onsite" value="1">
+                                        <label for="project_onsite" class="form-check-label user-select-none">Onsite</label>
+                                        <input type="checkbox" class="form-check-input" name="project_onsite" id="project_onsite" value="1">
                                     </div>  
+                                </div>
+                            </div>
+                            <div class="row pt-2">
+                                <h6 class="text-start">Remarks</h6>
+                            </div>
+                            <div class="row text-start">
+                                <div class="gs-3 ge-3 gt-1">
+                                    <textarea name="remarks" id="link_remarks" rows="3" class="form-control"></textarea>
+                                    <p id="error-lp-remarks"></p>
                                 </div>
                             </div>
                         </form>

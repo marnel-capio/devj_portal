@@ -166,6 +166,7 @@ class ApiController extends Controller
             'end_date' => $request->filled('project_end') ? $data['project_end'] : NULL,
             'project_role_type' => $data['project_role'],
             'onsite_flag' => $data['project_onsite'] ? 1 : 0,
+            'remarks' => $data['remarks'],
             'created_by' => Auth::user()->id,
             'updated_by' => Auth::user()->id,
         ];

@@ -22,7 +22,8 @@ class Projects extends Model
                                         $query->select('project_id')
                                                 ->from('employees_projects')
                                                 ->where('employee_id', $id)
-                                                ->whereNull('end_date');
+                                                ->whereRaw('(end_date IS NULL or end_date > CURDATE())');
+
                                     })
                 ->get()
                 ->toArray();

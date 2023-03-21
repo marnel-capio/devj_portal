@@ -111,5 +111,12 @@ return [
     //Search filter constant
     'SOFTWARE_FILTER_STATUS_ALL' => 5,
     'SOFTWARE_FILTER_TYPE_ALL' => 7,
+
+    //project roles
+    'PROJECT_ROLES' => [
+        1 => 'Team Lead',
+        2 => 'Programmer',
+        3 => 'QA',
+    ],
     
 ];

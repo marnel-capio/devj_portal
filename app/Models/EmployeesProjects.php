@@ -21,17 +21,35 @@ class EmployeesProjects extends Model
                                 ,employees_projects.end_date
                                 ,projects.name
                                 ,projects.id as project_id
-                                ,case when isnull(projects.end_date) 
+                                ,case when projects.end_date IS NULL 
                                     then "Ongoing" 
-                                    else "Ended"
+                                    else 
+                                        case when projects.end_date > CURDATE()
+                                        then "Ongoing"
+                                        else "Ended"
+                                        end
                                     end as project_status'
                                 )
 
                     ->leftJoin('projects', 'projects.id',  'employees_projects.project_id')
                     ->where('employees_projects.employee_id', $id)
                     ->whereIn('employees_projects.approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
-                    ->orderByRaw('case when isnull(employees_projects.end_date) then 0 else 1 end ASC
-                                    , employees_projects.end_date DESC')
+                    ->orderByRaw('
+                                CASE WHEN employees_projects.end_date IS NULL 
+                                THEN 0 
+                                ELSE CASE WHEN employees_projects.end_date > CURDATE() 
+                                    THEN 0
+                                    ELSE 1 
+                                    END 
+                                END ASC,
+                                CASE WHEN employees_projects.end_date IS NULL 
+                                THEN 0 
+                                ELSE 1
+                                END ASC,
+                                employees_projects.end_date DESC,
+                                projects.name ASC
+                    
+                    ')
                     ->get()
                     ->toArray();
                     
@@ -48,5 +66,25 @@ class EmployeesProjects extends Model
                             ->get()
                             ->toArray();
         return !empty($detail);
+    }
+
+    static function getProjectMembersById ($id) {
+        return self::selectRaw('
+                    ep.*,
+                    CONCAT(DATE_FORMAT(ep.start_date, "%Y-%m-%d"), " - ", CASE WHEN ep.end_date IS NULL THEN "" ELSE DATE_FORMAT(ep.end_date, "%Y-%m-%d") END) AS membership_date,
+                    CONCAT(e.last_name, ", ", e.first_name) AS member_name,
+                    CASE WHEN ep.end_date IS NULL THEN 1 ELSE CASE WHEN  DATE_FORMAT(ep.end_date, "%Y-%m-%d") > CURDATE() THEN 1 ELSE 0 END END AS isActive
+
+                ')
+                ->from('employees_projects AS ep')
+                ->leftJoin('employees AS e', 'e.id', 'ep.employee_id')
+                ->where('ep.project_id', $id)
+                ->whereIn('ep.approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+                ->orderByRaw('CASE WHEN ep.end_date IS NULL THEN 0 ELSE CASE WHEN ep.end_date < CURDATE() THEN 1 ELSE 0 END END ASC')
+                ->orderBy('ep.project_role_type', 'asc')
+                ->orderBy('e.last_name', 'asc')
+                ->orderBy('e.first_name', 'asc')
+                ->get()
+                ->toArray();
     }
 }
