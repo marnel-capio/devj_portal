@@ -61,7 +61,7 @@ Route::middleware(['auth', 'web', 'isActive'])->group(function(){
 
     Route::prefix('/laptops')->controller(LaptopsController::class)->group(function(){
         Route::get('/', 'index')->name('laptops.index');
-        Route::get('/download', 'download')->name('laptops.download');
+        Route::post('/download', 'download')->name('laptops.download');
         Route::get('/create/{rejectCode?}', 'create')->name('laptops.create');
         Route::post('/regist', 'regist')->name('laptops.regist');
         Route::get('/{id}', 'details')->name('laptops.details');

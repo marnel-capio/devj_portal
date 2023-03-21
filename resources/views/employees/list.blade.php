@@ -69,7 +69,7 @@
 		</div>
 		<div class="row row-list">
 			<div class="col-10">
-				<input type="text" name="searchInput" class="search-input-text" id="search-input" placeholder="Search">
+				<input type="text" name="searchInput" class="search-input-text form-control" id="search-input" placeholder="Search">
 			</div>
 
 			<div class="col">

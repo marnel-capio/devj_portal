@@ -549,7 +549,6 @@ class EmployeesController extends Controller
 
     public function sendNotification(){
         // get all active employee
-        // DB::enableQueryLog();
         $employee = Employees::select('id', 'email','first_name')
                     ->where('active_status',1)
                     ->where(function($query) {
@@ -557,8 +556,7 @@ class EmployeesController extends Controller
                             ->orWhere('approved_status', 4);
                     })
                     ->where('email',"!=",'devj-portal@awsys-i.com')->get();
-        // $query = DB::getQueryLog();
-        // dd($query);            
+
         foreach ($employee as $key => $detail) {
             $email = $detail['email'];
             //send mail
