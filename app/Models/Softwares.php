@@ -65,11 +65,13 @@ class Softwares extends Model
             {
                 $query = $query->where('softwares.approved_status','LIKE','%'.$status.'%');
             }
+
         }
         if(!empty($type))
         {
             if($type != config('constants.SOFTWARE_FILTER_TYPE_ALL'))//status choses is all
             {
+
                 $query = $query->where('softwares.software_type_id','LIKE','%'.$type.'%');
             }
 

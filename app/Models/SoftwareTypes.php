@@ -11,4 +11,5 @@ class SoftwareTypes extends Model
     protected $guarded = [];
     const UPDATED_AT = 'update_time';
     const CREATED_AT = 'create_time';
+
 }

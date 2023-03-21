@@ -29,7 +29,8 @@ $(document).ready(function () {
         filterSoftwareList();
     });
 
-    $(".soft-search-type-rdb-input").on("click", function(){
+    $(".soft-search-type-rdb-input").on("change", function(){
+		console("Entered");
         filterSoftwareList();
     });
 

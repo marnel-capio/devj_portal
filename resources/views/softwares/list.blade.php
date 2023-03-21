@@ -20,47 +20,6 @@
 	</div>
 	<br>
 	<h3> Software List </h3>
-    <div class="row row-list">
-        <div class="col-1 filter-software">
-			Type: 
-		</div>
-		<div class="col-11">
-			<input class="soft-search-type-rdb-input" type="radio" name="softwaretype" id="type-all" value="7" checked>
-			<label class="soft-search-status-rdb-label  form-check-label" for="type-all">
-			    All
-			</label>
-			&nbsp;&nbsp;			
-			<input class="soft-search-type-rdb-input" type="radio" name="softwaretype" id="type-productivity-tools" value="1">
-			<label class="soft-search-status-rdb-label  form-check-label" for="type-productivity-tools">
-			    Productivity Tools
-			</label>
-			&nbsp;&nbsp;
-			<input class="soft-search-type-rdb-input" type="radio" name="softwaretype" id="type-messaging" value="2" >
-			<label class="soft-search-status-rdb-label form-check-label" for="type-messaging">
-			    Messaging
-			</label>
-			&nbsp;&nbsp;
-			<input class="soft-search-type-rdb-input" type="radio" name="softwaretype" id="type-browser" value="3" >
-			<label class="soft-search-status-rdb-label form-check-label" for="type-browser">
-			    Browser
-			</label>
-			&nbsp;&nbsp;
-			<input class="soft-search-type-rdb-input" type="radio" name="softwaretype" id="type-system-tilities" value="4" >
-			<label class="soft-search-status-rdb-label form-check-label" for="type-system-tilities">
-			    System Utility
-			</label>
-			&nbsp;&nbsp;
-			<input class="soft-search-type-rdb-input" type="radio" name="softwaretype" id="type-project-specific" value="5" >
-			<label class="soft-search-status-rdb-label form-check-label" for="type-project-specific">
-			    Project Specific Software
-			</label>
-			&nbsp;&nbsp;
-			<input class="soft-search-type-rdb-input" type="radio" name="softwaretype" id="type-phone-drivers" value="6" >
-			<label class="soft-search-status-rdb-label form-check-label" for="type-phone-drivers">
-			    Phone Driver
-			</label>			
-		</div>
-	</div>
 	<div class="row row-list">
 		<div class="col-1 filter-software">
 			Status: 
@@ -93,14 +52,25 @@
 		</div>
 	</div>
 	<div class="row row-list mb-2 mt-2 align-middle">
-		<div class="col-8">
-			<input type="text" name="softSearchInput" class="search-input-text form-control" id="soft-search-input" placeholder="Search">
+		<div class="col-4 form-floating" >
+			<select name="software_type_id" id="software_type_id" class="soft-search-type-rdb-input form-select form-control">
+				<option {{ old('type') == config('constants.SOFTWARE_TYPE_999') ? "selected" : "" }} value={{config('constants.SOFTWARE_TYPE_999')}}>{{ config('constants.SOFTWARE_FILTER_TYPE_ALL_NAME') }}</option>
+				@foreach ($software_types as $software_type)
+					<option {{ old('type') == $software_type['id'] ? "selected" : "" }} value={{ $software_type['id']}}>{{ $software_type['type_name'] }}</option>
+				@endforeach
+			</select>
+			<label  class="text-center" for="software_type_id">Type</label>			
 		</div>
-		<div class="col-4 text-end">
+	</div>	
+	<div class="row row-list mb-2 mt-2 align-middle">
+		<div class="col-4 ">
+			<input type="text" name="softSearchInput" class=" form-control" id="soft-search-input" placeholder="Search">
+		</div>
+		<div class="col-8 text-end">
 			<a href="{{ route('softwares.create') }}" class="btn btn-success me-1" id='send-notif'>Create</a>
 			<button type="submit" class="btn btn-primary ms-1" form="download" >Download</button>
 			<form action="{{  route('softwares.download')  }}" method="GET" id="download">
-                @csrf
+				@csrf
 			</form>
 		</div>
 	</div>

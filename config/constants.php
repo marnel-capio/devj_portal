@@ -101,5 +101,7 @@ return [
     //Search filter constant
     'SOFTWARE_FILTER_STATUS_ALL' => 5,
     'SOFTWARE_FILTER_TYPE_ALL' => 999,
+    'SOFTWARE_FILTER_TYPE_PROD_UTIL' => 1,
+    'SOFTWARE_FILTER_TYPE_ALL_NAME' => 'All',
     
 ];

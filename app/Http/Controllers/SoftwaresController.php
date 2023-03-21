@@ -650,10 +650,14 @@ class SoftwaresController extends Controller
 
         $this->getLastSoftwareApproverNote($list_note_approve_by, $list_note_approve_on);
        
+        //get the software list regardless of the approved status
+        $software_types = SoftwareTypes::get()->toArray();
+
         return view('softwares/list', [
                                         'software_request' => $software_request,
                                         'list_note_approve_by' => $list_note_approve_by,
-                                        'list_note_approve_on' => $list_note_approve_on]);
+                                        'list_note_approve_on' => $list_note_approve_on,
+                                        'software_types' => $software_types]);
     }
 
     public function getLastSoftwareApproverNote(&$list_note_approve_by, &$list_note_approve_on)

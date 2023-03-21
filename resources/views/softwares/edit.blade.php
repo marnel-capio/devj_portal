@@ -46,7 +46,7 @@
                                 {{ (old('software_type_id', $software ? $software->software_type_id : '') == config('constants.SOFTWARE_TYPE_999') || ($new_software_type) )   ? "selected" : "" }} 
                                 value="{{ config('constants.SOFTWARE_TYPE_999') }}">{{ config('constants.SOFTWARE_TYPE_999_NAME') }}</option>
                         </select>
-                        <label  class="text-center" for="software_type_id">Software Type</label>
+                            <label  class="text-center" for="software_type_id">Software Type</label>
                         @if ($errors->has('software_type_id'))
                             <p class="text-danger">{{ $errors->first('software_type_id') }}</p>
                         @endif
@@ -125,36 +125,6 @@
                 <button class="btn btn-primary btn-lg mb-5 btn-prevent-multiple-submit" id="soft-update-submit" type="submit">Update</button>
             </div>
         </form>
-    </div>
-
-    <div class="modal fade" tabindex="-1" id="addtype">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-start">Add Software Type</h5>
-                </div>
-                <div class="modal-body">
-                    <div class="p-2">
-                        <div id="lp-success-msg"></div>
-                        <form action="#" id="addtypeForm">
-                            <div class="row mb-2">
-                                <div class="col-12 g-3 form-floating">
-                                    <input type="text" class="form-control" name="project_type" id="project_type" placeholder="Project Type" value="" required>
-                                    <label class="text-center" for="project_type">Software Type</label>
-                                    @if ($errors->has('project_type'))
-                                    <p class="text-danger">{{ $errors->first('project_type') }}</p>
-                                    @endif
-                                </div>                                
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button class="btn btn-primary" type="submit" id="lp-submit-btn">Add</button>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 
