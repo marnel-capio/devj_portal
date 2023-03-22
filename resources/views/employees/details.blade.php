@@ -52,19 +52,23 @@
                                 </div>
                                 <div class="modal-body">
                                     <div class="p-2">
-                                        <div id="cp-success-msg">
+                                        <div id="bu_transfer_msg">
                                         </div>
                                         <form action="#" id="transferEmployeeForm">
                                             @csrf
                                             <input type="text" hidden name="id" value="{{ $employee->id }}">
                                             <input name="bu_transfer_assignment" type="text" class="form-control" required>
-                                            <span id="bu_transfer_assignment_error"></span>
+                                            {{-- <span id="bu_transfer_assignment_error"></span> --}}
                                         </form>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
                                     <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button class="btn btn-primary" type="submit" id="cp-submit-btn">Submit</button>
+                                    <button class="btn btn-primary" type="submit" form="transferEmployeeForm">Submit
+                                        <div id="transfer_reinstate_spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                                            <span class="sr-only"></span>
+                                        </div>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -159,21 +163,21 @@
                 <h4 class="text-start">Employee </h4>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="first_name" id="first_name" placeholder="First Name" value="{{ $employee->first_name }}" required @readonly($readOnly)>
+                        <input type="text" class="form-control" name="first_name" id="first_name" placeholder="First Name" value="{{ $employee->first_name }}" required disabled>
                         <label class="text-center" for="first_name">First Name</label>
                         @if ($errors->has('first_name'))
                         <p class="text-danger">{{ $errors->first('first_name') }}</p>
                         @endif
                     </div>
                     <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="middle_name" id="middle_name" placeholder="Middle Name" value="{{ $employee->middle_name }}" required @readonly($readOnly)>
+                        <input type="text" class="form-control" name="middle_name" id="middle_name" placeholder="Middle Name" value="{{ $employee->middle_name }}" required disabled>
                         <label  class="text-center" for="middle_name">Middle Name</label>
                         @if ($errors->has('first_name'))
                         <p class="text-danger">{{ $errors->first('middle_name') }}</p>
                         @endif
                     </div>
                     <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="last_name" id="last_name" placeholder="Last Name" value="{{ $employee->last_name }}" required @readonly($readOnly)>
+                        <input type="text" class="form-control" name="last_name" id="last_name" placeholder="Last Name" value="{{ $employee->last_name }}" required disabled>
                         <label  class="text-center" for="last_name">Last Name</label>
                         @if ($errors->has('last_name'))
                         <p class="text-danger">{{ $errors->first('last_name') }}</p>
@@ -182,7 +186,7 @@
                 </div>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-4 g-3 form-floating">
-                        <input type="date" class="form-control" name="birthdate" id="birthdate" placeholder="birthdate" value="{{ old('birthdate') ?: $employee->birthdate }}" pattern="\d{4}-\d{2}-\d{2}" required @readonly($readOnly)>
+                        <input type="date" class="form-control" name="birthdate" id="birthdate" placeholder="birthdate" value="{{ old('birthdate') ?: $employee->birthdate }}" pattern="\d{4}-\d{2}-\d{2}" required disabled>
                         <label  class="text-center" for="birthdate">Birth Date</label>
                         @if ($errors->has('birthdate'))
                         <p class="text-danger">{{ $errors->first('birthdate') }}</p>
@@ -195,11 +199,11 @@
                             </div>
                             <div class="d-inline">
                                 <div class="form-check form-check-inline">
-                                    <input type="radio" class="form-check-input" name="gender" id="femaleRadio" value="0" {{ $employee->gender == 0 ? "checked" : "" }} {{ $readOnly ? 'disabled' : '' }}>
+                                    <input type="radio" class="form-check-input" name="gender" id="femaleRadio" value="0" {{ $employee->gender == 0 ? "checked" : "" }} disabled>
                                     <label class="form-check-label" for="femaleRadio">Female</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input type="radio" class="form-check-input" name="gender" id="maleRadio" value="1" {{ $employee->gender == 1 ? "checked" : "" }} {{ $readOnly ? 'disabled' : '' }}>
+                                    <input type="radio" class="form-check-input" name="gender" id="maleRadio" value="1" {{ $employee->gender == 1 ? "checked" : "" }} disabled>
                                     <label class="form-check-label" for="maleRadio">Male</label>
                                 </div>
                             </div>
@@ -211,7 +215,7 @@
                 </div>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-md-6 col-8 g-3 form-floating">
-                        <select name="position" id="position" class="form-select form-control" {{ $readOnly ? 'disabled' : '' }}>
+                        <select name="position" id="position" class="form-select form-control" disabled>
                             <option {{ $employee->position == 1 ? "selected" : "" }} value="1">{{ config('constants.POSITION_1_NAME') }}</option>
                             <option {{ $employee->position == 2 ? "selected" : "" }} value="2">{{ config('constants.POSITION_2_NAME') }}</option>
                             <option {{ $employee->position == 3 ? "selected" : "" }} value="3">{{ config('constants.POSITION_3_NAME') }}</option>
@@ -235,7 +239,7 @@
                         <div class="d-flex align-items-center">
                             <div class="form-check ">
                                 <label class="form-check-label" for="server-manage-flag">Manage Server</label>
-                                <input type="checkBox" class="form-check-input" name="server_manage_flag" id="server-manage-flag" value="1" {{ $employee->server_manage_flag == 1 ? "checked" : "" }} {{ $readOnly ? 'disabled' : '' }}>
+                                <input type="checkBox" class="form-check-input" name="server_manage_flag" id="server-manage-flag" value="1" {{ $employee->server_manage_flag == 1 ? "checked" : "" }} disabled>
                             </div>
                             @if ($errors->has('server_manage_flag'))
                             <p class="text-danger">{{ $errors->first('server_manage_flag') }}</p>
@@ -247,7 +251,7 @@
                         <div class="d-flex align-items-center" style="height: 100%">
                             <div class="form-check ">
                                 <label class="form-check-label" for="is-admin-detail">Admin</label>
-                                <input type="checkBox" class="form-check-input" name="is_admin" id="is-admin-detail" value="0" {{ $employee->roles == config('constants.ADMIN_ROLE_VALUE') ? "checked" : "" }} {{ $readOnly ? 'disabled' : '' }}>
+                                <input type="checkBox" class="form-check-input" name="is_admin" id="is-admin-detail" value="0" {{ $employee->roles == config('constants.ADMIN_ROLE_VALUE') ? "checked" : "" }} disabled>
                             </div>
                         </div>
                     </div>
@@ -259,7 +263,7 @@
                 <h4 class="text-start">Contact </h4>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="email" id="email" placeholder="Email" required value="{{ $employee->email }}" readonly>
+                        <input type="text" class="form-control" name="email" id="email" placeholder="Email" required value="{{ $employee->email }}" disabled>
                         <label for="email" class="text-center">Email Address</label>
                         @if ($errors->has('email'))
                         <p class="text-danger">{{ $errors->first('email') }}</p>
@@ -271,7 +275,7 @@
                         <div class="input-group">
                             <span class="input-group-text">+63</span>
                             <div class="form-floating">
-                                <input type="text" class="form-control" name="cellphone_number" id="contact" placeholder="Contact Number" required value="{{ $employee->cellphone_number }}" @readonly($readOnly)>
+                                <input type="text" class="form-control" name="cellphone_number" id="contact" placeholder="Contact Number" required value="{{ $employee->cellphone_number }}" disabled>
                                 <label for="contact" class="text-center">Contact Number</label>
                             </div>
                         </div>
@@ -280,7 +284,7 @@
                         @endif
                     </div>
                     <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="other_contact_info" id="other_contact" placeholder="Other Contact Number" value="{{ $employee->other_contact_info }}" @readonly($readOnly)>
+                        <input type="text" class="form-control" name="other_contact_info" id="other_contact" placeholder="Other Contact Number" value="{{ $employee->other_contact_info }}" disabled>
                         <label for="other_contact" class="text-center">Other Contact Info (optional)</label>
                         @if ($errors->has('other_contact_info'))
                         <p class="text-danger">{{ $errors->first('other_contact_info') }}</p>
@@ -292,7 +296,7 @@
                 <h4 class="text-start">Current Address</h4>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-12 g-3 form-floating">
-                        <input type="text" class="form-control" name="current_address_street" id="cur-add-strt" placeholder="Street" required value="{{ $employee->current_address_street }}" @readonly($readOnly)>
+                        <input type="text" class="form-control" name="current_address_street" id="cur-add-strt" placeholder="Street" required value="{{ $employee->current_address_street }}" disabled>
                         <label for="cur-add-strt" class="text-center">Street</label>
                         @if ($errors->has('current_address_street'))
                         <p class="text-danger">{{ $errors->first('current_address_street') }}</p>
@@ -301,21 +305,21 @@
                 </div>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="current_address_city" id="cur-add-town" placeholder="Town" required value="{{ $employee->current_address_city }}" @readonly($readOnly)>
+                        <input type="text" class="form-control" name="current_address_city" id="cur-add-town" placeholder="Town" required value="{{ $employee->current_address_city }}" disabled>
                         <label for="cur-add-town" class="text-center">Town/City</label>
                         @if ($errors->has('current_address_city'))
                         <p class="text-danger">{{ $errors->first('current_address_city') }}</p>
                         @endif
                     </div>
                     <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="current_address_province" id="cur-add-prov" placeholder="Province" required value="{{ $employee->current_address_province }}" @readonly($readOnly)>
+                        <input type="text" class="form-control" name="current_address_province" id="cur-add-prov" placeholder="Province" required value="{{ $employee->current_address_province }}" disabled>
                         <label for="cur-add-prov" class="text-center">Province/Region</label>
                         @if ($errors->has('current_address_province'))
                         <p class="text-danger">{{ $errors->first('current_address_province') }}</p>
                         @endif
                     </div>
                     <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="current_address_postalcode" id="cur-add-postal" placeholder="Postal Code" required value="{{ $employee->current_address_postalcode }}" @readonly($readOnly)>
+                        <input type="text" class="form-control" name="current_address_postalcode" id="cur-add-postal" placeholder="Postal Code" required value="{{ $employee->current_address_postalcode }}" disabled>
                         <label for="cur-add-postal" class="text-center">Postal Code</label>
                         @if ($errors->has('current_address_postalcode'))
                         <p class="text-danger">{{ $errors->first('current_address_postalcode') }}</p>
@@ -327,7 +331,7 @@
                 <h4 class="text-start">Permanent Address</h4>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-12 g-3 form-floating">
-                        <input type="text" class="form-control" name="permanent_address_street" id="perm-add-strt" placeholder="Street" required value="{{ $employee->permanent_address_street }}" @readonly($readOnly)>
+                        <input type="text" class="form-control" name="permanent_address_street" id="perm-add-strt" placeholder="Street" required value="{{ $employee->permanent_address_street }}" disabled>
                         <label for="perm-add-strt" class="text-center">Street</label>
                         @if ($errors->has('permanent_address_street'))
                         <p class="text-danger">{{ $errors->first('permanent_address_street') }}</p>
@@ -336,21 +340,21 @@
                 </div>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="permanent_address_city" id="perm-add-town" placeholder="Town" required value="{{ $employee->permanent_address_city }}" @readonly($readOnly)>
+                        <input type="text" class="form-control" name="permanent_address_city" id="perm-add-town" placeholder="Town" required value="{{ $employee->permanent_address_city }}" disabled>
                         <label for="perm-add-town" class="text-center">Town/City</label>
                         @if ($errors->has('permanent_address_city'))
                         <p class="text-danger">{{ $errors->first('permanent_address_city') }}</p>
                         @endif
                     </div>
                     <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="permanent_address_province" id="perm-add-prov" placeholder="Province" required value="{{ $employee->permanent_address_province }}" @readonly($readOnly)>
+                        <input type="text" class="form-control" name="permanent_address_province" id="perm-add-prov" placeholder="Province" required value="{{ $employee->permanent_address_province }}" disabled>
                         <label for="perm-add-prov" class="text-center">Province/Region</label>
                         @if ($errors->has('permanent_address_province'))
                         <p class="text-danger">{{ $errors->first('permanent_address_province') }}</p>
                         @endif
                     </div>
                     <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="permanent_address_postalcode" id="perm-add-postal" placeholder="Postal Code" required value="{{ $employee->permanent_address_postalcode }}" @readonly($readOnly)>
+                        <input type="text" class="form-control" name="permanent_address_postalcode" id="perm-add-postal" placeholder="Postal Code" required value="{{ $employee->permanent_address_postalcode }}" disabled>
                         <label for="perm-add-postal" class="text-center">Postal Code</label>
                         @if ($errors->has('permanent_address_postalcode'))
                         <p class="text-danger">{{ $errors->first('permanent_address_postalcode') }}</p>

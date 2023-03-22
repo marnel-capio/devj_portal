@@ -475,26 +475,49 @@ $(document).ready(function () {
 		})
 	});
 
-	$("#alert-div").on("click", "#notify-surrender", function(e){
+	//end for for employee deactivation/reactivation
+
+	//start for employee bu transfer/reinstate
+
+	//bu transfer - form submission
+	$("#transferEmployeeForm").on('submit', function (e) {
+		$("#transfer_reinstate_spinner").show();
+
+		var formData = $(this).serializeArray();
+        var arrData = [];
+        formData.forEach(function(data){
+            arrData[data['name']] = data['value'];
+        });
+		var jsonData = JSON.stringify(Object.assign({}, arrData));
+        jsonData = JSON.parse(jsonData);
+
 		$.ajax({
 			type: "POST",
-			url: NOTIFY_SURRENDER_OF_LAPTOPS_LINK,
-			data: {id: $("#deact-react-form > input[name=id").val(), _token: $("#deact-react-form > input[name=_token").val()},
+			url: TRANSFER_EMPLOYEE_LINK,
+			data: jsonData,
 			dataType: "json",
 			encode: true,
-		}).done(function(data){
-			$("#deact-react-alert").remove();
-			if(data.success){
-				//display success message
-				$("#alert-div").append('<div id="deact-react-alert" class="alert alert-success" role="alert"><span class="ms-2">' + data.message + '</span></div>');
-			}else{
-				//display error 
-				$("#alert-div").append('<div id="deact-react-alert" class="alert alert-danger" role="alert"><span class="ms-2">' + data.message + '</span></div>');
+		}).done( function (data) {
+			$("#transfer_reinstate_spinner").hide();
+			console.log(data);
+			if (data.success) {
+				location.reload();
+			} else {
+				//display error message
+				$("#bu_transfer_msg").text(data.message).addClass("text-danger text-start pb-1");
 			}
-		}).fail(function(){
-			console.log('error');
 		})
-	});
+		e.preventDefault();
+	})
 
-	//end for for employee deactivation/reactivation
+	$('#buTransferModal').on('hidden.bs.modal', function(){
+		$("#bu_transfer_msg").empty();
+	})
+
+
+
+
+
+	//end for employee bu transfer/reinstate
+
 });

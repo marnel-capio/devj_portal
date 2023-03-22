@@ -706,6 +706,10 @@ class ApiController extends Controller
     }
 
     public function transferEmployee (Request $request) {
+        $employeeId = $request->input('id');
+        $message = '';
+        $success = false;
+
         if(empty($employeeId)){
             $message = 'Invalid Request!';
         }else{
@@ -742,6 +746,10 @@ class ApiController extends Controller
     }
 
     public function reinstateEmployee (Request $request) {
+        $employeeId = $request->input('id');
+        $message = '';
+        $success = false;
+
         if(empty($employeeId)){
             $message = 'Invalid Request!';
         }else{
