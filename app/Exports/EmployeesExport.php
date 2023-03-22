@@ -106,6 +106,7 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithEvent
             $setting = [
                 AfterSheet::class => function(AfterSheet $event) {
                     $event->sheet
+                        ->setSelectedCell('A1')
                         ->getPageSetup()
                         ->setOrientation(WorksheetPageSetup::ORIENTATION_LANDSCAPE)
                         ->setPaperSizeDefault(WorksheetPageSetup::PAPERSIZE_A4);
@@ -116,6 +117,7 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithEvent
             $setting = [
                 AfterSheet::class => function(AfterSheet $event) {
                     $event->sheet
+                        ->setSelectedCell('A1')
                         ->getPageSetup()
                         ->setOrientation(WorksheetPageSetup::ORIENTATION_LANDSCAPE);
                 },
@@ -156,8 +158,14 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithEvent
 
         if (Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
             if ($status != 1) {
-                $employeeStatus = $status == 2 ? 1 : 0;
-                $employee = $employee->where('active_status', $employeeStatus);
+                if ($status != 1) {
+                    if ($status == 4) {
+                        $employee = $employee->where('bu_transfer_flag', 1);
+                    }else{
+                        $employeeStatus = $status == 2 ? 1 : 0;
+                        $employee = $employee->where('active_status', $employeeStatus);
+                    }
+                }
             }
         }else{
             $employee = $employee->where('active_status', 1);

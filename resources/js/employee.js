@@ -3,6 +3,8 @@ const LINK_LAPTOP_LINK = '/api/linkLaptop';
 const LINK_PROJECT_LINK = '/api/linkProject';
 const DEACTIVATE_EMPLOYEE_LINK = '/api/deactivateEmployee';
 const REACTIVATE_EMPLOYEE_LINK = '/api/reactivateEmployee';
+const TRANSFER_EMPLOYEE_LINK = '/api/transferEmployee';
+const REINSTATE_EMPLOYEE_LINK = '/api/reinstateEmployee';
 const NOTIFY_SURRENDER_OF_LAPTOPS_LINK = '/api/notifySurrender'
 
 $(document).ready(function () {
@@ -441,13 +443,9 @@ $(document).ready(function () {
 			if(data.success){
 				location.reload();
 			}else{
-				var notify = '';
 				//display error 
 				$("#deact-react-alert").remove();
-				if(data.notify){
-					notify = '<br><span id="span-on" class="ms-2">If you wish to notify the employee to surrender all the linked laptops, click <button id="notify-surrender" class="btn btn-link">request to surrender</button>.</span>'
-				}
-				$("#alert-div").append('<div id="deact-react-alert" class="alert alert-danger" role="alert"><span class="ms-2">' + data.message + '</span>' + notify + '</div>');
+				$("#alert-div").append('<div id="deact-react-alert" class="alert alert-danger" role="alert"><span class="ms-2">' + data.message + '</span></div>');
 			}
 			$("#react-deact-spinner").hide();
 		}).fail(function(){

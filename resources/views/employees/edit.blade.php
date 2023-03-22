@@ -106,18 +106,6 @@
                     <div class="col-lg-2 col-4 g-3 ps-1">
                         <div class="d-flex align-items-center">
                             <div class="form-check ">
-                                <label class="form-check-label" for="active-status">Active Status</label>
-                                <input type="checkBox" class="form-check-input" name="active_status" id="active-status" value="1" {{ old('active_status', $employee->active_status) == 1 ? "checked" : "" }} {{ !$isManager ? 'disabled' : '' }}>
-                                <input type="text" hidden value="0" name="active_status" id="active-status-hidden">
-                            </div>
-                        </div>
-                        @if ($errors->has('active_status'))
-                        <p class="text-danger">{{ $errors->first('active_status') }}</p>
-                        @endif
-                    </div>
-                    <div class="col-lg-2 col-4 g-3 ps-1">
-                        <div class="d-flex align-items-center">
-                            <div class="form-check ">
                                 <label class="form-check-label" for="server-manage-flag">Manage Server</label>
                                 <input type="checkBox" class="form-check-input" name="server_manage_flag" id="server-manage-flag" value="1" {{ old('server_manage_flag', $employee->server_manage_flag) == 1 ? "checked" : "" }} {{ !$isManager ? 'disabled' : '' }}>
                                 <input type="text" hidden value="0" name="server_manage_flag" id="server-manage-flag-hidden">

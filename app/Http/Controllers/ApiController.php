@@ -265,8 +265,12 @@ class ApiController extends Controller
 
         if (Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
             if ($searchFilter['status'] != 1) {
-                $status = $searchFilter['status'] == 2 ? 1 : 0;
-                $employee = $employee->where('active_status', $status);
+                if ($searchFilter['status'] == 4) {
+                    $employee = $employee->where('bu_transfer_flag', 1);
+                }else{
+                    $status = $searchFilter['status'] == 2 ? 1 : 0;
+                    $employee = $employee->where('active_status', $status);
+                }
             }
         }else{
             $employee = $employee->where('active_status', 1);
@@ -596,7 +600,6 @@ class ApiController extends Controller
         $employeeId = $request->input('id');
         $message = '';
         $success = false;
-        $notify = false;
 
         if(empty($employeeId)){
             $message = 'Invalid Request!';
@@ -625,10 +628,10 @@ class ApiController extends Controller
                 }else{
                     $success = true;
                     //deactivate employee
-                    $notify = true;
                     Employees::where('id', $employeeId)
                                 ->update([
                                     'active_status' => 0,
+                                    'bu_transfer_flag' => 0,
                                     'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
                                     'updated_by' => Auth::user()->id,
                                     'approved_by' => Auth::user()->id,
@@ -650,7 +653,6 @@ class ApiController extends Controller
 
         return response()->json([
             'success' => $success,
-            'notify' => $notify,
             'message' => $message,
         ]);
     }
@@ -703,33 +705,69 @@ class ApiController extends Controller
         ]);
     }
 
-    public function notifySurrenderOfLaptops(Request $request){
-        $id = $request->input('id');
-        $message = 'Email has been sent.';
-        $success = false;
-        if(empty($id)){
-            $message = 'Invalid request!';
+    public function transferEmployee (Request $request) {
+        if(empty($employeeId)){
+            $message = 'Invalid Request!';
         }else{
-            $employee = Employees::where('id', $id)
-                                    ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
-                                    ->first();
-
+            $employee = Employees::where('id', $employeeId)
+                                ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+                                ->first();
             if(empty($employee)){
-                $message = 'Invalid request!';
+                $message = 'Invalid Request!';
+            }elseif($employee->bu_transfer_flag == 1){
+                $message = 'Employee has already been assigned to a different BU.';
             }else{
                 $success = true;
-                $laptops = EmployeesLaptops::getOwnedLaptopByEmployee($id);
-    
-                $mailData = [
-                    'first_name' => $employee->first_name,
-                    'module' => 'Employee',
-                    'currentUserId' => Auth::user()->id,
-                    'laptops' => $laptops
-                ];
-    
-                $this->sendMailForEmployeeUpdate($employee->email, $mailData, config('constants.MAIL_EMPLOYEE_SURRENDER_LAPTOP_NOTIFICATION'));
+                //transfer employee
 
-                Logs::createLog('Employee', "Notified {$employee->first_name} {$employee->last_name} to surrender all linked laptops.");
+                Employees::where('id', $employeeId)
+                            ->update([
+                                'bu_transfer_flag' => 1,
+                                'bu_transfer_assignment' => $request->input('bu_transfer_assignment'),
+                                'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
+                                'updated_by' => Auth::user()->id,
+                                'approved_by' => Auth::user()->id,
+                            ]);
+                
+                Logs::createLog('Employee', "Assigned {$employee->first_name} {$employee->last_name} to a different BU ({$request->input('bu_transfer_assignment')})");
+
+                session(['success' => $success, 'message'=> 'Account was successfully updated.']);
+            }
+        }
+
+        return response()->json([
+            'success' => $success,
+            'message' => $message,
+        ]);
+    }
+
+    public function reinstateEmployee (Request $request) {
+        if(empty($employeeId)){
+            $message = 'Invalid Request!';
+        }else{
+            $employee = Employees::where('id', $employeeId)
+                                ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+                                ->first();
+            if(empty($employee)){
+                $message = 'Invalid Request!';
+            }elseif($employee->bu_transfer_flag == 0){
+                $message = 'Employee is already assigned to Dev J.';
+            }else{
+                $success = true;
+                //reinstate employee
+
+                Employees::where('id', $employeeId)
+                            ->update([
+                                'bu_transfer_flag' => 0,
+                                'bu_transfer_assignment' => NULL,
+                                'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
+                                'updated_by' => Auth::user()->id,
+                                'approved_by' => Auth::user()->id,
+                            ]);
+                
+                Logs::createLog('Employee', "Reassigned {$employee->first_name} {$employee->last_name} to Dev J");
+
+                session(['success' => $success, 'message'=> 'Account was successfully updated.']);
             }
         }
 

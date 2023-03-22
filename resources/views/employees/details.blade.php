@@ -42,6 +42,40 @@
                         </div>
                     </button>
                 @endif
+                @if ($employee->bu_transfer_flag == 0)
+                    <button class="btn btn-warning ms-1" id="employee-transfer" data-bs-toggle="modal" data-bs-target="#buTransferModal">BU Transfer</button>
+                    <div class="modal fade" tabindex="-1" id="buTransferModal">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title text-start">BU Assignment</h5>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="p-2">
+                                        <div id="cp-success-msg">
+                                        </div>
+                                        <form action="#" id="transferEmployeeForm">
+                                            @csrf
+                                            <input type="text" hidden name="id" value="{{ $employee->id }}">
+                                            <input name="bu_transfer_assignment" type="text" class="form-control" required>
+                                            <span id="bu_transfer_assignment_error"></span>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button class="btn btn-primary" type="submit" id="cp-submit-btn">Submit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @else
+                    <button class="btn btn-warning ms-1" id="employee-deactivate">Reinstate
+                        <div id="react-deact-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                            <span class="sr-only"></span>
+                        </div>
+                    </button>
+                @endif
                 <div id="react-deact-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
                     <span class="sr-only"></span>
                 </div>
@@ -196,19 +230,6 @@
                 </div>
                 
                 <div class="row mb-2 ps-3 pe-3">
-                    @if ($userInfo->roles == config('constants.MANAGER_ROLE_VALUE'))
-                    <div class="col-lg-2 col-4 g-3 ps-1">
-                        <div class="d-flex align-items-center">
-                            <div class="form-check ">
-                                <label class="form-check-label" for="active-status">Active Status</label>
-                                <input type="checkBox" class="form-check-input" name="active_status" id="active-status" value="0" {{ $employee->active_status == 1 ? "checked" : "" }} {{ $readOnly ? 'disabled' : '' }}>
-                            </div>
-                            @if ($errors->has('active_status'))
-                            <p class="text-danger">{{ $errors->first('active_status') }}</p>
-                            @endif
-                        </div>
-                    </div>
-                    @endif
                     @if ($userInfo->roles == config('constants.MANAGER_ROLE_VALUE') || $userInfo->id == $employee->id)
                     <div class="col-lg-2 col-4 g-3 ps-1">
                         <div class="d-flex align-items-center">
