@@ -63,3 +63,7 @@ td {
 .table-avoid-overflow {
     overflow-x: auto;
 }
+
+label {
+    user-select: none;
+}
