@@ -17,7 +17,9 @@ $(document).ready(function () {
         "stateSave": true,
         "pageLength": 25,
         "oLanguage": {
-            "sEmptyTable": "No Data"
+            "sEmptyTable": "There is no record found",
+            "sZeroRecords": "There is no record found",
+            "sInfoFiltered": ""
         },
         "sDom": "lrt<'#bottom.row'<'#info.col'i><'#pagination.col'p>>",
     });
