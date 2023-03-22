@@ -147,7 +147,7 @@
                                         <div class="row p-2">
                                             <div class="col-md-8 col-9">
                                                 <div class="row">
-                                                    <label for="partition_1" class="col-auto fs-5 fw-bold align-baseline radio">Partition</label>
+                                                    <label for="partition_1" class="col-auto fs-5 fw-bold align-baseline radio">Partition Name:</label>
                                                     <div class="col-auto">
                                                     <input name="{{ 'hdd[' .$index .'][partition_name]' }}" type="text" class="form-control partition_name" id="{{ 'partition' .$index }}" value="{{ $partition['hdd_partition'] }}" required>
                                                     </div>

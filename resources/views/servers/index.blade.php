@@ -44,6 +44,9 @@
 		                <th>Server</th>
 		                <th>IP Address</th>
 		                <th>Function/Role</th>
+                        <th>HDD Status</th>
+                        <th>Memory Status</th>
+                        <th>CPU Status</th>
 		                <th>Status</th>
 		            </tr>
 		        </thead>
@@ -54,6 +57,9 @@
                                 <td><a href="{{ route('servers.details', ['id' => $server['id']]) }}">{{ $server['server_name'] }}</a></td>
                                 <td>{{ $server['server_ip'] }}</td>
                                 <td>{{ $server['function_role'] }}</td>
+                                <td class="{{ config('constants.STATUS_CLASS.' .$server['hdd_status']) }}">{{ config('constants.STATUS_NAMES.' .$server['hdd_status']) }}</td>
+                                <td class="{{ config('constants.STATUS_CLASS.' .$server['ram_status']) }}">{{ config('constants.STATUS_NAMES.' .$server['ram_status']) }}</td>
+                                <td class="{{ config('constants.STATUS_CLASS.' .$server['cpu_status']) }}">{{ config('constants.STATUS_NAMES.' .$server['cpu_status']) }}</td>
                                 <td>{{ $server['status'] }}</td>
                             </tr>
                         @endforeach

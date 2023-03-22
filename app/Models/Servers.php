@@ -16,6 +16,9 @@ class Servers extends Model
     static function getAllServer(){
         return self::selectRaw('id
                                 ,server_name
+                                ,hdd_status
+                                ,ram_status
+                                ,cpu_status
                                 ,server_ip
                                 ,function_role
                                 ,CASE WHEN status THEN "Active" ELSE "Inactive" END AS status
