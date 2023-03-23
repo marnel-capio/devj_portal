@@ -15,74 +15,77 @@
 
 <div class="container text-center ps-md-3 pe-md-3 pt-5">
     <div class="d-flex justify-content-between mb-2">
-        <div class="text-primary d-flex align-items-center">
+        <div class="text-primary text-start">
             @if (!empty($detailNote))
-            <i class="bi bi-info-circle-fill"></i>&nbsp;{{ $detailNote }}
+            <div>
+                <i class="bi bi-info-circle-fill"></i>&nbsp;{{ $detailNote }}
+            </div>
+            @endif
+            @if (!empty($buTransferNote))
+            <div>
+                <i class="bi bi-info-circle-fill"></i>&nbsp;{{ $buTransferNote }}
+            </div>
             @endif
         </div>
         
         <div class="">
             @if ($allowedToEdit)
-            <a href="{{ route('employees.edit', ['id' => $employee->id]) }}" class="btn btn-primary  me-1" type="button">Edit</a>
+            <a href="{{ route('employees.edit', ['id' => $employee->id]) }}" class="btn btn-primary" type="button">Edit</a>
             @endif
             @if($detailOnly && $userInfo->id == $employee->id)
-            <button type="button" class="btn btn-success  ms-1" data-bs-toggle="modal" data-bs-target="#changePasswordModal" >Change Password</button>
+            <button type="button" class="btn btn-success  ms-2" data-bs-toggle="modal" data-bs-target="#changePasswordModal" >Change Password</button>
             @endif
             @if ($detailOnly && $userInfo->roles == config('constants.MANAGER_ROLE_VALUE'))
                 @if ($employee->active_status == 0)
-                    <button class="btn btn-success ms-1" id="employee-reactivate">Reactivate
+                    <button class="btn btn-success ms-2" id="employee-reactivate">Reactivate
                         <div id="react-deact-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
                             <span class="sr-only"></span>
                         </div>
                     </button>
                 @else
-                    <button class="btn btn-danger ms-1" id="employee-deactivate">Deactivate
+                    <button class="btn btn-danger ms-2" id="employee-deactivate">Deactivate
                         <div id="react-deact-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
                             <span class="sr-only"></span>
                         </div>
                     </button>
-                @endif
-                @if ($employee->bu_transfer_flag == 0)
-                    <button class="btn btn-warning ms-1" id="employee-transfer" data-bs-toggle="modal" data-bs-target="#buTransferModal">BU Transfer</button>
-                    <div class="modal fade" tabindex="-1" id="buTransferModal">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title text-start">BU Assignment</h5>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="p-2">
-                                        <div id="bu_transfer_msg">
-                                        </div>
-                                        <form action="#" id="transferEmployeeForm">
-                                            @csrf
-                                            <input type="text" hidden name="id" value="{{ $employee->id }}">
-                                            <input name="bu_transfer_assignment" type="text" class="form-control" required>
-                                            {{-- <span id="bu_transfer_assignment_error"></span> --}}
-                                        </form>
+                    @if ($employee->bu_transfer_flag == 0)
+                        <button class="btn btn-warning ms-2" id="employee-transfer" data-bs-toggle="modal" data-bs-target="#buTransferModal">BU Transfer</button>
+                        <div class="modal fade" tabindex="-1" id="buTransferModal">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title text-start">BU Assignment</h5>
                                     </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button class="btn btn-primary" type="submit" form="transferEmployeeForm">Submit
-                                        <div id="transfer_reinstate_spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
-                                            <span class="sr-only"></span>
+                                    <div class="modal-body">
+                                        <div class="p-2">
+                                            <div id="bu_transfer_msg">
+                                            </div>
+                                            <form action="#" id="transferEmployeeForm">
+                                                @csrf
+                                                <input type="text" hidden name="id" value="{{ $employee->id }}">
+                                                <input name="bu_transfer_assignment" type="text" class="form-control" required>
+                                            </form>
                                         </div>
-                                    </button>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button class="btn btn-primary" type="submit" form="transferEmployeeForm">Submit
+                                            <div id="transfer_reinstate_spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                                                <span class="sr-only"></span>
+                                            </div>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                @else
-                    <button class="btn btn-warning ms-1" id="employee-deactivate">Reinstate
-                        <div id="react-deact-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
-                            <span class="sr-only"></span>
-                        </div>
-                    </button>
+                    @else
+                        <button class="btn btn-warning ms-2" id="employee_reinstate">Reinstate
+                            <div id="transfer_reinstate_spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                                <span class="sr-only"></span>
+                            </div>
+                        </button>
+                    @endif
                 @endif
-                <div id="react-deact-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
-                    <span class="sr-only"></span>
-                </div>
                 <form action="#" id="deact-react-form">
                     @csrf
                     <input hidden name="id" value="{{ $employee->id }}" type="text">

@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::table('employees', function (Blueprint $table) {
             $table->unsignedTinyInteger('bu_transfer_flag')->default(0)->nullable()->after('update_data')->comment( '1: transferred, 0: not transferred');
-            $table->string('bu_transfer_assignment', 80)->after('bu_transfer_flag');
+            $table->string('bu_transfer_assignment', 80)->nullable()->after('bu_transfer_flag');
         });
     }
 

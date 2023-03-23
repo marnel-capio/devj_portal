@@ -632,6 +632,7 @@ class ApiController extends Controller
                                 ->update([
                                     'active_status' => 0,
                                     'bu_transfer_flag' => 0,
+                                    'bu_transfer_assignment' => NULL,
                                     'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
                                     'updated_by' => Auth::user()->id,
                                     'approved_by' => Auth::user()->id,

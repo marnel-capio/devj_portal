@@ -44,7 +44,7 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithEvent
 
     public function headings(): array
     {
-        return ["Date updated", "Full Name", "Cellphone Number", "Other Contact Details (if any)", "Current Address", "Permanent Address"];
+        return ["Date updated", "Full Name", "BU Assignment", "Cellphone Number", "Other Contact Details (if any)", "Current Address", "Permanent Address"];
     }	
 
     public function columnWidths(): array
@@ -55,8 +55,9 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithEvent
                 'B' => 25,
                 'C' => 15,
                 'D' => 15,
-                'E' => 40,
+                'E' => 15,
                 'F' => 40,
+                'G' => 40,
             ];
         }else{
             return [];
@@ -88,6 +89,7 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithEvent
         return [
             date("Y-m-d",strtotime($employee->update_time)),
             $employee->last_name.", ". $employee->first_name." (". $employee->middle_name.")",
+            $employee->bu_transfer_flag ? $employee->bu_transfer_assignment : "",
             $employee->cellphone_number,
             $employee->other_contact_info,
             $employee->current_address_street. ", ". $employee->current_address_city. ", ". $employee->current_address_province . " " . $employee->current_address_postalcode,

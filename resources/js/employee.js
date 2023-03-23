@@ -69,8 +69,12 @@ $(document).ready(function () {
                             status = "Pending for Approval";
                         }
                     }
+					let buAssignment = '';
+					if (employee['bu_transfer_flag']) {
+						buAssignment = employee['bu_transfer_assignment'];
+					}
                     url = window.location.href+"/"+employee['id'];
-                    employee_list.row.add(['<a href="'+url+'">'+employee['last_name']+', '+employee['first_name']+' ('+employee['middle_name']+')</a>', employee['email'], employee['cellphone_number'],employee['current_address_city'],employee['current_address_province'],status]).draw(false);
+                    employee_list.row.add(['<a href="'+url+'">'+employee['last_name']+', '+employee['first_name']+' ('+employee['middle_name']+')</a>', employee['email'], employee['cellphone_number'],employee['current_address_city'],employee['current_address_province'],buAssignment,status]).draw(false);
                 });
             }
        });
@@ -432,6 +436,10 @@ $(document).ready(function () {
 	//start for employee deactivation/reactivation
 
 	$("#employee-deactivate").click(function(e){
+		$(".alert").remove();
+		if (!confirm("Continue with employee deactivation?")) {
+			return false;
+		}
 		$("#react-deact-spinner").show();
 		$.ajax({
 			type: "POST",
@@ -454,6 +462,9 @@ $(document).ready(function () {
 	});
 
 	$("#employee-reactivate").click(function(e){
+		if (!confirm("Continue with employee reactivation?")) {
+			return false;
+		}
 		$("#react-deact-spinner").show();
 		$.ajax({
 			type: "POST",
@@ -482,7 +493,20 @@ $(document).ready(function () {
 	//bu transfer - form submission
 	$("#transferEmployeeForm").on('submit', function (e) {
 		$("#transfer_reinstate_spinner").show();
+		$("#bu_transfer_msg").empty();
 
+		//bu assignment validation
+		if($("#transferEmployeeForm input[name=bu_transfer_assignment]").val() == ""){
+			$("#bu_transfer_msg").text('The BU assignment field is required.').addClass("text-danger text-start");
+			$("#transfer_reinstate_spinner").hide();
+			return false;
+		}else if($("#transferEmployeeForm input[name=bu_transfer_assignment]").val().length > 20){
+			$("#bu_transfer_msg").text('The BU assignment must not be greater than 20 characters.').addClass("text-danger text-start");
+			$("#transfer_reinstate_spinner").hide();
+			return false;
+		}
+
+		//form submission
 		var formData = $(this).serializeArray();
         var arrData = [];
         formData.forEach(function(data){
@@ -504,8 +528,10 @@ $(document).ready(function () {
 				location.reload();
 			} else {
 				//display error message
-				$("#bu_transfer_msg").text(data.message).addClass("text-danger text-start pb-1");
+				$("#bu_transfer_msg").text(data.message).addClass("text-danger text-start");
 			}
+		}).fail(function(){
+			console.log('error');
 		})
 		e.preventDefault();
 	})
@@ -514,9 +540,30 @@ $(document).ready(function () {
 		$("#bu_transfer_msg").empty();
 	})
 
-
-
-
+	$("#employee_reinstate").click(function(e){
+		if (!confirm("Continue to reinstate employee to Dev J?")) {
+			return false;
+		}
+		$("#transfer_reinstate_spinner").show();
+		$.ajax({
+			type: "POST",
+			url: REINSTATE_EMPLOYEE_LINK,
+			data: {id: $("#deact-react-form > input[name=id").val(), _token: $("#deact-react-form > input[name=_token").val()},
+			dataType: "json",
+			encode: true,
+		}).done(function(data){
+			$("#transfer_reinstate_spinner").hide();
+			if(data.success){
+				location.reload();
+			}else{
+				//display error 
+				$("#deact-react-alert").remove();
+				$("#alert-div").append('<div id="reinstate_alert" class="alert alert-danger" role="alert"><span class="ms-2">' + data.message + '</span></div>');
+			}
+		}).fail(function(){
+			console.log('error');
+		})
+	});
 
 	//end for employee bu transfer/reinstate
 
