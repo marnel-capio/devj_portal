@@ -87,7 +87,7 @@
 	    	<table id="employee-list" class="table table-striped" >
 		        <thead>
 		            <tr>
-		                <th class="tbl-header-name">Name</th>
+		                <th>Name</th>
 		                <th>Email Address</th>
 		                <th>Phone Number</th>
 		                <th>City</th>
