@@ -11,6 +11,7 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
 use App\Models\Softwares;
+use App\Models\SoftwareTypes;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
@@ -66,7 +67,7 @@ class SoftwaresExport implements FromView, WithHeadings, WithEvents, ShouldAutoS
     public function styles(Worksheet $sheet)
     {
 
-        $data_count = Softwares::whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED')])
+        $data_count = Softwares::whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
         ->count();
 
         $bordered_cell = "A1:C" . (strVal($data_count) + config('constants.SOFTWARE_RANGE_BUFFER'));
@@ -116,41 +117,55 @@ class SoftwaresExport implements FromView, WithHeadings, WithEvents, ShouldAutoS
         
         //Merge cell processing  - start
 
-        $software = Softwares::whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED')])
+        $software = Softwares::whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
                  ->orderBy('software_type_id', 'ASC')
                  ->orderBy('software_name', 'ASC')
                  ->get()->toArray();
+        
 
-        $type_count = array(0,0,0,0,0,0);
+
+        $types_count = array();
         //check how many of each type are there in the array
-        foreach($software as $value){
-            $type_count[$value['software_type_id'] - config('constants.SOFTWARE_RANGE_BUFFER')] =  $type_count[$value['software_type_id'] - config('constants.SOFTWARE_RANGE_BUFFER')] + config('constants.SOFTWARE_TYPE_COUNTER_INCREMENT');      
+        foreach($software as $value)
+        {
+            if(!isset($types_count[$value['software_type_id']]))
+            {
+                $types_count[$value['software_type_id']] = 1;
+            }
+            else
+            {
+                $types_count[$value['software_type_id']] =  $types_count[$value['software_type_id']] + config('constants.SOFTWARE_TYPE_COUNTER_INCREMENT');      
+            }
         }
 
 
         //get 
-        $prev_index = config('constants.SOFTWARE_RANGE_INITIAL_VALUE');
+        $prev_excel_index = config('constants.SOFTWARE_RANGE_INITIAL_VALUE');
 
-        $type_range = array('','','','','',''); 
-        for ($x = 0; $x < config('constants.SOFTWARE_TYPE_COUNT'); $x++) {
-            if($type_count[$x] != config('constants.SOFTWARE_TYPE_EMPTY'))
+        $total_type_count = count($types_count);
+
+        $range_index = 0;
+        foreach($types_count as $type_count)
+        {
+
+            if($type_count != config('constants.SOFTWARE_TYPE_EMPTY'))
             {
-                $type_range[$x] = 'A' . strval($prev_index) . ':A' . strval($prev_index + $type_count[$x] - config('constants.SOFTWARE_RANGE_BUFFER'));
-                $prev_index = $prev_index + $type_count[$x];
+                $type_range[$range_index] = 'A' . strval($prev_excel_index) . ':A' . strval($prev_excel_index + $type_count - config('constants.SOFTWARE_RANGE_BUFFER'));
+                $prev_excel_index = $prev_excel_index + $type_count;
+                $range_index++;
             }
-
+            
         }
-
 
         if($this->fileType == 'pdf'){
             $setting = [
-                AfterSheet::class => function(AfterSheet $event) use($type_range) {
+                AfterSheet::class => function(AfterSheet $event) use($type_range, $total_type_count) {
                     $event->sheet
                         ->setSelectedCell('A1')
                         ->getPageSetup()
                         ->setOrientation(WorksheetPageSetup::ORIENTATION_LANDSCAPE)
-                        ->setPaperSizeDefault(WorksheetPageSetup::PAPERSIZE_A4);
-                        for ($x = 0; $x < config('constants.SOFTWARE_TYPE_COUNT'); $x++) {
+                        ->setPaperSizeDefault(WorksheetPageSetup::PAPERSIZE_LEGAL);
+                        for ($x = 0; $x < $total_type_count; $x++) {
                             if($type_range[$x] != "")
                             {
                                 $event->sheet->getDelegate()->mergeCells($type_range[$x]);
@@ -162,13 +177,13 @@ class SoftwaresExport implements FromView, WithHeadings, WithEvents, ShouldAutoS
 
         }else{
             $setting = [
-                AfterSheet::class => function(AfterSheet $event) use($type_range) {
+                AfterSheet::class => function(AfterSheet $event) use($type_range, $total_type_count) {
                         $event->sheet
                             ->setSelectedCell('A1')
                             ->getPageSetup()
                             ->setOrientation(WorksheetPageSetup::ORIENTATION_LANDSCAPE)
                             ->setPaperSizeDefault(WorksheetPageSetup::PAPERSIZE_A4);
-                            for ($x = 0; $x < config('constants.SOFTWARE_TYPE_COUNT'); $x++) {
+                            for ($x = 0; $x < $total_type_count; $x++) {
                                 if($type_range[$x] != "")
                                 {
                                     $event->sheet->getDelegate()->mergeCells($type_range[$x]);

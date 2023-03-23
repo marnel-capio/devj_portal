@@ -102,7 +102,7 @@ class Softwares extends Model
                             softwares.software_type_id
                         ')
                         ->leftJoin('software_types', 'software_types.id',  'softwares.software_type_id')                            
-                        ->where('software_types.approved_status', config('constants.APPROVED_STATUS_APPROVED'))
+                        ->whereIn('softwares.approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
                         ->orderBy('software_type_id', 'ASC')
                         ->orderBy('software_name', 'ASC');
         
@@ -138,7 +138,7 @@ class Softwares extends Model
                 ->orderBy('softwares.software_type_id', 'ASC')
                 ->first();
 
-                
+
         return $query;
     }
 

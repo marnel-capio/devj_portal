@@ -30,7 +30,7 @@ $(document).ready(function () {
     });
 
     $(".soft-search-type-rdb-input").on("change", function(){
-		console("Entered");
+		console.log("entered");
         filterSoftwareList();
     });
 
@@ -41,7 +41,7 @@ $(document).ready(function () {
     function filterSoftwareList() {
       var keyword = $("input[name='softSearchInput']").val();
       var status = $("input[name='softwareStatus']:checked").val();
-	  var type = $("input[name='softwaretype']:checked").val();
+	  var type = $("#software_type").val();
 	  $.ajax({
             type:"get",
             url:"api/softwares/search",

@@ -49,7 +49,10 @@ class SoftwaresRequest extends FormRequest
                 'software_name' => ['required', 'max:80'],
                 'software_type_id' => ['required', 
                                         function($attribute, $value, $fail) {
-                                            $detail = SoftwareTypes::where('id', $value)->get()->toArray();
+                                            $detail = SoftwareTypes::where('id', $value)
+                                                                    ->where('approved_status', config('constants.APPROVED_STATUS_APPROVED'))
+                                                                    ->get()
+                                                                    ->toArray();
                                             if(empty($detail) && $value != config('constants.SOFTWARE_TYPE_999'))
                                             {
                                                 $fail("The selected type is invalid.");

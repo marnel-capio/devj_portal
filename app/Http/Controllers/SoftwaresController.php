@@ -101,18 +101,18 @@ class SoftwaresController extends Controller
         //create logs
         Logs::createLog("Software", 'Created Software Approval Request for software ' . strval($id) );
 
-        // //send mail if current user is not manager
-        // if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE')){
-        //     //send mail to managers
-        //     $recipients = Employees::getEmailOfManagers();
+        //send mail if current user is not manager
+        if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE')){
+            //send mail to managers
+            $recipients = Employees::getEmailOfManagers();
 
-        //     $mailData = [
-        //         'link' => route('softwares.request', ['id' => $id]),
-        //         'currentUserId' => Auth::user()->id,
-        //         'module' => "Software",
-        //     ];
-        //     $this->sendMail($recipients, $mailData, config('constants.MAIL_SOFTWARE_NEW_REQUEST'));
-        // }
+            $mailData = [
+                'link' => route('softwares.request', ['id' => $id]),
+                'currentUserId' => Auth::user()->id,
+                'module' => "Software",
+            ];
+            $this->sendMail($recipients, $mailData, config('constants.MAIL_SOFTWARE_NEW_REQUEST'));
+        }
         
         return redirect(route('softwares.regist.complete'));
     }
@@ -338,7 +338,7 @@ class SoftwaresController extends Controller
         abort_if(empty($softwaresDetails), 404); //software does not exist
 
         $detailNote = $this->getSoftwareStatus($softwaresDetails);
-        
+
         if($softwaresDetails->approved_status == config('constants.APPROVED_STATUS_PENDING')){
             $detailNote = 'Software is still pending for approval';
         }elseif($softwaresDetails->approved_status == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')){
@@ -349,14 +349,14 @@ class SoftwaresController extends Controller
         if($softwaresDetails->approved_status == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')){
             //display software's update
             $updateData = json_decode($softwaresDetails->update_data, true);
+
             if(!empty($updateData)){
                 foreach($updateData as $key => $val){
                     $softwaresDetails->$key = $val;
                 }
             }
-           
         }
-                    
+
         //check if new software type should be displayed
         //get the status of the software type
         $software_type_status = SoftwareTypes::where('id', $softwaresDetails->software_type_id)->first();
@@ -365,9 +365,12 @@ class SoftwaresController extends Controller
             $is_display_new_software_type = true;
             $softwaresDetails->type = $software_type_status->type_name;
         }
+        else{
+            //update the software type name based on the software_type_id retrieved from update_data 
+            $softwaresDetails["type"] =  $software_type_status->type_name;
+        }
 
         $is_project_display = false;
-
         return view('softwares.details')
         ->with([
             'allowedToEdit' => false,
@@ -437,24 +440,28 @@ class SoftwaresController extends Controller
         }else{
 
 
+
             $softwareUpdate = json_decode($softwares->update_data, true);
             $softwareUpdate['created_by'] = $softwares->created_by;
             $softwareUpdate['approved_by'] = Auth::user()->id;
+            $softwareUpdate['approve_time'] = date('Y-m-d H:i:s');
             $softwareUpdate['update_data'] = NULL;
             $softwareUpdate['reasons'] = NULL;
             $softwareUpdate['approved_status'] = config('constants.APPROVED_STATUS_APPROVED');
 
-
             //update status of software type
-            $software_type = SoftwareTypes::where('id',$softwareUpdate['software_type_id'])->first();
-            if($software_type->approved_status == config('constants.APPROVED_STATUS_PENDING'))
+            if(isset($softwareUpdate['software_type_id']))
             {
-                //update the software_type's status
-                SoftwareTypes::where('id',$softwareUpdate['software_type_id'])
-                    ->update([
-                        'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
-                        'updated_by' => Auth::user()->id,
-                    ]);
+                $software_type = SoftwareTypes::where('id',$softwareUpdate['software_type_id'])->first();
+                if($software_type->approved_status == config('constants.APPROVED_STATUS_PENDING'))
+                {
+                    //update the software_type's status
+                    SoftwareTypes::where('id',$softwareUpdate['software_type_id'])
+                        ->update([
+                            'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
+                            'updated_by' => Auth::user()->id,
+                        ]);
+                }
             }
             //updated based on json 
 
@@ -499,8 +506,8 @@ class SoftwaresController extends Controller
                     'approved_status' => config('constants.APPROVED_STATUS_REJECTED'),
                     'reasons' => $reason,
                     'reject_code' => $rejectCode,
-                    'updated_by' => Auth::user()->id,
-                    'approved_by' => Auth::user()->id,
+                    'approve_time' => date('Y-m-d H:i:s'),
+                    'approved_by' => Auth::user()->id,                    
                 ]);
             
             //send mail
@@ -522,8 +529,8 @@ class SoftwaresController extends Controller
                     'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
                     'reasons' => $reason,
                     'update_data' => NULL,
-                    'updated_by' => Auth::user()->id,
-                    'approved_by' => Auth::user()->id,
+                    'approve_time' => date('Y-m-d H:i:s'),
+                    'approved_by' => Auth::user()->id,                    
                 ]);
             
             //send mail

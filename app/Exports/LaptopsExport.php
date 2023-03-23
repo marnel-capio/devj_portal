@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Employees;
+use App\Models\Laptops;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromView;
@@ -19,6 +20,8 @@ use PhpOffice\PhpSpreadsheet\Style\Color;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
+use function PHPUnit\Framework\isNull;
+
 class LaptopsExport implements 
                         FromView,
                         WithEvents,
@@ -33,10 +36,18 @@ class LaptopsExport implements
     protected $maxRow;
     protected $startRowForData = 3; //1st-2nd row - header
     protected $isPdf = "";
+    protected $keyword;
+    protected $availability;
+    protected $status;
+    protected $srchFilter;
     
-    public function __construct($isPdf = false)
+    public function __construct($keyword = '', $availability = '', $status = '', $srchFilter = '', $isPdf = false)
     {
         $this->isPdf = $isPdf;
+        $this->keyword = $keyword;
+        $this->availability = $availability;
+        $this->status = $status;
+        $this->srchFilter = $srchFilter;
     }
 
     public function title(): string
@@ -46,9 +57,10 @@ class LaptopsExport implements
 
     public function view(): View
     {
-        $data = Employees::getEmployeeLaptopHistory();
+        $data = Laptops::getLaptopList($this->keyword, $this->availability, $this->status, $this->srchFilter, false);
         foreach($data as $idx => $item){
-            if($item['surrender_flag']){
+            if($item['surrender_flag'] || empty($item['linkage_id']) || empty($item['linked_employee_id']) 
+                || (!empty($item['linked_employee_id']) && !$item['linked_employee_status'])){
                 $this->grayRows[] = $idx + $this->startRowForData;
             }
         }
@@ -86,7 +98,7 @@ class LaptopsExport implements
                 'F' => 25,
                 'G' => 25,
                 'H' => 25,
-                'I' => 10,
+                'I' => 15,
                 'J' => 10,
                 'K' => 10,
                 'L' => 30,
@@ -108,29 +120,42 @@ class LaptopsExport implements
                         'vertical' => Alignment::VERTICAL_CENTER,
                         'wrapText' => true,
                     ],
-                ],
-            "A3:M" .$this->maxRow =>[
-              'alignment' => [
-                    'horizontal' => Alignment::HORIZONTAL_LEFT,
-                    'vertical' => Alignment::VERTICAL_CENTER,
-                    'wrapText' => true
-                ],
-            ],
-            "A1:M" .$this->maxRow =>[
-                'borders' => [
-                    'allBorders' => [
-                        'borderStyle' => Border::BORDER_THIN,
-                        'color' => [
-                            'argb' => Color::COLOR_BLACK
-                        ],
-                        'colorIndex' => [
-                            'argb' => Color::COLOR_BLACK
+                    'borders' => [
+                        'allBorders' => [
+                            'borderStyle' => Border::BORDER_THIN,
+                            'color' => [
+                                'argb' => Color::COLOR_BLACK
+                            ],
+                            'colorIndex' => [
+                                'argb' => Color::COLOR_BLACK
+                            ]
                         ]
-                    ]
-                ]
-            ]
+                    ],
+                ],
         ];
 
+        if ( $this->maxRow >= $this->startRowForData ) {
+            $style["A3:M" .$this->maxRow] = [
+                                                'alignment' => [
+                                                    'horizontal' => Alignment::HORIZONTAL_LEFT,
+                                                    'vertical' => Alignment::VERTICAL_CENTER,
+                                                    'wrapText' => true
+                                                ],
+                                                'borders' => [
+                                                    'allBorders' => [
+                                                        'borderStyle' => Border::BORDER_THIN,
+                                                        'color' => [
+                                                            'argb' => Color::COLOR_BLACK
+                                                        ],
+                                                        'colorIndex' => [
+                                                            'argb' => Color::COLOR_BLACK
+                                                        ]
+                                                    ]
+                                                ],
+                                            ];
+        }
+
+        // dd($style);
         foreach($this->grayRows as $idx => $value){
             $style["A" .$value .":M" .$value] = [
                 'fill' => [
@@ -163,6 +188,8 @@ class LaptopsExport implements
                         ->getPageSetup()
                         ->setOrientation(WorksheetPageSetup::ORIENTATION_LANDSCAPE)
                         ->setPaperSizeDefault(WorksheetPageSetup::PAPERSIZE_A4);
+                    
+                    $event->sheet->setSelectedCell('A1');
                 },
             ];
         }else{
@@ -171,7 +198,8 @@ class LaptopsExport implements
                     $event->sheet
                         ->getPageSetup()
                         ->setOrientation(WorksheetPageSetup::ORIENTATION_LANDSCAPE);
-
+                    
+                    $event->sheet->setSelectedCell('A1');
                 },
             ];
         }

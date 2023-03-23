@@ -52,14 +52,16 @@
 		</div>
 	</div>
 	<div class="row row-list mb-2 mt-2 align-middle">
-		<div class="col-4 form-floating" >
-			<select name="software_type_id" id="software_type_id" class="soft-search-type-rdb-input form-select form-control">
+		<div class="col-1">
+			<label for="software_type">Type:</label>
+		</div>
+		<div class="col-3">
+			<select name="software_type" id="software_type" class="soft-search-type-rdb-input form-select form-control">
 				<option {{ old('type') == config('constants.SOFTWARE_TYPE_999') ? "selected" : "" }} value={{config('constants.SOFTWARE_TYPE_999')}}>{{ config('constants.SOFTWARE_FILTER_TYPE_ALL_NAME') }}</option>
 				@foreach ($software_types as $software_type)
 					<option {{ old('type') == $software_type['id'] ? "selected" : "" }} value={{ $software_type['id']}}>{{ $software_type['type_name'] }}</option>
 				@endforeach
 			</select>
-			<label  class="text-center" for="software_type_id">Type</label>			
 		</div>
 	</div>	
 	<div class="row row-list mb-2 mt-2 align-middle">
