@@ -8,7 +8,6 @@ use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\WithEvents;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
 use App\Models\Softwares;
 use App\Models\SoftwareTypes;
@@ -22,7 +21,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup as WorksheetPageSetup;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 
-class SoftwaresExport implements FromView, WithHeadings, WithEvents, ShouldAutoSize, WithColumnWidths, WithStyles, WithTitle
+class SoftwaresExport implements FromView, WithHeadings, WithEvents, WithColumnWidths, WithStyles, WithTitle
 {
     use Exportable;
 
@@ -54,14 +53,19 @@ class SoftwaresExport implements FromView, WithHeadings, WithEvents, ShouldAutoS
     public function columnWidths(): array
     {
         if($this->fileType == 'pdf'){
-            return [
+            $width = [
+                'A' => 20,
+                'B' => 10,
+                'C' => 15,
+            ];
+        }else{
+            $width = [
                 'A' => 20,
                 'B' => 25,
                 'C' => 50,
             ];
-        }else{
-            return [];
         }
+        return $width;        
     }
 
     public function styles(Worksheet $sheet)
@@ -85,6 +89,7 @@ class SoftwaresExport implements FromView, WithHeadings, WithEvents, ShouldAutoS
             'A:C' => [
                 'alignment' => [
                     'horizontal' => Alignment::HORIZONTAL_LEFT,
+                    'wrapText' => true,
                 ],
             ],
 
@@ -106,7 +111,6 @@ class SoftwaresExport implements FromView, WithHeadings, WithEvents, ShouldAutoS
             ]
         ];
     }
-
 
     /**
      * @return array
