@@ -48,10 +48,8 @@
                         <a href="#" class="nav-link text-white"  role="button">Servers</a>
                         <ul class="dropdown-menu">
                             <li><a href="{{ route('servers.index') }}" class="dropdown-item small text-white">View List</a></li>
-                            @if (in_array($userInfo->roles, [config('constants.ADMIN_ROLE_VALUE'), config('constants.MANAGER_ROLE_VALUE')]))
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a href="{{ route('servers.create') }}" class="dropdown-item small text-white">Create Server</a></li>
-                            @endif
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a href="{{ route('servers.create') }}" class="dropdown-item small text-white">Create Server</a></li>
                         </ul>
                     </li>
                 @endif

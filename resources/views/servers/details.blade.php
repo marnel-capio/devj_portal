@@ -26,43 +26,43 @@
         <h4 class="fw-bold">Server Details</h4>
             <div class="row mb-2 ps-5 pe-3">
                 <div class="col-lg-3 col-6 g-3 form-floating">
-                    <input type="text" name="server_name" class="form-control" id="server_name" placeholder="Tag Number" value="{{ $serverData->server_name }}" readonly>
+                    <input type="text" name="server_name" class="form-control" id="server_name" placeholder="Tag Number" value="{{ $serverData->server_name }}" disabled>
                     <label for="server_name" >Server Name</label>
                 </div>
                 <div class="col-6 g-3">
                     <div class="d-flex align-items-center" style="height: 100%">
                         <div class="form-check ">
                             <label class="form-check-label" for="server_status">Active Status</label>
-                            <input type="checkBox" class="form-check-input" name="status" id="server_status" value="1" {{ $serverData->status ? 'checked' : '' }} readonly>
+                            <input type="checkBox" class="form-check-input" name="status" id="server_status" value="1" {{ $serverData->status ? 'checked' : '' }} disabled>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="row mb-2 ps-5 pe-3">
                 <div class="col-lg-3 col-4 g-3 form-floating">
-                    <input type="text" name="server_ip" class="form-control" id="server_ip" placeholder="IP Address" value="{{ $serverData->server_ip }}" readonly>
+                    <input type="text" name="server_ip" class="form-control" id="server_ip" placeholder="IP Address" value="{{ $serverData->server_ip }}" disabled>
                     <label for="server_ip" >IP Address</label>
                     </div>
                     <div class="col-lg-3 col-4 g-3 form-floating">
-                    <input type="text" name="os" class="form-control" id="os" placeholder="Operating System" value="{{ $serverData->os }}" readonly>
+                    <input type="text" name="os" class="form-control" id="os" placeholder="Operating System" value="{{ $serverData->os }}" disabled>
                     <label for="os" >Operating System</label>
                     </div>
                     <div class="col-lg-3 col-4 g-3 form-floating">
-                    <input type="text" name="motherboard" class="form-control" id="motherboard" placeholder="Motherboard" value="{{ $serverData->motherboard }}" readonly>
+                    <input type="text" name="motherboard" class="form-control" id="motherboard" placeholder="Motherboard" value="{{ $serverData->motherboard }}" disabled>
                     <label for="motherboard" >Motherboard</label>
                     </div>
             </div>
             <div class="row mb-2 ps-5 pe-3">
                 <div class="col-lg-3 col-4 g-3 form-floating">
-                    <input type="text" name="cpu" class="form-control" id="cpu" placeholder="CPU" value="{{ $serverData->cpu }}" readonly>
+                    <input type="text" name="cpu" class="form-control" id="cpu" placeholder="CPU" value="{{ $serverData->cpu }}" disabled>
                     <label for="cpu" >Processor</label>
                 </div>
                 <div class="col-lg-3 col-4 g-3 form-floating">
-                    <input type="text" name="memory" class="form-control" id="memory" placeholder="Memory" value="{{ $serverData->memory }}" readonly>
+                    <input type="text" name="memory" class="form-control" id="memory" placeholder="Memory" value="{{ $serverData->memory }}" disabled>
                     <label for="memory" >RAM</label>
                 </div>
                 <div class="col-lg-3 col-4 g-3 form-floating">
-                    <input type="text" name="server_hdd" class="form-control" id="server_hdd" placeholder="HDD" value="{{ $serverData->hdd }}" readonly>
+                    <input type="text" name="server_hdd" class="form-control" id="server_hdd" placeholder="HDD" value="{{ $serverData->hdd }}" disabled>
                     <label for="server_hdd" >HDD</label>
                     @if ($errors->has('server_hdd'))
                     <p class="text-danger">{{ $errors->first('server_hdd') }}</p>
@@ -74,7 +74,7 @@
             </div>
             <div class="row mb-2 ps-5 pe-3">
                 <div class="col-lg-9 g-3">
-                    <textarea class="form-control" name="function_role"  rows="3" id="function_role" readonly>{{ $serverData->function_role }}</textarea>
+                    <textarea class="form-control" name="function_role"  rows="3" id="function_role" disabled>{{ $serverData->function_role }}</textarea>
                 </div>
             </div>
             <div class="row pt-4 ps-3 pe-3">
@@ -82,7 +82,7 @@
             </div>
             <div class="row mb-2 ps-5 pe-3">
                 <div class="col-lg-9 g-3">
-                    <textarea class="form-control" name="remarks"  rows="3" id="remarks" readonly>{{ $serverData->remarks }}</textarea>
+                    <textarea class="form-control" name="remarks"  rows="3" id="remarks" disabled>{{ $serverData->remarks }}</textarea>
                 </div>
             </div>
         </div>
@@ -121,7 +121,7 @@
                                             <div class="row">
                                                 <label for="partition_1" class="col-auto fs-5 fw-bold align-baseline radio">Partition</label>
                                                 <div class="col-auto">
-                                                <input name="{{ 'hdd[' .$index .'][partition_name]' }}" type="text" class="form-control partition_name" id="{{ 'partition' .$index }}" value="{{ $partition['hdd_partition'] }}" readonly>
+                                                <input name="{{ 'hdd[' .$index .'][partition_name]' }}" type="text" class="form-control partition_name" id="{{ 'partition' .$index }}" value="{{ $partition['hdd_partition'] }}" disabled>
                                                 </div>
                                             </div>
                                         </div>
@@ -129,7 +129,7 @@
                                     <div class="p-2">
                                         <div class="row g-0 pt-1">
                                             <div class="col-3 form-floating">
-                                                <input name="{{ 'hdd[' .$index .'][total]' }}" type="text" class="form-control hdd_total" id="{{ 'hdd_total_' .$index }}" placeholder="total" value="{{ $partition['hdd_total'] }}" readonly>
+                                                <input name="{{ 'hdd[' .$index .'][total]' }}" type="text" class="form-control hdd_total" id="{{ 'hdd_total_' .$index }}" placeholder="total" value="{{ $partition['hdd_total'] }}" disabled>
                                                 <label for="{{ 'hdd_total_' .$index }}">Total</label>
                                             </div>
                                             <div class="col-2 form-floating">
@@ -148,7 +148,7 @@
                                                 </div>
                                                 <div class="row g-0 pt-2 text-center">
                                                     <div class="col-6 form-floating">
-                                                        <input name="{{ 'hdd[' .$index .'][used]' }}" type="text" class="form-control hdd_used" id="{{ 'hdd_used_' .$index }}" placeholder="used" value="{{ $partition['hdd_used_size'] }}" readonly>
+                                                        <input name="{{ 'hdd[' .$index .'][used]' }}" type="text" class="form-control hdd_used" id="{{ 'hdd_used_' .$index }}" placeholder="used" value="{{ $partition['hdd_used_size'] }}" disabled>
                                                         <label for="{{ 'hdd_used_' .$index }}">Used</label>
                                                     </div>
                                                     <div class="col-4 form-floating">
@@ -162,7 +162,7 @@
                                                 </div>
                                                 <div class="row g-0 pt-2 text-center">
                                                     <div class="col-6 form-floating">
-                                                        <input name="{{ 'hdd[' .$index .'][free]' }}" type="text" class="form-control hdd_free" id="{{ 'hdd_free_' .$index }}" placeholder="Free" value="{{ $partition['hdd_free_size'] }}" readonly>
+                                                        <input name="{{ 'hdd[' .$index .'][free]' }}" type="text" class="form-control hdd_free" id="{{ 'hdd_free_' .$index }}" placeholder="Free" value="{{ $partition['hdd_free_size'] }}" disabled>
                                                         <label for="{{ 'hdd_free_' .$index }}">Free</label>
                                                     </div>
                                                     <div class="col-4 form-floating">
@@ -181,13 +181,13 @@
                                                 </div>
                                                 <div class="row g-0 pt-2 text-center">
                                                     <div class="col-6 form-floating">
-                                                        <input name="{{ 'hdd[' .$index .'][used_percentage]' }}" type="text" class="form-control hdd_used_percentage" id="{{ 'hdd_used_percentage_' .$index }}" placeholder="used"  value="{{ $partition['hdd_used_percentage'] }}" readonly>
+                                                        <input name="{{ 'hdd[' .$index .'][used_percentage]' }}" type="text" class="form-control hdd_used_percentage" id="{{ 'hdd_used_percentage_' .$index }}" placeholder="used"  value="{{ $partition['hdd_used_percentage'] }}" disabled>
                                                         <label for="{{ 'hdd_used_percentage_' .$index }}">% Used</label>
                                                     </div>
                                                 </div>
                                                 <div class="row g-0 pt-2 text-center">
                                                     <div class="col-6 form-floating">
-                                                        <input name="{{ 'hdd[' .$index .'][free_percentage]' }}" type="text" class="form-control hdd_free_percentage" id="{{ 'hdd_free_percentage_' .$index }}" placeholder="Free"  value="{{ $partition['hdd_free_percentage'] }}" readonly>
+                                                        <input name="{{ 'hdd[' .$index .'][free_percentage]' }}" type="text" class="form-control hdd_free_percentage" id="{{ 'hdd_free_percentage_' .$index }}" placeholder="Free"  value="{{ $partition['hdd_free_percentage'] }}" disabled>
                                                         <label for="{{ 'hdd_free_percentage_' .$index }}">% Free</label>
                                                     </div>
                                                 </div>
@@ -212,7 +212,7 @@
                         </div>
                         <div class="row g-0 pt-3">
                             <div class="col-3 form-floating">
-                                <input name="memory_total" type="text" class="form-control" id="memory_total" placeholder="total" value="{{ $serverData->memory_total }}" readonly>
+                                <input name="memory_total" type="text" class="form-control" id="memory_total" placeholder="total" value="{{ $serverData->memory_total }}" disabled>
                                 <label for="memory_total">Total</label>
                             </div>
                             <div class="col-2 form-floating">
@@ -231,7 +231,7 @@
                                 </div>
                                 <div class="row g-0 pt-2 text-center">
                                     <div class="col-6 form-floating">
-                                        <input name="memory_used" type="text" class="form-control" id="memory_used" placeholder="used" value="{{ old('memory_used', !empty($serverData) ? $serverData->memory_used_size : '') }}" readonly>
+                                        <input name="memory_used" type="text" class="form-control" id="memory_used" placeholder="used" value="{{ old('memory_used', !empty($serverData) ? $serverData->memory_used_size : '') }}" disabled>
                                         <label for="memory_used">Used</label>
                                     </div>
                                     <div class="col-4 form-floating">
@@ -245,7 +245,7 @@
                                 </div>
                                 <div class="row g-0 pt-2 text-center">
                                     <div class="col-6 form-floating">
-                                        <input name="memory_free" type="text" class="form-control" id="memory_free" placeholder="Free" value="{{ old('memory_free', !empty($serverData) ? $serverData->memory_free_size : '') }}" readonly>
+                                        <input name="memory_free" type="text" class="form-control" id="memory_free" placeholder="Free" value="{{ old('memory_free', !empty($serverData) ? $serverData->memory_free_size : '') }}" disabled>
                                         <label for="memory_free">Free</label>
                                     </div>
                                     <div class="col-4 form-floating">
@@ -264,13 +264,13 @@
                                 </div>
                                 <div class="row g-0 pt-2 text-center">
                                     <div class="col-6 form-floating">
-                                        <input name="memory_used_percentage" type="text" class="form-control" id="memory_used_percentage" placeholder="used"  value="{{ $serverData->memory_used_percentage }}" readonly>
+                                        <input name="memory_used_percentage" type="text" class="form-control" id="memory_used_percentage" placeholder="used"  value="{{ $serverData->memory_used_percentage }}" disabled>
                                         <label for="memory_used_percentage">% Used</label>
                                     </div>
                                 </div>
                                 <div class="row g-0 pt-2 text-center">
                                     <div class="col-6 form-floating">
-                                        <input name="memory_free_percentage" type="text" class="form-control" id="memory_free_percentage" placeholder="Free"  value="{{ $serverData->memory_free_percentage }}" readonly>
+                                        <input name="memory_free_percentage" type="text" class="form-control" id="memory_free_percentage" placeholder="Free"  value="{{ $serverData->memory_free_percentage }}" disabled>
                                         <label for="memory_free_percentage">% Free</label>
                                     </div>
                                 </div>
@@ -291,19 +291,19 @@
                                 </div>
                                 <div class="row g-0 pt-2 text-center">
                                     <div class="col-lg-8 col-md-6 col-8 form-floating">
-                                        <input name="us" type="text" class="form-control" id="us" placeholder="us" value="{{ !empty($serverData->linux_us_percentage) ? $serverData->linux_us_percentage : '' }}" {{ $serverData->os_type == 1 ? '' : 'disabled' }}>
+                                        <input name="us" type="text" class="form-control" id="us" placeholder="us" value="{{ !empty($serverData->linux_us_percentage) ? $serverData->linux_us_percentage : '' }}" disabled>
                                         <label for="us">% us</label>
                                     </div>
                                 </div>
                                 <div class="row g-0 pt-2 text-center">
                                     <div class="col-lg-8 col-md-6 col-8 form-floating">
-                                        <input name="ni" type="text" class="form-control" id="ni" placeholder="ni" value="{{ !empty($serverData->linux_ni_percentage) ? $serverData->linux_ni_percentage : '' }}" {{ $serverData->os_type == 1 ? '' : 'disabled' }}>
+                                        <input name="ni" type="text" class="form-control" id="ni" placeholder="ni" value="{{ !empty($serverData->linux_ni_percentage) ? $serverData->linux_ni_percentage : '' }}" disabled>
                                         <label for="ni">% ni</label>
                                     </div>
                                 </div>
                                 <div class="row g-0 pt-2 text-center">
                                     <div class="col-lg-8 col-md-6 col-8 form-floating">
-                                        <input name="sy" type="text" class="form-control" id="sy" placeholder="sy" value="{{ !empty($serverData->linux_sy_percentage) ? $serverData->linux_sy_percentage : '' }}" {{ $serverData->os_type == 1 ? '' : 'disabled' }}>
+                                        <input name="sy" type="text" class="form-control" id="sy" placeholder="sy" value="{{ !empty($serverData->linux_sy_percentage) ? $serverData->linux_sy_percentage : '' }}" disabled>
                                         <label for="sy">% sy</label>
                                     </div>
                                 </div>
@@ -314,7 +314,7 @@
                                 </div>
                                 <div class="row g-0 pt-2 text-center">
                                     <div class="col-lg-8 col-md-6 col-8 form-floating">
-                                        <input name="other_os_percentage" type="text" class="form-control"  value="{{ !empty($serverData->other_os_percentage) ? $serverData->other_os_percentage : '' }}" {{ $serverData->os_type == 2 ? '' : 'disabled' }}>
+                                        <input name="other_os_percentage" type="text" class="form-control"  value="{{ !empty($serverData->other_os_percentage) ? $serverData->other_os_percentage : '' }}" disabled>
                                     </div>
                                 </div>
                             </div>

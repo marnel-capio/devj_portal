@@ -56,7 +56,11 @@
                             <tr>
                                 <td><a href="{{ route('servers.details', ['id' => $server['id']]) }}">{{ $server['server_name'] }}</a></td>
                                 <td>{{ $server['server_ip'] }}</td>
-                                <td>{{ $server['function_role'] }}</td>
+                                <td>
+                                    @php
+                                        echo str_replace("\n", "<br>", $server['function_role']);
+                                    @endphp
+                                </td>
                                 <td class="{{ config('constants.STATUS_CLASS.' .$server['hdd_status']) }}">{{ config('constants.STATUS_NAMES.' .$server['hdd_status']) }}</td>
                                 <td class="{{ config('constants.STATUS_CLASS.' .$server['ram_status']) }}">{{ config('constants.STATUS_NAMES.' .$server['ram_status']) }}</td>
                                 <td class="{{ config('constants.STATUS_CLASS.' .$server['cpu_status']) }}">{{ config('constants.STATUS_NAMES.' .$server['cpu_status']) }}</td>

@@ -203,7 +203,7 @@ class ServerController extends Controller
             'ram_status' => $data['memory_status'],
             'cpu_status' => $data['cpu_status'],
             'remarks' => $data['remarks'],
-            'status' => $data['status'] ? 1 : 0,
+            'status' => isset($data['status']) && $data['status'] ? 1 : 0,
             'updated_by' => Auth::user()->id,
         ];
 

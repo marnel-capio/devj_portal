@@ -19,6 +19,7 @@
             @csrf
             <input type="text" name="id" value="{{ !empty($serverData) ? $serverData->id : '' }}" hidden >
             <div class="group-category p-3 mb-4 rounded-3">
+                <h4 class="fw-semi-bold">Server Details</h4>
                 <div class="row mb-2 ps-5 pe-3">
                     <div class="col-lg-3 col-6 g-3 form-floating">
                        <input type="text" name="server_name" class="form-control" id="server_name" placeholder="Tag Number" value="{{ old('server_name', !empty($serverData) ? $serverData->server_name : '') }}" required>
@@ -52,7 +53,7 @@
                         @endif
                      </div>
                      <div class="col-lg-3 col-4 g-3 form-floating">
-                        <input type="text" name="motherboard" class="form-control" id="motherboard" placeholder="Motherboard" value="{{ old('motherboard', !empty($serverData) ? $serverData->motherboard : '') }}" required>
+                        <input type="text" name="motherboard" class="form-control" id="motherboard" placeholder="Motherboard" value="{{ old('motherboard', !empty($serverData) ? $serverData->motherboard : '') }}">
                         <label for="motherboard" >Motherboard</label>
                         @if ($errors->has('motherboard'))
                         <p class="text-danger text-start">{{ $errors->first('motherboard') }}</p>
@@ -513,7 +514,7 @@
                                     <div class="row g-0 pt-2 text-center">
                                         <div class="col-lg-8 col-md-6 col-8 form-floating">
                                             <input name="sy" type="text" class="form-control" id="sy" placeholder="sy" value="{{ old('sy', !empty($serverData) ? $serverData->linux_sy_percentage : '') }}" required>
-                                            <label for="sy">% y</label>
+                                            <label for="sy">% sy</label>
                                         </div>
                                         @if ($errors->has('sy'))
                                         <p class="text-danger text-start">{{ $errors->first('sy') }}</p>
