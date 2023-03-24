@@ -18,7 +18,7 @@ class ServerController extends Controller
      * @return void
      */
     public function index () {
-        abort_if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE') && !Auth::user()->server_admin_flag, 403);
+        abort_if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE') && !Auth::user()->server_manage_flag, 403);
 
         return view('servers.index', [
             'serverData' => Servers::getAllServer(),
@@ -40,7 +40,7 @@ class ServerController extends Controller
      * @return void
      */
     public function details ($id) {
-        abort_if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE') && !Auth::user()->server_admin_flag, 403);
+        abort_if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE') && !Auth::user()->server_manage_flag, 403);
 
         $serverData = Servers::selectRaw('s.*, CONCAT(e.first_name, " ", e.last_name) AS updater')
                                 ->from('servers AS s')
@@ -63,7 +63,7 @@ class ServerController extends Controller
      * @return void
      */
     public function create () {
-        abort_if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE') && !Auth::user()->server_admin_flag, 403);
+        abort_if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE') && !Auth::user()->server_manage_flag, 403);
 
         return view('servers.create', ['forUpdate' => false]);
     }
@@ -104,7 +104,7 @@ class ServerController extends Controller
      * @return void
      */
     public function edit ($id) {
-        abort_if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE') && !Auth::user()->server_admin_flag, 403);
+        abort_if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE') && !Auth::user()->server_manage_flag, 403);
 
         $serverData = Servers::where('id', $id)->first();
         $partitionData = ServersPartitions::where('server_id', $id)->get()->toArray();

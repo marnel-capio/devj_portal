@@ -310,7 +310,7 @@
                             </div>
                             <div class="col-lg-4 col-md-6 col-4">
                                 <div class="fw-semibold">
-                                    &nbsp;Windows, etc
+                                    &nbsp;Windows, Others
                                 </div>
                                 <div class="row g-0 pt-2 text-center">
                                     <div class="col-lg-8 col-md-6 col-8 form-floating">

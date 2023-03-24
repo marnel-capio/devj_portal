@@ -14,7 +14,7 @@ class ServerRequest extends FormRequest
      */
     public function authorize()
     {
-        if (Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE') && !Auth::user()->server_admin_flag) {
+        if (Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE') && !Auth::user()->server_manage_flag) {
             return false;
         }
         return true;

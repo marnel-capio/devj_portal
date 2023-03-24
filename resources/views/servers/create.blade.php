@@ -523,7 +523,7 @@
                                 <div class="col-lg-4 col-md-6 col-4">
                                     <div class="form-check form-check-inline">
                                         <input type="radio" class="form-check-input" name="os_type" id="other_os_radio" value="2" {{ old('os_type', !empty($serverData) ? $serverData->os_type : 1) == 2 ? 'checked' : '' }}>
-                                        <label class="form-check-label text-start" for="other_os_radio">Windows, etc</label>
+                                        <label class="form-check-label text-start" for="other_os_radio">Windows, Others</label>
                                     </div>
                                     <div class="row g-0 pt-2 text-center">
                                         <div class="col-lg-8 col-md-6 col-8 form-floating">
