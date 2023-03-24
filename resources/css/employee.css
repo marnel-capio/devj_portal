@@ -12,6 +12,11 @@
 }
 
 /* employee details */
+input[readonly] {
+    background-color: #e9ecef;
+    opacity: 1;
+}
+
 .rqst-btn {
     width: 110px;
 }

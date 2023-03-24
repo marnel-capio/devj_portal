@@ -70,6 +70,7 @@ class SoftwaresController extends Controller
                 //approve the registration, no email is sent
                 $insertData['approved_status'] = config('constants.APPROVED_STATUS_APPROVED');
                 $insertData['approved_by'] = Auth::user()->id;
+                $insertData['approve_time'] = date('Y-m-d H:i:s');
             }else{
                 //pending request, 
                 $insertData['approved_status'] = config('constants.APPROVED_STATUS_PENDING');
