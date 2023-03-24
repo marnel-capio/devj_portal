@@ -63,7 +63,7 @@
                             ■{{ $server[$i]['server_name'] }} <br> 
                             ■{{ $server[$i]['server_ip'] }}
                         </td>
-                        <td rowspan="{{ $pCount }}">{{ $server[$i]['function_role'] }}</td>
+                        <td rowspan="{{ $pCount }}">{!! nl2br(e($server[$i]['function_role'])) !!}</td>
                         <td rowspan="{{ $pCount }}">
                             ■OS: {{ $server[$i]['os'] }} <br>
                             ■CPU: {{ $server[$i]['cpu'] }} <br>

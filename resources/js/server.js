@@ -5,6 +5,7 @@ const SERVER_STATUS_NAME_1 = 'Normal';
 const SERVER_STATUS_NAME_2 = 'Stable';
 const SERVER_STATUS_NAME_3 = 'Critical';
 const KB_TO_BYTES = 1024; //binary system is used 
+const SERVER_LIST_STATUS_INDEX = 6;
 
 $(document).ready(function () {
 
@@ -38,7 +39,7 @@ $(document).ready(function () {
             } else if (filterVal == 3){
                 var filter = '^Inactive$';
             }
-            serverList.column(3)
+            serverList.column(SERVER_LIST_STATUS_INDEX)
                         .search(filter, true, false)
                         .draw();
         }
@@ -50,7 +51,7 @@ $(document).ready(function () {
     })
 
     function clearFilter(){
-        serverList.column(3).search('').draw();
+        serverList.column(SERVER_LIST_STATUS_INDEX).search('').draw();
         serverList.search('').draw();
     }
     
