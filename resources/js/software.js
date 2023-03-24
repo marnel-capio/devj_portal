@@ -62,15 +62,24 @@ $(document).ready(function () {
 					let createdate ="";
 					let update_date ="";
 					let approve_date ="";
-					if(software['create_time'] !== ""){
-						createdate = new Date(software['create_time']).toISOString().slice(0, 10);
+					if(software['create_time'])
+					{
+						if(software['create_time'] !== ""){
+							createdate = new Date(software['create_time']).toISOString().slice(0, 10);
+						}
 					}
-					if(software['update_time'] !== ""){
-						update_date = new Date(software['update_time']).toISOString().slice(0, 10);
+					if(software['update_time'])
+					{
+						if(software['update_time'] !== ""){
+							update_date = new Date(software['update_time']).toISOString().slice(0, 10);
+						}
 					}
-					if(software['approve_time'] !== ""){
-						approve_date = new Date(software['approve_time']).toISOString().slice(0, 10);
-					}					
+					if(software['approve_time'])
+					{
+						if(software['approve_time'] !== ""){
+							approve_date = new Date(software['approve_time']).toISOString().slice(0, 10);
+						}					
+					}
 
                     url = window.location.href+"/"+software['id'];
                     software_list.row.add([
