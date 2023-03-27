@@ -48,7 +48,7 @@
                 </div>
                 <div class="row mb-2 ps-5 pe-3">
                     <div class="col-md-6 g-3">
-                        <textarea class="form-control" name="remarks"  rows="3" id="remarks">{{ $projectData->remarks }}"</textarea>
+                        <textarea class="form-control" name="remarks"  rows="3" id="remarks">{{ $projectData->remarks }}</textarea>
                     </div>
                 </div>
             </div>
@@ -65,7 +65,7 @@
                 </div>
             </div>
             @if ($showAddBtn)
-            <button class="btn btn-primary" data-bs-target="#link_employee_modal" data-bs-toggle="modal">Link</button>
+            <button class="btn btn-primary" data-bs-target="#link_employee_modal" data-bs-toggle="modal">Add</button>
             <div class="modal modal fade" tabindex='-1' id="link_employee_modal">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
@@ -101,7 +101,7 @@
                                             <p id="link_start_date_error"></p>
                                         </div>
                                         <div class="col-6 g-3 form-floating">
-                                            <input type="date" name="end_date" class="form-control" id="link_project_end" min="{{ date('Y-m-d', strtotime($projectData->start_date)) }}" max="{{ !empty($projectData->end_date) ? date('Y-m-d', strtotime($projectData->end_date)) : "" }}" required>
+                                            <input type="date" name="end_date" class="form-control" id="link_project_end" min="{{ date('Y-m-d', strtotime($projectData->start_date)) }}" max="{{ !empty($projectData->end_date) ? date('Y-m-d', strtotime($projectData->end_date)) : "" }}">
                                             <label for="link_project_end" class="text-center">End Date</label>
                                             <p id="link_end_date_error"></p>
                                         </div>
@@ -156,7 +156,7 @@
                     {{session()->pull('pj_alert')}}
                 </div>
             @endif
-            <table class="table table-bordered border-secondary mt-3 tbl-th-centered" id="proj_members_tbl">
+            <table class="table table-bordered border-secondary mt-3 tbl-th-centered w-100" id="proj_members_tbl">
                 <thead class="bg-primary text-white fw-bold">
                     <tr>
                         <th>Member</th>
@@ -175,12 +175,14 @@
                                 <td>{{ config('constants.PROJECT_ROLES.' .$member['project_role_type']) }}</td>
                                 <td>{{ $member['onsite_flag'] ? 'Yes' : 'No' }}</td>
                                 <td>{{ $member['membership_date'] }}</td>
-                                <td></td>
+                                <td>
+                                    {{-- Check if update button should be displayed --}}
+                                    Update
+                                </td>
                                 <td>{{ $member['isActive'] ? 1 : 0 }}</td>
                             </tr>
                         @endforeach
                     @endif
-
                 </tbody>
             </table>
         </div>
@@ -225,7 +227,61 @@
     @endif
 
     <div class="group-category mb-4 p-3 rounded-3">
-        <h4>Linked Softwares</h4>
+        <div class="d-flex justify-content-between">
+            <div>
+                <h4 class="text-start d-inline-block">Linked Softwares</h4>
+            </div>
+            @if (auth()->user()->roles == config('constants.MANAGER_ROLE_VALUE'))
+            <button class="btn btn-primary" data-bs-target="#link_software_modal" data-bs-toggle="modal">Add</button>
+            <div class="modal modal fade" tabindex='-1' id="link_software_modal">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                Link Software
+                            </h5>
+                        </div>
+                        <div class="modal-body">
+                            <div class="p-2">
+                                <form action="#" id="link_software_form">
+                                    @csrf
+                                    <div class="row mb-2">
+                                        <div class="col-12 g-3 form-floating">
+                                            <select name="software_name" class="form-select" id="software_list">
+                                                @foreach ( $softwareDropdown as $software )
+                                                    <option value="{{ $software['id'] }}">{{ $software['software_name'] }}</option>
+                                                @endforeach
+                                            </select>
+                                            <label for="software_list" class="text-center">Software Name</label>
+                                            <p id="link_software_name_error"></p>
+                                        </div>
+                                    </div>
+                                    <div class="row pt-2">
+                                        <h6>Remarks</h6>
+                                    </div>
+                                    <div class="row text-start">
+                                        <div class="gs-3 ge-3 gt-1">
+                                            <textarea name="remarks" id="link_software_remarks" rows="3" class="form-control"></textarea>
+                                            <span id="link_software_remarks_error"></span>
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button class="btn btn-primary" type="submit"  id="ls_submit_btn" form="link_software_form">Link
+                                <div id="link_software-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                                    <span class="sr-only"></span>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endif
+        </div>
         <div class="ms-3">
             @if(!empty(session('elr_alert')))
                 <div class="alert alert-success mt-2" role="alert">

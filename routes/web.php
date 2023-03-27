@@ -101,6 +101,7 @@ Route::middleware(['auth', 'web', 'isActive'])->group(function(){
         Route::post('/regist', 'regist')->name('projects.regist');
         Route::get('/{id}', 'detail')->name('projects.details')->whereNumber('id');
         Route::get('/{id}/edit', 'edit')->name('projects.edit')->whereNumber('id');
+        Route::post('/store', 'store')->name('projects.store');
     });
 
     Route::prefix('/servers')->group(function(){

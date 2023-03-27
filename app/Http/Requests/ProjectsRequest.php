@@ -38,15 +38,25 @@ class ProjectsRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'name' => ['required', 'max:512', function ($attribute, $value, $fail) {
+            'start_date' => 'required|date',
+            'remarks' => 'max:1024',
+        ];
+        if(strpos($this->header('referer'), route('projects.create')) !== FALSE){
+            $rules['name'] = ['required', 'max:512', function ($attribute, $value, $fail) {
                 $data = Projects::where('name', $value)->first();
                 if (!empty($data)) {
                     $fail('The project has already been registered.');
                 }
-            }],
-            'start_date' => 'required|date',
-            'remarks' => 'max:1024',
-        ];
+            }];
+        }else{
+            $id = $this->input('id');
+            $rules['name'] = ['required', 'max:512', function ($attribute, $value, $fail) use ($id) {
+                $data = Projects::where('name', $value)->where('id', '!=', $id)->first();
+                if (!empty($data)) {
+                    $fail('The project has already been registered.');
+                }
+            }];
+        }
 
         if ($this->has('end_date') && $this->input('end_date') != '') {
             $rules['end_date'] = 'date|after:' .$this->input('start_date');

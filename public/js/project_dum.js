@@ -4,7 +4,9 @@ $(document).ready( function () {
 		"pageLength": 10,
         "ordering": false,
         "oLanguage": {
-	        "sEmptyTable": "No Data"
+	        "sEmptyTable": "No Data",
+            "sZerorRecords": "No Data",
+            "sInfoFiltered": ""
 	    },
         "columnDefs" : [
             {

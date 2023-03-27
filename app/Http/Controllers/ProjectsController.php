@@ -23,7 +23,7 @@ class ProjectsController extends Controller
     public function create () {
 
         abort_if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE'), 403);
-        return view('projects.create');
+        return view('projects.create', ['isRegist' => true]);
     }
 
     public function regist (ProjectsRequest $request) {
@@ -97,7 +97,7 @@ class ProjectsController extends Controller
                 ->from('employees_projects as ep')
                 ->leftJoin('employees as e', 'e.id', 'ep.employee_id')
                 ->where('ep.project_id', $id)
-                ->whereIn('ep.approved_status', [config('constants.APPROVED_STATUS_REJECTED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+                ->whereIn('ep.approved_status', [config('constants.APPROVED_STATUS_PENDING'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
                 ->orderBy('ep.update_time', 'asc')
                 ->orderBy('e.last_name', 'asc')
                 ->orderBy('e.first_name', 'asc')
@@ -126,7 +126,7 @@ class ProjectsController extends Controller
         $softwareDropdown = Softwares::select('id', 'software_name')
                                     ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
                                     ->whereNotIn('id', function ($query) use ($id) {
-                                        $query->select('id')
+                                        $query->select('software_id')
                                                 ->from('projects_softwares')
                                                 ->where('project_id', $id);
                                     })
@@ -135,26 +135,51 @@ class ProjectsController extends Controller
                                     ->toArray();
 
 
-
-
-
-
         return view('projects.details', [
             'projectData' => $projectData,
             'isManager' => Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE'),
             'detailNote' => '', 
-            'showAddBtn' => true,
+            'showAddBtn' => true,   //fix later
             'projectMembers' => $projectMembers,
             'employeeDropdown' => $employeeDropdown,
             'employeeLinkageRequests' => $employeeLinkageRequests,
             'linkedSoftwares' => $linkedSoftwares,
+            'softwareDropdown' => $softwareDropdown,
 
 
         ]);
     }
 
     public function edit ($id) {
-        dd('edit page');
+
+        abort_if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE'), 403);
+
+        //get project data
+        $projectData = Projects::where('id', $id)->first();
+
+
+        return view('projects.create', [
+            'project' => $projectData,
+            'isRegist' => false,
+        ]);
+    }
+
+    public function store (ProjectsRequest $request) {
+        $request->validated();
+
+        //update data in DB
+        $id = $request->input('id');
+        $updateData = $request->except(['_token', 'id']);
+        $updateData['updated_by'] = Auth::user()->id;
+        Projects::where('id', $id)->update($updateData);
+
+        //create logs
+        Logs::createLog('Projects', 'Project detail update of ' .$updateData['name'] .'.');
+
+        //add success message to session
+        session(['regist_update_alert' => 'Project was successfully updated!']);
+
+        return redirect(route('projects.details', ['id' => $id]));
     }
 
 }
