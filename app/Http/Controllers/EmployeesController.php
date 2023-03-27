@@ -114,6 +114,7 @@ class EmployeesController extends Controller
                         'readOnly' => true,
                         'detailOnly' => true,
                         'detailNote' => $this->getAccountStatus($employeeDetails),
+                        'buTransferNote' => $employeeDetails->bu_transfer_flag ? "Employee has been assigned to " .$employeeDetails->bu_transfer_assignment : "",
                         'employee' => $employeeDetails,
                         'empLaptop' => EmployeesLaptops::getOwnedLaptopByEmployee($id),
                         'empProject' => EmployeesProjects::getProjectsByEmployee($id),
