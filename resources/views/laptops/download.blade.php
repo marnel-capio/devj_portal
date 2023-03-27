@@ -22,7 +22,7 @@
     <tbody>
         @foreach ($detail as $item)
             <tr>
-                <td>{{ !empty($item['owner']) ? $item['owner'] : ($item['status_num'] ? '?No Assignee' : '?Laptop is inactive') }}</td>
+                <td>{{ !empty($item['owner']) ? $item['owner'] : ($item['status_num'] ? '※No Assignee' : '※Laptop is inactive') }}</td>
                 <td>{{ !empty($item['linkage_id']) ? $item['brought_home_flag'] : '' }}</td>
                 <td>{{ $item['peza_form_number'] }}</td>
                 <td>{{ $item['peza_permit_number'] }}</td>
