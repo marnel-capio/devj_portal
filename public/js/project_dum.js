@@ -1,3 +1,5 @@
+const LINK_EMPLOYEE_PROJECT_LINK = '/api/linkEmployeeProject';
+
 $(document).ready( function () {
 
     let pj_table = $("#proj_members_tbl").DataTable({

@@ -153,7 +153,7 @@ class ApiController extends Controller
                                 , 200);
     }
 
-    public function linkProject(LinkProject $request){
+    public function linkEmployeeProject(LinkProject $request){
         $request->validated();
 
         //save data in db

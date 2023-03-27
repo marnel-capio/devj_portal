@@ -455,19 +455,19 @@
                                         @endforeach
                                     </select>
                                     <label for="projectList" class="text-center">Project Name</label>
-                                    <p id="error-lp-proj-name"></p>
+                                    <span id="error-lp-proj-name"></span>
                                 </div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-6 g-3 form-floating">
                                     <input type="date" name="project_start_date" class="form-control" id="project-start" required>
                                     <label for="project-start" class="text-center">Start Date</label>
-                                    <p id="error-lp-proj-start"></p>
+                                    <span id="error-lp-proj-start"></span>
                                 </div>
                                 <div class="col-6 g-3 form-floating">
                                     <input type="date" name="project_end_date" class="form-control" id="project-end" required>
                                     <label for="project-end" class="text-center">End Date</label>
-                                    <p id="error-lp-proj-end"></p>
+                                    <span id="error-lp-proj-end"></span>
                                 </div>
                             </div>
                             <div class="row mb-2">
@@ -478,7 +478,7 @@
                                         @endforeach
                                     </select>
                                     <label for="projectRoleList" class="text-center">Role</label>
-                                    <p id="error-lp-proj-role"></p>
+                                    <span id="error-lp-proj-role"></span>
                                 </div>
                                 <div class="col-6 g-3 text-start">
                                     <p></p>
@@ -494,7 +494,7 @@
                             <div class="row text-start">
                                 <div class="gs-3 ge-3 gt-1">
                                     <textarea name="remarks" id="link_remarks" rows="3" class="form-control"></textarea>
-                                    <p id="error-lp-remarks"></p>
+                                    <span id="error-lp-remarks"></span>
                                 </div>
                             </div>
                         </form>
@@ -528,7 +528,7 @@
                                         @endforeach
                                     </select>
                                     <label for="laptopList" class="text-center">Tag Number</label>
-                                    <p id="error-laptop-id"></p>
+                                    <span id="error-laptop-id"></span>
                                 </div>
                             </div>
                             <div class="row mb-4 text-start">
@@ -551,7 +551,7 @@
                             <div class="row text-start">
                                 <div class="gs-3 ge-3 gt-1">
                                     <textarea name="remarks" id="ll-remarks" rows="3" class="form-control"></textarea>
-                                    <p id="error-ll-remarks"></p>
+                                    <span id="error-ll-remarks"></span>
                                 </div>
                             </div>
                         </form>

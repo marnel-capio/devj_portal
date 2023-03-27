@@ -61,7 +61,7 @@ class ProjectsController extends Controller
                         $query->select('employee_id')
                             ->from('employees_projects')
                             ->where('project_id', $id)
-                            ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+                            ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE'), config('constants.APPROVED_STATUS_PENDING')])
                             ->whereRaw('(end_date IS NULL OR end_date > CURDATE())');
                     })
                     ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])

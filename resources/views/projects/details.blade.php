@@ -78,43 +78,44 @@
                             <div class="p-2">
                                 <form action="#" id="link_employee_form">
                                     @csrf
+                                    <input type="text" name="project_id" value="{{ $projectData->id }}" hidden>
                                     <div class="row mb-2">
                                         <div class="col-12 g-3 form-floating">
                                         @if (in_array(Auth::user()->roles, [config('constants.ADMIN_ROLE_VALUE'), config('constants.MANAGER_ROLE_VALUE')]))
-                                            <select name="name" class="form-select" id="member_list" required>
+                                            <select name="employee_id" class="form-select" id="member_list" required>
                                                 <option value=""></option>
                                         @else
-                                            <select name="name" class="form-select" id="member_list" readonly>
+                                            <select name="employee_id" class="form-select" id="member_list" readonly>
                                         @endif
                                                 @foreach ( $employeeDropdown as $employee )
                                                     <option value="{{ $employee['id'] }}">{{ $employee['employee_name'] }}</option>
                                                 @endforeach
                                             </select>
                                             <label for="member_list" class="text-center">Employee Name</label>
-                                            <p id="link_name_error"></p>
+                                            <span id="link_employee_id_error"></span>
                                         </div>
                                     </div>
                                     <div class="row mb-2">
                                         <div class="col-6 g-3 form-floating">
-                                            <input type="date" name="start_date" class="form-control" id="link_project_start" min="{{ date('Y-m-d', strtotime($projectData->start_date)) }}" max="{{ !empty($projectData->end_date) ? date('Y-m-d', strtotime($projectData->end_date)) : "" }}" required>
+                                            <input type="date" name="project_start" class="form-control" id="link_project_start" min="{{ date('Y-m-d', strtotime($projectData->start_date)) }}" max="{{ !empty($projectData->end_date) ? date('Y-m-d', strtotime($projectData->end_date)) : "" }}" required>
                                             <label for="link_project_start" class="text-center">Start Date</label>
-                                            <p id="link_start_date_error"></p>
+                                            <span id="link_project_start_error"></span>
                                         </div>
                                         <div class="col-6 g-3 form-floating">
-                                            <input type="date" name="end_date" class="form-control" id="link_project_end" min="{{ date('Y-m-d', strtotime($projectData->start_date)) }}" max="{{ !empty($projectData->end_date) ? date('Y-m-d', strtotime($projectData->end_date)) : "" }}">
+                                            <input type="date" name="project_end" class="form-control" id="link_project_end" min="{{ date('Y-m-d', strtotime($projectData->start_date)) }}" max="{{ !empty($projectData->end_date) ? date('Y-m-d', strtotime($projectData->end_date)) : "" }}">
                                             <label for="link_project_end" class="text-center">End Date</label>
-                                            <p id="link_end_date_error"></p>
+                                            <span id="link_project_end_error"></span>
                                         </div>
                                     </div>
                                     <div class="row mb-2 ">
                                         <div class="col-6 g-3 form-floating">
-                                            <select name="role" id="link_role" class="form-select">
+                                            <select name="project_role" id="link_role" class="form-select">
                                                 @foreach (config('constants.PROJECT_ROLES') as $val => $text )
                                                     <option value="{{ $val }}">{{ $text }}</option>
                                                 @endforeach
                                             </select>
                                             <label for="link_role" class="form-label text-center">Role</label>
-                                            <p id="link_role_error"></p>
+                                            <span id="link_project_role_error"></span>
                                         </div>
                                         <div class="col-6 g-3">
                                             <p></p>
@@ -253,7 +254,7 @@
                                                 @endforeach
                                             </select>
                                             <label for="software_list" class="text-center">Software Name</label>
-                                            <p id="link_software_name_error"></p>
+                                            <span id="link_software_name_error"></span>
                                         </div>
                                     </div>
                                     <div class="row pt-2">

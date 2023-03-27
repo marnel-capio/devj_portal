@@ -20,7 +20,7 @@ use App\Http\Controllers\ApiController;
 Route::middleware('auth:sanctum')->controller(ApiController::class)->group(function(){
     Route::post('/changePassword', 'changePassword')->name('api.changePassword');
     Route::post('/linkLaptop', 'linkLaptop')->name('api.linkLaptop');
-    Route::post('/linkProject', 'linkProject')->name('api.linkProject');
+    Route::post('/linkEmployeeProject', 'linkEmployeeProject')->name('api.linkEmployeeProject');
     Route::get('/softwares/search', 'getSoftwareByFilter')->name('api.softwaresearch');
     Route::post('/softwarelinkProject', 'softwarelinkProject')->name('api.softwarelinkProject');
     Route::get('/employees/search', 'getEmployeeByFilter')->name('api.filterEmployee');

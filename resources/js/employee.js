@@ -1,6 +1,6 @@
 const CHANGE_PASSWORD_LINK = '/api/changePassword';
 const LINK_LAPTOP_LINK = '/api/linkLaptop';
-const LINK_PROJECT_LINK = '/api/linkProject';
+const LINK_EMPLOYEE_PROJECT_LINK = '/api/linkEmployeeProject';
 const DEACTIVATE_EMPLOYEE_LINK = '/api/deactivateEmployee';
 const REACTIVATE_EMPLOYEE_LINK = '/api/reactivateEmployee';
 const NOTIFY_SURRENDER_OF_LAPTOPS_LINK = '/api/notifySurrender'
@@ -201,7 +201,7 @@ $(document).ready(function () {
 
 		$.ajax({
 			type: "POST",
-			url: LINK_PROJECT_LINK,
+			url: LINK_EMPLOYEE_PROJECT_LINK,
 			data: postData,
 			dataType: "json",
 			encode: true,
