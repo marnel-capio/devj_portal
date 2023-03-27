@@ -76,6 +76,7 @@
                         </div>
                         <div class="modal-body">
                             <div class="p-2">
+                                <div id="le_success_msg"></div>
                                 <form action="#" id="link_employee_form">
                                     @csrf
                                     <input type="text" name="project_id" value="{{ $projectData->id }}" hidden>

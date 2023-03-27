@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Employees;
 use App\Models\EmployeesProjects;
 use App\Models\ProjectSoftwares;
 use App\Models\Projects;
@@ -80,10 +81,21 @@ class LinkProject extends FormRequest
         $rules = array();
 
         //check if the page is for employee
-        if(strpos($this->header('referer'), route('employees.details', ['id' => $id])) !== FALSE){
+        if(strpos($this->header('referer'), route('employees.details', ['id' => $id])) !== FALSE 
+            || strpos($this->header('referer'), route('projects.details', ['id' => $id])) !== FALSE ){
             $employeeId = $this->input('employee_id');
             $projectDetails = Projects::where('id', $this->input('project_id'))->first();
             $emprules = [
+                'employee_id' => ['required', function ($atribute, $value, $fail) {
+                    //check if employee exists in DB
+                    $employeeData = Employees::where('id', $value)
+                                            ->where('active_status', 1)
+                                            ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
+
+                    if (empty($employeeData)) {
+                        $fail('The selected employee does not exist.');
+                    }
+                }],
                 'project_id' =>['required', 'exists:projects,id', function($atribute, $value, $fail) use ($employeeId) {
                     if(EmployeesProjects::checkIfProjectIsOngoing($value, $employeeId)){
                         $fail('Employee is already a member of the selected project.');
@@ -121,7 +133,6 @@ class LinkProject extends FormRequest
             ];
             $rules =  $softrules;
         }
-
 
         return $rules;
     }

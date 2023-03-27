@@ -61,12 +61,13 @@ class ProjectsController extends Controller
                         $query->select('employee_id')
                             ->from('employees_projects')
                             ->where('project_id', $id)
-                            ->where('approved_status', config('constants.APPROVED_STATUS_PENDING'))
-                            ->orWhere(function($query) {
-                                $query->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
-                                ->whereRaw('(end_date IS NULL OR end_date > CURDATE())');
+                            ->where(function($query) {
+                                $query->where('approved_status', config('constants.APPROVED_STATUS_PENDING'))
+                                    ->orWhere(function($query) {
+                                        $query->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+                                        ->whereRaw('(end_date IS NULL OR end_date > CURDATE())');
+                                    });
                             });
-
                     })
                     ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
                     ->where('active_status', 1)

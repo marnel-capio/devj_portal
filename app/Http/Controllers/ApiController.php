@@ -153,7 +153,13 @@ class ApiController extends Controller
                                 , 200);
     }
 
-    public function linkEmployeeProject(LinkProject $request){
+    /**
+     * Used in linking a project in employee detail screen
+     *
+     * @param LinkProject $request
+     * @return void
+     */
+    public function linkProjectToEmployee(LinkProject $request){
         $request->validated();
 
         //save data in db
@@ -785,5 +791,80 @@ class ApiController extends Controller
             'success' => $success,
             'message' => $message,
         ]);
+    }
+
+    /**
+     * Link employee to a project in project detail screen
+     *
+     * @param LinkProject $request
+     * @return void
+     */
+    public function linkEmployeeToProject (LinkProject $request) {
+        $request->validated();
+
+        //save data in db
+        $data = $request->except(['_token', ]);
+
+        $insertData = [
+            'project_id' => $data['project_id'],
+            'employee_id' => $data['employee_id'],
+            'start_date' => $data['project_start'],
+            'end_date' => $request->filled('project_end') ? $data['project_end'] : NULL,
+            'project_role_type' => $data['project_role'],
+            'onsite_flag' => $data['project_onsite'] ? 1 : 0,
+            'remarks' => $data['remarks'],
+            'created_by' => Auth::user()->id,
+            'updated_by' => Auth::user()->id,
+        ];
+
+        $employee = Employees::where('id', $data['employee_id'])->first();
+        $project = Projects::where('id', $data['project_id'])->first();
+
+        $message = '';       
+        //check logined employee role
+        if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
+            //save directly in DB in db
+            $insertData['approved_status'] =  config('constants.APPROVED_STATUS_APPROVED');
+            $insertData['approved_by'] = Auth::user()->id;        
+
+            EmployeesProjects::create($insertData);
+
+            //=====================================================      ADD MAIL
+            // if(Auth::user()->id != $data['employee_id']){
+            //     $mailData = [
+            //         'link' => route('employees.details', ['id' => $employee->id]),
+            //         'first_name' => $employee->first_name,
+            //         'currentUserId' => Auth::user()->id,
+            //         'module' => "Employee",
+            //     ];
+            //     $this->sendMailForEmployeeUpdate($employee->email, $mailData, config('constants.MAIL_EMPLOYEE_PROJECT_LINK_BY_MANAGER'));
+            // }
+            $message = 'Employee has been successfully linked.';
+        }else{
+            //if an employee edits his own data and is not the manager
+            $insertData['approved_status'] = config('constants.APPROVED_STATUS_PENDING');
+
+            EmployeesProjects::create($insertData);
+
+            //=====================================================      ADD MAIL
+
+            //notify the managers of the request
+            // $mailData = [
+            //     'link' => "/",  //update link
+            //     'requestor' => Auth::user()->first_name .' ' .Auth::user()->last_name,
+            //     'currentUserId' => Auth::user()->id,
+            //     'module' => "Employee",
+            // ];
+
+            // $this->sendMailForEmployeeUpdate(Employees::getEmailOfManagers(), $mailData, config('constants.MAIL_EMPLOYEE_PROJECT_LINK_REQUEST'));
+            $message = 'Request for linkage has been sent.';
+        }
+        
+        Logs::createLog("Employee", "Link {$employee->first_name} {$employee->last_name} to {$project->name}");
+
+        return response()->json(['success' => true, 
+                                    'message' => $message, 
+                                    'update' => EmployeesProjects::getProjectMembersById($data['project_id'])]
+                                , 200);
     }
 }

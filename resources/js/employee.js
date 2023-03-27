@@ -1,6 +1,6 @@
 const CHANGE_PASSWORD_LINK = '/api/changePassword';
 const LINK_LAPTOP_LINK = '/api/linkLaptop';
-const LINK_EMPLOYEE_PROJECT_LINK = '/api/linkEmployeeProject';
+const LINK_EMPLOYEE_PROJECT_LINK = '/api/linkProjectToEmployee';
 const DEACTIVATE_EMPLOYEE_LINK = '/api/deactivateEmployee';
 const REACTIVATE_EMPLOYEE_LINK = '/api/reactivateEmployee';
 const TRANSFER_EMPLOYEE_LINK = '/api/transferEmployee';
