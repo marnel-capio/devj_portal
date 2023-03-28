@@ -340,6 +340,7 @@ class LaptopsController extends Controller
                 'firstName' => $recipient->first_name,
                 'currentUserId' => Auth::user()->id,
                 'module' => "Laptop",
+                'tagNumber' => $laptopDetails->tag_number,
             ];
 
             Mail::to($recipient->email)->send(new MailLaptops($mailData, config('constants.MAIL_LAPTOP_NEW_REGISTRATION_APPROVAL')));
@@ -367,6 +368,7 @@ class LaptopsController extends Controller
                 'firstName' => $recipient->first_name,
                 'currentUserId' => Auth::user()->id,
                 'module' => "Laptop",
+                'tagNumber' => $laptopDetails->tag_number,
             ];
 
             Mail::to($recipient->email)->send(new MailLaptops($mailData, config('constants.MAIL_LAPTOP_DETAIL_UPDATE_APPROVAL')));
@@ -415,6 +417,7 @@ class LaptopsController extends Controller
                 'firstName' => $recipient->first_name,
                 'currentUserId' => Auth::user()->id,
                 'module' => "Laptop",
+                'tagNumber' => $laptopDetails->tag_number,
             ];
 
             Mail::to($recipient->email)->send(new MailLaptops($mailData, config('constants.MAIL_LAPTOP_NEW_REGISTRATION_REJECTION')));
@@ -441,6 +444,7 @@ class LaptopsController extends Controller
                 'firstName' => $recipient->first_name,
                 'currentUserId' => Auth::user()->id,
                 'module' => "Laptop",
+                'tagNumber' => $laptopDetails->tag_number,
             ];
 
             Mail::to($recipient->email)->send(new MailLaptops($mailData, config('constants.MAIL_LAPTOP_DETAIL_UPDATE_REJECTION')));
@@ -464,6 +468,17 @@ class LaptopsController extends Controller
 
         $laptopLinkDetails = EmployeesLaptops::where('id', $id)->first();
 
+        //get laptop data
+        $laptopData = Laptops::where('id', $laptopLinkDetails->laptop_id)->first();
+        //get mail recipient
+        $recipient = Employees::where('id', $laptopLinkDetails->employee_id)->first();
+        //get requestor
+        if($laptopLinkDetails->employee_id == $laptopLinkDetails->updated_by){
+            $requestor = $recipient;
+        }else{
+            $requestor = Employees::where('id', $laptopLinkDetails->updated_by)->first();
+        }
+
         if($laptopLinkDetails->approved_status == config('constants.APPROVED_STATUS_PENDING')){
             //approve the  data
             EmployeesLaptops::where('id', $id)
@@ -476,14 +491,14 @@ class LaptopsController extends Controller
             //create logs
             Logs::createLog("Laptop", 'Laptop Linkage Request Approval');
 
-            //send mail to requestor
-            $recipient = Employees::where('id', $laptopLinkDetails->employee_id)->first();
-
             $mailData = [
                 'link' => route('laptops.details', ['id' => $laptopLinkDetails->laptop_id]),
                 'firstName' => $recipient->first_name,
                 'currentUserId' => Auth::user()->id,
                 'module' => "Laptop",
+                'requestor' => !empty($requestor) ? $requestor->first_name .' ' .$requestor->last_name : 'unknown',
+                'assignee' => $recipient->first_name .' ' .$recipient->last_name,
+                'tagNumber' => $laptopData->tag_number,
             ];
 
             Mail::to($recipient->email)->send(new MailLaptops($mailData, config('constants.MAIL_LAPTOP_NEW_LINKAGE_BY_NON_MANAGER_APPROVAL')));
@@ -493,8 +508,6 @@ class LaptopsController extends Controller
             $this->rejectOtherLinkageRequest($laptopLinkDetails['laptop_id']);
 
         }else{
-            $recipient = Employees::where('id', $laptopLinkDetails->employee_id)->first();
-
             //save temporary data
             $update = json_decode($laptopLinkDetails->update_data, true);
             $update['updated_by'] = Auth::user()->id;
@@ -514,6 +527,9 @@ class LaptopsController extends Controller
                 'firstName' => $recipient->first_name,
                 'currentUserId' => Auth::user()->id,
                 'module' => "Laptop",
+                'requestor' => !empty($requestor) ? $requestor->first_name .' ' .$requestor->last_name : 'unknown',
+                'assignee' => $recipient->first_name .' ' .$recipient->last_name,
+                'tagNumber' => $laptopData->tag_number,
             ];
 
             Mail::to($recipient->email)->send(new MailLaptops($mailData, config('constants.MAIL_LAPTOP_LINKAGE_UPDATE_BY_NON_MANAGER_APPROVAL')));
@@ -548,6 +564,9 @@ class LaptopsController extends Controller
                     'firstName' => $data['first_name'],
                     'currentUserId' => Auth::user()->id,
                     'module' => "Laptop",
+                    'requestor' => $data['requestor_name'],
+                    'assignee' => $data['assignee_name'],
+                    'tagNumber' => $data['tag_number']
                 ];
                 Mail::to($data['email'])->send(new MailLaptops($mailData, config('constants.MAIL_LAPTOP_NEW_LINKAGE_BY_NON_MANAGER_REJECTION')));
             }
@@ -570,6 +589,17 @@ class LaptopsController extends Controller
         $laptopLinkDetails = EmployeesLaptops::where('id', $id)->first();
         $reason = $request->input('reason');
 
+        //get laptop data
+        $laptopData = Laptops::where('id', $laptopLinkDetails->laptop_id)->first();
+        //get mail recipient
+        $recipient = Employees::where('id', $laptopLinkDetails->employee_id)->first();
+        //get requestor
+        if($laptopLinkDetails->employee_id == $laptopLinkDetails->updated_by){
+            $requestor = $recipient;
+        }else{
+            $requestor = Employees::where('id', $laptopLinkDetails->updated_by)->first();
+        }
+
         if($laptopLinkDetails->approved_status == config('constants.APPROVED_STATUS_PENDING')){
             //reset the  data
             EmployeesLaptops::where('id', $id)
@@ -583,23 +613,21 @@ class LaptopsController extends Controller
             //create logs
             Logs::createLog("Laptop", 'Laptop Linkage Request Rejection');
 
-            //send mail to requestor
-            $recipient = Employees::where('id', $laptopLinkDetails->created_by)->first();
-
             $mailData = [
                 'link' => route('laptops.details', ['id' => $laptopLinkDetails->laptop_id]),
                 'reason' => $reason,
                 'firstName' => $recipient->first_name,
                 'currentUserId' => Auth::user()->id,
                 'module' => "Laptop",
+                'requestor' => !empty($requestor) ? $requestor->first_name .' ' .$requestor->last_name : 'unknown',
+                'assignee' => $recipient->first_name .' ' .$recipient->last_name,
+                'tagNumber' => $laptopData->tag_number,
             ];
 
             Mail::to($recipient->email)->send(new MailLaptops($mailData, config('constants.MAIL_LAPTOP_NEW_LINKAGE_BY_NON_MANAGER_REJECTION')));
 
             $alert = 'Successfully rejected laptop linkage.';
         }else{
-            $recipient = Employees::where('id', $laptopLinkDetails->employee_id)->first();
-
             //reset data
             $update['updated_by'] = Auth::user()->id;
             $update['approved_by'] = Auth::user()->id;
@@ -619,6 +647,9 @@ class LaptopsController extends Controller
                 'firstName' => $recipient->first_name,
                 'currentUserId' => Auth::user()->id,
                 'module' => "Laptop",
+                'requestor' => !empty($requestor) ? $requestor->first_name .' ' .$requestor->last_name : 'unknown',
+                'assignee' => $recipient->first_name .' ' .$recipient->last_name,
+                'tagNumber' => $laptopData->tag_number,
             ];
 
             Mail::to($recipient->email)->send(new MailLaptops($mailData, config('constants.MAIL_LAPTOP_LINKAGE_UPDATE_BY_NON_MANAGER_REJECTION')));

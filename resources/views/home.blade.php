@@ -10,7 +10,7 @@
 			<table id="employee-request" class="table table-striped request-table" >
 		        <thead>
 		            <tr>
-		                <th class="tbl-header-name">Name</th>
+		                <th>Name</th>
 		                <th>Email Address</th>
 		                <th>Position</th>
 		                <th>Actions</th>

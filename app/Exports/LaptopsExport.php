@@ -76,14 +76,14 @@ class LaptopsExport implements
                 'B' => 10,
                 'C' => 10,
                 'D' => 10,
-                'E' => 8,
-                'F' => 10,
-                'G' => 8,
-                'H' => 8,
-                'I' => 8,
-                'J' => 8,
-                'K' => 5,
-                'L' => 18,
+                'E' => 10,
+                'F' => 15,
+                'G' => 15,
+                'H' => 15,
+                'I' => 15,
+                'J' => 10,
+                'K' => 10,
+                'L' => 25,
                 'M' => 12,
             ];
         }else{
@@ -184,7 +184,7 @@ class LaptopsExport implements
                     $event->sheet
                         ->getPageSetup()
                         ->setOrientation(WorksheetPageSetup::ORIENTATION_LANDSCAPE)
-                        ->setPaperSizeDefault(WorksheetPageSetup::PAPERSIZE_A4);
+                        ->setPaperSizeDefault(WorksheetPageSetup::PAPERSIZE_LEGAL);
                     
                     $event->sheet->setSelectedCell('A1');
                 },
