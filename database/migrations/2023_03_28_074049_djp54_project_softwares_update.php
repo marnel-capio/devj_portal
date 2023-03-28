@@ -30,9 +30,9 @@ return new class extends Migration
     {
         Schema::table('projects_softwares', function (Blueprint $table) {
             $table->renameColumn('remarks', 'reasons');
-            $table->unsignedBigInteger('approved_by')->nullable()->after('requested_by');
+            $table->unsignedBigInteger('approved_by')->nullable()->after('id');
             $table->unsignedTinyInteger('approved_status')->default(3)->nullable()->after('approved_by')->comment( '1: rejected, 2: approved, 3: pending for approval, 4: pending for update approval');
-            $table->unsignedTinyInteger('delete_flag')->default(0)->nullable()->after('reasons')->comment( '1: deleted , 0: not deleted');
+            $table->unsignedTinyInteger('delete_flag')->default(0)->nullable()->after('remarks')->comment( '1: deleted , 0: not deleted');
         });  
     }
 };
