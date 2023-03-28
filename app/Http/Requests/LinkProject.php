@@ -91,6 +91,7 @@ class LinkProject extends FormRequest
 
         $rules = array();
         $isLinkEmployee = $this->input('is_employee');
+        $isUpdateLinkEmployee = $this->input('is_employee_update');
 
         //check if the page is for employee
         if(strpos($this->header('referer'), route('employees.details', ['id' => $id])) !== FALSE 
@@ -129,6 +130,25 @@ class LinkProject extends FormRequest
             }
 
             $rules = $emprules;
+        }
+        else if (strpos($this->header('referer'), route('projects.details', ['id' => $id])) !== FALSE && $isUpdateLinkEmployee) {
+            //check if request is for linkage update
+            $projectDetails = Projects::where('id', $id)->first();
+
+            $rules = [    
+                'project_role' => 'required|in:1,2,3',
+                'remarks' => 'max:1024,'
+            ];
+
+            if(!empty($projectDetails)){
+                $rules['project_start'] = "required|date|after_or_equal:{$projectDetails->start_date}";
+                if(!empty($projectDetails->end_date) && $projectDetails->end_date != "0000-00-00 00:00:00"){
+                    $rules['project_start'] = "required|date|after_or_equal:{$projectDetails->start_date}|before:{$projectDetails->end_date}";
+                    if($this->filled('project_end')){
+                        $rules['project_end'] = "date|after:{$projectDetails->start_date}|before_or_equal:{$projectDetails->end_date}";
+                    }
+                }
+            }
         }
         //check if page is software
         else

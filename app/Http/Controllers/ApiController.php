@@ -847,6 +847,83 @@ class ApiController extends Controller
                                 , 200);
     }
 
+    public function updateEmployeeProjectLinkage (LinkProject $request) {
+        $request->validated();
+
+        //save data in db
+        $data = $request->except(['_token', 'linkage_id']);
+        $linkageId = $request->input('linkage_id');
+        $originalData = EmployeesProjects::where('id', $linkageId)->first();
+
+        $updateData = [
+            'start_date' => $data['project_start'],
+            'end_date' => $request->filled('project_end') ? $data['project_end'] : NULL,
+            'project_role_type' => $data['project_role'],
+            'onsite_flag' => $data['project_onsite'] ? 1 : 0,
+            'remarks' => $data['remarks'],
+        ];
+
+        $employee = Employees::where('id', $originalData['employee_id'])->first();
+        $project = Projects::where('id', $originalData['project_id'])->first();
+
+        $message = '';       
+        //check logined employee role
+        if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
+            //save directly in DB in db
+            $updateData['approved_status'] =  config('constants.APPROVED_STATUS_APPROVED');
+            $updateData['approved_by'] = Auth::user()->id;
+            $updateData['updated_by'] = Auth::user()->id;
+
+            EmployeesProjects::where('id', $linkageId)->update($updateData);
+
+            //=====================================================      ADD MAIL
+            // if(Auth::user()->id != $data['employee_id']){
+            //     $mailData = [
+            //         'link' => route('employees.details', ['id' => $employee->id]),
+            //         'first_name' => $employee->first_name,
+            //         'currentUserId' => Auth::user()->id,
+            //         'module' => "Employee",
+            //     ];
+            //     $this->sendMailForEmployeeUpdate($employee->email, $mailData, config('constants.MAIL_EMPLOYEE_PROJECT_LINK_BY_MANAGER'));
+            // }
+            $message = 'Employee has been successfully linked.';
+        }else{
+            //if an employee edits his own data and is not the manager
+            $tojson = [];
+            foreach ($updateData as $key => $val) {
+                if ($originalData->$key !== $val) {
+                    $tojson[$key] = $val;
+                }
+            }
+
+            EmployeesProjects::where('id', $linkageId)->update([
+                'approved_status' => config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE'),
+                'updated_by' => Auth::user()->id,
+                'update_data' => json_encode($tojson, true),
+            ]);
+
+            //=====================================================      ADD MAIL
+
+            //notify the managers of the request
+            // $mailData = [
+            //     'link' => "/",  //update link
+            //     'requestor' => Auth::user()->first_name .' ' .Auth::user()->last_name,
+            //     'currentUserId' => Auth::user()->id,
+            //     'module' => "Employee",
+            // ];
+
+            // $this->sendMailForEmployeeUpdate(Employees::getEmailOfManagers(), $mailData, config('constants.MAIL_EMPLOYEE_PROJECT_LINK_REQUEST'));
+            $message = 'Request for linkage has been sent.';
+        }
+        
+        Logs::createLog("Employee", "Updated the linkage data of {$employee->first_name} {$employee->last_name} to {$project->name}");
+
+        return response()->json(['success' => true, 
+                                    'message' => $message, 
+                                    'update' => EmployeesProjects::getProjectMembersById($originalData['project_id'])]
+                                , 200);
+    }
+
     /**
      * Link software to a project from employee details screen
      *
@@ -875,7 +952,8 @@ class ApiController extends Controller
         return response()->json(['success' => true, 
                                     'message' => 'Software was successfully linked.', 
                                     'update' => ProjectSoftwares::getLinkedSoftwareByProject($insertData['project_id']),
-                                    200]);
+                                    'isManager' => Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')],
+                                    200);
     }
 
 

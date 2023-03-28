@@ -73,6 +73,7 @@ class EmployeesProjects extends Model
                     ep.*,
                     CONCAT(DATE_FORMAT(ep.start_date, "%Y/%m/%d"), " - ", CASE WHEN ep.end_date IS NULL THEN "" ELSE DATE_FORMAT(ep.end_date, "%Y/%m/%d") END) AS membership_date,
                     CONCAT(e.last_name, ", ", e.first_name) AS member_name,
+                    CONCAT(e.first_name, " ", e.last_name) AS member_name_update,
                     CASE WHEN ep.end_date IS NULL THEN 1 ELSE CASE WHEN  DATE_FORMAT(ep.end_date, "%Y-%m-%d") > CURDATE() THEN 1 ELSE 0 END END AS isActive
 
                 ')

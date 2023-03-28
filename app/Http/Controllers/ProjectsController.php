@@ -49,6 +49,8 @@ class ProjectsController extends Controller
 
         //get project data
         $projectData = Projects::where('id', $id)->first();
+
+        abort_if(empty($projectData), 404);
         $projectMembers = EmployeesProjects::getProjectMembersById($id);
         
         //get data for employee dropdown in Link Employee modal
@@ -176,18 +178,18 @@ class ProjectsController extends Controller
 
     public function removeLinkedSoftwareToProject (Request $request) {
         $linkageId = $request->input('id');
-        $linkageData = ProjectSoftwares::where('id', $linkageId);
+        $linkageData = ProjectSoftwares::where('id', $linkageId)->first();
         //validation
         if (empty($linkageData)) {
             //error
-            session(['linked_soft_alert' => 'Invalid Request']);
+            session(['remove_soft_alert' => 'Invalid Request']);
         }
 
         //delete data in DB
         ProjectSoftwares::where('id', $linkageId)->delete();
 
-        $projectData = Projects::where('id', $linkageData['project_id'])->first();
-        $softwareData = Softwares::where('id', $linkageData['software_id'])->first();
+        $projectData = Projects::where('id', $linkageData->project_id)->first();
+        $softwareData = Softwares::where('id', $linkageData->software_id)->first();
 
         Logs::createLog('Project', "Remove linkage of {$softwareData->software_name} to {$projectData->name}");
 

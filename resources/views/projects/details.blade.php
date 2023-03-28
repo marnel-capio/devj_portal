@@ -177,9 +177,23 @@
                                 <td>{{ config('constants.PROJECT_ROLES.' .$member['project_role_type']) }}</td>
                                 <td>{{ $member['onsite_flag'] ? 'Yes' : 'No' }}</td>
                                 <td>{{ $member['membership_date'] }}</td>
-                                <td>
+                                <td class="text-center">
                                     {{-- Check if update button should be displayed --}}
-                                    Update
+                                    @if ($member['isActive'])
+                                        <button class="btn btn-link btn-sm text-success employee_linkage_update_btn" 
+                                            data-bs-target="#update_employee_linkage_modal" 
+                                            data-bs-toggle="modal" 
+                                            data-modaldata='{
+                                                "id":"{{ $member['id'] }}",
+                                                "member":"{{ $member['member_name_update'] }}",
+                                                "start_date":"{{ date('Y-m-d', strtotime($member['start_date'])) }}",
+                                                "end_date":"{{ $member['end_date'] ? date('Y-m-d', strtotime($member['end_date'])) : "" }}",
+                                                "onsite_flag":"{{ $member['onsite_flag'] }}",
+                                                "project_role_type":"{{ $member['project_role_type'] }}",
+                                                "remarks":"{{ $member['remarks'] }}"
+                                            }'
+                                        >Update</button>
+                                    @endif
                                 </td>
                                 <td>{{ $member['isActive'] ? 1 : 0 }}</td>
                             </tr>
@@ -187,6 +201,75 @@
                     @endif
                 </tbody>
             </table>
+        </div>
+    </div>
+
+    <div class="modal modal fade" tabindex='-1' id="update_employee_linkage_modal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        Update Employee Linkage
+                    </h5>
+                </div>
+                <div class="modal-body">
+                    <div class="p-2">
+                        <div id="ue_success_msg"></div>
+                        <span id="member_info">Member: </span>
+                        <form action="#" id="update_employee_linkage_form">
+                            @csrf
+                            <input type="text" name="linkage_id" value="" hidden>
+                            <div class="row mb-2">
+                                <div class="col-6 g-3 form-floating">
+                                    <input type="date" name="project_start" class="form-control" id="update_link_project_start" min="{{ date('Y-m-d', strtotime($projectData->start_date)) }}" max="{{ !empty($projectData->end_date) ? date('Y-m-d', strtotime($projectData->end_date)) : "" }}" required>
+                                    <label for="update_link_project_start" class="text-center">Start Date</label>
+                                    <span id="link_project_start_error"></span>
+                                </div>
+                                <div class="col-6 g-3 form-floating">
+                                    <input type="date" name="project_end" class="form-control" id="update_link_project_end" min="{{ date('Y-m-d', strtotime($projectData->start_date)) }}" max="{{ !empty($projectData->end_date) ? date('Y-m-d', strtotime($projectData->end_date)) : "" }}">
+                                    <label for="update_link_project_end" class="text-center">End Date</label>
+                                    <span id="link_project_end_error"></span>
+                                </div>
+                            </div>
+                            <div class="row mb-2 ">
+                                <div class="col-6 g-3 form-floating">
+                                    <select name="project_role" id="update_link_role" class="form-select">
+                                        @foreach (config('constants.PROJECT_ROLES') as $val => $text )
+                                            <option value="{{ $val }}">{{ $text }}</option>
+                                        @endforeach
+                                    </select>
+                                    <label for="update_link_role" class="form-label text-center">Role</label>
+                                    <span id="link_project_role_error"></span>
+                                </div>
+                                <div class="col-6 g-3">
+                                    <p></p>
+                                    <div class="form-check ">
+                                        <label for="update_link_onsite" class="form-check-label user-select-none">Onsite</label>
+                                        <input type="checkbox" class="form-check-input" name="onsite" id="update_link_onsite" value="1">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row pt-2">
+                                <h6>Remarks</h6>
+                            </div>
+                            <div class="row text-start">
+                                <div class="gs-3 ge-3 gt-1">
+                                    <textarea name="remarks" id="update_link_remarks" rows="3" class="form-control"></textarea>
+                                    <span id="link_remarks_error"></span>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button class="btn btn-primary" type="submit"  id="update_pj_submit_btn" form="update_employee_linkage_form">Link
+                        <div id="link_update_spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                            <span class="sr-only"></span>
+                        </div>
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -286,9 +369,14 @@
             @endif
         </div>
         <div class="ms-3">
-            @if(!empty(session('elr_alert')))
+            @if(!empty(session('linked_soft_alert')))
                 <div class="alert alert-success mt-2" role="alert">
-                    {{session()->pull('elr_alert')}}
+                    {{session()->pull('linked_soft_alert')}}
+                </div>
+            @endif
+            @if(!empty(session('remove_soft_alert')))
+                <div class="alert alert-danger mt-2" role="alert">
+                    {{session()->pull('linked_soft_alert')}}
                 </div>
             @endif
             <table class="table table-bordered border-secondary mt-3 tbl-th-centered" id="linked_softwares_tbl">
@@ -310,13 +398,17 @@
                                 <td>{{ $software['software_type'] }}</td>
                                 <td>{{ $software['linkageRemarks'] }}</td>
                                 @if (auth()->user()->roles == config('constants.MANAGER_ROLE_VALUE'))
-                                <td class="text-center"><button class="btn btn-link btn-sm text-danger">Remove</button></td>
+                                <td class="text-center"><button class="btn btn-link btn-sm text-danger software_linkage_remove_btn" form="remove_software_form" data-linkid="{{ $software['id'] }}" data-softwarename="{{ $software['software_name'] }}">Remove</button></td>
                                 @endif
                             </tr>
                         @endforeach
                     @endif
                 </tbody>
             </table>
+            <form action="{{ route('projects.removeSoftware') }}" id="remove_software_form" method="POST">
+                @csrf
+                <input type="text" hidden name="id" value="" id="soft_linkage_id">
+            </form>
         </div>
     </div>
 
