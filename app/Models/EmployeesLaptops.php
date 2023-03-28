@@ -156,11 +156,14 @@ class EmployeesLaptops extends Model
                                 employees_laptops.update_time as request_date,
                                 employees.first_name,
                                 employees.email,
+                                concat(employees2.first_name, " ", employees2.last_name) as requestor_name,
+                                concat(employees.first_name, " ", employees.last_name) as assignee_name,
                                 laptops.tag_number,
                                 employees_laptops.update_data
                             ')
                         ->leftJoin('laptops', 'laptops.id', 'employees_laptops.laptop_id')
                         ->leftJoin('employees', 'employees.id', 'employees_laptops.employee_id')
+                        ->leftJoin('employees AS employees2', 'employees2.id', 'employees_laptops.updated_by')
                         ->whereIn('laptops.approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
                         ->where('laptops.status', 1)
                         ->where('employees_laptops.laptop_id', $laptopId)

@@ -39,6 +39,12 @@ class ApiController extends Controller
         return response()->json(['success' => true], 200);
     }
 
+    /**
+     * laptop linkage in employee detail screen
+     *
+     * @param LinkLaptop $request
+     * @return void
+     */
     public function linkLaptop(LinkLaptop $request){
         $request->validated();
 
@@ -70,6 +76,7 @@ class ApiController extends Controller
                     'first_name' => $employee->first_name,
                     'currentUserId' => Auth::user()->id,
                     'module' => "Employee",
+                    'tagNumber' => $laptop->tag_number,
                 ];
                 $this->sendMailForEmployeeUpdate($employee->email, $mailData, config('constants.MAIL_EMPLOYEE_LAPTOP_LINK_BY_MANAGER'));
             }
@@ -86,6 +93,8 @@ class ApiController extends Controller
                 'requestor' => Auth::user()->first_name .' ' .Auth::user()->last_name,
                 'currentUserId' => Auth::user()->id,
                 'module' => "Employee",
+                'tagNumber' => $laptop->tag_number,
+                'assignee' => $employee->first_name .' ' . $employee->last_name,
             ];
 
             $this->sendMailForEmployeeUpdate(Employees::getEmailOfManagers(), $mailData, config('constants.MAIL_EMPLOYEE_LAPTOP_LINK_REQUEST'));
@@ -195,6 +204,7 @@ class ApiController extends Controller
                     'first_name' => $employee->first_name,
                     'currentUserId' => Auth::user()->id,
                     'module' => "Employee",
+                    'projectName' => $project->name,
                 ];
                 $this->sendMailForEmployeeUpdate($employee->email, $mailData, config('constants.MAIL_EMPLOYEE_PROJECT_LINK_BY_MANAGER'));
             }
@@ -211,6 +221,8 @@ class ApiController extends Controller
                 'requestor' => Auth::user()->first_name .' ' .Auth::user()->last_name,
                 'currentUserId' => Auth::user()->id,
                 'module' => "Employee",
+                'projectName' => $project->name,
+                'assignee' => $employee->first_name .' ' .$employee->last_name,
             ];
 
             $this->sendMailForEmployeeUpdate(Employees::getEmailOfManagers(), $mailData, config('constants.MAIL_EMPLOYEE_PROJECT_LINK_REQUEST'));
@@ -402,6 +414,9 @@ class ApiController extends Controller
             }
         }
 
+        $laptopData = Laptops::where('id', $originalData->laptop_id)->first();
+        $employeeData = Employees::where('id', $originalData->employee_id)->first();
+
         if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
 
             //format log
@@ -429,6 +444,7 @@ class ApiController extends Controller
                     'firstName' => $recipient['first_name'],
                     'currentUserId' => Auth::user()->id,
                     'module' => "Laptop",
+                    'tagNumber' => $laptopData->tag_number,
                 ];
     
                 $this->sendMailForLaptop($recipient['email'], $mailData, config('constants.MAIL_LAPTOP_LINKAGE_UPDATE_BY_MANAGER_NOTIF'));
@@ -451,6 +467,9 @@ class ApiController extends Controller
                 'link' => "/laptops/{$originalData['laptop_id']}",
                 'currentUserId' => Auth::user()->id,
                 'module' => "Laptop",
+                'tagNumber' => $laptopData->tag_number,
+                'requestor' => Auth::user()->first_name .' ' .Auth::user()->last_name,
+                'assignee' => $employeeData->first_name .' ' .$employeeData->last_name,
             ];
 
             $this->sendMailForLaptop($recipients, $mailData, config('constants.MAIL_LAPTOP_LINKAGE_UPDATE_BY_NON_MANAGER_REQUEST'));
@@ -465,7 +484,7 @@ class ApiController extends Controller
     }
 
     /**
-     * Registration of new laptop linkage
+     * Registration of new laptop linkage in laptop detail screen
      *
      * @param LaptopLinkage $request
      * @return void
@@ -503,6 +522,7 @@ class ApiController extends Controller
                     'firstName' => $employeeData['first_name'],
                     'currentUserId' => Auth::user()->id,
                     'module' => "Laptop",
+                    'tagNumber' => $laptopData->tag_number,
                 ];
     
                 $this->sendMailForLaptop($employeeData['email'], $mailData, config('constants.MAIL_LAPTOP_NEW_LINKAGE_BY_MANAGER_NOTIF'));
@@ -525,6 +545,9 @@ class ApiController extends Controller
                 'link' => "/laptops/{$requestData['id']}",
                 'currentUserId' => Auth::user()->id,
                 'module' => "Laptop",
+                'tagNumber' => $laptopData->tag_number,
+                'requestor' => Auth::user()->first_name .' ' .Auth::user()->last_name,
+                'assignee' => $employeeData->first_name .' ' .$employeeData->last_name,
             ];
 
             $this->sendMailForLaptop($recipients, $mailData, config('constants.MAIL_LAPTOP_NEW_LINKAGE_BY_NON_MANAGER_REQUEST'));

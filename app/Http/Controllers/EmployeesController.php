@@ -77,6 +77,8 @@ class EmployeesController extends Controller
 
         $mailData = [
             'link' => route('employees.request', ['id' => $id]),
+            'employeeName' => $insertData['last_name'] .', ' . $insertData['first_name'],
+            'position' => config('constants.POSITION_' .$insertData['position'] .'_NAME'),
             'currentUserId' => $id,
             'module' => "Employee",
         ];
@@ -211,7 +213,7 @@ class EmployeesController extends Controller
             }
 
         }else{
-            //if an employee edits his own data and is not the manager
+            //if an admin or an engineer edits the employee details
             $json = [];
             foreach($updateData as $key => $value){
                 if($value != $originalData[$key] && !in_array($key, ['updated_by', 'password'])){
@@ -231,6 +233,7 @@ class EmployeesController extends Controller
                 'requestor' => Auth::user()->first_name .' ' .Auth::user()->last_name,
                 'currentUserId' => Auth::user()->id,
                 'module' => "Employee",
+                'employeeName' => $originalData->first_name .' ' .$originalData->last_name,
             ];
 
             $this->sendMail(Employees::getEmailOfManagers(), $mailData, config('constants.MAIL_EMPLOYEE_UPDATE_REQUEST'));
@@ -313,13 +316,25 @@ class EmployeesController extends Controller
                 ]);
 
             //send mail
-            $this->sendMail($employee->email, ['first_name' => $employee->first_name,
-                'currentUserId' => Auth::user()->id,
-                'module' => "Employee",], config('constants.MAIL_NEW_REGISTRATION_APPROVAL'));
+            $this->sendMail($employee->email, 
+                            [
+                                'first_name' => $employee->first_name,
+                                'currentUserId' => Auth::user()->id,
+                                'module' => "Employee",
+                            ], 
+                            config('constants.MAIL_NEW_REGISTRATION_APPROVAL'));
 
             Logs::createLog("Employee", "{$employee->first_name} {$employee->last_name}'s account  has been approved.");
         
         }else{
+            $ownAccount = true;
+            //get requestor
+            if($employee->id != $employee->updated_by){
+                $ownAccount = false;
+                $requestorData = Employees::where('id', $employee->updated_by)->first();
+                $requestor = !empty($requestorData) ? $requestorData->first_name .' ' .$requestorData->last_name : 'unknown';
+            }
+
             //update only
             $employeeUpdate = json_decode($employee->update_data, true);
             $employeeUpdate['updated_by'] = Auth::user()->id;
@@ -331,9 +346,16 @@ class EmployeesController extends Controller
             Employees::where('id', $employee['id'])->update($employeeUpdate);
             
             //send mail
-            $this->sendMail($employee->email, ['first_name' => $employee->first_name,
-                'currentUserId' => Auth::user()->id,
-                'module' => "Employee",], config('constants.MAIL_EMPLOYEE_UPDATE_APPROVAL'));
+            $this->sendMail($employee->email, 
+                                [   
+                                    'first_name' => $employee->first_name,
+                                    'currentUserId' => Auth::user()->id,
+                                    'module' => "Employee",
+                                    'ownAccount' => $ownAccount,
+                                    'link' => route('employees.details', ['id' => $employee->id]),
+                                    'updater' => !empty($requestor) ? $requestor : '',
+                                ], 
+                                config('constants.MAIL_EMPLOYEE_UPDATE_APPROVAL'));
 
             //logs
             Logs::createLog("Employee", "Approved the update details of {$employee->first_name} {$employee->last_name}");
@@ -381,6 +403,14 @@ class EmployeesController extends Controller
 
             Logs::createLog("Employee", "Rejected the employee registration of {$employee->first_name} {$employee->last_name} because of: {$reason}.");
         }else{
+            $ownAccount = true;
+            //get requestor
+            if($employee->id != $employee->updated_by){
+                $ownAccount = false;
+                $requestorData = Employees::where('id', $employee->updated_by)->first();
+                $requestor = !empty($requestorData) ? $requestorData->first_name .' ' .$requestorData->last_name : 'unknown';
+            }
+
             Employees::where('id', $employee['id'])
                 ->update([
                     'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
@@ -396,6 +426,8 @@ class EmployeesController extends Controller
                 'reasons' => $reason,
                 'currentUserId' => Auth::user()->id,
                 'module' => "Employee",
+                'ownAccount' => $ownAccount,
+                'updater' => !empty($requestor) ? $requestor : '',
             ];
             $this->sendMail($employee->email, $mailData, config('constants.MAIL_EMPLOYEE_UPDATE_REJECTION'));
         

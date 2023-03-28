@@ -9,9 +9,13 @@
 
 @if ($mailType == config('constants.MAIL_NEW_REGISTRATION_REQUEST'))
 
-    There has been a request for new registration approval. Check the details on the link below:<br>
+    There is a new request for employee registration approval. <br>
     <br>
-    <a href="{{ url($mailData['link']) }}">Request Link</a>
+    Request Summary: <br>
+    &nbsp;&nbsp;Employee name: {{ $mailData['employeeName'] }} <br>
+    &nbsp;&nbsp;Position: {{ $mailData['position'] }} <br>
+    <br>
+    Check the request <a href="{{ url($mailData['link']) }}">here</a>.
 
 @elseif ($mailType == config('constants.MAIL_NEW_REGISTRATION_APPROVAL'))
 
@@ -31,18 +35,30 @@
 
 @elseif ($mailType == config('constants.MAIL_EMPLOYEE_UPDATE_REQUEST'))
 
-    There has been a request for employee details update approval. Check the details on the link below:<br>
+    There is a new request for employee details update approval.<br>
     <br>
-    Requestor: {{ $mailData['requestor'] }}<br>
-    <a href="{{ url($mailData['link']) }}">Request Link</a>
+    Request Summary: <br>
+    &nbsp;&nbsp;Requestor: {{ $mailData['requestor'] }} <br>
+    &nbsp;&nbsp;Employee name: {{ $mailData['employeeName'] }} <br>
+    <br>
+    Check the request <a href="{{ url($mailData['link']) }}">here</a>.
 
 @elseif ($mailType == config('constants.MAIL_EMPLOYEE_UPDATE_APPROVAL'))
 
-    Your request update on your employee details has been approved.
+    @if ($mailData['ownAccount'])
+        Your request to update your employee details has been approved. <br>
+    @else
+        The request to update your employee details made by {{ $mailData['updater'] }} has been approved. <br>
+    @endif
+    Check the details <a href="{{ url($mailData['link']) }}">here</a>.
 
 @elseif ($mailType == config('constants.MAIL_EMPLOYEE_UPDATE_REJECTION'))
 
-    Your request update on your employee details has been rejected.<br>
+    @if ($mailData['ownAccount'])
+        Your request to update your employee details has been rejected. <br>
+    @else
+        The request to update your employee details made by {{ $mailData['updater'] }} has been rejected. <br>
+    @endif
     <br>
     Please see the reason below:<br>
     {{ $mailData['reasons'] }}
@@ -51,33 +67,43 @@
 @elseif ($mailType == config('constants.MAIL_EMPLOYEE_UPDATE_BY_MANAGER'))
 
     Your details in Dev J Portal has been updated by {{ $mailData['updater'] }}.<br>
-    <br>
-    Check the details on the link below:<br>
-    <a href="{{ url($mailData['link']) }}">Details Link</a>
+    Check the details <a href="{{ url($mailData['link']) }}">here</a>.
+    
 
 @elseif ($mailType == config('constants.MAIL_EMPLOYEE_PROJECT_LINK_REQUEST'))
 
-    There has been a request for employee to link on a project. Check the details on the link below:<br>
+    There is a new request to link an employee to a project. <br>
     <br>
-    Requestor: {{ $mailData['requestor'] }}<br>
-    <a href="{{ url($mailData['link']) }}">Request Link</a>
+    Request Summary: <br>
+    &nbsp;&nbsp;Project Name: {{ $mailData['projectName'] }} <br>
+    &nbsp;&nbsp;Requestor: {{ $mailData['requestor'] }} <br>
+    &nbsp;&nbsp;Assignee: {{ $mailData['assignee'] }} <br>
+    <br>
+    Check the request <a href="{{ url($mailData['link']) }}">here</a>.
 
 @elseif ($mailType == config('constants.MAIL_EMPLOYEE_LAPTOP_LINK_REQUEST'))
 
-    There has been a request for employee to link on a laptop. Check the details on the link below:<br>
+    There is a new request to link a laptop to an employee.<br>
     <br>
-    Requestor: {{ $mailData['requestor'] }}<br>
-    <a href="{{ url($mailData['link']) }}">Request Link</a>
+    Request Summary: <br>
+    &nbsp;&nbsp;Laptop Tag Number: {{ $mailData['tagNumber'] }} <br>
+    &nbsp;&nbsp;Requestor: {{ $mailData['requestor'] }} <br>
+    &nbsp;&nbsp;Assignee: {{ $mailData['assignee'] }} <br>
+    <br>
+    Check the request <a href="{{ url($mailData['link']) }}">here</a>.
 
 @elseif ($mailType == config('constants.MAIL_EMPLOYEE_PROJECT_LINK_BY_MANAGER'))
 
-    The manager has linked a project to your account. <br>
+    The manager has linked the project below to your account. <br>
+    &nbsp;&nbsp;Project name: {{ $mailData['projectName'] }} <br>
+    <br>
     Check the details <a href="{{ url($mailData['link']) }}">here</a>.
-
 
 @elseif ($mailType == config('constants.MAIL_EMPLOYEE_LAPTOP_LINK_BY_MANAGER'))
 
-    The manager has linked a laptop to your account. <br>
+    The manager has linked the laptop below to your account.  <br>
+    &nbsp;&nbsp;Laptop tag number: {{ $mailData['tagNumber'] }} <br>
+    <br>
     Check the details <a href="{{ url($mailData['link']) }}">here</a>.
 
 @elseif ($mailType == config('constants.MAIL_EMPLOYEE_DEACTIVATION'))
