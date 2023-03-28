@@ -102,6 +102,8 @@ Route::middleware(['auth', 'web', 'isActive'])->group(function(){
         Route::get('/{id}', 'detail')->name('projects.details')->whereNumber('id');
         Route::get('/{id}/edit', 'edit')->name('projects.edit')->whereNumber('id');
         Route::post('/store', 'store')->name('projects.store');
+        Route::post('/removeSoftware', 'removeLinkedSoftwareToProject')->name('projects.removeSoftware');
+
     });
 
     Route::prefix('/servers')->group(function(){

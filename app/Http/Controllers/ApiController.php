@@ -111,7 +111,7 @@ class ApiController extends Controller
         $insertData = [
             'project_id' => $data['project_id'],
             'software_id' => $data['software_id'],
-            'reasons' => $data['remarks'],
+            'remarks' => $data['remarks'],
             'created_by' => Auth::user()->id,
             'updated_by' => Auth::user()->id,
         ];
@@ -867,4 +867,37 @@ class ApiController extends Controller
                                     'update' => EmployeesProjects::getProjectMembersById($data['project_id'])]
                                 , 200);
     }
+
+    /**
+     * Link software to a project from employee details screen
+     *
+     * @param LinkProject $request
+     * @return void
+     */
+    public function linkSoftwareToProject (LinkProject $request) {
+        $data = $request->except('_token');
+
+        $insertData = [
+            'project_id' => $data['project_id'],
+            'software_id' => $data['software_id'],
+            'remarks' => $data['remarks'],
+            'created_by' => Auth::user()->id,
+            'updated_by' => Auth::user()->id,
+        ];
+
+        //insert data
+        ProjectSoftwares::insert($insertData);
+
+        $projectData = Projects::where('id', $insertData['project_id'])->first();
+        $softwareData = Softwares::where('id', $insertData['software_id'])->first();
+
+        Logs::createLog('Project',"Linked the {$softwareData->software_name} to {$projectData->name}" );
+
+        return response()->json(['success' => true, 
+                                    'message' => 'Software was successfully linked.', 
+                                    'update' => ProjectSoftwares::getLinkedSoftwareByProject($insertData['project_id']),
+                                    200]);
+    }
+
+
 }

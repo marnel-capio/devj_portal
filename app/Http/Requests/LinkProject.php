@@ -6,9 +6,11 @@ use App\Models\Employees;
 use App\Models\EmployeesProjects;
 use App\Models\ProjectSoftwares;
 use App\Models\Projects;
+use App\Models\Softwares;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\Auth;
 
 class LinkProject extends FormRequest
 {
@@ -19,7 +21,16 @@ class LinkProject extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        $referer = $this->header('referer');
+        $slash_last_pos = strrpos($referer, '/');
+        $id = substr($referer, $slash_last_pos + 1, strlen($referer) - $slash_last_pos - 1); 
+
+        //check if the page is for employee
+        if(strpos($this->header('referer'), route('projects.details', ['id' => $id])) !== FALSE && !Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**
@@ -32,7 +43,8 @@ class LinkProject extends FormRequest
         return [
             'project_id' => 'project',
             'project_start' => 'start date',
-            'project_end' => 'end date'
+            'project_end' => 'end date',
+            'software_id' => 'software_name',
         ];
     }
 
@@ -47,7 +59,7 @@ class LinkProject extends FormRequest
             'project_start.after_or_equal' => "The start date must be on or after the project's start date.",
             'project_start.before' => "The start date must be before the project's end date.",
             'project_end.after' => "The end date must be after the project's start date.",
-            'project_end.before_or_equal' => "The end date must be on or before the project's end date."
+            'project_end.before_or_equal' => "The end date must be on or before the project's end date.",
         ];
     }
     /**
@@ -72,17 +84,17 @@ class LinkProject extends FormRequest
     public function rules()
     {   
         $referer = $this->header('referer');
-        //$rejectCode = substr($referer, strripos($referer, '/') + 1);
         //get the id this will be used for page checking
     
         $slash_last_pos = strrpos($referer, '/');
         $id = substr($referer,$slash_last_pos + 1, strlen($referer) - $slash_last_pos - 1); 
 
         $rules = array();
+        $isLinkEmployee = $this->input('is_employee');
 
         //check if the page is for employee
         if(strpos($this->header('referer'), route('employees.details', ['id' => $id])) !== FALSE 
-            || strpos($this->header('referer'), route('projects.details', ['id' => $id])) !== FALSE ){
+            || (strpos($this->header('referer'), route('projects.details', ['id' => $id])) !== FALSE && $isLinkEmployee) ){
             $employeeId = $this->input('employee_id');
             $projectDetails = Projects::where('id', $this->input('project_id'))->first();
             $emprules = [
@@ -124,6 +136,16 @@ class LinkProject extends FormRequest
             $softwareId = $this->input('software_id');
             $projectDetails = Projects::where('id', $this->input('project_id'))->first();
             $softrules = [
+                'software_id' => ['required', function ($atribute, $value, $fail) {
+                    //check if employee exists in DB
+                    $employeeData = Softwares::where('id', $value)
+                                            ->where('active_status', 1)
+                                            ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
+
+                    if (empty($employeeData)) {
+                        $fail('The selected software does not exist.');
+                    }
+                }],
                 'project_id' =>['required', 'exists:projects,id', function($atribute, $value, $fail) use ($softwareId) {
                     if(ProjectSoftwares::checkIfSoftwareExists($value, $softwareId)){
                         $fail('Selected Project name is already linked.');

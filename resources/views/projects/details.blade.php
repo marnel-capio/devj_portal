@@ -80,6 +80,7 @@
                                 <form action="#" id="link_employee_form">
                                     @csrf
                                     <input type="text" name="project_id" value="{{ $projectData->id }}" hidden>
+                                    <input type="text" name="is_employee" value="true" hidden>
                                     <div class="row mb-2">
                                         <div class="col-12 g-3 form-floating">
                                         @if (in_array(Auth::user()->roles, [config('constants.ADMIN_ROLE_VALUE'), config('constants.MANAGER_ROLE_VALUE')]))
@@ -245,17 +246,19 @@
                         </div>
                         <div class="modal-body">
                             <div class="p-2">
+                                <div id="ls_success_msg"></div>
                                 <form action="#" id="link_software_form">
                                     @csrf
+                                    <input type="text" name="project_id" value="{{ $projectData->id }}" hidden>
                                     <div class="row mb-2">
                                         <div class="col-12 g-3 form-floating">
-                                            <select name="software_name" class="form-select" id="software_list">
+                                            <select name="software_id" class="form-select" id="software_list">
                                                 @foreach ( $softwareDropdown as $software )
                                                     <option value="{{ $software['id'] }}">{{ $software['software_name'] }}</option>
                                                 @endforeach
                                             </select>
                                             <label for="software_list" class="text-center">Software Name</label>
-                                            <span id="link_software_name_error"></span>
+                                            <span id="link_software_id_error"></span>
                                         </div>
                                     </div>
                                     <div class="row pt-2">
@@ -264,17 +267,16 @@
                                     <div class="row text-start">
                                         <div class="gs-3 ge-3 gt-1">
                                             <textarea name="remarks" id="link_software_remarks" rows="3" class="form-control"></textarea>
-                                            <span id="link_software_remarks_error"></span>
+                                            <span id="link_remarks_error"></span>
                                         </div>
                                     </div>
-
                                 </form>
                             </div>
                         </div>
                         <div class="modal-footer">
                             <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button class="btn btn-primary" type="submit"  id="ls_submit_btn" form="link_software_form">Link
-                                <div id="link_software-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                                <div id="link_software_spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
                                     <span class="sr-only"></span>
                                 </div>
                             </button>
@@ -307,7 +309,7 @@
                             <tr>
                                 <td><a href="{{ route('softwares.details', ['id' => $software['id']]) }}">{{ $software['software_name'] }}</a></td>
                                 <td>{{ $software['software_type'] }}</td>
-                                <td>{{ $software['remarks'] }}</td>
+                                <td>{{ $software['linkageRemarks'] }}</td>
                                 @if (auth()->user()->roles == config('constants.MANAGER_ROLE_VALUE'))
                                 <td class="text-center"><button class="btn btn-link btn-sm text-danger">Remove</button></td>
                                 @endif

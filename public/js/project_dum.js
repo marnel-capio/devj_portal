@@ -1,4 +1,5 @@
 const LINK_EMPLOYEE_PROJECT_LINK = '/api/linkEmployeeToProject';
+const LINK_SOFTWARE_TO_PROJECT_LINK = '/api/linkSoftwareToProject';
 const PROJECT_ROLES = [
 						'Team Lead',
 						'Programmer',
@@ -46,7 +47,7 @@ $(document).ready( function () {
         "sDom": "lrt<'#bottom.row'<'#info.col'i><'#pagination.col'p>>",
 	});
 
-    $("#linked_softwares_tbl").DataTable({
+    let s_table = $("#linked_softwares_tbl").DataTable({
 		"pageLength": 10,
         "ordering": false,
         "oLanguage": {
@@ -86,8 +87,8 @@ $(document).ready( function () {
 
                 //remove error messages
                 $("#link_employee_form").find("[name]").each( function () {
-                    if ($('#link_' + $(this).attr('name') + '_error').length > 0 ) {
-                        $('#link_' + $(this).attr('name') + '_error').empty();
+                    if ($('#link_employee_form > #link_' + $(this).attr('name') + '_error').length > 0 ) {
+                        $('#link_employee_form > #link_' + $(this).attr('name') + '_error').empty();
                     }
                 });
 
@@ -103,20 +104,20 @@ $(document).ready( function () {
                 //remove error messages
                 $("#link_employee_form").find("[name]").each( function () {
                     console.log($(this).val());
-                    if ($('#link_' + $(this).attr('name') + '_error').length > 0 ) {
-                        $('#link_' + $(this).attr('name') + '_error').empty();
+                    if ($('#link_employee_form > #link_' + $(this).attr('name') + '_error').length > 0 ) {
+                        $('#link_employee_form > #link_' + $(this).attr('name') + '_error').empty();
                     }
                 });
 
 
-				$("#projectList > option[value=" + postData.project_id + "]").remove();
+				$("#member_list > option[value=" + postData.employee_id + "]").remove();
 				$("#le_success_msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;' + data.message + '.').addClass("text-success mb-2 text-start");
 
 				//update projects table
 				pj_table.clear().draw();
 				data.update.forEach(function(memberData){
 					let url = window.location.origin + '/employees/' + memberData.employee_id;
-					pj_table.row.add([
+					s_table.row.add([
 						'<a href="' + url + '" class="text-decoration-none">' + memberData.member_name + '</a>',
 						PROJECT_ROLES[Number(memberData.project_role_type) - 1],
 						memberData.onsite_flag ? 'Yes' : 'No',
@@ -135,5 +136,97 @@ $(document).ready( function () {
         e.preventDefault();
     })
 
+	$('#link_employee_modal').on('hidden.bs.modal', function(){
+		$("#le_success_msg").empty();
 
+		//remove error messages
+		$("#link_employee_form").find("[name]").each( function () {
+			if ($('#link_employee_form > #link_' + $(this).attr('name') + '_error').length > 0 ) {
+				$('#link_employee_form > #link_' + $(this).attr('name') + '_error').empty();
+			}
+		});
+	});
+
+    //link software submission
+    $("#ls_submit_btn").click( function (e) {
+        $("#link_software_spinner").show();
+
+		var postData = {
+			_token: $("#link_software_form > input[name=_token]").val(),
+			software_id: $("#software_list > option:selected").val(),
+			project_id: $("#link_software_form > input[name=project_id]").val(),
+			remarks: $("#link_software_remarks").val()
+		};
+
+		$.ajax({
+			type: "POST",
+			url: LINK_SOFTWARE_TO_PROJECT_LINK,
+			data: postData,
+			dataType: "json",
+			encode: true,
+		}).done(function(data){
+            $("#link_software_spinner").hide();
+
+			// display error
+			if(!data.success){
+				$("#ls_success_msg").empty();
+
+                //remove error messages
+                $("#link_software_form").find("[name]").each( function () {
+                    if ($('#link_software_form > #link_' + $(this).attr('name') + '_error').length > 0 ) {
+                        $('#link_software_form > #link_' + $(this).attr('name') + '_error').empty();
+                    }
+                });
+
+                //display error message
+                for (key in data.data) {
+                    console.log(data.data[key][0]);
+                    $('#link_'  + key + '_error').html(data.data[key][0]).addClass('text-danger text-start');
+                }
+
+			}else{
+                //reset form
+				$("#link_software_form").trigger('reset');
+                //remove error messages
+                $("#link_software_form").find("[name]").each( function () {
+                    if ($('#link_software_form > #link_' + $(this).attr('name') + '_error').length > 0 ) {
+                        $('#link_software_form > #link_' + $(this).attr('name') + '_error').empty();
+                    }
+                });
+
+
+				$("#software_list > option[value=" + postData.software_id + "]").remove();
+				$("#ls_success_msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;' + data.message + '.').addClass("text-success mb-2 text-start");
+
+				//update projects table
+				s_table.clear().draw();
+				data.update.forEach(function(softwareData){
+					let url = window.location.origin + '/softwares/' + softwareData.software_id;
+					s_table.row.add([
+						'<a href="' + url + '" class="text-decoration-none">' + softwareData.software_name + '</a>',
+						softwareData.software_type,
+						softwareData.linkageRemarks,	//currently from softwares table
+						'<a href="#">Remove<a/>'
+					])
+					.draw(false);
+				});
+			}
+
+		}).fail(function(){
+			console.log('error');
+		});
+
+        e.preventDefault();
+    })
+
+	$('#link_software_modal').on('hidden.bs.modal', function(){
+		$("#ls_success_msg").empty();
+
+		//remove error messages
+		$("#link_software_form").find("[name]").each( function () {
+			if ($('#link_software_form > #link_' + $(this).attr('name') + '_error').length > 0 ) {
+				$('#link_software_form > #link_' + $(this).attr('name') + '_error').empty();
+			}
+		});
+	});
 });

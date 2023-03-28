@@ -4,15 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProjectsRequest;
-use App\Mail\Software;
 use App\Models\Employees;
 use App\Models\EmployeesProjects;
 use App\Models\Logs;
 use App\Models\Projects;
 use App\Models\ProjectSoftwares;
 use App\Models\Softwares;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 
 class ProjectsController extends Controller
 {
@@ -111,21 +112,7 @@ class ProjectsController extends Controller
         }
 
         //getLinkedSoftwares
-        $linkedSoftwares = ProjectSoftwares::selectRaw('
-                s.software_name,
-                st.type_name as software_type,
-                s.remarks,
-                ps.id,
-                ps.software_id
-            ')
-            ->from('projects_softwares AS ps')
-            ->leftJoin('softwares AS s', 's.id', 'ps.software_id')
-            ->leftJoin('software_types AS st', 'st.id', 's.software_type_id')
-            ->where('ps.project_id', $id)
-            ->orderBy('s.software_name', 'asc')
-            ->orderBy('ps.id', 'asc')
-            ->get()
-            ->toArray();
+        $linkedSoftwares = ProjectSoftwares::getLinkedSoftwareByProject($id);
 
         //get software dropdown
         $softwareDropdown = Softwares::select('id', 'software_name')
@@ -185,6 +172,28 @@ class ProjectsController extends Controller
         session(['regist_update_alert' => 'Project was successfully updated!']);
 
         return redirect(route('projects.details', ['id' => $id]));
+    }
+
+    public function removeLinkedSoftwareToProject (Request $request) {
+        $linkageId = $request->input('id');
+        $linkageData = ProjectSoftwares::where('id', $linkageId);
+        //validation
+        if (empty($linkageData)) {
+            //error
+            session(['linked_soft_alert' => 'Invalid Request']);
+        }
+
+        //delete data in DB
+        ProjectSoftwares::where('id', $linkageId)->delete();
+
+        $projectData = Projects::where('id', $linkageData['project_id'])->first();
+        $softwareData = Softwares::where('id', $linkageData['software_id'])->first();
+
+        Logs::createLog('Project', "Remove linkage of {$softwareData->software_name} to {$projectData->name}");
+
+        session(['linked_soft_alert' => 'Software was successfully removed.']);
+
+        return Redirect::back();
     }
 
 }
