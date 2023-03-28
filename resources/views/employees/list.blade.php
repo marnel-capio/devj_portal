@@ -43,6 +43,11 @@
 				<label class="search-status-rdb-label form-check-label" for="status-deactivated">
 				    Deactivated
 				</label>
+				&nbsp;&nbsp;
+				<input class="search-status-rdb-input" type="radio" name="employeeStatus" id="status-transfer" value="4" >
+				<label class="search-status-rdb-label form-check-label" for="status-transfer">
+				    Transferred
+				</label>
 			</div>
 		</div>
 		@endif
@@ -69,7 +74,7 @@
 		</div>
 		<div class="row row-list">
 			<div class="col-10">
-				<input type="text" name="searchInput" class="search-input-text" id="search-input" placeholder="Search">
+				<input type="text" name="searchInput" class="search-input-text form-control" id="search-input" placeholder="Search">
 			</div>
 
 			<div class="col">
@@ -78,15 +83,16 @@
 		</div>
 	</form>
 	<div class="row-list row">
-	    <div class="col ">
+	    <div class="col table-avoid-overflow">
 	    	<table id="employee-list" class="table table-striped" >
 		        <thead>
 		            <tr>
-		                <th class="tbl-header-name">Name</th>
+		                <th>Name</th>
 		                <th>Email Address</th>
 		                <th>Phone Number</th>
 		                <th>City</th>
 		                <th>Province</th>
+						<th>BU Assignment</th>
 		                <th>Status</th>
 		            </tr>
 		        </thead>
@@ -99,6 +105,7 @@
 		                <td>{{$user['cellphone_number']}}</td>
 		                <td>{{$user['current_address_city']}}</td>
 		                <td>{{$user['current_address_province']}}</td>
+						<td>{{ $user['bu_transfer_flag'] ? $user['bu_transfer_assignment'] : "" }}</td>
 		                <td>
 		                	@if($user['active_status'] == 0)
 		                		@if($user['approved_status'] == 1 || $user['approved_status'] == 2 || $user['approved_status'] == 4)

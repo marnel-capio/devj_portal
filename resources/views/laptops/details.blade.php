@@ -109,7 +109,7 @@
                                         </div>
                                         <div class="row mb-2 ps-5 pe-3">
                                             <div class="">
-                                                <textarea class="form-control" name="remarks"  rows="3" id="remarks" required>{{ $detail->remarks }}</textarea>
+                                                <textarea class="form-control" name="remarks"  rows="3" id="remarks">{{ $detail->remarks }}</textarea>
                                                 <p class="text-danger" id="remarks-error"></p>
                                             </div>
                                         </div>
@@ -151,7 +151,7 @@
                 @endif
                 <div class="row mb-2 ps-5 pe-3">
                     <div class="col-md-3 col-6 g-3 form-floating">
-                       <input type="text" name="tag_number" class="form-control" id="tag-number" placeholder="Tag Number" value="{{ $detail->tag_number }}" readonly>
+                       <input type="text" name="tag_number" class="form-control" id="tag-number" placeholder="Tag Number" value="{{ $detail->tag_number }}" disabled>
                        <label for="tag-number" class="text-center">Tag Number</label>
                     </div>
                     <div class="col-6 g-3">
@@ -168,13 +168,13 @@
                 </div>
                 <div class="row mb-2 ps-5 pe-3">
                     <div class="col-md-3 col-6 g-3 form-floating">
-                        <input type="text" name="peza_form_number" class="form-control" id="form-number" placeholder="Form Number" value="{{ $detail->peza_form_number }}" readonly>
+                        <input type="text" name="peza_form_number" class="form-control" id="form-number" placeholder="Form Number" value="{{ $detail->peza_form_number }}" disabled>
                         <label for="form-number" class="text-center">Form Number</label>
                      </div>
                 </div>
                 <div class="row mb-2 ps-5 pe-3">
                     <div class="col-md-3 col-6 g-3 form-floating">
-                        <input type="text" name="peza_permit_number" class="form-control" id="permit-number" placeholder="Permit Number" value="{{ $detail->peza_permit_number }}" readonly>
+                        <input type="text" name="peza_permit_number" class="form-control" id="permit-number" placeholder="Permit Number" value="{{ $detail->peza_permit_number }}" disabled>
                         <label for="permit-number" class="text-center">Permit Number</label>
                      </div>
                 </div>
@@ -183,25 +183,25 @@
                 </div>
                 <div class="row mb-2 ps-5 pe-3">
                     <div class="col-md-3 col-6 g-3 form-floating">
-                        <input type="text" name="laptop_make" class="form-control" id="make" placeholder="Make" value="{{ $detail->laptop_make }}" readonly>
+                        <input type="text" name="laptop_make" class="form-control" id="make" placeholder="Make" value="{{ $detail->laptop_make }}" disabled>
                         <label for="make" class="text-center">Make</label>
                      </div>
                      <div class="col-md-3 col-6 g-3 form-floating">
-                        <input type="text" name="laptop_model" class="form-control" id="model" placeholder="Model" value="{{ $detail->laptop_model }}" readonly>
+                        <input type="text" name="laptop_model" class="form-control" id="model" placeholder="Model" value="{{ $detail->laptop_model }}" disabled>
                         <label for="model" class="text-center">Model</label>
                      </div>
                 </div>
                 <div class="row mb-2 ps-5 pe-3">
                     <div class="col-md-2 col-4 g-3 form-floating">
-                        <input type="text" name="laptop_cpu" class="form-control" id="cpu" placeholder="CPU" value="{{ $detail->laptop_cpu }}" readonly>
+                        <input type="text" name="laptop_cpu" class="form-control" id="cpu" placeholder="CPU" value="{{ $detail->laptop_cpu }}" disabled>
                         <label for="cpu" class="text-center">CPU</label>
                      </div>
                      <div class="col-md-2 col-4 g-3 form-floating">
-                        <input type="text" name="laptop_clock_speed" class="form-control" id="clock-speed" placeholder="Clock Speed (GHz)" value="{{ $detail->laptop_clock_speed }}" readonly>
+                        <input type="text" name="laptop_clock_speed" class="form-control" id="clock-speed" placeholder="Clock Speed (GHz)" value="{{ $detail->laptop_clock_speed }}" disabled>
                         <label for="clock-speed" class="text-center">Clock Speed (GHz)</label>
                      </div>
                      <div class="col-md-2 col-4 g-3 form-floating">
-                        <input type="text" name="laptop_ram" class="form-control" id="ram" placeholder="RAM (GB)" value="{{ $detail->laptop_ram }}" readonly>
+                        <input type="text" name="laptop_ram" class="form-control" id="ram" placeholder="RAM (GB)" value="{{ $detail->laptop_ram }}" disabled>
                         <label for="ram" class="text-center">RAM (GB)</label>
                      </div>
                 </div>
@@ -210,12 +210,39 @@
                 </div>
                 <div class="row mb-2 ps-5 pe-3">
                     <div class="col-md-6 g-3">
-                        <textarea class="form-control" name="remarks"  rows="3" id="remarks" readonly>{{ $detail->remarks }}</textarea>
+                        <textarea class="form-control" name="remarks"  rows="3" id="remarks" disabled>{{ $detail->remarks }}</textarea>
                     </div>
                 </div>
             </div>
         </form>
     </div>
+    @if (!$detailOnly && !empty($linkage))
+    <div class="group-category p-3 mb-4 rounded-3">
+        <h4 class="text-start d-inline-block">Linkage Data</h4>
+        <div>
+            <div class="row mb-1 ps-5 pt-3 pe-3">
+                <div class="col-xl-2 col-lg-3 col-4 form-check form-check-inline">
+                    <label class="form-check-label" for="brought_home_flag">Brought home?</label>
+                    <input type="checkBox" class="form-check-input" name="brought_home_flag" id="brought_home_flag" value="1" {{ $linkage->brought_home_flag ? "checked" : "" }} >
+                    <input type="text" hidden value="0" name="brought_home_flag" id="brought_home_flag_hidden">
+                </div>
+                <div class="col-xl-2 col-lg-3 col-4 form-check form-check-inline">
+                    <label class="form-check-label" for="vpn_flag">VPN Access</label>
+                    <input type="checkBox" class="form-check-input" name="vpn_flag" id="vpn_flag" value="1" {{ $linkage->vpn_flag ? "checked" : "" }} >
+                    <input type="text" hidden value="0" name="vpn_flag" id="vpn_flag_hidden">
+                </div>
+            </div>
+            <div class="row pt-4 ps-3 pe-3">
+                <h5>Remarks</h5>
+            </div>
+            <div class="row mb-2 ps-5 pe-3">
+                <div class="col-md-6 g-3">
+                    <textarea class="form-control" name="remarks"  rows="3" id="linkage_remarks">{{ $linkage->remarks }}</textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
     @if ($detailOnly)
     <div class="group-category mb-4 p-3 rounded-3">
         <div class="d-flex justify-content-between">
@@ -315,7 +342,7 @@
                                                 <select name="assignee" class="form-select" id="assigneeList" required>
                                                     <option value=""></option>
                                             @else
-                                                <select name="assignee" class="form-select" id="assigneeList" readonly>
+                                                <select name="assignee" class="form-select" id="assigneeList" disabled>
                                             @endif
                                                     @foreach ( $employeeDropdown as $employee )
                                                         <option value="{{ $employee['id'] }}">{{ $employee['employee_name'] }}</option>
@@ -366,7 +393,7 @@
             @endif
         </div>
 
-        <div class="ms-3">
+        <div class="ms-3 table-avoid-overflow">
             @if(!empty(session('ul_alert')))
                 <div class="alert alert-success mt-2" role="alert">
                     {{session()->pull('ul_alert')}}
@@ -412,7 +439,7 @@
             <h4 class="text-start">Link Requests</h4><span class="text-primary">&nbsp;&nbsp; {{ empty($linkageData) ? '※For new linkage' : '※For linkage udpate'   }}</span>
         </div>
 
-        <div class="ms-3">
+        <div class="ms-3 table-avoid-overflow">
             @if(!empty(session('lla_alert')))
                 <div class="alert alert-success mt-2" role="alert">
                     {{session()->pull('lla_alert')}}

@@ -27,4 +27,19 @@ class Projects extends Model
                 ->toArray();
                 
     }
+
+    static function getProjectDropdownPersoftware($id){
+        $project_list = self::select('id', 'name', 'start_date', 'end_date')
+                ->whereNotIn('id', function($query) use ($id){
+                                        $query->select('project_id')
+                                                ->from('projects_softwares')
+                                                ->where('software_id', $id);
+                                                
+                                    })
+                ->get()
+                ->toArray();
+
+        return $project_list;
+                
+    }    
 }

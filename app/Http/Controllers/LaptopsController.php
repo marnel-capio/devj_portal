@@ -27,19 +27,21 @@ class LaptopsController extends Controller
         return view('laptops.index')->with(['laptopList' => $laptops]);
     }
 
-    public function download(){
+    public function download(Request $request){
+        $data = $request->all();
 
         Logs::createLog("Laptop", "Downloaded employee's laptop details");
         // determine file type
         if (in_array(Auth::user()->roles, [config('constants.MANAGER_ROLE_VALUE'), config('constants.ADMIN_ROLE_VALUE')])) {
-            return (new LaptopsExport())->download('DevJ Laptop Details.xlsx');
+            return (new LaptopsExport($data['searchInput'], $data['laptopAvailability'], $data['laptopStatus'], $data['searchFilter']))->download('DevJ Laptop Details.xlsx');
         } else {
-            return (new LaptopsExport(true))->download('DevJ Laptop Details.pdf');
+            return (new LaptopsExport($data['searchInput'], $data['laptopAvailability'], $data['laptopStatus'], $data['searchFilter'], true))->download('DevJ Laptop Details.pdf');
         }
     }
 
     public function create($rejectCode = ""){
         $laptop = '';
+        $linkage = '';
         if($rejectCode){
             $laptop = Laptops::select(
                                     'id',
@@ -60,9 +62,13 @@ class LaptopsController extends Controller
                 ->where('status',1)
                 ->first();
             abort_if(empty($laptop), 404);
+
+            $linkage = EmployeesLaptops::where('laptop_id', $laptop->id)
+                                            ->where('approved_status', config('constants.APPROVED_STATUS_PENDING'))
+                                            ->first();
         }
 
-        return view('laptops.create')->with(['laptop' => $laptop]);
+        return view('laptops.create', ['laptop' => $laptop, 'linkage' => $linkage]);
     }
 
     public function regist(LaptopsRequest $request){
@@ -72,7 +78,21 @@ class LaptopsController extends Controller
         $data['status'] = 1;
         $data['created_by'] = Auth::user()->id;
         $data['updated_by'] = Auth::user()->id;
-        
+
+        if(Auth::user()->roles == config('constants.ENGINEER_ROLE_VALUE') || $data['linkage']['link_to_self']){
+            //extract linkage data
+            $linkageData = [
+                'brought_home_flag' => $data['linkage']['brought_home_flag'] ? 1 : 0,
+                'vpn_flag' => $data['linkage']['vpn_flag'] ? 1 : 0,
+                'remarks' => $data['linkage']['remarks'],
+                'created_by' => Auth::user()->id,
+                'updated_by' => Auth::user()->id,
+                'employee_id' => Auth::user()->id,
+            ];
+        }
+        //unset data for linkage
+        unset($data['linkage']);
+
         if(empty($data['id'])){
             //new registration
             unset($data['id']);
@@ -83,11 +103,23 @@ class LaptopsController extends Controller
 
                 $id = Laptops::create($data)->id;
 
+                if(isset($linkageData) && !empty($linkageData)){
+                    $linkageData['laptop_id'] = $id;
+                    $linkageData['approved_status'] = config('constants.APPROVED_STATUS_APPROVED');
+                    $linkageData['approved_by'] = Auth::user()->id;
+                    EmployeesLaptops::create($linkageData);
+                }
+
             }else{
                 //pending request, 
                 $data['approved_status'] = config('constants.APPROVED_STATUS_PENDING');
                 $id = Laptops::create($data)->id;
 
+                if(isset($linkageData) && !empty($linkageData)){
+                    $linkageData['laptop_id'] = $id;
+                    $linkageData['approved_status'] = config('constants.APPROVED_STATUS_PENDING');
+                    EmployeesLaptops::create($linkageData);
+                }
             }
         }else{
             //registration update
@@ -100,6 +132,32 @@ class LaptopsController extends Controller
 
             Laptops::where('id', $id)
                     ->update($data);
+
+            //get data from employees_laptops data
+            $origLinkageData = EmployeesLaptops::where('laptop_id', $id)
+                                                    ->where('approved_status', config('constants.APPROVED_STATUS_PENDING'))
+                                                    ->first();
+            if(!empty($origLinkageData)){
+                //check if data needs to be updated
+                if(isset($linkageData) && !empty($linkageData)){
+                    //update linkage data
+                    EmployeesLaptops::where('id', $origLinkageData->id)->update($linkageData);
+                }else{
+                    //reject original linkage
+                    EmployeesLaptops::where('id', $origLinkageData->id)
+                                        ->update([
+                                            'approved_status' => config('constants.APPROVED_STATUS_REJECTED'),
+                                            'updated_by' => Auth::user()->id
+                                        ]);
+                }
+            }else{
+                if(isset($linkageData) && !empty($linkageData)){
+                    //create new
+                    $linkageData['laptop_id'] = $id;
+                    EmployeesLaptops::create($linkageData);
+                }
+            }
+            
         }
 
         //create logs
@@ -221,11 +279,16 @@ class LaptopsController extends Controller
             }
         }
 
+        $linkage = EmployeesLaptops::where('laptop_id', $id)
+                    ->where('approved_status', config('constants.APPROVED_STATUS_PENDING'))
+                    ->first();
+
         return view('laptops.details')->with([
             'detail' => $laptopDetails,
             'requestor' => $requestor,
             'detailNote' => $detailNote,
             'detailOnly' => false,
+            'linkage' => $linkage,
         ]);
     }
 
@@ -251,6 +314,20 @@ class LaptopsController extends Controller
                         'updated_by' => Auth::user()->id,
                         'approved_by' => Auth::user()->id,
                     ]);
+            
+            //check if pending registration has linkage data
+            $linkageData = EmployeesLaptops::where('laptop_id', $id)
+                                            ->where('approved_status', config('constants.APPROVED_STATUS_PENDING'))
+                                            ->first();
+            if(!empty($linkageData)){
+                //approve the linkage
+                EmployeesLaptops::where('id', $linkageData->id)
+                                    ->update([
+                                        'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
+                                        'approved_by' => Auth::user()->id,
+                                        'updated_by' => Auth::user()->id
+                                    ]);
+            }
 
             //create logs
             Logs::createLog("Laptop", 'Laptop Registration Approval');

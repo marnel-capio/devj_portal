@@ -23,6 +23,13 @@ mix.js('resources/js/app.js', 'public/js')
         //
     ])
     .minify('public/css/employee.css')
+    .js('resources/js/software.js', 'public/js')
+    .minify('public/js/software.js')
+    .postCss('resources/css/software.css', 'public/css', [
+        //
+    ])
+    .minify('public/css/software.css')
     .js('resources/js/laptop.js', 'public/js')
     .minify('public/js/laptop.js')
+
 

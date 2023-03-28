@@ -9,70 +9,109 @@
 @endif
 <div class="container container-list-table mt-3 ms-4 mb-5">
 	<h3> Laptop List </h3>
-    <div class="row row-list">
-        <div class="col-lg-1 col-2">
-            Availability: 
+    <form action="{{  route('laptops.download')  }}" method="POST" id="download">
+        @csrf
+        <div class="row row-list">
+            <div class="col-lg-1 col-2">
+                Availability: 
+            </div>
+            <div class="col-lg-11 col-10">
+                <input class="laptop-search-availability" type="radio" name="laptopAvailability" id="filter-all" value="1" checked>
+                <label class="form-check-label" for="filter-all">
+                    All
+                </label>
+                &nbsp;&nbsp;
+                <input class="laptop-search-availability" type="radio" name="laptopAvailability" id="filter-owned" value="2" >
+                <label class="form-check-label" for="filter-owned">
+                    Owned
+                </label>
+                &nbsp;&nbsp;
+                <input class="laptop-search-availability" type="radio" name="laptopAvailability" id="filter-not-owned" value="3" >
+                <label class="form-check-label" for="filter-not-owned">
+                    Not Owned
+                </label>
+            </div>
         </div>
-        <div class="col-lg-11 col-10">
-            <input class="laptop-search-availability" type="radio" name="laptopAvailability" id="filter-all" value="1" checked>
-            <label class="form-check-label" for="filter-all">
-                All
-            </label>
-            &nbsp;&nbsp;
-            <input class="laptop-search-availability" type="radio" name="laptopAvailability" id="filter-owned" value="2" >
-            <label class="form-check-label" for="filter-owned">
-                Owned
-            </label>
-            &nbsp;&nbsp;
-            <input class="laptop-search-availability" type="radio" name="laptopAvailability" id="filter-not-owned" value="3" >
-            <label class="form-check-label" for="filter-not-owned">
-                Not Owned
-            </label>
+        <div class="row row-list">
+            <div class="col-lg-1 col-2">
+                Status: 
+            </div>
+            <div class="col-lg-11 col-10">
+                <input class="laptop-status" type="radio" name="laptopStatus" id="status-all" value="1" checked>
+                <label class="form-check-label" for="status-all">
+                    All
+                </label>
+                &nbsp;&nbsp;
+                <input class="laptop-status" type="radio" name="laptopStatus" id="status-active" value="2" >
+                <label class="form-check-label" for="status-active">
+                    Active
+                </label>
+                &nbsp;&nbsp;
+                <input class="laptop-status" type="radio" name="laptopStatus" id="status-inactive" value="3" >
+                <label class="form-check-label" for="status-inactive">
+                    Inactive
+                </label>
+            </div>
         </div>
-    </div>
-    <div class="row row-list">
-        <div class="col-lg-1 col-2">
-            Status: 
+        <div class="row row-list">
+            <div class="col-lg-1 col-2">
+                Filter: 
+            </div>
+            <div class="col-lg-11 col-10">
+                <input class="laptop-filter" type="radio" name="searchFilter" id="tag_number" value="1" checked>
+                <label class="form-check-label" for="tag_number">
+                    Tag Number
+                </label>
+                &nbsp;&nbsp;
+                <input class="laptop-filter" type="radio" name="searchFilter" id="make" value="2">
+                <label class="form-check-label" for="make">
+                    Make
+                </label>
+                &nbsp;&nbsp;
+                <input class="laptop-filter" type="radio" name="searchFilter" id="model" value="3" >
+                <label class="form-check-label" for="model">
+                    Model
+                </label>
+                &nbsp;&nbsp;
+                <input class="laptop-filter" type="radio" name="searchFilter" id="processor" value="4" >
+                <label class="form-check-label" for="processor">
+                    Processor
+                </label>
+                &nbsp;&nbsp;
+                <input class="laptop-filter" type="radio" name="searchFilter" id="clock_speed" value="5" >
+                <label class="form-check-label" for="clock_speed">
+                    Clock Speed
+                </label>
+                &nbsp;&nbsp;
+                <input class="laptop-filter" type="radio" name="searchFilter" id="ram" value="6" >
+                <label class="form-check-label" for="ram">
+                    RAM
+                </label>
+            </div>
         </div>
-        <div class="col-lg-11 col-10">
-            <input class="laptop-status" type="radio" name="laptopStatus" id="status-all" value="1" checked>
-            <label class="form-check-label" for="status-all">
-                All
-            </label>
-            &nbsp;&nbsp;
-            <input class="laptop-status" type="radio" name="laptopStatus" id="status-active" value="2" >
-            <label class="form-check-label" for="status-active">
-                Active
-            </label>
-            &nbsp;&nbsp;
-            <input class="laptop-status" type="radio" name="laptopStatus" id="status-inactive" value="3" >
-            <label class="form-check-label" for="status-inactive">
-                Inactive
-            </label>
+        <div class="row row-list mb-2 mt-2 align-middle">
+            <div class="col-8">
+                <input type="text" name="searchInput" class="search-input-text form-control" id="search-input" placeholder="Search">
+            </div>
+            <div class="col-4 text-end">
+                <a href="{{ route('laptops.create') }}" class="btn btn-success me-1" id='send-notif'>Create</a>
+                <button type="submit" class="btn btn-primary ms-1" form="download">Download</button>
+            </div>
         </div>
-    </div>
-    <div class="row row-list mb-2 mt-2 align-middle">
-        <div class="col-8">
-            <input type="text" name="searchInput" class="search-input-text" id="search-input" placeholder="Search">
-        </div>
-        <div class="col-4 text-end">
-            <a href="{{ route('laptops.create') }}" class="btn btn-success me-1" id='send-notif'>Create</a>
-			<button type="submit" class="btn btn-primary ms-1" form="download">Download</button>
-            <form action="{{  route('laptops.download')  }}" method="GET" id="download">
-                @csrf
-            </form>
-        </div>
-    </div>
+    </form>
+
 	<div class="row-list row">
-	    <div class="col ">
+	    <div class="col table-avoid-overflow">
 	    	<table id="laptop-list" class="table table-striped" >
 		        <thead>
 		            <tr>
 		                <th>Tag Number</th>
-		                <th>PEZA Form No</th>
-		                <th>PEZA Permit No</th>
 		                <th>Make</th>
 		                <th>Model</th>
+                        <th>Processor</th>
+                        <th>Clock Speed (GHz)</th>
+                        <th>RAM (GB)</th>
+                        <th>Assignee</th>
 		                <th>Status</th>
 		            </tr>
 		        </thead>
@@ -81,10 +120,12 @@
                         @foreach ($laptopList as $laptop)
                         <tr>
                             <td><a href="{{ route('laptops.details', ['id' => $laptop['id']]) }}">{{ $laptop['tag_number'] }}</a></td>
-                            <td>{{ $laptop['peza_form_number'] }}</td>
-                            <td>{{ $laptop['peza_permit_number'] }}</td>
                             <td>{{ $laptop['laptop_make'] }}</td>
                             <td>{{ $laptop['laptop_model'] }}</td>
+                            <td>{{ $laptop['laptop_cpu'] }}</td>
+                            <td>{{ $laptop['laptop_clock_speed'] }}</td>
+                            <td>{{ $laptop['laptop_ram'] }}</td>
+                            <td>{{ !empty($laptop['owner']) ? $laptop['owner'] : '' }}</td>
                             <td>{{ $laptop['status'] }}</td>
                         </tr>
                         @endforeach
