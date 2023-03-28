@@ -1,6 +1,8 @@
 @include('header')
-<script src="{{ asset('js/project_dum.js') }}"></script>
-<link rel="stylesheet" href="{{ asset('css/project_dum.css') }}">
+{{-- <script src="{{ asset('js/project_dum.js') }}"></script>
+<link rel="stylesheet" href="{{ asset('css/project_dum.css') }}"> --}}
+<link rel="stylesheet" href="{{ asset(mix('css/project.min.css')) }}">
+<script src="{{ asset(mix('js/project.min.js')) }}" defer></script>
 @include('headerMenu')
 @if(!empty(session('regist_update_alert')))
 <div class="alert alert-success" role="alert">
