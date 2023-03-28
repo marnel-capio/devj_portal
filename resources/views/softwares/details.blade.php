@@ -235,14 +235,15 @@
                                     <p id="error-lp-proj-name"></p>
                                 </div>
                             </div>
-                            <div class="row mb-2">
-                                <div class="col-12 g-3 form-floating">
-                                    <div class="mb-2">
-                                        <textarea class="form-control" name="project_remarks" placeholder="Remarks" rows="5" id="project_remarks" required></textarea>
-                                    </div>
-                                    <p id="error-lp-proj-reason"></p>
-                                </div>
+                            <div class="row pt-2">
+                                <h6 class="text-start">Remarks</h6>
                             </div>
+                            <div class="row text-start">
+                                <div class="gs-3 ge-3 gt-1">
+                                    <textarea class="form-control" rows="3" name="project_remarks" rows="5" id="project_remarks" required></textarea>
+                                    <span id="error-lp-proj-reason"></span>
+                                </div>
+                            </div>                            
                         </form>
                     </div>
                 </div>

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class EmployeesProjects extends Model
 {
@@ -88,4 +89,30 @@ class EmployeesProjects extends Model
                 ->get()
                 ->toArray();
     }
+
+    static function getProjectEmployeeLinkRequest(){
+
+        $query = self::selectRaw('
+                                employees_projects.id,
+                                employees_projects.project_id,
+                                projects.name as project_name,
+                                employees_projects.employee_id,
+                                CONCAT(employees.last_name, ", ", employees.first_name) AS linked_employee,
+                                employees_projects.approved_status,
+                                employees_projects.start_date,
+                                employees_projects.end_date
+                            ')
+                        ->leftJoin('projects', 'projects.id',  'employees_projects.project_id')                            
+                        ->leftJoin('employees', 'employees.id',  'employees_projects.employee_id')                            
+                        ->whereIn('employees_projects.approved_status', [config('constants.APPROVED_STATUS_PENDING'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
+
+
+        if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE')){
+            //get all software request of the current user only
+            $query->where('employees.employee_id', Auth::user()->id);
+        }
+        $query->orderBy('project_name', 'ASC');
+        return $query->get()->toArray();
+    }
+
 }

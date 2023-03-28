@@ -48,5 +48,38 @@ class Projects extends Model
 
         return $project_list;
                 
-    }    
+    }
+
+
+    static function getProjectForList($keyword = '', $status = '')
+    {
+        $query = self::selectRaw('
+                                id,
+                                name,
+                                start_date,
+                                end_date,
+                                IF(end_date, "Finish", "On-Going") as Status
+                            ');
+
+        if (!empty($keyword)) {
+            $query=  $query->where('name','LIKE','%'.$keyword.'%');
+        }
+        
+        if(!empty($status))
+        {
+            if($status == config('constants.PROJECT_STATUS_FILTER_ONGOING'))//status is on going
+            {
+                $query = $query->where('Status',config('constants.PROJECT_STATUS_ONGOING_TEXT'));
+            }
+            else if($status == config('constants.PROJECT_STATUS_FILTER_FINISH'))//status is finish
+            {
+                $query = $query->where('Status',config('constants.PROJECT_STATUS_FINISH_TEXT'));
+            }
+
+        }
+        $query->orderBy('name', 'ASC');
+        return $query->get()->toArray();
+
+    }
+
 }

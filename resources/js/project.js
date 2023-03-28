@@ -397,4 +397,69 @@ $(document).ready( function () {
 		$("#update_employee_linkage_form textarea").text(linkageData.remarks);
 	});
 
+
+	var project_list = $("#project-list").DataTable({
+		"stateSave": true,
+		"bFilter": false,
+		"pageLength": 25,
+		"oLanguage": {
+	        "sEmptyTable": "There is no record found"
+	    }
+	});
+
+
+    $(".project-search-status-rdb-input").on("click", function(){
+        filterProjectList();
+    });
+
+    $("#soft-search-input").on("input",function(){
+        filterProjectList();
+    });
+
+    function filterProjectList() {
+      var keyword = $("input[name='projSearchInput']").val();
+      var status = $("input[name='projectStatus']:checked").val();
+	  $.ajax({
+            type:"get",
+            url:"api/projects/search",
+            data :{
+                    'keyword' : keyword , 
+                    'status' : status ,  
+                }, 
+		}).done(function(data){
+			if(data.success){
+				project_list.clear().draw();
+
+				data.update.forEach(function(project){0
+					//get only YYYY-MM-DD from date
+					let start_date ="";
+					let end_date ="";
+					if(project['start_date'])
+					{
+						if(project['start_date'] !== ""){
+							start_date = new Date(project['start_date']).toISOString().slice(0, 10);
+						}
+					}
+					if(project['end_date'])
+					{
+						if(project['end_date'] !== ""){
+							end_date = new Date(project['end_date']).toISOString().slice(0, 10);
+						}
+					}
+
+                    url = window.location.href+"/"+project['id'];
+                    project_list.row.add([
+						'<a href="'+url+'">'+ project['name']+'</a>', 
+						start_date, 
+						end_date, 
+						project['Status']])
+						.draw(false);
+				});
+			}
+		}).fail(function(){
+			console.log('error');
+		});	  
+    }
+
+
 });

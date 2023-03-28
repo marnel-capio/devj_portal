@@ -18,7 +18,9 @@ use Illuminate\Support\Facades\Redirect;
 class ProjectsController extends Controller
 {
     public function index () {
-        dd('project list coming soon');
+        $project_list = Projects::getProjectForList();
+
+        return view('projects/list', ['project_list' => $project_list]);
     }
     
     public function create () {
@@ -41,6 +43,17 @@ class ProjectsController extends Controller
 
         //add success message to session
         session(['regist_update_alert' => 'Project was successfully registered!']);
+
+        return redirect(route('projects.details', ['id' => $id]));
+    }
+
+    public function detailview($id)
+    {
+
+        if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE'))
+        {
+           return($this->request($id));
+        }
 
         return redirect(route('projects.details', ['id' => $id]));
     }

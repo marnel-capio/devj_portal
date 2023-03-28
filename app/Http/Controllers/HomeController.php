@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Employees;
 use App\Models\Softwares;
+use App\Models\EmployeesProjects;
 use App\Models\EmployeesLaptops;
 use App\Models\Laptops;
 
@@ -23,6 +24,7 @@ class HomeController extends Controller
                                 'softwareRequest' => $software_request,
                                 'laptopRequest' => Laptops::getLaptopRequest(),
                                 'laptopLinkRequest' => EmployeesLaptops::getLinkLaptopRequest(),
+                                'projectLinkRequest' => EmployeesProjects::getProjectEmployeeLinkRequest(),
                             ]);
     }
 

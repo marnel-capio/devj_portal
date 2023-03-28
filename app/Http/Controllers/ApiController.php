@@ -318,6 +318,23 @@ class ApiController extends Controller
         ]);
     }
 
+    public function getProjectByFilter(Request $request){
+        $searchFilter = [
+            'keyword' => $request->get('keyword'),
+            'status' => $request->get('status'),
+        ];
+
+        $projectlist = Projects::getProjectForList($searchFilter['keyword'], $searchFilter['status']);
+
+
+        return response()->json([
+            'success' => true,
+            'update' => $projectlist
+        ]);
+    }
+
+
+
     public function filterLaptopList(Request $request){
         $data = $request->all();
 
