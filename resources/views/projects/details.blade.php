@@ -80,7 +80,6 @@
                                 <form action="#" id="link_employee_form">
                                     @csrf
                                     <input type="text" name="project_id" value="{{ $projectData->id }}" hidden>
-                                    <input type="text" name="is_employee" value="true" hidden>
                                     <div class="row mb-2">
                                         <div class="col-12 g-3 form-floating">
                                         @if (in_array(Auth::user()->roles, [config('constants.ADMIN_ROLE_VALUE'), config('constants.MANAGER_ROLE_VALUE')]))

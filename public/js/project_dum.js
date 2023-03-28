@@ -69,7 +69,8 @@ $(document).ready( function () {
 			project_end: $("#link_project_end").val(),
 			project_role: $("#link_role > option:selected").val(),
 			project_onsite: $("#link_onsite").is(':checked') ? 1 : 0,
-			remarks: $("#link_remarks").val()
+			remarks: $("#link_remarks").val(),
+			is_employee: true
 		};
 
 		$.ajax({
@@ -117,7 +118,7 @@ $(document).ready( function () {
 				pj_table.clear().draw();
 				data.update.forEach(function(memberData){
 					let url = window.location.origin + '/employees/' + memberData.employee_id;
-					s_table.row.add([
+					pj_table.row.add([
 						'<a href="' + url + '" class="text-decoration-none">' + memberData.member_name + '</a>',
 						PROJECT_ROLES[Number(memberData.project_role_type) - 1],
 						memberData.onsite_flag ? 'Yes' : 'No',

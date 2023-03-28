@@ -10,7 +10,7 @@
 			<table id="employee-request" class="table table-striped request-table" >
 		        <thead>
 		            <tr>
-		                <th>Name</th>
+		                <th class="tbl-header-name">Name</th>
 		                <th>Email Address</th>
 		                <th>Position</th>
 		                <th>Actions</th>
@@ -55,7 +55,7 @@
 	</div>
 	@endif
 	<div class="row-req-table row group-category-home p-2"> 
-		<div class="col table-avoid-overflow">
+		<div class="col">
 		  <h3 class="mb-4"> Laptop Request </h3>
 			<table id="laptop-request" class="table table-striped request-table" >
 				<thead>

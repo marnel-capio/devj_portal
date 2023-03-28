@@ -24,7 +24,7 @@ class ProjectsController extends Controller
     public function create () {
 
         abort_if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE'), 403);
-        return view('projects.create', ['isRegist' => true]);
+        return view('projects.create', ['isRegist' => true, 'project' => []]);
     }
 
     public function regist (ProjectsRequest $request) {

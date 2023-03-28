@@ -6,12 +6,11 @@ use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\WithEvents;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
 use App\Models\Softwares;
+use App\Models\SoftwareTypes;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
@@ -21,7 +20,8 @@ use PhpOffice\PhpSpreadsheet\Style\Color;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup as WorksheetPageSetup;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class SoftwaresExport implements FromView, WithHeadings, WithMapping, WithEvents, ShouldAutoSize, WithColumnWidths, WithStyles, WithTitle
+
+class SoftwaresExport implements FromView, WithHeadings, WithEvents, WithColumnWidths, WithStyles, WithTitle
 {
     use Exportable;
 
@@ -40,19 +40,8 @@ class SoftwaresExport implements FromView, WithHeadings, WithMapping, WithEvents
 
     public function view(): View
     {
-        $data = Softwares::whereIn('approved_status', [2])
-                            ->orderBy('type', 'ASC')
-                            ->orderBy('software_name', 'ASC')
-                            ->get()->toArray();
+        $data = Softwares::getSoftwareForDownload();
 
-       
- /*       foreach($data as $idx => $item){
-            if($item['surrender_flag']){
-                $this->grayRows[] = $idx + $this->startRowForData;
-            }
-        }
-        $this->maxRow = $this->startRowForData + count($data) - 1; 
-*/
         return view('softwares.download')->with(['detail' => $data]);
     }
 
@@ -64,20 +53,25 @@ class SoftwaresExport implements FromView, WithHeadings, WithMapping, WithEvents
     public function columnWidths(): array
     {
         if($this->fileType == 'pdf'){
-            return [
+            $width = [
+                'A' => 20,
+                'B' => 10,
+                'C' => 15,
+            ];
+        }else{
+            $width = [
                 'A' => 20,
                 'B' => 25,
                 'C' => 50,
             ];
-        }else{
-            return [];
         }
+        return $width;        
     }
 
     public function styles(Worksheet $sheet)
     {
 
-        $data_count = Softwares::whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED')])
+        $data_count = Softwares::whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
         ->count();
 
         $bordered_cell = "A1:C" . (strVal($data_count) + config('constants.SOFTWARE_RANGE_BUFFER'));
@@ -95,6 +89,7 @@ class SoftwaresExport implements FromView, WithHeadings, WithMapping, WithEvents
             'A:C' => [
                 'alignment' => [
                     'horizontal' => Alignment::HORIZONTAL_LEFT,
+                    'wrapText' => true,
                 ],
             ],
 
@@ -118,19 +113,6 @@ class SoftwaresExport implements FromView, WithHeadings, WithMapping, WithEvents
     }
 
     /**
-    * @var Softwares $software
-    */
-    public function map($software): array
-    {	
-
-        return [
-            $software->type,
-            $software->software_name,
-            $software->remarks,
-        ];
-    }	
-
-    /**
      * @return array
      */
     public function registerEvents(): array
@@ -139,40 +121,55 @@ class SoftwaresExport implements FromView, WithHeadings, WithMapping, WithEvents
         
         //Merge cell processing  - start
 
-        $software = Softwares::whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED')])
-                 ->orderBy('type', 'ASC')
+        $software = Softwares::whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+                 ->orderBy('software_type_id', 'ASC')
                  ->orderBy('software_name', 'ASC')
                  ->get()->toArray();
+        
 
-        $type_count = array(0,0,0,0,0,0);
+
+        $types_count = array();
         //check how many of each type are there in the array
-        foreach($software as $value){
-            $type_count[$value['type'] - config('constants.SOFTWARE_RANGE_BUFFER')] =  $type_count[$value['type'] - config('constants.SOFTWARE_RANGE_BUFFER')] + config('constants.SOFTWARE_TYPE_COUNTER_INCREMENT');      
+        foreach($software as $value)
+        {
+            if(!isset($types_count[$value['software_type_id']]))
+            {
+                $types_count[$value['software_type_id']] = 1;
+            }
+            else
+            {
+                $types_count[$value['software_type_id']] =  $types_count[$value['software_type_id']] + config('constants.SOFTWARE_TYPE_COUNTER_INCREMENT');      
+            }
         }
 
 
         //get 
-        $prev_index = config('constants.SOFTWARE_RANGE_INITIAL_VALUE');
+        $prev_excel_index = config('constants.SOFTWARE_RANGE_INITIAL_VALUE');
 
-        $type_range = array('','','','','',''); 
-        for ($x = 0; $x < config('constants.SOFTWARE_TYPE_COUNT'); $x++) {
-            if($type_count[$x] != config('constants.SOFTWARE_TYPE_EMPTY'))
+        $total_type_count = count($types_count);
+
+        $range_index = 0;
+        foreach($types_count as $type_count)
+        {
+
+            if($type_count != config('constants.SOFTWARE_TYPE_EMPTY'))
             {
-                $type_range[$x] = 'A' . strval($prev_index) . ':A' . strval($prev_index + $type_count[$x] - config('constants.SOFTWARE_RANGE_BUFFER'));
-                $prev_index = $prev_index + $type_count[$x];
+                $type_range[$range_index] = 'A' . strval($prev_excel_index) . ':A' . strval($prev_excel_index + $type_count - config('constants.SOFTWARE_RANGE_BUFFER'));
+                $prev_excel_index = $prev_excel_index + $type_count;
+                $range_index++;
             }
-
+            
         }
-
 
         if($this->fileType == 'pdf'){
             $setting = [
-                AfterSheet::class => function(AfterSheet $event) use($type_range) {
+                AfterSheet::class => function(AfterSheet $event) use($type_range, $total_type_count) {
                     $event->sheet
+                        ->setSelectedCell('A1')
                         ->getPageSetup()
                         ->setOrientation(WorksheetPageSetup::ORIENTATION_LANDSCAPE)
-                        ->setPaperSizeDefault(WorksheetPageSetup::PAPERSIZE_A4);
-                        for ($x = 0; $x < config('constants.SOFTWARE_TYPE_COUNT'); $x++) {
+                        ->setPaperSizeDefault(WorksheetPageSetup::PAPERSIZE_LEGAL);
+                        for ($x = 0; $x < $total_type_count; $x++) {
                             if($type_range[$x] != "")
                             {
                                 $event->sheet->getDelegate()->mergeCells($type_range[$x]);
@@ -184,12 +181,13 @@ class SoftwaresExport implements FromView, WithHeadings, WithMapping, WithEvents
 
         }else{
             $setting = [
-                AfterSheet::class => function(AfterSheet $event) use($type_range) {
+                AfterSheet::class => function(AfterSheet $event) use($type_range, $total_type_count) {
                         $event->sheet
+                            ->setSelectedCell('A1')
                             ->getPageSetup()
                             ->setOrientation(WorksheetPageSetup::ORIENTATION_LANDSCAPE)
                             ->setPaperSizeDefault(WorksheetPageSetup::PAPERSIZE_A4);
-                            for ($x = 0; $x < config('constants.SOFTWARE_TYPE_COUNT'); $x++) {
+                            for ($x = 0; $x < $total_type_count; $x++) {
                                 if($type_range[$x] != "")
                                 {
                                     $event->sheet->getDelegate()->mergeCells($type_range[$x]);
@@ -203,54 +201,5 @@ class SoftwaresExport implements FromView, WithHeadings, WithMapping, WithEvents
 
         return $setting;
     }
-
-/*    public function query()
-    {	
-        $keyword = $this->keyword;
-        $status = $this->status;
-
-        $software = Softwares::whereIn('approved_status', [2]);
-
-        if (!empty($keyword)) {
-            $software = $software->where(function($query) use ($keyword) {
-                    $query->where('software_name','LIKE','%'.$keyword.'%');
-                });
-        }
-
-        $software = $software
-                            ->orderBy('type', 'ASC')
-                            ->orderBy('software_name', 'ASC');
-
-         //change the type into string
-        foreach($software as $value){
-            if($value['type'] == config('constants.SOFTWARE_TYPE_1'))
-            { 
-                $value['type'] = config('constants.SOFTWARE_TYPE_1_NAME');
-            }
-            else if($value['type'] == config('constants.SOFTWARE_TYPE_2'))
-            { 
-                $value['type'] = config('constants.SOFTWARE_TYPE_2_NAME');
-            }
-            else if($value['type'] == config('constants.SOFTWARE_TYPE_3'))
-            { 
-                $value['type'] = config('constants.SOFTWARE_TYPE_3_NAME');
-            }
-            else if($value['type'] == config('constants.SOFTWARE_TYPE_4'))
-            { 
-                $value['type'] = config('constants.SOFTWARE_TYPE_4_NAME');
-            }
-            else if($value['type'] == config('constants.SOFTWARE_TYPE_5'))
-            { 
-                $value['type'] = config('constants.SOFTWARE_TYPE_5_NAME');
-            }
-            else if($value['type'] == config('constants.SOFTWARE_TYPE_6'))
-            { 
-                $value['type'] = config('constants.SOFTWARE_TYPE_6_NAME');
-            }
-        }
-        return $software;
-    }
-    */
-
 
 }

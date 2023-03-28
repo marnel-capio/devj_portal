@@ -29,7 +29,8 @@ $(document).ready(function () {
         filterSoftwareList();
     });
 
-    $(".soft-search-type-rdb-input").on("click", function(){
+    $(".soft-search-type-rdb-input").on("change", function(){
+		console.log("entered");
         filterSoftwareList();
     });
 
@@ -40,58 +41,65 @@ $(document).ready(function () {
     function filterSoftwareList() {
       var keyword = $("input[name='softSearchInput']").val();
       var status = $("input[name='softwareStatus']:checked").val();
-	  var type = $("input[name='softwaretype']:checked").val();
-        $.ajax({
+	  var type = $("#software_type").val();
+	  $.ajax({
             type:"get",
             url:"api/softwares/search",
             data :{
                     'keyword' : keyword , 
                     'status' : status ,  
 					'type' :  type,
-                },          
-            success:function(res){
-                software_list.clear().draw();
-                var result = JSON.parse(res);
-                // console.log(result);
-                result.forEach(function(software) {
-					const status = [STATUS_REJECTED_TEXT, STATUS_APPROVED_TEXT, STATUS_PENDING_TEXT, STATUS_PENDING_APPROVAL_FOR_UPDATE_TEXT];
-					const software_type = [SOFTWARE_TYPE_PRODUCTIVITY, SOFTWARE_TYPE_MESSAGING, SOFTWARE_TYPE_BROWSER, SOFTWARE_TYPE_UTIL, SOFTWARE_TYPE_PROJECT_SPECIFIC, SOFTWARE_TYPE_DRIVERS];
-					const status_index =  software['approved_status']-1;
-					const st_index = software['type']-1;
+                }, 
+		}).done(function(data){
+			if(data.success){
+				software_list.clear().draw();
 
+				data.update.forEach(function(software){
+					const status = [STATUS_REJECTED_TEXT, STATUS_APPROVED_TEXT, STATUS_PENDING_TEXT, STATUS_PENDING_APPROVAL_FOR_UPDATE_TEXT];
+					const status_index =  software['approved_status']-1;
+
+					//get only YYYY-MM-DD from date
+					let createdate ="";
+					let update_date ="";
+					let approve_date ="";
+					if(software['create_time'])
+					{
+						if(software['create_time'] !== ""){
+							createdate = new Date(software['create_time']).toISOString().slice(0, 10);
+						}
+					}
+					if(software['update_time'])
+					{
+						if(software['update_time'] !== ""){
+							update_date = new Date(software['update_time']).toISOString().slice(0, 10);
+						}
+					}
+					if(software['approve_time'])
+					{
+						if(software['approve_time'] !== ""){
+							approve_date = new Date(software['approve_time']).toISOString().slice(0, 10);
+						}					
+					}
 
                     url = window.location.href+"/"+software['id'];
-                    software_list.row.add(['<a href="'+url+'">'+software['software_name']+'</a>', software_type[st_index], status[status_index],software['reasons'],software['remarks']]).draw(false);
-                });
-            }
-       });
+                    software_list.row.add([
+						'<a href="'+url+'">'+software['software_name']+'</a>', 
+						software['type'], 
+						status[status_index],
+						software['reasons'],
+						software['remarks'], 
+						createdate, 
+						update_date, 
+						approve_date])
+						.draw(false);
+				});
+			}
+		}).fail(function(){
+			console.log('error');
+		});	  
     }
 
 
-
-	//start for software registration
-
-	//disable submit button if not all required fields have value
-	//softcheckRequiredFields();
-
-	//$(":input[required]").change(function(){
-	//	softcheckRequiredFields();
-	//});
-
-
-	//function softcheckRequiredFields(){
-	//	var empty = false;
-	//	$(":input[required]").each(function(){
-	//		if($(this).val() == ''){
-	//			empty = true;
-	//		}
-	//	})
-	//	if(empty){
-	//		$("#soft-reg-submit").prop('disabled', true);
-	//	}else{
-	//		$("#soft-reg-submitt").prop('disabled', false);
-	//	}
-	//}
 
 	$('.btn-prevent-multiple-submit').on('submit', function($e){
 		e.preventDefault()
@@ -179,7 +187,6 @@ $(document).ready(function () {
     //reject modal
 	$("#soft-reject-request-form").submit(function(){
 		if($("#soft-reject-reason").val() == ""){
-			console.log("hello");
 			$("#soft-reject-reason-error").html('The reason field is required.').addClass("text-danger text-start");
 			return false;
 		}else if($("#soft-reject-reason").val().length > 1024){
@@ -231,6 +238,21 @@ $(document).ready(function () {
 		}
 	}
 
-	//end for employee details/request
+	$("#software_type_id").on('change', function () {
+        if($(this).val() == 999){
+            $("#new_software_type").prop('hidden', false);
+			$("#new_software_type").prop('disabled', false)
+			$("#new_software_type").prop('required', false)
+			$("#new_software_type_label").prop('hidden', false);
+			$("#new_software_type_error").prop('hidden', false);
+        }else{
+            $("#new_software_type").prop('hidden', true);
+            $("#new_software_type").prop('disabled', true);
+			$("#new_software_type").prop('required', true)
+            $("#new_software_type_label").prop('hidden', true);
+			$("#new_software_type_error").prop('hidden', true);		
+        }
+    });
+	//end for software details/request
 
 });

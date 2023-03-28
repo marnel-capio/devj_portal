@@ -3,13 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Employees;
 use App\Models\Softwares;
 use App\Models\EmployeesLaptops;
 use App\Models\Laptops;
-use PhpParser\Node\Stmt\Return_;
 
 class HomeController extends Controller
 {

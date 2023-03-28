@@ -11,12 +11,6 @@
     text-align: left;
 }
 
-/* software details */
-input[readonly] {
-    background-color: #e9ecef;
-    opacity: 1;
-}
-
 .softrqst-btn {
     width: 110px;
 }
