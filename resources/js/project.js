@@ -98,7 +98,6 @@ $(document).ready( function () {
 
                 //display error message
                 for (key in data.data) {
-                    console.log(data.data[key][0]);
                     $('#link_employee_form #link_'  + key + '_error').html(data.data[key][0]).addClass('text-danger text-start');
                 }
 
@@ -107,9 +106,8 @@ $(document).ready( function () {
 				$("#link_employee_form").trigger('reset');
                 //remove error messages
                 $("#link_employee_form").find("[name]").each( function () {
-                    console.log($(this).val());
-                    if ($('#link_employee_form > #link_' + $(this).attr('name') + '_error').length > 0 ) {
-                        $('#link_employee_form > #link_' + $(this).attr('name') + '_error').empty();
+                    if ($('#link_employee_form #link_' + $(this).attr('name') + '_error').length > 0 ) {
+                        $('#link_employee_form #link_' + $(this).attr('name') + '_error').empty();
                     }
                 });
 
@@ -133,8 +131,8 @@ $(document).ready( function () {
 
 		//remove error messages
 		$("#link_employee_form").find("[name]").each( function () {
-			if ($('#link_employee_form > #link_' + $(this).attr('name') + '_error').length > 0 ) {
-				$('#link_employee_form > #link_' + $(this).attr('name') + '_error').empty();
+			if ($('#link_employee_form  #link_' + $(this).attr('name') + '_error').length > 0 ) {
+				$('#link_employee_form  #link_' + $(this).attr('name') + '_error').empty();
 			}
 		});
 	});
@@ -171,6 +169,11 @@ $(document).ready( function () {
 			newRow.push(memberData.isActive);
 			pj_table.row.add(newRow).draw(false);
 		});
+
+		$("#proj_members_tbl > tbody > tr").each(function () {
+			//fix text alignment of remove button
+			$(this).find(':nth-last-child(1)').addClass('text-center');
+		});
 	}
 	
 	/**
@@ -185,7 +188,6 @@ $(document).ready( function () {
 			return '';
 		}
 		date = new Date(date);
-		console.log('object    ' + date)
 		let month = date.getMonth() + 1;
 		if (month.toString().length == 1) {
 			month = '0' + month;
@@ -227,14 +229,13 @@ $(document).ready( function () {
 
 				//remove error messages
 				$("#update_employee_linkage_form").find("[name]").each( function () {
-					if ($('#update_employee_linkage_form > #link_' + $(this).attr('name') + '_error').length > 0 ) {
-						$('#update_employee_linkage_form > #link_' + $(this).attr('name') + '_error').empty();
+					if ($('#update_employee_linkage_form #link_' + $(this).attr('name') + '_error').length > 0 ) {
+						$('#update_employee_linkage_form #link_' + $(this).attr('name') + '_error').empty();
 					}
 				});
 
 				//display error message
 				for (key in data.data) {
-					console.log(data.data[key][0]);
 					$('#update_employee_linkage_form #link_'  + key + '_error').html(data.data[key][0]).addClass('text-danger text-start');
 				}
 
@@ -243,9 +244,8 @@ $(document).ready( function () {
 				$("#update_employee_linkage_form").trigger('reset');
 				//remove error messages
 				$("#update_employee_linkage_form").find("[name]").each( function () {
-					console.log($(this).val());
-					if ($('#link_employee_form > #link_' + $(this).attr('name') + '_error').length > 0 ) {
-						$('#link_employee_form > #link_' + $(this).attr('name') + '_error').empty();
+					if ($('#link_employee_form #link_' + $(this).attr('name') + '_error').length > 0 ) {
+						$('#link_employee_form #link_' + $(this).attr('name') + '_error').empty();
 					}
 				});
 
@@ -299,15 +299,14 @@ $(document).ready( function () {
 
                 //remove error messages
                 $("#link_software_form").find("[name]").each( function () {
-                    if ($('#link_software_form > #link_' + $(this).attr('name') + '_error').length > 0 ) {
-                        $('#link_software_form > #link_' + $(this).attr('name') + '_error').empty();
+                    if ($('#link_software_form #link_' + $(this).attr('name') + '_error').length > 0 ) {
+                        $('#link_software_form #link_' + $(this).attr('name') + '_error').empty();
                     }
                 });
 
                 //display error message
                 for (key in data.data) {
-                    console.log(data.data[key][0]);
-                    $('#link_'  + key + '_error').html(data.data[key][0]).addClass('text-danger text-start');
+                    $('#link_software_form #link_'  + key + '_error').html(data.data[key][0]).addClass('text-danger text-start');
                 }
 
 			}else{
@@ -315,8 +314,8 @@ $(document).ready( function () {
 				$("#link_software_form").trigger('reset');
                 //remove error messages
                 $("#link_software_form").find("[name]").each( function () {
-                    if ($('#link_software_form > #link_' + $(this).attr('name') + '_error').length > 0 ) {
-                        $('#link_software_form > #link_' + $(this).attr('name') + '_error').empty();
+                    if ($('#link_software_form #link_' + $(this).attr('name') + '_error').length > 0 ) {
+                        $('#link_software_form #link_' + $(this).attr('name') + '_error').empty();
                     }
                 });
 
@@ -361,8 +360,8 @@ $(document).ready( function () {
 
 		//remove error messages
 		$("#link_software_form").find("[name]").each( function () {
-			if ($('#link_software_form > #link_' + $(this).attr('name') + '_error').length > 0 ) {
-				$('#link_software_form > #link_' + $(this).attr('name') + '_error').empty();
+			if ($('#link_software_form #link_' + $(this).attr('name') + '_error').length > 0 ) {
+				$('#link_software_form #link_' + $(this).attr('name') + '_error').empty();
 			}
 		});
 	});
@@ -371,10 +370,8 @@ $(document).ready( function () {
 	$("#linked_softwares_tbl").on('click', '.software_linkage_remove_btn', function (e) {
 		let linkageId =  $(this).data('linkid');
 		let softwareName = $(this).data('softwarename');
-		console.log(linkageId);
 		if (confirm('Are sure you want to remove ' + softwareName + '?')) {
 			//set id in software removal form
-			console.log('ok');
 			$("#remove_software_form > input[name=id").val(linkageId);
 		} else {
 			//cancel form submission
@@ -386,8 +383,6 @@ $(document).ready( function () {
 	$("#proj_members_tbl").on('click', '.employee_linkage_update_btn', function () {
 		//render data on update modal
 		let linkageData = $(this).data('modaldata');
-
-		console.log(linkageData);
 
 		$("#member_info").text('Member: ' + linkageData.member);
 		$("#update_employee_linkage_form input[name=linkage_id]").val(linkageData.id);
