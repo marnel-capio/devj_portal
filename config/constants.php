@@ -110,4 +110,10 @@ return [
         2 => 'Programmer',
         3 => 'QA',
     ],
+
+    //projects mail
+    'MAIL_PROJECT_EMPLOYEE_LINKAGE_BY_MANAGER' => 1,
+    'MAIL_PROJECT_EMPLOYEE_LINKAGE_REQUEST' => 2,
+    'MAIL_PROJECT_EMPLOYEE_LINKAGE_UPDATE_BY_MANAGER' => 3,
+    'MAIL_PROJECT_EMPLOYEE_LINKAGE_UPDATE_REQUEST' => 4,
 ];

@@ -11,6 +11,7 @@ use App\Http\Requests\LaptopLinkage;
 use App\Mail\Employee;
 use App\Mail\Software;
 use App\Mail\Laptops as MailLaptops;
+use App\Mail\Project;
 use App\Models\Employees;
 use App\Models\EmployeesLaptops;
 use App\Models\EmployeesProjects;
@@ -831,34 +832,37 @@ class ApiController extends Controller
 
             EmployeesProjects::create($insertData);
 
-            //=====================================================      ADD MAIL
-            // if(Auth::user()->id != $data['employee_id']){
-            //     $mailData = [
-            //         'link' => route('employees.details', ['id' => $employee->id]),
-            //         'first_name' => $employee->first_name,
-            //         'currentUserId' => Auth::user()->id,
-            //         'module' => "Employee",
-            //     ];
-            //     $this->sendMailForEmployeeUpdate($employee->email, $mailData, config('constants.MAIL_EMPLOYEE_PROJECT_LINK_BY_MANAGER'));
-            // }
+            if(Auth::user()->id != $data['employee_id']){
+                $mailData = [
+                    'link' => route('projects.details', ['id' => $project->id]) .'#requests',
+                    'firstName' => $employee->first_name,
+                    'project_name' => $project->name,
+                    'currentUserId' => Auth::user()->id,
+                    'module' => "Employee",
+                ];
+
+                Mail::to($employee->email)->send(new Project($mailData, config('constants.MAIL_PROJECT_EMPLOYEE_LINKAGE_BY_MANAGER')));
+            }
+
             $message = 'Employee has been successfully linked.';
         }else{
             //if an employee edits his own data and is not the manager
             $insertData['approved_status'] = config('constants.APPROVED_STATUS_PENDING');
 
             EmployeesProjects::create($insertData);
+            
+            // notify the managers of the request
+            $mailData = [
+                'link' => route('projects.details', ['id' => $project->id]) .'#requests',
+                'requestor' => Auth::user()->first_name .' ' .Auth::user()->last_name,
+                'project_name' => $project->name,
+                'member' => $employee->first_name .' ' .$employee->last_name,
+                'currentUserId' => Auth::user()->id,
+                'module' => "Employee",
+            ];
 
-            //=====================================================      ADD MAIL
+            Mail::to(Employees::getEmailOfManagers())->send(new Project($mailData, config('constants.MAIL_PROJECT_EMPLOYEE_LINKAGE_REQUEST')));
 
-            //notify the managers of the request
-            // $mailData = [
-            //     'link' => "/",  //update link
-            //     'requestor' => Auth::user()->first_name .' ' .Auth::user()->last_name,
-            //     'currentUserId' => Auth::user()->id,
-            //     'module' => "Employee",
-            // ];
-
-            // $this->sendMailForEmployeeUpdate(Employees::getEmailOfManagers(), $mailData, config('constants.MAIL_EMPLOYEE_PROJECT_LINK_REQUEST'));
             $message = 'Request for linkage has been sent.';
         }
         
@@ -900,15 +904,18 @@ class ApiController extends Controller
             EmployeesProjects::where('id', $linkageId)->update($updateData);
 
             //=====================================================      ADD MAIL
-            // if(Auth::user()->id != $data['employee_id']){
-            //     $mailData = [
-            //         'link' => route('employees.details', ['id' => $employee->id]),
-            //         'first_name' => $employee->first_name,
-            //         'currentUserId' => Auth::user()->id,
-            //         'module' => "Employee",
-            //     ];
-            //     $this->sendMailForEmployeeUpdate($employee->email, $mailData, config('constants.MAIL_EMPLOYEE_PROJECT_LINK_BY_MANAGER'));
-            // }
+            if(Auth::user()->id != $originalData['employee_id']){
+                $mailData = [
+                    'link' => route('projects.details', ['id' => $project->id]) .'#requests',
+                    'firstName' => $employee->first_name,
+                    'project_name' => $project->name,
+                    'currentUserId' => Auth::user()->id,
+                    'module' => "Employee",
+                ];
+
+                Mail::to($employee->email)->send(new Project($mailData, config('constants.MAIL_PROJECT_EMPLOYEE_LINKAGE_UPDATE_BY_MANAGER')));
+            }
+
             $message = 'Employee has been successfully linked.';
         }else{
             //if an employee edits his own data and is not the manager
@@ -925,17 +932,18 @@ class ApiController extends Controller
                 'update_data' => json_encode($tojson, true),
             ]);
 
-            //=====================================================      ADD MAIL
+            // notify the managers of the request
+            $mailData = [
+                'link' => route('projects.details', ['id' => $project->id]) .'#requests',
+                'requestor' => Auth::user()->first_name .' ' .Auth::user()->last_name,
+                'project_name' => $project->name,
+                'member' => $employee->first_name .' ' .$employee->last_name,
+                'currentUserId' => Auth::user()->id,
+                'module' => "Employee",
+            ];
 
-            //notify the managers of the request
-            // $mailData = [
-            //     'link' => "/",  //update link
-            //     'requestor' => Auth::user()->first_name .' ' .Auth::user()->last_name,
-            //     'currentUserId' => Auth::user()->id,
-            //     'module' => "Employee",
-            // ];
+            Mail::to(Employees::getEmailOfManagers())->send(new Project($mailData, config('constants.MAIL_PROJECT_EMPLOYEE_LINKAGE_UPDATE_REQUEST')));
 
-            // $this->sendMailForEmployeeUpdate(Employees::getEmailOfManagers(), $mailData, config('constants.MAIL_EMPLOYEE_PROJECT_LINK_REQUEST'));
             $message = 'Request for linkage has been sent.';
         }
         

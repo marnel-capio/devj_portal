@@ -276,7 +276,7 @@
     </div>
 
     @if (auth()->user()->roles == config('constants.MANAGER_ROLE_VALUE'))
-    <div class="group-category mb-4 p-3 rounded-3">
+    <div class="group-category mb-4 p-3 rounded-3" id="requests">
         <h4>Employee Linkage Requests</h4>
         <div class="ms-3">
             @if(!empty(session('elr_alert')))
