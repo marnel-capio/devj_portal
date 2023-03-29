@@ -63,7 +63,14 @@
                                             <form action="#" id="transferEmployeeForm">
                                                 @csrf
                                                 <input type="text" hidden name="id" value="{{ $employee->id }}">
-                                                <input name="bu_transfer_assignment" type="text" class="form-control" required>
+                                                <div class="g-3 form-floating">
+                                                    <select name="bu_transfer_assignment" id="bu_transfer_assignment" class="form-select form-control" required>
+                                                        @foreach (config('constants.BU_LIST') as $val => $name) 
+                                                            <option value="{{ $val }}">{{ $name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                    <label  class="text-center" for="bu_transfer_assignment">Department</label>
+                                                </div>
                                             </form>
                                         </div>
                                     </div>

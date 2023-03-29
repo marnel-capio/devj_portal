@@ -44,6 +44,28 @@ return [
     'POSITION_8_NAME' => 'Assistant Manager',
     'POSITION_9_NAME' => 'Manager',
 
+    //Employee - BU List - for BU transfer - Dev J is excluded
+    'BU_LIST' => [
+        1  => 'Dev A',
+        2  => 'Dev B',
+        3  => 'Dev C',
+        4  => 'Dev D',
+        5  => 'Dev E',
+        6  => 'Dev F',
+        7  => 'Dev G',
+        8  => 'Dev H',
+        9  => 'Dev I',
+        10  => 'Dev K',
+        11  => 'Dev L',
+        12  => 'Dev M',
+        13  => 'Dev N',
+        14  => 'Dev 2',
+        15  => 'Dev 3',
+        16  => 'Dev 5',
+        17  => 'Dev 6',
+        18  => 'C4I',
+    ],
+
     //Employee Mail Type
     'MAIL_NEW_REGISTRATION_REQUEST' => 1,
     'MAIL_NEW_REGISTRATION_APPROVAL' => 2,

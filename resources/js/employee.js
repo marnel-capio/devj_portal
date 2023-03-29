@@ -495,17 +495,6 @@ $(document).ready(function () {
 		$("#transfer_reinstate_spinner").show();
 		$("#bu_transfer_msg").empty();
 
-		//bu assignment validation
-		if($("#transferEmployeeForm input[name=bu_transfer_assignment]").val() == ""){
-			$("#bu_transfer_msg").text('The BU assignment field is required.').addClass("text-danger text-start");
-			$("#transfer_reinstate_spinner").hide();
-			return false;
-		}else if($("#transferEmployeeForm input[name=bu_transfer_assignment]").val().length > 20){
-			$("#bu_transfer_msg").text('The BU assignment must not be greater than 20 characters.').addClass("text-danger text-start");
-			$("#transfer_reinstate_spinner").hide();
-			return false;
-		}
-
 		//form submission
 		var formData = $(this).serializeArray();
         var arrData = [];
@@ -514,6 +503,8 @@ $(document).ready(function () {
         });
 		var jsonData = JSON.stringify(Object.assign({}, arrData));
         jsonData = JSON.parse(jsonData);
+
+		console.log(jsonData);
 
 		$.ajax({
 			type: "POST",
@@ -528,11 +519,19 @@ $(document).ready(function () {
 				location.reload();
 			} else {
 				//display error message
-				$("#bu_transfer_msg").text(data.message).addClass("text-danger text-start");
+				console.log(typeof data.data);
+				if (typeof data.data === 'undefined') {
+					console.log('message');
+					$("#bu_transfer_msg").text(data.message).addClass("text-danger text-start");
+				} else {
+					$("#bu_transfer_msg").text(data.data.bu_transfer_assignment[0]).addClass("text-danger text-start");
+				}
+
 			}
 		}).fail(function(){
 			console.log('error');
 		})
+
 		e.preventDefault();
 	})
 
