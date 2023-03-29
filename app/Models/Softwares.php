@@ -63,7 +63,7 @@ class Softwares extends Model
         {
             if($status != config('constants.SOFTWARE_FILTER_STATUS_ALL'))//status choses is all
             {
-                $query = $query->where('softwares.approved_status','LIKE','%'.$status.'%');
+                $query = $query->where('softwares.approved_status',$status);
             }
 
         }
@@ -72,11 +72,14 @@ class Softwares extends Model
             if($type != config('constants.SOFTWARE_FILTER_TYPE_ALL'))//status choses is all
             {
 
-                $query = $query->where('softwares.software_type_id','LIKE','%'.$type.'%');
+                $query = $query->where('softwares.software_type_id',$type);
             }
+
+            $query->orderBy('softwares.software_name', 'ASC');
 
         }                                                      
 
+        
         $query->orderBy('softwares.software_name', 'ASC');
         return $query->get()->toArray();
 

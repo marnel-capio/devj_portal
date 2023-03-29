@@ -10,6 +10,7 @@ use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\WithTitle;
 
 use PhpOffice\PhpSpreadsheet\Style\Color;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithStyles;
@@ -101,7 +102,10 @@ class SoftwaresExport implements FromView, WithHeadings, WithEvents, WithColumnW
         $data_count = Softwares::whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
         ->count();
 
+       
         $bordered_cell = "A4:C" . (strVal($data_count) + config('constants.SOFTWARE_RANGE_BUFFER'));
+
+       // dd($bordered_cell);
 
         return [
             "A4:C4" => [    //style for header
@@ -111,8 +115,13 @@ class SoftwaresExport implements FromView, WithHeadings, WithEvents, WithColumnW
                     'vertical' => Alignment::VERTICAL_CENTER,
                     'wrapText' => true,
                 ],
-                'color' => Color::COLOR_CYAN
-            ],
+                'fill' => [
+                    'fillType' => Fill::FILL_SOLID,
+                    'startColor' => [
+                        'argb' => Color::COLOR_YELLOW,
+                    ]
+                ],
+        ],
             'A:C' => [
                 'alignment' => [
                     'horizontal' => Alignment::HORIZONTAL_LEFT,
@@ -188,13 +197,12 @@ class SoftwaresExport implements FromView, WithHeadings, WithEvents, WithColumnW
 
             if($type_count != config('constants.SOFTWARE_TYPE_EMPTY'))
             {
-                $type_range[$range_index] = 'A' . strval($prev_excel_index) . ':A' . strval($prev_excel_index + $type_count - config('constants.SOFTWARE_RANGE_BUFFER'));
+                $type_range[$range_index] = 'A' . strval($prev_excel_index) . ':A' . strval($prev_excel_index + $type_count - config('constants.SOFTWARE_RANGE_HEADER_BUFFER'));
                 $prev_excel_index = $prev_excel_index + $type_count;
                 $range_index++;
             }
             
         }
-
         if($this->fileType == 'pdf'){
             $setting = [
                 AfterSheet::class => function(AfterSheet $event) use($type_range, $total_type_count) {
