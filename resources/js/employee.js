@@ -504,8 +504,6 @@ $(document).ready(function () {
 		var jsonData = JSON.stringify(Object.assign({}, arrData));
         jsonData = JSON.parse(jsonData);
 
-		console.log(jsonData);
-
 		$.ajax({
 			type: "POST",
 			url: TRANSFER_EMPLOYEE_LINK,
@@ -514,14 +512,11 @@ $(document).ready(function () {
 			encode: true,
 		}).done( function (data) {
 			$("#transfer_reinstate_spinner").hide();
-			console.log(data);
 			if (data.success) {
 				location.reload();
 			} else {
 				//display error message
-				console.log(typeof data.data);
 				if (typeof data.data === 'undefined') {
-					console.log('message');
 					$("#bu_transfer_msg").text(data.message).addClass("text-danger text-start");
 				} else {
 					$("#bu_transfer_msg").text(data.data.bu_transfer_assignment[0]).addClass("text-danger text-start");
