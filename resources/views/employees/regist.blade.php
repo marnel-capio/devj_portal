@@ -41,7 +41,7 @@
                         @endif
                     </div>
                     <div class="col-lg-4 col-8 g-3 text-start">
-                        <div class="d-flex align-items-center ps-1" style="height: 100%">
+                        <div class="input-box-radio">
                             <div class="d-inline">
                                 Gender:&nbsp&nbsp
                             </div>

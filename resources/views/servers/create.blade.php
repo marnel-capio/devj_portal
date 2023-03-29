@@ -29,11 +29,9 @@
                        @endif
                     </div>
                     <div class="col-6 g-3">
-                        <div class="d-flex align-items-center" style="height: 100%">
-                            <div class="form-check ">
-                                <label class="form-check-label" for="server_status">Active Status</label>
-                                <input type="checkBox" class="form-check-input" name="status" id="server_status" value="1" {{ old('status', !empty($serverData) ? $serverData->status : false) ? 'checked' : '' }}>
-                            </div>
+                        <div class="form-check input-box-radio">
+                            <label class="form-check-label" for="server_status">Active Status</label>
+                            <input type="checkBox" class="form-check-input" name="status" id="server_status" value="1" {{ old('status', !empty($serverData) ? $serverData->status : false) ? 'checked' : '' }}>
                         </div>
                     </div>
                 </div>

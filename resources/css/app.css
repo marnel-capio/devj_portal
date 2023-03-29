@@ -67,3 +67,9 @@ td {
 label {
     user-select: none;
 }
+
+.input-box-radio {
+    /* add the class below to the parent div of radio/checkbox input if it is beside a text/date/select input that has form-control and form-floating class */
+    position: relative;
+    top: 16px;
+}
