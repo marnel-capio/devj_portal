@@ -129,33 +129,10 @@ class ApiController extends Controller
         $software = Softwares::where('id', $data['software_id'])->first();
         $project = Projects::where('id', $data['project_id'])->first();
 
-        $message = '';
+        $message = 'Added Successfully';
+        ProjectSoftwares::create($insertData);
+
         //check logined employee role
-        if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
-            //save directly in DB in db
-            $insertData['approved_status'] =  config('constants.APPROVED_STATUS_APPROVED');
-            $insertData['approved_by'] = Auth::user()->id;        
-
-            ProjectSoftwares::create($insertData);
-            $message = 'Added Successfully';
-        }else{
-            //if an employee edit sofwtare data and not the manager
-            $insertData['approved_status'] = config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE');
-
-            ProjectSoftwares::create($insertData);
-
-            //notify the managers of the request
-            $mailData = [
-                'link' => route('softwares.request', ['id' => $software->id]),
-                'requestor' => Auth::user()->first_name .' ' .Auth::user()->last_name,
-                'currentUserId' => Auth::user()->id,
-                'module' => "Software",
-            ];
-
-            $this->sendMailForSoftwareUpdate(Employees::getEmailOfManagers(), $mailData, config('constants.MAIL_SOFTWARE_PROJECT_LINK_REQUEST'));
-            $message = 'Your request has been sent';
-        }
-        
         Logs::createLog("Software", "Link {$software->software_name} to {$project->name}");
         return response()->json(['success' => true, 
                                     'message' => $message, 
@@ -309,6 +286,7 @@ class ApiController extends Controller
             'type' => $request->get('type'),
         ];
 
+        
         $softwarelist = Softwares::getSoftwareForList($searchFilter['keyword'], $searchFilter['status'], $searchFilter['type']);
 
 
@@ -324,8 +302,9 @@ class ApiController extends Controller
             'status' => $request->get('status'),
         ];
 
-        $projectlist = Projects::getProjectForList($searchFilter['keyword'], $searchFilter['status']);
+        
 
+        $projectlist = Projects::getProjectForList($searchFilter['keyword'], $searchFilter['status']);
 
         return response()->json([
             'success' => true,

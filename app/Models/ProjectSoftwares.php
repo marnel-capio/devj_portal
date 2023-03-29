@@ -18,11 +18,8 @@ class ProjectSoftwares extends Model
     static function getProjectBySoftware($id){
         
         return self::selectRaw('projects_softwares.id, 
-                                projects_softwares.approved_by,
-                                projects_softwares.approved_status,
                                 projects_softwares.software_id,
-                                projects_softwares.reasons,
-                                projects_softwares.delete_flag,
+                                projects_softwares.remarks,
                                 projects_softwares.created_by,
                                 projects_softwares.updated_by,
                                 projects_softwares.create_time,

@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
+use function PHPUnit\Framework\isNull;
+
 class Projects extends Model
 {
     use HasFactory;
@@ -58,22 +60,24 @@ class Projects extends Model
                                 name,
                                 start_date,
                                 end_date,
-                                IF(end_date, "Finish", "On-Going") as Status
+                                IF(end_date, "Finish", "On-Going") as status
                             ');
 
         if (!empty($keyword)) {
             $query=  $query->where('name','LIKE','%'.$keyword.'%');
         }
         
+
         if(!empty($status))
         {
             if($status == config('constants.PROJECT_STATUS_FILTER_ONGOING'))//status is on going
             {
-                $query = $query->where('Status',config('constants.PROJECT_STATUS_ONGOING_TEXT'));
+                $query = $query->whereNull('end_date');
             }
             else if($status == config('constants.PROJECT_STATUS_FILTER_FINISH'))//status is finish
             {
-                $query = $query->where('Status',config('constants.PROJECT_STATUS_FINISH_TEXT'));
+                $query = $query->whereNotNull('end_date');
+
             }
 
         }

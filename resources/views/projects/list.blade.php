@@ -56,8 +56,12 @@
 		            <tr>
 		                <td><a href='{!! url("/projects/$id"); !!}'>{{$project['name']}}</a></td>
 		                <td>{{date("Y-m-d", strtotime($project['start_date']) )}}</td>
-		                <td>{{date("Y-m-d", strtotime($project['end_date']) )}}</td>
-		                <td>{{$project['Status']}}</td>
+						@if(strlen( $project['end_date'] ) !== 0)
+		              		<td>{{date("Y-m-d", strtotime($project['end_date']) )}}</td>
+						@else
+							<td>{{'-'}}</td>
+						@endif
+		                <td>{{$project['status']}}</td>
 					</tr>
 		            @endforeach
 		        </tbody>

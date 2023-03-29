@@ -115,7 +115,7 @@
 						@if(strlen( $software['approve_time'] ) !== 0)
 			                <td>{{date("Y-m-d", strtotime($software['approve_time']) )}}</td>
 						@else
-							<td>{{''}}</td>
+							<td>{{'-'}}</td>
 						@endif
 					</tr>
 		            @endforeach

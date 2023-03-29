@@ -452,7 +452,7 @@ $(document).ready( function () {
 						'<a href="'+url+'">'+ project['name']+'</a>', 
 						start_date, 
 						end_date, 
-						project['Status']])
+						project['status']])
 						.draw(false);
 				});
 			}
