@@ -22,7 +22,7 @@
                 <h4 class="fw-semi-bold">Server Details</h4>
                 <div class="row mb-2 ps-5 pe-3">
                     <div class="col-lg-3 col-6 g-3 form-floating">
-                       <input type="text" name="server_name" class="form-control" id="server_name" placeholder="Tag Number" value="{{ old('server_name', !empty($serverData) ? $serverData->server_name : '') }}" required>
+                       <input type="text" name="server_name" class="form-control" id="server_name" placeholder="Server Name" value="{{ old('server_name', !empty($serverData) ? $serverData->server_name : '') }}" required>
                        <label for="server_name" >Server Name</label>
                        @if ($errors->has('server_name'))
                        <p class="text-danger text-start">{{ $errors->first('server_name') }}</p>
