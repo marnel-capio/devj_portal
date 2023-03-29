@@ -149,7 +149,7 @@
             </div>
         </form>
     </div>
-   {{-- @if ($detailOnly && $is_project_display)
+    @if ($detailOnly && $is_project_display)
     <div class="soft-regist-category mb-4 p-3 rounded-3 table-avoid-overflow">
         <div class="d-flex justify-content-between">
             <h4 class="text-start">Projects</h4>
@@ -176,7 +176,7 @@
             </tbody>
         </table>
     </div>
-    @endif--}}
+    @endif
 
     @if (!$detailOnly)
     <div class="text-center p-4">
@@ -211,7 +211,7 @@
     </div>
     @endif
 
-    {{-- @if ($detailOnly && $is_project_display)
+    @if ($detailOnly && $is_project_display)
     <div class="modal fade" tabindex="-1" id="linkProjectModal">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -224,7 +224,7 @@
                         <form action="#" id="linkProjectForm">
                             @csrf
                             <input type="text" hidden name="lp_software_id" value="{{ $software->id }}">
-                            <div class="row mb-2">
+                            <div class="row mb-2 ps-3 pe-3">
                                 <div class="col-12 g-3 form-floating">
                                     <select name="project_id" class="form-select" id="projectList" required>
                                         @foreach ( $projectList as $project )
@@ -235,10 +235,11 @@
                                     <p id="error-lp-proj-name"></p>
                                 </div>
                             </div>
-                            <div class="row mb-2">
+                            <div class="row mb-2 ps-3 pe-3">
                                 <div class="col-12 g-3 form-floating">
-                                    <div class="mb-2">
+                                    <div class="mb-2 form-floating">
                                         <textarea class="form-control" name="project_remarks" placeholder="Remarks" rows="5" id="project_remarks" required></textarea>
+                                        <label class="text-center" for="remarks">Remarks</label>
                                     </div>
                                     <p id="error-lp-proj-reason"></p>
                                 </div>
@@ -253,7 +254,7 @@
             </div>
         </div>
     </div>
-    @endif--}}
+    @endif
 
 
 </div>

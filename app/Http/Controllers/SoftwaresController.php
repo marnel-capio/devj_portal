@@ -689,9 +689,6 @@ class SoftwaresController extends Controller
                 $list_note_approve_on = 'Last approved on: <empty>' ;
             }
         }
-
-        
-
     }
 
 

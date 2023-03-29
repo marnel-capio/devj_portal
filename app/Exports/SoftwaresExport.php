@@ -2,23 +2,23 @@
 namespace App\Exports;
 
 //use Maatwebsite\Excel\Concerns\FromQuery;
-use Illuminate\Contracts\View\View;
-use Maatwebsite\Excel\Concerns\FromView;
-use Maatwebsite\Excel\Concerns\Exportable;
-use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Events\AfterSheet;
-use Maatwebsite\Excel\Concerns\WithEvents;
-
 use App\Models\Softwares;
 use App\Models\SoftwareTypes;
-use Maatwebsite\Excel\Concerns\WithColumnWidths;
-use Maatwebsite\Excel\Concerns\WithStyles;
+use Illuminate\Contracts\View\View;
+use Maatwebsite\Excel\Concerns\FromView;
+use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\WithTitle;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use PhpOffice\PhpSpreadsheet\Style\Border as StyleBorder;
+
 use PhpOffice\PhpSpreadsheet\Style\Color;
-use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup as WorksheetPageSetup;
+use Maatwebsite\Excel\Concerns\Exportable;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Concerns\WithStyles;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Style\Border as StyleBorder;
+use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup as WorksheetPageSetup;
 
 
 class SoftwaresExport implements FromView, WithHeadings, WithEvents, WithColumnWidths, WithStyles, WithTitle
@@ -42,8 +42,35 @@ class SoftwaresExport implements FromView, WithHeadings, WithEvents, WithColumnW
     {
         $data = Softwares::getSoftwareForDownload();
 
-        return view('softwares.download')->with(['detail' => $data]);
+        //get latest approver and latest approve time
+        $detail_note = $this->getLastApproveNote();
+        
+
+        return view('softwares.download',['detail' => $data,
+                                            'detail_note' => $detail_note]);
     }
+    public function getLastApproveNote()
+    {
+        $last_approved_software = Softwares::GetLastApproverDetail();
+        $detail_note = '';
+
+    
+        if($last_approved_software)
+        {
+            if($last_approved_software->approver){
+                $detail_note = 'Last approved by: ' . $last_approved_software->approver;
+            }
+            
+            if($last_approved_software->approve_time)
+            {
+                $current_date = date("Y-m-d", strtotime($last_approved_software->approve_time) );
+                $detail_note = $detail_note . ' as of ' . $current_date;
+            }
+        }
+
+        return $detail_note;
+    }
+
 
     public function headings(): array
     {
@@ -74,10 +101,10 @@ class SoftwaresExport implements FromView, WithHeadings, WithEvents, WithColumnW
         $data_count = Softwares::whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
         ->count();
 
-        $bordered_cell = "A1:C" . (strVal($data_count) + config('constants.SOFTWARE_RANGE_BUFFER'));
+        $bordered_cell = "A4:C" . (strVal($data_count) + config('constants.SOFTWARE_RANGE_BUFFER'));
 
         return [
-            "A1:C1" => [    //style for header
+            "A4:C4" => [    //style for header
                 'font' => ['bold' => true],
                 'alignment' => [
                     'horizontal' => Alignment::HORIZONTAL_CENTER,
@@ -92,6 +119,13 @@ class SoftwaresExport implements FromView, WithHeadings, WithEvents, WithColumnW
                     'wrapText' => true,
                 ],
             ],
+            'A2:C2' => [
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_LEFT,
+                    'wrapText' => false,
+                ],
+            ],
+
 
             1 => ['font' => [
                 'bold' => true

@@ -77,7 +77,7 @@ return [
 
     //software range buffers
     'SOFTWARE_RANGE_BUFFER' => 1,
-    'SOFTWARE_RANGE_INITIAL_VALUE' => 2,
+    'SOFTWARE_RANGE_INITIAL_VALUE' => 5,
     'SOFTWARE_TYPE_COUNTER_INCREMENT' => 1,
     'SOFTWARE_TYPE_EMPTY' => 0,
     'SOFTWARE_TYPE_COUNT' =>  6,
