@@ -1,7 +1,7 @@
 <table>
     <thead>
-        <tr></tr>
-        <tr>
+        <tr ></tr>
+        <tr >
             <th></th>
             <th> {{ $detail_note}} </th>
         </tr>
