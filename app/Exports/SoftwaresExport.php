@@ -77,20 +77,11 @@ class SoftwaresExport implements FromView, WithHeadings, WithEvents, WithColumnW
 
     public function columnWidths(): array
     {
-        if($this->fileType == 'pdf'){
-            $width = [
-                'A' => 20,
-                'B' => 10,
-                'C' => 15,
-            ];
-        }else{
-            $width = [
-                'A' => 20,
-                'B' => 25,
-                'C' => 50,
-            ];
-        }
-        return $width;        
+        return [
+            'A' => 20,
+            'B' => 25,
+            'C' => 50,
+        ];        
     }
 
     public function styles(Worksheet $sheet)
@@ -136,6 +127,33 @@ class SoftwaresExport implements FromView, WithHeadings, WithEvents, WithColumnW
             1 => ['font' => [
                 'bold' => true
             ]],
+            'A1:C2' => [
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => StyleBorder::BORDER_THIN,
+                        'color' => [
+                            'argb' => Color::COLOR_WHITE
+                        ],
+                        'colorIndex' => [
+                            'argb' => Color::COLOR_WHITE
+                        ]
+                    ]
+                ],
+            ],
+            'A3:C3' => [
+                'borders' => [
+                    'vertical' => [
+                        'borderStyle' => StyleBorder::BORDER_THIN,
+                        'color' => [
+                            'argb' => Color::COLOR_WHITE
+                        ],
+                        'colorIndex' => [
+                            'argb' => Color::COLOR_WHITE
+                        ]
+                    ]
+                ],
+            ],
+            
             $bordered_cell =>[
                 'borders' => [
                     'allBorders' => [
