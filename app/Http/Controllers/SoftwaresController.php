@@ -19,6 +19,12 @@ use App\Http\Requests\SoftwaresRequest;
 class SoftwaresController extends Controller
 {
     
+    /**
+     * Display of software request
+     *
+     * @param string $rejectCode
+     * @return void
+     */
     public function create($rejectCode = ""){
         $software = '';
         $software_types = '';
@@ -51,6 +57,12 @@ class SoftwaresController extends Controller
                                                 'new_software_type' => $newsoftwaretypes]);
     }
 
+    /**
+     * Software registration process
+     *
+     * @param SoftwaresRequest $request
+     * @return route to softwares.regist.complete
+     */
     public function regist(SoftwaresRequest $request)
     {
 
@@ -118,6 +130,12 @@ class SoftwaresController extends Controller
         return redirect(route('softwares.regist.complete'));
     }
 
+     /**
+     * Software Add / Update new software type data in the software_types table during creation of new software  
+     * or during update of existing software
+     * @param array $data
+     * @return array $data
+     */
     public function processNewSoftwareType($data)
     {
         //check the software_type. if software_type = others, 
@@ -155,6 +173,13 @@ class SoftwaresController extends Controller
         }
         return $data;
     }
+
+    /**
+     * Software detail screen display
+     *
+     * @param [type] $id
+     * @return view for softwares.details
+     */ 
     public function detail($id){
 
         $softwareDetails = Softwares::getSoftwareDetail($id);
@@ -207,7 +232,12 @@ class SoftwaresController extends Controller
     }
 
 
-
+    /**
+     * Display of software edit screen
+     *
+     * @param [type] $id
+     * @return void
+     */ 
     public function edit($id){
         $software = Softwares::getSoftwareDetail($id);
 
@@ -245,7 +275,13 @@ class SoftwaresController extends Controller
 
     }
 
-     public function update(SoftwaresRequest $request){
+    /**
+     * Software update process
+     *
+     * @param SoftwaresRequest $request
+     * @return void
+     */
+    public function update(SoftwaresRequest $request){
         $request->validated();
         $updateData = $request->only(["id", "software_name", "software_type_id", "new_software_type", "remarks"]);
         
@@ -318,6 +354,12 @@ class SoftwaresController extends Controller
         
     }
 
+    /**
+     * Process for displaying the detail page once the "View" action is clicked from dashboard
+     *
+     * @param string $id
+     * @return void
+     */
     public function detailview($id)
     {
 
@@ -329,6 +371,12 @@ class SoftwaresController extends Controller
         return redirect(route('softwares.details', ['id' => $id]));
     }
 
+    /**
+     * Display softwares registration request or softwares update request
+     *
+     * @param [type] $id
+     * @return void
+     */
     public function request($id)
     {
         $softwaresDetails = Softwares::getSoftwareDetail($id);
@@ -388,6 +436,12 @@ class SoftwaresController extends Controller
     
     }
 
+     /**
+     * Process the approval of software request
+     *
+     * @param Request $request
+     * @return void
+     */
     public function store(Request $request){
         $id = $request->input('id');
 
@@ -484,6 +538,12 @@ class SoftwaresController extends Controller
         return redirect(route('home'));
     }
 
+    /**
+     * Process the rejection of software requests
+     *
+     * @param Request $request
+     * @return void
+     */
     public function reject(Request $request){
         $id = $request->input('id');
         $error = $this->validateRequest($id);
@@ -608,6 +668,12 @@ class SoftwaresController extends Controller
         return $note;
     }
 
+    /**
+     * transforms the software approved_status into the equivalent Status text
+     *
+     * @param string $software
+     * @return void
+     */    
     private function transformStatusToText($software){
         $statut_text = '';
         switch ($software['approved_status']){
@@ -646,10 +712,21 @@ class SoftwaresController extends Controller
         } 
     }
 
+    /**
+     * Removes the new line charactesd
+     *
+     * @param string $string
+     * @return void
+     */       
     private function removeNewLine(&$string){
         str_replace(["\n\r", "\n", "\r"], ' ', $string);
     }
 
+    /**
+     * Display software list
+     *
+     * @return void
+     */    
     public function index(){
         $software_request = $this->getSoftware();
        
@@ -668,6 +745,12 @@ class SoftwaresController extends Controller
                                         'software_types' => $software_types]);
     }
 
+    /**
+     * Get the latest approver and approve date for display
+     * @param string &$list_note_approve_by
+     * @param string &$list_note_approve_on
+     * @return void
+     */ 
     public function getLastSoftwareApproverNote(&$list_note_approve_by, &$list_note_approve_on)
     {
         $last_approved_software = Softwares::GetLastApproverDetail();
@@ -692,12 +775,21 @@ class SoftwaresController extends Controller
     }
 
 
+    /**
+     * Get software data from softwares table
+     * @return array $softwares
+     */ 
     private function getSoftware() {
         $software = Softwares::getSoftwareForList();
         return $software;
     }
 
     
+    /**
+     * Download employee list
+     *
+     * @return void
+     */
     public function download() {
         
         $current_date = date("Y-m");
