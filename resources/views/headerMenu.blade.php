@@ -32,8 +32,8 @@
                         <li><a href="{{ route('softwares.create') }}" class="dropdown-item small text-white">Create Software</a></li>
                     </ul>
                 </li>
-                {{-- 
-                <li class="nav-item dropdown">
+ 
+                {{-- <li class="nav-item dropdown">
                     <a href="#" class="nav-link text-white"  role="button">Projects</a>
                     <ul class="dropdown-menu">
                         <li><a href="{{ route('projects') }}" class="dropdown-item small text-white">View Projects</a></li>
@@ -43,6 +43,7 @@
                         @endif
                     </ul>
                 </li>
+                 --}}
                 @if ($userInfo->roles === config('constants.MANAGER_ROLE_VALUE') ||  $userInfo->server_manage_flag)
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link text-white"  role="button">Servers</a>
@@ -54,7 +55,7 @@
                             @endif
                         </ul>
                     </li>
-                @endif --}}
+                @endif 
             </ul>
             <ul class="navbar-nav mb-2 mb-lg-0">
                 <li class="nav-item dropdown">

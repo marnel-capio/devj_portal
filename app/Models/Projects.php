@@ -2,10 +2,8 @@
 
 namespace App\Models;
 
-use App\Mail\Employee;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 
 class Projects extends Model
 {

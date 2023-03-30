@@ -3,7 +3,9 @@
 namespace App\Http\Requests;
 
 use App\Models\Softwares;
+use App\Models\SoftwareTypes;
 use Illuminate\Foundation\Http\FormRequest;
+
 
 class SoftwaresRequest extends FormRequest
 {
@@ -34,19 +36,6 @@ class SoftwaresRequest extends FormRequest
     }
 
     /**
-     * Get the error messages for the defined validation rules.
-     *
-     * @return array
-     */
-    /*public function messages()
-    {
-        return [
-            'birthdate.regex' => "The birth date must be a valid date.",
-            'birthdate.date' => "The birth date must be a valid date.",
-        ];
-    }*/
-
-    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, mixed>
@@ -54,11 +43,47 @@ class SoftwaresRequest extends FormRequest
     public function rules()
     {
         $rules = [];
+        $software_type =$this->input('software_type_id');
         if($this->isMethod('POST')){
             $rules = [
                 'software_name' => ['required', 'max:80'],
-                'type' => 'required|in:1,2,3,4,5,6',
-                'remarks' => 'required|max:1024',
+                'software_type_id' => ['required', 
+                                        function($attribute, $value, $fail) {
+                                            $detail = SoftwareTypes::where('id', $value)
+                                                                    ->where('approved_status', config('constants.APPROVED_STATUS_APPROVED'))
+                                                                    ->get()
+                                                                    ->toArray();
+                                            if(empty($detail) && $value != config('constants.SOFTWARE_TYPE_999'))
+                                            {
+                                                $fail("The selected type is invalid.");
+                                            }
+                                        }                                  
+                                      ], 
+               'remarks' => 'required|max:1024',
+               'new_software_type' => ['max:80', 
+                                        // checking if field is required or not
+                                        function($attribute, $value, $fail) use ($software_type) {
+                                            //if selected software type is others and new software name is empty
+                                            if($software_type == config('constants.SOFTWARE_TYPE_999') && ($value == "" || $value == null))
+                                            {
+                                                $fail("The new software type field is required.");
+                                            }
+                                        }, 
+                                        //checking if entered value is already existing in the approved software type
+                                        function($attribute, $value, $fail) use ($software_type) {
+                                            //get current software type list
+                                            if($software_type == config('constants.SOFTWARE_TYPE_999'))
+                                            {
+                                                $detail = SoftwareTypes::where([['type_name', $value], 
+                                                                                ['approved_status', config('constants.APPROVED_STATUS_APPROVED')]])->first();
+
+                                                if($detail)
+                                                {
+                                                    $fail("Inputted software type is already existing.");
+                                                }
+                                            }
+                                        }                                        
+                                      ]
             ];
 
             $referer = $this->header('referer');
