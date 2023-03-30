@@ -11,7 +11,7 @@ $(document).ready(function(){
 		"bFilter": false,
 		"pageLength": 25,
 		"oLanguage": {
-	        "sEmptyTable": "No Data"
+	        "sEmptyTable": "There is no record found"
 	    }
     });
 
