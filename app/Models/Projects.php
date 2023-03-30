@@ -14,6 +14,12 @@ class Projects extends Model
     const UPDATED_AT = 'update_time';
     const CREATED_AT = 'create_time';
 
+    /**
+     * Get selectable project per employee
+     *
+     * @param [type] $id
+     * @return void
+     */
     static function getProjectDropdownPerEmployee($id){
 
         return self::select('id', 'name', 'start_date', 'end_date')
@@ -28,6 +34,12 @@ class Projects extends Model
                 
     }
 
+    /**
+     * get selectable project for a software
+     *
+     * @param [type] $id
+     * @return void
+     */
     static function getProjectDropdownPersoftware($id){
         $project_list = self::select('id', 'name', 'start_date', 'end_date')
                 ->whereNotIn('id', function($query) use ($id){

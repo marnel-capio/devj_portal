@@ -4,16 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
-use App\Http\Requests\ResetPasswordRequest;
 use App\Mail\passwordResetMail;
 use App\Models\Employees;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Session;
-use PhpParser\Node\Stmt\Return_;
 
 class LoginController extends Controller
 {
@@ -83,7 +78,11 @@ class LoginController extends Controller
         return Redirect::back()->with('successMsg', 'Your new password has been sent to your email.');
     }
 
-    
+    /**
+     * Generate temporary password
+     *
+     * @return string
+     */
     private function generatePassword(){
         
         $length = 8; //password length

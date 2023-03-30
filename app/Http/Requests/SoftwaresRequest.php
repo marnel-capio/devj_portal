@@ -3,10 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Softwares;
-use App\Rules\AWSEmailAddress;
-use App\Rules\Password;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
 class SoftwaresRequest extends FormRequest
 {

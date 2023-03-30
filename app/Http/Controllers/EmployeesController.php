@@ -11,19 +11,20 @@ use App\Models\EmployeesProjects;
 use App\Models\Laptops;
 use App\Models\Logs;
 use App\Models\Projects;
-use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\DB;
 use App\Mail\updateContactDetailsMail;
-use Excel;
 use App\Exports\EmployeesExport;
-use PhpOffice\PhpSpreadsheet\Writer\Pdf;
 
 class EmployeesController extends Controller
 {
-    
+    /**
+     * Display of employee registration
+     *
+     * @param string $rejectCode
+     * @return void
+     */
     public function create($rejectCode = ""){
         $employee = '';
         if($rejectCode){
@@ -38,6 +39,12 @@ class EmployeesController extends Controller
         return view('employees.regist')->with(['employee' => $employee]);
     }
 
+    /**
+     * Registration process for employee
+     *
+     * @param EmployeesRequest $request
+     * @return void
+     */
     public function regist(EmployeesRequest $request){
         $request->validated();
 
@@ -87,6 +94,12 @@ class EmployeesController extends Controller
         return redirect(route('employees.regist.complete'));
     }
 
+    /**
+     * Employee detail screen display
+     *
+     * @param [type] $id
+     * @return void
+     */
     public function detail($id){
         $employeeDetails = Employees::where('id', $id)->first();
 
@@ -125,8 +138,12 @@ class EmployeesController extends Controller
                     ]);
     }
 
-
-
+    /**
+     * Display of employee edit screen
+     *
+     * @param [type] $id
+     * @return void
+     */
     public function edit($id){
         $employee = Employees::where('id', $id)->first();
 
@@ -156,6 +173,12 @@ class EmployeesController extends Controller
 
     }
 
+    /**
+     * Employee update process
+     *
+     * @param EmployeesRequest $request
+     * @return void
+     */
     public function update(EmployeesRequest $request){
         $request->validated();
 
@@ -241,10 +264,14 @@ class EmployeesController extends Controller
             Logs::createLog("Employee", "{$originalData->email}: Employee Details Update: " .json_encode($json, true));
             return redirect(route('employees.update.complete'));
         }
-        
-        
     }
 
+    /**
+     * Display employee registration request or employee update request
+     *
+     * @param [type] $id
+     * @return void
+     */
     public function request($id){
 
         $employeeDetails = Employees::where('id', $id)->first();
@@ -289,6 +316,12 @@ class EmployeesController extends Controller
         ]);
     }
 
+    /**
+     * Process the approval of employee request
+     *
+     * @param Request $request
+     * @return void
+     */
     public function store(Request $request){
         $id = $request->input('id');
 
@@ -364,6 +397,12 @@ class EmployeesController extends Controller
         return redirect(route('home'));
     }
 
+    /**
+     * Process the rejection of employee requests
+     *
+     * @param Request $request
+     * @return void
+     */
     public function reject(Request $request){
         $id = $request->input('id');
 
@@ -442,7 +481,7 @@ class EmployeesController extends Controller
      * Validates employee's request before updating/rejecting
      *
      * @param [type] $id
-     * @return void
+     * @return string
      */
     private function validateRequest($id){
         if(empty($id)){
@@ -470,7 +509,7 @@ class EmployeesController extends Controller
      * note on employee's account status in detail screen
      *
      * @param Employees $employee
-     * @return void
+     * @return string
      */
     private function getAccountStatus($employee){
         $note = '';
@@ -514,6 +553,12 @@ class EmployeesController extends Controller
         return $data;
     }
 
+    /**
+     * Get role based on position
+     *
+     * @param [type] $position
+     * @return int
+     */
     private function getRoleBasedOnPosition($position){
         if(in_array($position, [config('constants.POSITION_MANAGER_VALUE'), config('constants.POSITION_ASSSITANT_MANAGER_VALUE')])){
             return config('constants.MANAGER_ROLE_VALUE');
@@ -534,7 +579,6 @@ class EmployeesController extends Controller
         if (!empty($recipients)) {
             Mail::to($recipients)->send(new Employee($mailData, $mailType));
         } 
-        
     }
 
     /**
@@ -557,16 +601,32 @@ class EmployeesController extends Controller
         }
     }
 
+    /**
+     * remove line breaks in string
+     *
+     * @param [type] $string
+     * @return void
+     */
     private function removeNewLine(&$string){
         str_replace(["\n\r", "\n", "\r"], ' ', $string);
     }
 
-    public function index(Request $request){
+    /**
+     * Display employee list
+     *
+     * @return void
+     */
+    public function index(){
         $employee_request = $this->getEmployee();
 
         return view('employees/list', ['employee_request' => $employee_request]);
     }
 
+    /**
+     * Get employee data for employee list screen
+     *
+     * @return void
+     */
     private function getEmployee() {
         $query = Employees::whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
 
@@ -580,6 +640,11 @@ class EmployeesController extends Controller
         return $employee;
     }
 
+    /**
+     * Send notification to all active employee
+     *
+     * @return void
+     */
     public function sendNotification(){
         // get all active employee
         $employee = Employees::select('id', 'email','first_name')
@@ -608,6 +673,12 @@ class EmployeesController extends Controller
         return redirect()->route('employees')->with(['success' => 1, "message" => "Successfully sent notifications to all active employees."]);
     }
 
+    /**
+     * Download employee list
+     *
+     * @param Request $request
+     * @return void
+     */
     public function download(Request $request) {
         
         Logs::createLog("Employee", "Downloaded list of employee");

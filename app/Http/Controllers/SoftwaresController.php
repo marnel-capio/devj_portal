@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Excel;
 use App\Models\Logs;
 use App\Mail\Software;
 use App\Models\Projects;
@@ -11,14 +10,10 @@ use App\Models\Employees;
 use Illuminate\Http\Request;
 use App\Exports\SoftwaresExport;
 use App\Models\ProjectSoftwares;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\SoftwaresRequest;
-use PhpOffice\PhpSpreadsheet\Writer\Pdf;
-use Illuminate\Contracts\Session\Session;
-use Illuminate\Support\Facades\Log;
 
 class SoftwaresController extends Controller
 {
@@ -506,7 +501,7 @@ class SoftwaresController extends Controller
     /**
      * note on software's status in detail screen
      *
-     * @param Software $software
+     * @param Softwares $software
      * @return void
      */
     private function getSoftwareStatus($software){

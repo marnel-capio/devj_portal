@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Employees extends Authenticatable
@@ -24,6 +23,11 @@ class Employees extends Authenticatable
         'password',
     ];
     
+    /**
+     * Get email of managers
+     *
+     * @return void
+     */
     static function getEmailOfManagers(){
         return self::select('email')
                             ->where('roles', config('constants.MANAGER_ROLE_VALUE'))
@@ -31,7 +35,6 @@ class Employees extends Authenticatable
                             ->where('active_status', 1)
                             ->get()
                             ->toArray();
-        
     }
 
     /**

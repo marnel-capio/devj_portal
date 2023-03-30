@@ -24,7 +24,13 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
 class ApiController extends Controller
-{
+{   
+    /**
+     * Change Password API
+     *
+     * @param ChangePassword $request
+     * @return void
+     */
     public function changePassword(ChangePassword $request){
         
         $request->validated();
@@ -109,7 +115,13 @@ class ApiController extends Controller
                                 , 200);
     }
     
-
+    /**
+     * Link Project To Software API
+     * used in software detail screen
+     *
+     * @param LinkProject $request
+     * @return void
+     */
     public function softwarelinkProject(LinkProject $request){
         $request->validated();
 
@@ -258,6 +270,12 @@ class ApiController extends Controller
         } 
     }
 
+    /**
+     * Employee search API
+     *
+     * @param Request $request
+     * @return void
+     */
     public function getEmployeeByFilter(Request $request){
         $searchFilter = [
             'keyword' => $request->get('keyword'),
@@ -300,6 +318,12 @@ class ApiController extends Controller
         return json_encode($employee);
     }
 
+    /**
+     * Software search API
+     *
+     * @param Request $request
+     * @return void
+     */
     public function getSoftwareByFilter(Request $request){
         $searchFilter = [
             'keyword' => $request->get('keyword'),
@@ -337,6 +361,12 @@ class ApiController extends Controller
         return json_encode($software);
     }
 
+    /**
+     * Laptop search API
+     *
+     * @param Request $request
+     * @return void
+     */
     public function filterLaptopList(Request $request){
         $data = $request->all();
 
@@ -687,6 +717,12 @@ class ApiController extends Controller
         ]);
     }
 
+    /**
+     * Employee reactivation API
+     *
+     * @param Request $request
+     * @return void
+     */
     public function reactivateEmployee(Request $request){
         $employeeId = $request->input('id');
         $message = '';
@@ -735,6 +771,12 @@ class ApiController extends Controller
         ]);
     }
 
+    /**
+     * BU Transfer API (Employee is assigned to a different BU)
+     *
+     * @param Request $request
+     * @return void
+     */
     public function transferEmployee (Request $request) {
         $employeeId = $request->input('id');
         $message = '';
@@ -775,6 +817,12 @@ class ApiController extends Controller
         ]);
     }
 
+    /**
+     * Employee reinstate api (employee is reinstated back to Dev J)
+     *
+     * @param Request $request
+     * @return void
+     */
     public function reinstateEmployee (Request $request) {
         $employeeId = $request->input('id');
         $message = '';
