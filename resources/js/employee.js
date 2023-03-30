@@ -6,6 +6,26 @@ const REACTIVATE_EMPLOYEE_LINK = '/api/reactivateEmployee';
 const TRANSFER_EMPLOYEE_LINK = '/api/transferEmployee';
 const REINSTATE_EMPLOYEE_LINK = '/api/reinstateEmployee';
 const NOTIFY_SURRENDER_OF_LAPTOPS_LINK = '/api/notifySurrender'
+const BU_LIST = {
+    '1'  : 'Dev A',
+    '2'  : 'Dev B',
+    '3'  : 'Dev C',
+    '4'  : 'Dev D',
+    '5'  : 'Dev E',
+    '6'  : 'Dev F',
+    '7'  : 'Dev G',
+    '8'  : 'Dev H',
+    '9'  : 'Dev I',
+    '10'  : 'Dev K',
+    '11'  : 'Dev L',
+    '12'  : 'Dev M',
+    '13'  : 'Dev N',
+    '14'  : 'Dev 2',
+    '15'  : 'Dev 3',
+    '16'  : 'Dev 5',
+    '17'  : 'Dev 6',
+    '18'  : 'C4I',
+};
 
 $(document).ready(function () {
 
@@ -71,7 +91,7 @@ $(document).ready(function () {
                     }
 					let buAssignment = '';
 					if (employee['bu_transfer_flag']) {
-						buAssignment = employee['bu_transfer_assignment'];
+						buAssignment =  BU_LIST[employee['bu_transfer_assignment']];
 					}
                     url = window.location.href+"/"+employee['id'];
                     employee_list.row.add(['<a href="'+url+'">'+employee['last_name']+', '+employee['first_name']+' ('+employee['middle_name']+')</a>', employee['email'], employee['cellphone_number'],employee['current_address_city'],employee['current_address_province'],buAssignment,status]).draw(false);
