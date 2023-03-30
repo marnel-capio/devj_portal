@@ -35,9 +35,11 @@
 		<div class="col-4 ">
 			<input type="text" name="projSearchInput" class=" form-control" id="proj-search-input" placeholder="Search">
 		</div>
+	@if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE'))		
 		<div class="col-8 text-end">
 			<a href="{{ route('projects.create') }}" class="btn btn-success me-1" id='send-notif'>Create</a>
 		</div>
+	@endif
 	</div>
 	<div class="row-list row">
 	    <div class="col table-avoid-overflow">

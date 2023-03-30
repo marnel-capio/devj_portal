@@ -109,7 +109,7 @@ class EmployeesProjects extends Model
 
         if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE')){
             //get all software request of the current user only
-            $query->where('employees.employee_id', Auth::user()->id);
+            $query->where('employees_projects.employee_id', Auth::user()->id);
         }
         $query->orderBy('project_name', 'ASC');
         return $query->get()->toArray();

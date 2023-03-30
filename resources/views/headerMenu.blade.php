@@ -36,7 +36,7 @@
                     <a href="#" class="nav-link text-white"  role="button">Projects</a>
                     <ul class="dropdown-menu">
                         <li><a href="{{ route('projects') }}" class="dropdown-item small text-white">View Projects</a></li>
-                        @if (in_array($userInfo->roles, [config('constants.ADMIN_ROLE_VALUE'), config('constants.MANAGER_ROLE_VALUE')]))
+                        @if ($userInfo->roles == config('constants.MANAGER_ROLE_VALUE'))
                             <li><hr class="dropdown-divider"></li>
                             <li><a href="{{ route('projects.create') }}" class="dropdown-item small text-white">Create Project</a></li>
                         @endif
