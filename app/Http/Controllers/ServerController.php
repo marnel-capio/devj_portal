@@ -8,6 +8,7 @@ use App\Http\Requests\ServerRequest;
 use App\Models\Logs;
 use App\Models\Servers;
 use App\Models\ServersPartitions;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ServerController extends Controller

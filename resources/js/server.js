@@ -1,3 +1,4 @@
+const SERVER_DELETEION_API_LINK = '/api/servers/delete';
 const SERVER_STATUS_1_MAX_VALUE = 60;
 const SERVER_STATUS_2_MAX_VALUE = 89;
 const SERVER_STATUS_3_MAX_VALUE = 100;
@@ -14,7 +15,7 @@ $(document).ready(function () {
 
 //******************************************** Server List ********************************************/
 
-    var serverList = $("#server-list").DataTable({
+    var serverList = $("#server_list").DataTable({
         "stateSave": true,
         "pageLength": 25,
         "oLanguage": {
@@ -27,7 +28,7 @@ $(document).ready(function () {
 
     clearFilter();
 
-    $(".server-status").on('change', function () {
+    $("#server-status").on('change', function () {
         var filterVal = $("input[name=serverStatus]:checked").val();
         
         if (filterVal == 1) { 
@@ -55,6 +56,42 @@ $(document).ready(function () {
         serverList.search('').draw();
     }
     
+    //server deletion
+    $('#server_list').on('click', '.delete_server', function (e) {
+        //get id and server name
+        let id = $(this).data('id');
+        let serverName = $(this).data('server_name');
+
+        if ( confirm(`Delete ${serverName}?`) ) {
+            //delete server
+            console.log('delete server');
+            $.ajax({
+                type: "GET",
+                url: SERVER_DELETEION_API_LINK,
+                data: {
+                    'id': id
+                },
+                dataType: 'json',
+            }).done(function (data) {
+                console.log('done');
+                if (data.success) {
+                    location.reload();
+                } else {
+                    //display error
+                    $(`<div class="alert alert-danger" role="alert">${data.error}</div>`).insertBefore('.container-list-table');
+                }
+            }).fail( function () {
+                console.log('error');
+            })
+
+        } 
+        e.preventDefault()
+    });
+
+
+
+
+
 //******************************************** Server Regist/Update ********************************************/
 
     //===================================================HDD USAGE===================================================

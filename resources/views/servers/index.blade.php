@@ -1,6 +1,11 @@
 @include('header')
 <script src="{{ asset(mix('js/server.min.js')) }}" defer></script>
 @include('headerMenu')
+@if (session('success')) 
+	<div class="alert alert-success " role="alert">
+	  {{session('message')}}
+	</div>
+@endif
 <div class="container container-list-table mt-3 ms-4 mb-5">
 	<h3> Server List </h3>
     <div class="row row-list">
@@ -38,16 +43,17 @@
     </div>
 	<div class="row-list row">
 	    <div class="col-12 table-avoid-overflow">
-	    	<table id="server-list" class="table table-striped" >
+	    	<table id="server_list" class="table table-striped" >
 		        <thead>
 		            <tr>
-		                <th>Server</th>
+		                <th class="w-20">Server</th>
 		                <th>IP Address</th>
-		                <th>Function/Role</th>
+		                <th class="w-20">Function/Role</th>
                         <th>HDD Status</th>
                         <th>Memory Status</th>
                         <th>CPU Status</th>
 		                <th>Status</th>
+                        <th class="w-10 text-center">Action</th>
 		            </tr>
 		        </thead>
 		        <tbody>
@@ -61,6 +67,7 @@
                                 <td class="{{ config('constants.STATUS_CLASS.' .$server['ram_status']) }}">{{ config('constants.STATUS_NAMES.' .$server['ram_status']) }}</td>
                                 <td class="{{ config('constants.STATUS_CLASS.' .$server['cpu_status']) }}">{{ config('constants.STATUS_NAMES.' .$server['cpu_status']) }}</td>
                                 <td>{{ $server['status'] }}</td>
+                                <td class="text-center"><button class="btn btn-sm btn-danger delete_server" data-id="{{ $server['id'] }}" data-server_name="{{ $server['server_name'] }}">Delete</button></td>
                             </tr>
                         @endforeach
                     @endif

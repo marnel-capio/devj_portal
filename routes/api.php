@@ -32,4 +32,5 @@ Route::middleware('auth:sanctum')->controller(ApiController::class)->group(funct
     Route::post('/laptops/update', 'updateLaptopDetails')->name('api.updateLaptop');
     Route::post('/laptops/updateLinkage', 'updateLaptopLinkage')->name('api.updateLaptopLinkage');
     Route::post('/laptops/registLinkage', 'registLaptopLinkage')->name('api.registLaptopLinkage');
+    Route::get('/servers/delete', 'deleteServer');
 });

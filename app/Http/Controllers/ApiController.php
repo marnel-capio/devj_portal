@@ -18,6 +18,7 @@ use App\Models\ProjectSoftwares;
 use App\Models\Laptops;
 use App\Models\Logs;
 use App\Models\Projects;
+use App\Models\Servers;
 use App\Models\Softwares;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -812,6 +813,42 @@ class ApiController extends Controller
         return response()->json([
             'success' => $success,
             'message' => $message,
+        ]);
+    }
+
+    /**
+     * Delete server in server list screen
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function deleteServer (Request $request) {
+        //get server id
+        $id = $request->get('id');
+
+        //get server data for logs
+        $server = Servers::where('id', $id)->first();
+        if (empty($server)) {
+            //return an error
+            return response()->json([
+                'success' => false,
+                'error' => 'Error! Server does not exists.',
+            ]);
+        }
+
+        //delete server permanently in DB
+        Servers::where('id', $id)->delete();
+
+        Logs::createLog('Server', 'Deletion of ' .$server->server_name);
+
+        //set success message in session
+        session([
+            'success' => true,
+            'message' => 'Deletion of ' .$server->server_name . ' was successful!',
+        ]);
+
+        return response()->json([
+            'success' => true,
         ]);
     }
 }
