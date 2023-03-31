@@ -19,21 +19,26 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Color;
 use PhpOffice\PhpSpreadsheet\Style\Conditional;
-use PhpOffice\PhpSpreadsheet\Style\ConditionalFormatting\Wizard;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Style;
+
+define('DEFAULT_ROW_HEIGHT_VALUE', '15');
+define('DEFAULT_ROW_HEIGHT_UNIT', 'pt');
 
 class ServerDataSheet implements
                         FromView,
                         WithEvents,
                         WithStyles,
-                        WithColumnWidths,
+                        // WithColumnWidths,
                         ShouldAutoSize,
                         WithTitle
                         
 {
     use Exportable;
     protected $maxRow = 7;
+    protected $endRowOfHeader = 7;
+    protected $rowMultiplierForSpecification = 5;
+    protected $rowHeightArray = [];
 
     public function view(): View
     {
@@ -90,7 +95,67 @@ class ServerDataSheet implements
         $this->maxRow += count($downloadData);
 
         $serverData = [];
+        
+        $rowMultiplier = $this->rowMultiplierForSpecification;
+        $currentRow = $this->endRowOfHeader; //last row number of header
+        $lineBreakCount = 0;
+        $partitionCount = 0;
+        $currentServerId = null;
+
+        $calcRowHeight  = function ($partitionCount, $rowMultiplier, &$currentRow) {
+            //calculate the row height for the current server before proceeding to the next server    
+            $rowHeight = 0;
+            if ($partitionCount >= $rowMultiplier) {
+                $rowHeight = DEFAULT_ROW_HEIGHT_VALUE;
+            } else {
+                //calculate new row height
+                $rowHeight = ceil( ($rowMultiplier / $partitionCount) * DEFAULT_ROW_HEIGHT_VALUE);
+            }
+
+            //set value of row height for the current server
+            for ($i = 0 ; $i < $partitionCount ; $i ++ ) {
+                $currentRow++;  //set current row 
+                $this->rowHeightArray[$currentRow] = $rowHeight;
+            }
+        };
+
         foreach ($downloadData as $idx => &$data) {
+
+            // This block of code is just a workaround to fix the row height of each row since textwrap is not working when there are merged cells in the file
+            if ($currentServerId != $data['id']) {
+
+                if (!is_null($currentServerId)) {
+                    $calcRowHeight ($partitionCount, $rowMultiplier, $currentRow);
+                }
+
+                //initialize variables for next server
+                $currentServerId = $data['id'];
+                $partitionCount = 0;
+                $lineBreakCount = 0;
+                $rowMultiplier = $this->rowMultiplierForSpecification;
+            }
+            $partitionCount ++;
+
+            //get max rowMultiplier
+            if ($partitionCount == 1) {
+                //process only for the first partition data, since evry partition holds the same server data
+
+                //check # of line break for funcion/role and for remarks
+                //check only function role column and remarks column, specification column has 5 line breaks by default and server name/ip has 2 line breaks by default
+                //Should Auto size is enabled so text wrapping is not needed
+                $functionRole = count(explode("\n", $data['function_role']));
+                $remarks = count(explode("\n", $data['function_role']));
+                if ($functionRole > $lineBreakCount) {
+                    $lineBreakCount = $functionRole;
+                }
+                if ($remarks > $lineBreakCount) {
+                    $lineBreakCount = $remarks;
+                }
+                if ($lineBreakCount > $rowMultiplier) {
+                    $rowMultiplier = $lineBreakCount;
+                }
+            }
+
             //convert values
             //convert the memory size
             $this->convertSizeToGigaBytes($data['memory_used_size'], $data['memory_used_size_type']);
@@ -104,6 +169,9 @@ class ServerDataSheet implements
 
             $serverData[$data['id']][] = $data;
         }
+        //calculate the final server
+        $calcRowHeight ($partitionCount, $rowMultiplier, $currentRow);
+
 
         return view('servers.download', ['serverData' => $serverData]);
     }
@@ -247,6 +315,15 @@ class ServerDataSheet implements
                                 $stableCondition,
                                 $criticalCondition,
                             ]);
+
+                // for ($i = $this->rowHeightArray ; $i <= $this->maxRow ; $i ++) {
+                //     $event->sheet->getRowDimension($i)->setRowHeight(DEFAULT_ROW_HEIGHT_VALUE, DEFAULT_ROW_HEIGHT_UNIT);
+                // }
+
+                foreach ($this->rowHeightArray as $rowNumber => $rowHeight) {
+                    $event->sheet->getRowDimension($rowNumber)->setRowHeight($rowHeight, DEFAULT_ROW_HEIGHT_UNIT);
+
+                }
                 
                 $event->sheet->setSelectedCell('A1');
             },
