@@ -1,9 +1,9 @@
 @include('header')
 <script src="{{ asset(mix('js/server.min.js')) }}" defer></script>
 @include('headerMenu')
-@if (session('success')) 
+@if (session()->pull('success')) 
 	<div class="alert alert-success " role="alert">
-	  {{session('message')}}
+	  {{session()->pull('message')}}
 	</div>
 @endif
 <div class="container container-list-table mt-3 ms-4 mb-5">
