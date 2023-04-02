@@ -43,7 +43,6 @@
                         @endif
                     </ul>
                 </li>
-                 --}}
                 @if ($userInfo->roles === config('constants.MANAGER_ROLE_VALUE') ||  $userInfo->server_manage_flag)
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link text-white"  role="button">Servers</a>
@@ -56,6 +55,7 @@
                         </ul>
                     </li>
                 @endif 
+                --}}
             </ul>
             <ul class="navbar-nav mb-2 mb-lg-0">
                 <li class="nav-item dropdown">
