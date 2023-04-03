@@ -19,7 +19,7 @@ use PhpOffice\PhpSpreadsheet\Style\Border as StyleBorder;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup as WorksheetPageSetup;
 
 
-class SoftwaresExport implements FromView, WithHeadings, WithEvents, WithColumnWidths, WithStyles, WithTitle
+class SoftwaresExport implements FromView, WithEvents, WithColumnWidths, WithStyles, WithTitle
 {
     use Exportable;
 
@@ -70,11 +70,6 @@ class SoftwaresExport implements FromView, WithHeadings, WithEvents, WithColumnW
     }
 
 
-    public function headings(): array
-    {
-        return ["Type", "Application Software", "Remarks"];
-    }	
-
     public function columnWidths(): array
     {
         return [
@@ -92,8 +87,6 @@ class SoftwaresExport implements FromView, WithHeadings, WithEvents, WithColumnW
 
        
         $bordered_cell = "A4:C" . (strVal($data_count) + config('constants.SOFTWARE_RANGE_BUFFER'));
-
-       // dd($bordered_cell);
 
         return [
             "A4:C4" => [    //style for header
