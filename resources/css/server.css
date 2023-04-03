@@ -1,6 +1,10 @@
 
 /* General */
 
+#status-label {
+    width: 60px;
+}
+
 .form-floating>label {
     text-align: center;
 }

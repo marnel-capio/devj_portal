@@ -1,5 +1,6 @@
 @include('header')
 <script src="{{ asset(mix('js/server.min.js')) }}" defer></script>
+<link rel="stylesheet" href="{{ asset(mix('css/server.min.css')) }}">
 @include('headerMenu')
 @if (session()->pull('success')) 
 	<div class="alert alert-success " role="alert">
@@ -9,7 +10,7 @@
 <div class="container container-list-table mt-3 ms-4 mb-5">
 	<h3> Server List </h3>
     <div class="row row-list">
-        <div class="col-lg-1 col-2">
+        <div class="col-lg-1 col-2" id="status-label">
             Status: 
         </div>
         <div class="col-lg-11 col-10">

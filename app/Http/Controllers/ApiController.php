@@ -19,6 +19,7 @@ use App\Models\Laptops;
 use App\Models\Logs;
 use App\Models\Projects;
 use App\Models\Servers;
+use App\Models\ServersPartitions;
 use App\Models\Softwares;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -836,8 +837,11 @@ class ApiController extends Controller
             ]);
         }
 
+        //delete servers partitions
+        ServersPartitions::where('server_id', $id)->delete();
         //delete server permanently in DB
         Servers::where('id', $id)->delete();
+
 
         Logs::createLog('Server', 'Deletion of ' .$server->server_name);
 
