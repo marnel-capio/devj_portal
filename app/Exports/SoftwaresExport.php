@@ -23,8 +23,8 @@ class SoftwaresExport implements FromView, WithEvents, WithColumnWidths, WithSty
 {
     use Exportable;
 
-    private $maxRow = 100;
     private $fileType = '';
+    protected $rowHeightArray = [];
 
     public function __construct($fileType = "")
     {
@@ -42,10 +42,11 @@ class SoftwaresExport implements FromView, WithEvents, WithColumnWidths, WithSty
 
         //get latest approver and latest approve time
         $detail_note = $this->getLastApproveNote();
-        
 
         return view('softwares.download',['detail' => $data,
-                                            'detail_note' => $detail_note]);
+                                            'detail_note' => $detail_note, 
+                                            'file_type' => $this->fileType]
+                                            );
     }
     public function getLastApproveNote()
     {
@@ -168,16 +169,9 @@ class SoftwaresExport implements FromView, WithEvents, WithColumnWidths, WithSty
      */
     public function registerEvents(): array
     {
-
-        
         //Merge cell processing  - start
 
-        $software = Softwares::whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
-                 ->orderBy('software_type_id', 'ASC')
-                 ->orderBy('software_name', 'ASC')
-                 ->get()->toArray();
-        
-
+        $software = Softwares::getSoftwareForDownload();
 
         $types_count = array();
         //check how many of each type are there in the array
@@ -211,7 +205,93 @@ class SoftwaresExport implements FromView, WithEvents, WithColumnWidths, WithSty
             }
             
         }
-        if($this->fileType == 'pdf'){
+
+        //Computation of new row size - start
+        //get the new height based on merge cells
+        $rowMultiplier = 1;
+        $currentRow = config('constants.SOFTWARE_RANGE_BUFFER');
+        $lineBreakCount = 0;
+        $partitionCount = 0;
+        $software_type_length = 0;
+        $currentSoftwareTypeId = null;
+
+        $calcRowHeight  = function ($partitionCount, $rowMultiplier, &$currentRow, $software_type_length, $software_Id) {
+            //calculate the row height for the current software_type before proceeding to the next software_type    
+            $rowHeight = 0;
+            $software_type_line = ceil( ($software_type_length / config('constants.SOFTWARE_TYPE_MAX_CHAR_LINE')));
+        
+            if ($software_type_line > ($rowMultiplier * $partitionCount)) //multiplying rowmultiplier to partitioncount to get the total rows of all software that has the same software type
+            {
+                
+                //if possible character line of software_type
+                //is still greater than max total line count of each row that has the sanme software_type
+                //calculate the new rowMultiplier by deviding the software_type_line by number of partition and rounding it up
+                //to have an equal size of row for each software
+                $rowMultiplier = ceil( ($software_type_line / $partitionCount));
+                $rowHeight = ceil( ($rowMultiplier) * config('constants.DEFAULT_ROW_HEIGHT_VALUE'));
+
+            }
+            else if ($partitionCount >= $rowMultiplier ) {
+                $rowHeight = config('constants.DEFAULT_ROW_HEIGHT_VALUE');
+            } else {
+                //calculate new row height
+                $rowHeight = ceil( ($rowMultiplier/$partitionCount ) * config('constants.DEFAULT_ROW_HEIGHT_VALUE'));
+            }
+
+            //set value of row height for the current software_type
+            for ($i = 0 ; $i < $partitionCount ; $i ++ ) { 
+                $currentRow++;  //set current row 
+                $this->rowHeightArray[$currentRow] = $rowHeight;
+            }
+        };
+
+        $currentSoftwareId = 0;
+        foreach ($software as $idx => &$software_data) {
+
+            // This block of code is just a workaround to fix the row height of each row since textwrap is not working when there are merged cells in the file
+            if ($currentSoftwareTypeId != $software_data['software_type_id']) {
+
+                if (!is_null($currentSoftwareTypeId)) {
+                    $calcRowHeight ($partitionCount, $rowMultiplier, $currentRow, $software_type_length, $currentSoftwareId);
+                }
+
+                //initialize variables for next server
+                $currentSoftwareTypeId = $software_data['software_type_id'];
+                $partitionCount = 0;
+                $lineBreakCount = 0;
+                $rowMultiplier = 1;
+                $software_type_length = strlen($software_data['type']); //get the count of each software type
+            }
+            $currentSoftwareId = $software_data['id'];
+            $partitionCount ++;
+
+            //get the lines of each row if software name and remarks/purpose
+            //by getting the total length of characters the value have and devide it
+            //by number of characters each column can hold per line
+
+            $software_name_length = strlen($software_data['software_name']);
+            $remarks_length = strlen($software_data['remarks']);
+            $software_name_lines = ceil( ($software_name_length / config('constants.SOFTWARE_NAME_MAX_CHAR_LINE')));
+            $remarks_lines = ceil( ($remarks_length / config('constants.SOFTWARE_REMARKS_MAX_CHAR_LINE')));
+
+            if ($software_name_lines > $lineBreakCount) 
+            {
+                $lineBreakCount = $software_name_lines;
+            }
+            if ($remarks_lines > $lineBreakCount) {
+                $lineBreakCount = $remarks_lines;
+            }
+            if ($lineBreakCount > $rowMultiplier) {
+                $rowMultiplier = $lineBreakCount;
+            }
+
+        }
+
+        //calculate the final server
+        $calcRowHeight ($partitionCount, $rowMultiplier, $currentRow, $software_type_length, $currentSoftwareId);
+        //Computation of new row size = end
+        
+        if($this->fileType == config('constants.FILE_TYPE_PDF')){
             $setting = [
                 AfterSheet::class => function(AfterSheet $event) use($type_range, $total_type_count) {
                     $event->sheet
@@ -219,14 +299,16 @@ class SoftwaresExport implements FromView, WithEvents, WithColumnWidths, WithSty
                         ->getPageSetup()
                         ->setOrientation(WorksheetPageSetup::ORIENTATION_LANDSCAPE)
                         ->setPaperSizeDefault(WorksheetPageSetup::PAPERSIZE_LEGAL);
-                        for ($x = 0; $x < $total_type_count; $x++) {
-                            if($type_range[$x] != "")
-                            {
-                                $event->sheet->getDelegate()->mergeCells($type_range[$x]);
-                            }
-                        }
+    
+                    for ($x = 0; $x < $total_type_count; $x++) {
+                        if($type_range[$x] != "")
+                        {
+                            $event->sheet->getDelegate()->mergeCells($type_range[$x]);
+                            $event->sheet->getDelegate()->getDefaultRowDimension()->setRowHeight(-1);
 
-                    },
+                        }
+                    }
+                },
             ];
 
         }else{
@@ -244,6 +326,10 @@ class SoftwaresExport implements FromView, WithEvents, WithColumnWidths, WithSty
                                 }
                             }
 
+                            foreach ($this->rowHeightArray as $rowNumber => $rowHeight) {
+                                $event->sheet->getRowDimension($rowNumber)->setRowHeight($rowHeight, config('constants.DEFAULT_ROW_HEIGHT_UNIT'));
+                            }                    
+        
                     },
             ];
         }
