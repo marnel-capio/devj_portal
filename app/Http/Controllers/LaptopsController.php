@@ -20,6 +20,11 @@ class LaptopsController extends Controller
     const LAPTOP_REQUEST = 1;
     const LAPTOP_LINK_REQUEST = 2;
 
+    /**
+     * Display laptop list screen
+     *
+     * @return void
+     */
     public function index(){
 
         $laptops = Laptops::getLaptopList();
@@ -27,6 +32,12 @@ class LaptopsController extends Controller
         return view('laptops.index')->with(['laptopList' => $laptops]);
     }
 
+    /**
+     * laptop list download process
+     *
+     * @param Request $request
+     * @return void
+     */
     public function download(Request $request){
         $data = $request->all();
 
@@ -39,6 +50,12 @@ class LaptopsController extends Controller
         }
     }
 
+    /**
+     * Display laptop registration screen
+     *
+     * @param string $rejectCode
+     * @return void
+     */
     public function create($rejectCode = ""){
         $laptop = '';
         $linkage = '';
@@ -71,6 +88,12 @@ class LaptopsController extends Controller
         return view('laptops.create', ['laptop' => $laptop, 'linkage' => $linkage]);
     }
 
+    /**
+     * Laptop registration process
+     *
+     * @param LaptopsRequest $request
+     * @return void
+     */
     public function regist(LaptopsRequest $request){
         $request-> validated();
         
@@ -179,6 +202,12 @@ class LaptopsController extends Controller
         return redirect(route('laptops.regist.complete'));
     }
 
+    /**
+     * Display Laptop detail screen
+     *
+     * @param [type] $id
+     * @return void
+     */
     public function details($id){
         $showLinkBtn = true;
         $laptopDetails = Laptops::select(
@@ -258,6 +287,12 @@ class LaptopsController extends Controller
     }
 
 
+    /**
+     * Display laptop requests
+     *
+     * @param [type] $id
+     * @return void
+     */
     public function request($id){
         $laptopDetails = Laptops::where('id', $id)
             ->whereIn('approved_status', [3,4])
@@ -292,6 +327,12 @@ class LaptopsController extends Controller
         ]);
     }
 
+    /**
+     * Laptop request approval process
+     *
+     * @param Request $request
+     * @return void
+     */
     public function store(Request $request){
         $id = $request->input('id');
 
@@ -378,6 +419,12 @@ class LaptopsController extends Controller
         return redirect(route('home'));
     }
 
+    /**
+     * Laptop request rejection process
+     *
+     * @param Request $request
+     * @return void
+     */
     public function reject(Request $request){
         $id = $request->input('id');
 
@@ -454,6 +501,12 @@ class LaptopsController extends Controller
         return redirect(route('home'));
     }
 
+    /**
+     * Employee-Laptop Linkage request approval process
+     *
+     * @param Request $request
+     * @return void
+     */
     public function storeLinkage(Request $request){
         $id = $request->input('id');
 
@@ -541,6 +594,12 @@ class LaptopsController extends Controller
         return Redirect::back();
     }
 
+    /**
+     * Rejects other employee-laptop linkagre request when a laptop has been assigned to an employee
+     *
+     * @param [type] $laptop_id
+     * @return void
+     */
     private function rejectOtherLinkageRequest($laptop_id){
         $pendingApproval = EmployeesLaptops::getLinkRequestByLaptop($laptop_id, config('constants.APPROVED_STATUS_PENDING'));
         if(!empty($pendingApproval)){
@@ -573,7 +632,12 @@ class LaptopsController extends Controller
         }
     }
 
-
+    /**
+     * Employee-Laptop Linkage request rejection process
+     *
+     * @param Request $request
+     * @return void
+     */
     public function rejectLinkage(Request $request){
         $id = $request->input('id');
 
@@ -696,6 +760,12 @@ class LaptopsController extends Controller
         return ''; 
     }
 
+    /**
+     * Returns a shor note of the laptop's status
+     *
+     * @param [type] $details
+     * @return void
+     */
     private function getDetailNote($details){
         $note = '';
 

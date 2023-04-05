@@ -11,6 +11,7 @@ class checkAccountStatus
 {
     /**
      * Handle an incoming request.
+     * If user has been deactivated while logged-in in the portal, automatically log out employee
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next

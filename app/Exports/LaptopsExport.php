@@ -2,7 +2,6 @@
 
 namespace App\Exports;
 
-use App\Models\Employees;
 use App\Models\Laptops;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\Exportable;

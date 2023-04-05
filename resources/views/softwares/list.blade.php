@@ -9,53 +9,17 @@
 @endif
 <div class="container container-list-table mt-3 ms-4 mb-5">
 	<div class="text-primary d-flex align-items-center">
-		@if (!empty($list_note))
-		<i class="bi bi-info-circle-fill"></i>&nbsp;{{ $list_note }}
+		@if (!empty($list_note_approve_by))
+		<i class="bi bi-info-circle-fill"></i>&nbsp;{{ $list_note_approve_by }}
+		@endif
+	</div >
+	<div class="text-primary d-flex align-items-center">
+		@if (!empty($list_note_approve_on))
+		<i class="bi bi-info-circle-fill"></i>&nbsp;{{ $list_note_approve_on }}
 		@endif
 	</div>
-	<br/>
+	<br>
 	<h3> Software List </h3>
-    <div class="row row-list">
-        <div class="col-1 filter-software">
-			Type: 
-		</div>
-		<div class="col-11">
-			<input class="soft-search-type-rdb-input" type="radio" name="softwaretype" id="type-all" value="7" checked>
-			<label class="soft-search-status-rdb-label  form-check-label" for="type-all">
-			    All
-			</label>
-			&nbsp;&nbsp;			
-			<input class="soft-search-type-rdb-input" type="radio" name="softwaretype" id="type-productivity-tools" value="1">
-			<label class="soft-search-status-rdb-label  form-check-label" for="type-productivity-tools">
-			    Productivity Tools
-			</label>
-			&nbsp;&nbsp;
-			<input class="soft-search-type-rdb-input" type="radio" name="softwaretype" id="type-messaging" value="2" >
-			<label class="soft-search-status-rdb-label form-check-label" for="type-messaging">
-			    Messaging
-			</label>
-			&nbsp;&nbsp;
-			<input class="soft-search-type-rdb-input" type="radio" name="softwaretype" id="type-browser" value="3" >
-			<label class="soft-search-status-rdb-label form-check-label" for="type-browser">
-			    Browser
-			</label>
-			&nbsp;&nbsp;
-			<input class="soft-search-type-rdb-input" type="radio" name="softwaretype" id="type-system-tilities" value="4" >
-			<label class="soft-search-status-rdb-label form-check-label" for="type-system-tilities">
-			    System Utility
-			</label>
-			&nbsp;&nbsp;
-			<input class="soft-search-type-rdb-input" type="radio" name="softwaretype" id="type-project-specific" value="5" >
-			<label class="soft-search-status-rdb-label form-check-label" for="type-project-specific">
-			    Project Specific Software
-			</label>
-			&nbsp;&nbsp;
-			<input class="soft-search-type-rdb-input" type="radio" name="softwaretype" id="type-phone-drivers" value="6" >
-			<label class="soft-search-status-rdb-label form-check-label" for="type-phone-drivers">
-			    Phone Driver
-			</label>			
-		</div>
-	</div>
 	<div class="row row-list">
 		<div class="col-1 filter-software">
 			Status: 
@@ -88,14 +52,27 @@
 		</div>
 	</div>
 	<div class="row row-list mb-2 mt-2 align-middle">
-		<div class="col-8">
-			<input type="text" name="softSearchInput" class="search-input-text" id="soft-search-input" placeholder="Search">
+		<div class="col-1">
+			<label for="software_type">Type:</label>
 		</div>
-		<div class="col-4 text-end">
+		<div class="col-3">
+			<select name="software_type" id="software_type" class="soft-search-type-rdb-input form-select form-control">
+				<option {{ old('type') == config('constants.SOFTWARE_TYPE_999') ? "selected" : "" }} value={{config('constants.SOFTWARE_TYPE_999')}}>{{ config('constants.SOFTWARE_FILTER_TYPE_ALL_NAME') }}</option>
+				@foreach ($software_types as $software_type)
+					<option {{ old('type') == $software_type['id'] ? "selected" : "" }} value={{ $software_type['id']}}>{{ $software_type['type_name'] }}</option>
+				@endforeach
+			</select>
+		</div>
+	</div>	
+	<div class="row row-list mb-2 mt-2 align-middle">
+		<div class="col-4 ">
+			<input type="text" name="softSearchInput" class=" form-control" id="soft-search-input" placeholder="Search">
+		</div>
+		<div class="col-8 text-end">
 			<a href="{{ route('softwares.create') }}" class="btn btn-success me-1" id='send-notif'>Create</a>
 			<button type="submit" class="btn btn-primary ms-1" form="download" >Download</button>
 			<form action="{{  route('softwares.download')  }}" method="GET" id="download">
-                @csrf
+				@csrf
 			</form>
 		</div>
 	</div>
@@ -104,33 +81,22 @@
 	    	<table id="software-list" class="table table-striped" >
 		        <thead>
 		            <tr>
-		                <th style="width:18%"class="tbl-header-name">Software Name</th>
-		                <th style="width:18%">Type</th>
-		                <th style="width:18%">Status</th>
-		                <th style="width:21%">Rejection Reason</th>
-		                <th style="width:25%">Purpose</th>
-		            </tr>
+		                <th style="width:15%"class="tbl-header-name">Software Name</th>
+		                <th style="width:16%">Type</th>
+		                <th style="width:11%">Status</th>
+		                <th style="width:17%">Rejection Reason</th>	
+		                <th style="width:17%">Purpose</th>
+		                <th style="width:8%">Create Date</th>
+		                <th style="width:8%">Update Date</th>
+		                <th style="width:8%">Approve/Reject Date</th>
+					</tr>
 		        </thead>
 		        <tbody>
 		        	@foreach ($software_request as $software)
 		        	<?php $id = $software["id"]; ?>
 		            <tr>
 		                <td><a href='{!! url("/softwares/$id"); !!}'>{{$software['software_name']}}</a></td>
-		                <td>
-		                	@if($software['type'] == config('constants.SOFTWARE_TYPE_1'))
-								{{  config('constants.SOFTWARE_TYPE_1_NAME')}}
-							@elseif($software['type'] == config('constants.SOFTWARE_TYPE_2'))
-								{{  config('constants.SOFTWARE_TYPE_2_NAME')}}
-							@elseif($software['type'] == config('constants.SOFTWARE_TYPE_3'))
-								{{  config('constants.SOFTWARE_TYPE_3_NAME')}}
-							@elseif($software['type'] == config('constants.SOFTWARE_TYPE_4'))
-								{{  config('constants.SOFTWARE_TYPE_4_NAME')}}
-							@elseif($software['type'] == config('constants.SOFTWARE_TYPE_5'))
-								{{  config('constants.SOFTWARE_TYPE_5_NAME')}}
-							@elseif($software['type'] == config('constants.SOFTWARE_TYPE_6'))
-								{{  config('constants.SOFTWARE_TYPE_6_NAME')}}
-		                	@endif
-		                </td>
+						<td>{{$software['type']}}</td>
 		                <td>
 		                	@if($software['approved_status'] == config('constants.APPROVED_STATUS_REJECTED'))
 								{{  config('constants.APPROVED_STATUS_REJECTED_TEXT')}}
@@ -144,7 +110,14 @@
 		                </td>						
 		                <td>{{$software['reasons']}}</td>
 		                <td>{{$software['remarks']}}</td>
-		            </tr>
+		                <td>{{date("Y-m-d", strtotime($software['create_time']) )}}</td>
+		                <td>{{date("Y-m-d", strtotime($software['update_time']) )}}</td>
+						@if(strlen( $software['approve_time'] ) !== 0)
+			                <td>{{date("Y-m-d", strtotime($software['approve_time']) )}}</td>
+						@else
+							<td>{{''}}</td>
+						@endif
+					</tr>
 		            @endforeach
 		        </tbody>
 		    </table>

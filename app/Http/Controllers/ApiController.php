@@ -26,7 +26,13 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
 class ApiController extends Controller
-{
+{   
+    /**
+     * Change Password API
+     *
+     * @param ChangePassword $request
+     * @return void
+     */
     public function changePassword(ChangePassword $request){
         
         $request->validated();
@@ -111,7 +117,13 @@ class ApiController extends Controller
                                 , 200);
     }
     
-
+    /**
+     * Link Project To Software API
+     * used in software detail screen
+     *
+     * @param LinkProject $request
+     * @return void
+     */
     public function softwarelinkProject(LinkProject $request){
         $request->validated();
 
@@ -260,6 +272,12 @@ class ApiController extends Controller
         } 
     }
 
+    /**
+     * Employee search API
+     *
+     * @param Request $request
+     * @return void
+     */
     public function getEmployeeByFilter(Request $request){
         $searchFilter = [
             'keyword' => $request->get('keyword'),
@@ -302,43 +320,34 @@ class ApiController extends Controller
         return json_encode($employee);
     }
 
+    /**
+     * Software search API
+     *
+     * @param Request $request
+     * @return void
+     */
     public function getSoftwareByFilter(Request $request){
         $searchFilter = [
             'keyword' => $request->get('keyword'),
             'status' => $request->get('status'),
             'type' => $request->get('type'),
         ];
-        $software = Softwares::whereIn('approved_status', [config('constants.APPROVED_STATUS_REJECTED'),
-                                                            config('constants.APPROVED_STATUS_APPROVED'),
-                                                            config('constants.APPROVED_STATUS_PENDING'),
-                                                            config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
 
-        // get software
-        if (!empty($searchFilter['keyword'])) {
-            $software = $software->where('software_name','LIKE','%'.$searchFilter['keyword'].'%');
-        }
-        
-        if(!empty($searchFilter['status']))
-        {
-            if($searchFilter['status'] != config('constants.SOFTWARE_FILTER_STATUS_ALL'))//status choses is all
-            {
-                $software = $software->where('approved_status','LIKE','%'.$searchFilter['status'].'%');
-            }
-        }
-        if(!empty($searchFilter['type']))
-        {
-            if($searchFilter['type'] != config('constants.SOFTWARE_FILTER_TYPE_ALL'))//status choses is all
-            {
-                $software = $software->where('type','LIKE','%'.$searchFilter['type'].'%');
-            }
+        $softwarelist = Softwares::getSoftwareForList($searchFilter['keyword'], $searchFilter['status'], $searchFilter['type']);
 
-        }
-        $software = $software->orderBy('software_name', 'ASC')
-                ->get();
 
-        return json_encode($software);
+        return response()->json([
+            'success' => true,
+            'update' => $softwarelist
+        ]);
     }
 
+    /**
+     * Laptop search API
+     *
+     * @param Request $request
+     * @return void
+     */
     public function filterLaptopList(Request $request){
         $data = $request->all();
 
@@ -689,6 +698,12 @@ class ApiController extends Controller
         ]);
     }
 
+    /**
+     * Employee reactivation API
+     *
+     * @param Request $request
+     * @return void
+     */
     public function reactivateEmployee(Request $request){
         $employeeId = $request->input('id');
         $message = '';
@@ -737,6 +752,12 @@ class ApiController extends Controller
         ]);
     }
 
+    /**
+     * BU Transfer API (Employee is assigned to a different BU)
+     *
+     * @param Request $request
+     * @return void
+     */
     public function transferEmployee (Request $request) {
         $employeeId = $request->input('id');
         $message = '';
@@ -777,6 +798,12 @@ class ApiController extends Controller
         ]);
     }
 
+    /**
+     * Employee reinstate api (employee is reinstated back to Dev J)
+     *
+     * @param Request $request
+     * @return void
+     */
     public function reinstateEmployee (Request $request) {
         $employeeId = $request->input('id');
         $message = '';

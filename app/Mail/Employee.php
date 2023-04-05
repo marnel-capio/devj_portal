@@ -3,11 +3,8 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use PharIo\Manifest\Email;
-use Symfony\Component\Mailer\Envelope;
 
 class Employee extends Mailable
 {
@@ -30,8 +27,6 @@ class Employee extends Mailable
     const MAIL_13 = '【DEV J PORTAL】Surrender of Assets';
     const MAIL_14 = '【DEV J PORTAL】Account Reactivation';
 
-    
-
     /**
      * Create a new message instance.
      *
@@ -42,7 +37,6 @@ class Employee extends Mailable
         $this->mailData = $mailData;
         $this->mailType = $mailType;
     }
-
 
     /**
      * Build the message.

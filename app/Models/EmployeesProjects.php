@@ -15,6 +15,12 @@ class EmployeesProjects extends Model
     const UPDATED_AT = 'update_time';
     const CREATED_AT = 'create_time';
 
+    /**
+     * Retrieve projects of an employee
+     *
+     * @param [type] $id
+     * @return void
+     */
     static function getProjectsByEmployee($id){
         
         return self::selectRaw('employees_projects.start_date
@@ -37,6 +43,13 @@ class EmployeesProjects extends Model
                     
     }
 
+    /**
+     * Check if an employee is a current member of a project
+     *
+     * @param [type] $projectId
+     * @param [type] $employeeId
+     * @return void
+     */
     static function checkIfProjectIsOngoing($projectId, $employeeId){
         $detail = self::where('project_id', $projectId)
                         ->where('employee_id', $employeeId)

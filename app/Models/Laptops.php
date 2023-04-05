@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class Laptops extends Model
 {
@@ -24,6 +23,12 @@ class Laptops extends Model
         6 => 'laptop_ram',
     ];
 
+    /**
+     * Get selectable laptop per employee
+     *
+     * @param [type] $employeeId
+     * @return void
+     */
     static function getLaptopDropdown($employeeId){
 
         return self::select('id', 'tag_number', )
@@ -44,6 +49,12 @@ class Laptops extends Model
                 
     }
 
+    /**
+     * Get employee-laptop details of the current owner of a laptop
+     *
+     * @param [type] $id
+     * @return void
+     */
     static function getLaptopEmployeeDetails($id){
         return self::where('status', 1)
                     ->where('id', $id)

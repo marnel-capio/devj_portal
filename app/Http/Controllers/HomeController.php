@@ -3,16 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Employees;
 use App\Models\Softwares;
 use App\Models\EmployeesLaptops;
 use App\Models\Laptops;
-use PhpParser\Node\Stmt\Return_;
 
 class HomeController extends Controller
-{
+{   
+    /**
+     * Displays home page
+     *
+     * @return void
+     */
     public function index(){
     	$employee_request = [];
     	if (Auth::user()->roles != 3) {
@@ -28,6 +31,11 @@ class HomeController extends Controller
                             ]);
     }
 
+    /**
+     * Get all employee requests
+     *
+     * @return void
+     */
     private function getEmployeeRequest() {
     	$employee = Employees::select('id','first_name','last_name','email','position','approved_status')
                     ->where(function($query) {
