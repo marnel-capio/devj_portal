@@ -62,7 +62,7 @@ $(document).ready(function () {
         let id = $(this).data('id');
         let serverName = $(this).data('server_name');
 
-        if ( confirm(`Delete ${serverName}?`) ) {
+        if ( confirm(`Are you sure you want to delete ${serverName}?`) ) {
             //delete server
             console.log('delete server');
             $.ajax({
