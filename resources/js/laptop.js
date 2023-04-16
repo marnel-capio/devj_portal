@@ -43,7 +43,6 @@ $(document).ready(function(){
             dataType: "json",
             encode: true
         }).done(function(data){
-            // console.log(data);
             if(data.success){
                 laptopList.clear().draw();
 
@@ -66,24 +65,25 @@ $(document).ready(function(){
         });
     }
 
+    function setFormDataToJson (formSelector) {
+        const formData = formSelector.serializeArray(); 
+        const jsonData = {};
+        formData.forEach(function(data){
+            jsonData[data.name] = data.value;
+        });
+        return jsonData;
+    }
+    
+
     $("#edit-form").submit(function(e){
         $("#el-spinner").show();
         $("#el-submit-btn").prop('disabled', true);
 
-        var formData = $("#edit-form").serializeArray();
-        var arrData = [];
-        formData.forEach(function(data){
-            arrData[data['name']] = data['value'];
-        });
+        const jsonData = setFormDataToJson($(this));
 
         if($("#edit-form input[name=status").length){
-            arrData['status'] = $("#edit-form input[name=status").is(':checked') ? 1 : 0;
+            jsonData.status = $("#edit-form input[name=status").is(':checked') ? 1 : 0;
         }
-
-        var jsonData = JSON.stringify(Object.assign({}, arrData));
-        jsonData = JSON.parse(jsonData);
-
-        // console.log(jsonData);
         
         $.ajax({
             type: "POST",
@@ -130,18 +130,12 @@ $(document).ready(function(){
     $("#update-linkage-form").submit(function(e){
         $("#ul-submit-btn").prop('disabled', true);
         $("#link-update-spinner").show();
-        var formData = $("#update-linkage-form").serializeArray();
-        var arrData = [];
-        formData.forEach(function(data){
-            arrData[data['name']] = data['value'];
-        });
 
-        arrData['brought_home_flag'] = $("#ul-brought-home").is(':checked') ? 1 : 0;
-        arrData['vpn_flag'] = $("#ul-vpn").is(':checked') ? 1 : 0;
-        arrData['surrender_flag'] = $("#ul-surrender").is(':checked') ? 1 : 0;
+        const jsonData = setFormDataToJson($(this)); //try using this
 
-        var jsonData = JSON.stringify(Object.assign({}, arrData));
-        jsonData = JSON.parse(jsonData);
+        jsonData.brought_home_flag = $("#ul-brought-home").is(':checked') ? 1 : 0;
+        jsonData.vpn_flag = $("#ul-vpn").is(':checked') ? 1 : 0;
+        jsonData.surrender_flag = $("#ul-surrender").is(':checked') ? 1 : 0;
         
         $.ajax({
             type: "POST",
@@ -177,17 +171,10 @@ $(document).ready(function(){
     $("#link-form").submit(function(e){
         $("#ll-submit-btn").prop('disabled', true);
         $("#link-update-spinner").show();
-        var formData = $("#link-form").serializeArray();
-        var arrData = [];
-        formData.forEach(function(data){
-            arrData[data['name']] = data['value'];
-        });
 
-        arrData['brought_home_flag'] = $("#ll-brought-home").is(':checked') ? 1 : 0;
-        arrData['vpn_flag'] = $("#ll-vpn").is(':checked') ? 1 : 0;
-
-        var jsonData = JSON.stringify(Object.assign({}, arrData));
-        jsonData = JSON.parse(jsonData);
+        const jsonData = setFormDataToJson($(this)); //try using this
+        jsonData.brought_home_flag = $("#ll-brought-home").is(':checked') ? 1 : 0;
+        jsonData.vpn_flag = $("#ll-vpn").is(':checked') ? 1 : 0;
         
         $.ajax({
             type: "POST",
