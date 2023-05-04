@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BUTransfer;
 use App\Http\Requests\ChangePassword;
 use App\Http\Requests\LaptopsRequest;
 use App\Http\Requests\LinkLaptop;
@@ -756,8 +757,10 @@ class ApiController extends Controller
      * @param Request $request
      * @return void
      */
-    public function transferEmployee (Request $request) {
+    public function transferEmployee (BUTransfer $request) {
+        $request->validated();
         $employeeId = $request->input('id');
+        $selectedBUString = config('constants.BU_LIST.' .$request->input('bu_transfer_assignment'));
         $message = '';
         $success = false;
 
@@ -784,7 +787,7 @@ class ApiController extends Controller
                                 'approved_by' => Auth::user()->id,
                             ]);
                 
-                Logs::createLog('Employee', "Assigned {$employee->first_name} {$employee->last_name} to a different BU ({$request->input('bu_transfer_assignment')})");
+                Logs::createLog('Employee', "Assigned {$employee->first_name} {$employee->last_name} to a different BU ({$selectedBUString})");
 
                 session(['success' => $success, 'message'=> 'Account was successfully updated.']);
             }

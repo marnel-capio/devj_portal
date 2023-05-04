@@ -89,7 +89,7 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithEvent
         return [
             date("Y-m-d",strtotime($employee->update_time)),
             $employee->last_name.", ". $employee->first_name." (". $employee->middle_name.")",
-            $employee->bu_transfer_flag ? $employee->bu_transfer_assignment : "",
+            $employee->bu_transfer_flag ? config('constants.BU_LIST.' .$employee->bu_transfer_assignment) : "",
             $employee->cellphone_number,
             $employee->other_contact_info,
             $employee->current_address_street. ", ". $employee->current_address_city. ", ". $employee->current_address_province . " " . $employee->current_address_postalcode,
