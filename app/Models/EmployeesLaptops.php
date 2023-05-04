@@ -82,6 +82,7 @@ class EmployeesLaptops extends Model
      */
     static function getLaptopHistory($id){
         return self::selectRaw('
+                                employees.id  AS employee_id,
                                 employees_laptops.id,
                                 employees_laptops.surrender_flag,
                                 CONCAT(employees.last_name, ", ", employees.first_name) AS employee_name,

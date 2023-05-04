@@ -421,8 +421,9 @@
                 <tbody class="">
                     @if(!empty($history))
                         @foreach ($history as $data)
+                        <?php $id = $data["employee_id"]; ?>
                             <tr>
-                                <td id="name-col">{{ $data['employee_name'] }}</td>
+                                <td id="name-col"><a href='{!! url("/employees/$id"); !!}'>{{ $data['employee_name'] }}</a></td>
                                 <td id="vpn-col">{{ $data['vpn_flag'] }}</td>
                                 <td id="bhf-col">{{ $data['brought_home_flag'] }}</td>
                                 <td id="remarks-col">{{ $data['remarks'] }}</td>
@@ -473,8 +474,9 @@
                 </thead>
                 <tbody class="">
                     @foreach ($linkageRequest as $request)
+                        <?php $id = $request["employee_id"]; ?>
                         <tr>
-                            <td>{{ $request['employee_name'] }}</td>
+                            <td><a href='{!! url("/employees/$id"); !!}'>{{ $request['employee_name'] }}</a></td>
                             <td>{{ $request['vpn_flag'] }}</td>
                             <td>{{ $request['brought_home_flag'] }}</td>
                             @if (!empty($linkageData))
