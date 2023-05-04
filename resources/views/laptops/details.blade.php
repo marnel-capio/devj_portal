@@ -41,7 +41,7 @@
                                     <div class="group-category p-3 rounded-3">
                                         <div class="row mb-2 ps-5 pe-3">
                                             <div class="col-6 g-3 form-floating">
-                                               <input type="text" name="tag_number" class="form-control" id="tag-number" placeholder="Tag Number" value="{{ $detail->tag_number }}" disabled>
+                                               <input type="text" name="tag_number" class="form-control" id="tag-number" placeholder="Tag Number" value="{{ $detail->tag_number }}" readonly="">
                                                <label for="tag-number" class="text-center">Tag Number</label>
                                             </div>
                                             @if (empty($linkageData))
@@ -342,7 +342,7 @@
                                                 <select name="assignee" class="form-select" id="assigneeList" required>
                                                     <option value=""></option>
                                             @else
-                                                <select name="assignee" class="form-select" id="assigneeList" disabled>
+                                                <select name="assignee" class="form-select" id="assigneeList" readonly>
                                             @endif
                                                     @foreach ( $employeeDropdown as $employee )
                                                         <option value="{{ $employee['id'] }}">{{ $employee['employee_name'] }}</option>
