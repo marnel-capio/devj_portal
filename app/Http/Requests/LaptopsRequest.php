@@ -79,7 +79,7 @@ class LaptopsRequest extends FormRequest
             'laptop_model' => 'required',
             'laptop_cpu' => 'required',
             'laptop_clock_speed' => 'required|numeric|min:0|max:99.99',
-            'laptop_ram' => 'required|integer|min:0|max:256',
+            'laptop_ram' => 'required|integer|min:0|max:255',
             'remarks' => 'max:1024',
             'linkage.remarks' => 'max:1024',
         ];
