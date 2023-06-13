@@ -115,7 +115,7 @@
 	{{-- This section is for Software list --}}
 	<div class="row-req-table row group-category-home p-2"> 
 		<div class="col table-avoid-overflow">
-	  		<h3 class="mb-4"> Software Request </h3>
+			<h3 class="mb-4"> Software Request </h3>
 			<table id="software-request" class="table table-striped request-table" >
 				<thead>
 					<tr>
@@ -141,7 +141,7 @@
 	{{-- This section is for Project Link list --}}
 	<div class="row-req-table row group-category-home p-2"> 
 		<div class="col table-avoid-overflow">
-	  		<h3 class="mb-4"> Project Link Request </h3>
+			<h3 class="mb-4"> Project Link Request </h3>
 			<table id="project-link-request" class="table table-striped request-table" >
 				<thead>
 					<tr>
@@ -158,14 +158,18 @@
 							<td>{{ $projectlink['project_name'] }}</td>
 							<td>{{ $projectlink['linked_employee'] }}</td>
 							<td>{{date("Y-m-d", strtotime($projectlink['start_date']) )}}</td>
-							<td>{{date("Y-m-d", strtotime($projectlink['end_date']) )}}</td>
+							@if(strlen( $projectlink['end_date'] ) !== 0)
+								<td>{{date("Y-m-d", strtotime($projectlink['end_date']) )}}</td>
+							@else
+								<td>{{'-'}}</td>
+							@endif
 							<td><a href="{{ route('projects.details', ['id' => $projectlink['project_id']]) ."#link_request_tbl" }}"><i class="bi bi-eye"></i>View</a></td>
 						</tr>
 					@endforeach
 				</tbody>
 			</table>
 		</div>
-	</div>		
+	</div>
 </div>
 
 
