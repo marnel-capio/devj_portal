@@ -252,7 +252,7 @@ $(document).ready(function(){
     $(".approve-link-btn").click(function(){
         var linkId = $(this).data('linkid');
         $("#approve-link-in").val(linkId);
-    })
+    });
 
     setDisplayOfLinkage();
     $("#link_to_self").click(function (e) {

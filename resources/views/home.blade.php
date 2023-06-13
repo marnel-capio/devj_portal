@@ -138,6 +138,7 @@
 			</table>
 		</div>
 	</div>	
+	{{-- This section is for Project Link list --}}
 	<div class="row-req-table row group-category-home p-2"> 
 		<div class="col table-avoid-overflow">
 	  		<h3 class="mb-4"> Project Link Request </h3>
@@ -158,7 +159,7 @@
 							<td>{{ $projectlink['linked_employee'] }}</td>
 							<td>{{date("Y-m-d", strtotime($projectlink['start_date']) )}}</td>
 							<td>{{date("Y-m-d", strtotime($projectlink['end_date']) )}}</td>
-							<td><a href="{{ route('projects.request', ['id' => $projectlink['id']]) }}"><i class="bi bi-eye"></i>View</a></td>
+							<td><a href="{{ route('projects.details', ['id' => $projectlink['project_id']]) ."#link_request_tbl" }}"><i class="bi bi-eye"></i>View</a></td>
 						</tr>
 					@endforeach
 				</tbody>

@@ -460,6 +460,31 @@ $(document).ready( function () {
 			console.log('error');
 		});	  
     }
+	
+	// Approve button for Approve Project Link Request
+    $(".approve-link-btn").click(function(){
+        var linkId = $(this).data('linkid');
+        $("#approve-link-in").val(linkId);
+    });
+
+	// Reject button for Reject Project Link Request
+    $(".reject-link-btn").click(function(){
+        var linkId = $(this).data('linkid');
+        $("#reject-link-in").val(linkId);
+    });
+
+    // Reject modal
+	$("#reject-request-form").submit(function(){
+		if($("#reject-reason").val() == ""){
+			$("#reject-reason-error").html('The reason field is required.').addClass("text-danger text-start");
+			return false;
+		}else if($("#reject-reason").val().length > 1024){
+			$("#reject-reason-error").html('The reason must not be greater than 1024 characters.').addClass("text-danger text-start");
+			return false;
+		}else {
+			$('#reject-sub').prop('disabled', true);
+		}
+	});
 
 
 });

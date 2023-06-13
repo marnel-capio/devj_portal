@@ -31,17 +31,17 @@
                 <h4 class="text-start">Project Details</h4>
                 <div class="row mb-2 ps-5 pe-3">
                     <div class="col-md-6 g-3 form-floating">
-                       <input type="text" name="name" class="form-control" id="name" placeholder="Project Name" value="{{ $projectData->name }}">
+                       <input type="text" name="name" class="form-control" id="name" placeholder="Project Name" value="{{ $projectData->name }}" disabled>
                        <label for="name" class="text-center">Project Name</label>
                     </div>
                 </div>
                 <div class="row mb-2 ps-5 pe-3">
                     <div class="col-md-3 col-6 g-3 form-floating">
-                        <input type="date" name="start_date" class="form-control" id="start_date" placeholder="Start Date" value="{{ date('Y-m-d', strtotime($projectData->start_date)) }}" pattern="\d{4}-\d{2}-\d{2}">
+                        <input type="date" name="start_date" class="form-control" id="start_date" placeholder="Start Date" value="{{ date('Y-m-d', strtotime($projectData->start_date)) }}" pattern="\d{4}-\d{2}-\d{2}" disabled>
                         <label for="start_date" class="text-center">Start Date</label>
                      </div>
                     <div class="col-md-3 col-6 g-3 form-floating">
-                        <input type="date" name="end_date" class="form-control" id="end_date" placeholder="End Date" value="{{ !empty($projectData->end_date) ? date('Y-m-d', strtotime($projectData->end_date)) : "" }}" pattern="\d{4}-\d{2}-\d{2}">
+                        <input type="date" name="end_date" class="form-control" id="end_date" placeholder="End Date" value="{{ !empty($projectData->end_date) ? date('Y-m-d', strtotime($projectData->end_date)) : "" }}" pattern="\d{4}-\d{2}-\d{2}" disabled>
                         <label for="end_date" class="text-center">End Date</label>
                      </div>
                 </div>
@@ -50,7 +50,7 @@
                 </div>
                 <div class="row mb-2 ps-5 pe-3">
                     <div class="col-md-6 g-3">
-                        <textarea class="form-control" name="remarks"  rows="3" id="remarks">{{ $projectData->remarks }}</textarea>
+                        <textarea class="form-control" name="remarks"  rows="3" id="remarks" disabled>{{ $projectData->remarks }}</textarea>
                     </div>
                 </div>
             </div>
@@ -181,7 +181,7 @@
                                 <td>{{ $member['membership_date'] }}</td>
                                 <td class="text-center">
                                     {{-- Check if update button should be displayed --}}
-                                    @if ($member['isActive'])
+                                    @if ($member['isActive'] and ((auth()->user()->roles == config('constants.MANAGER_ROLE_VALUE')) or auth()->user()->id == $member['employee_id']))
                                         <button class="btn btn-link btn-sm text-success employee_linkage_update_btn" 
                                             data-bs-target="#update_employee_linkage_modal" 
                                             data-bs-toggle="modal" 
@@ -279,7 +279,11 @@
     <div class="group-category mb-4 p-3 rounded-3" id="requests">
         <h4>Employee Linkage Requests</h4>
         <div class="ms-3">
-            @if(!empty(session('elr_alert')))
+            @if(!empty(session('ela_alert')))
+                <div class="alert alert-success mt-2" role="alert">
+                    {{session()->pull('ela_alert')}}
+                </div>
+            @elseif(!empty(session('elr_alert')))
                 <div class="alert alert-success mt-2" role="alert">
                     {{session()->pull('elr_alert')}}
                 </div>
@@ -299,11 +303,28 @@
                         @foreach ($employeeLinkageRequests as $member)
                             <tr>
                                 {{-- update para sa linkage update --}}
-                                <td><a href="{{ route('employees.details', ['id' => $member['employee_id']]) }}">{{ $member['table_name'] }}</a></td>
+                                <td>
+                                    <a href="{{ route('employees.details', ['id' => $member['employee_id']]) }}">
+                                        {{ $member['table_name'] }}
+                                    </a>
+                                </td>
                                 <td>{{ config('constants.PROJECT_ROLES.' .$member['project_role_type']) }}</td>
                                 <td>{{ $member['onsite_flag'] ? 'Yes' : 'No' }}</td>
                                 <td>{{ $member['membership_date'] }}</td>
-                                <td></td>
+                                
+                                @if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE') )
+                                    <td>
+                                        <button class="btn btn-link btn-sm text-decoration-none reject-link-btn" data-bs-target="#rejectLinkageRequestModal" data-bs-toggle="modal" data-linkid="{{ $member['id'] }}">
+                                            <span class="text-danger">Reject</span>
+                                        </button>
+                                        /
+                                        <button class="btn btn-link btn-sm text-decoration-none approve-link-btn" form="link-request-form" data-linkid="{{ $member['id'] }}">
+                                            <span class="text-success">Approve</span>
+                                        </button>
+                                    </td>
+                                @else
+                                    <td></td>
+                                @endif
                             </tr>
                         @endforeach
                     @endif
@@ -311,6 +332,40 @@
             </table>
         </div>
     </div>
+    @endif
+
+    @if (Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE') )
+        <div class="modal fade" tabindex="-1" id="rejectLinkageRequestModal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            Reject Laptop Link Request
+                        </h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="p-2">
+                            <form action="{{ route('projects.rejectLinkage') }}" method="POST" id="reject-request-form">
+                                @csrf
+                                <input type="text" name="id" value="" id="reject-link-in" hidden>
+                                <div class="mb-2">
+                                    <textarea class="form-control" name="reason" placeholder="Reason" rows="5" id="reject-reason" required></textarea>
+                                </div>
+                                <p id="reject-reason-error"></p>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button class="btn btn-danger" id="reject-sub" type="submit" form="reject-request-form">Reject</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <form action="{{ route('projects.storeLinkage') }}" id="link-request-form" method="POST">
+            @csrf
+            <input type="text" hidden name="id" value="" id="approve-link-in">
+        </form>
     @endif
 
     <div class="group-category mb-4 p-3 rounded-3">
@@ -371,14 +426,13 @@
             @endif
         </div>
         <div class="ms-3">
-            @if(!empty(session('linked_soft_alert')))
+            @if(!empty(session('ul_alert')))
                 <div class="alert alert-success mt-2" role="alert">
-                    {{session()->pull('linked_soft_alert')}}
+                    {{session()->pull('ul_alert')}}
                 </div>
-            @endif
-            @if(!empty(session('remove_soft_alert')))
-                <div class="alert alert-danger mt-2" role="alert">
-                    {{session()->pull('linked_soft_alert')}}
+            @elseif(!empty(session('ll_alert')))
+                <div class="alert alert-success mt-2" role="alert">
+                    {{session()->pull('ll_alert')}}
                 </div>
             @endif
             <table class="table table-bordered border-secondary mt-3 tbl-th-centered" id="linked_softwares_tbl">
