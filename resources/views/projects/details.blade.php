@@ -373,7 +373,7 @@
             <div>
                 <h4 class="text-start d-inline-block">Linked Softwares</h4>
             </div>
-            @if (auth()->user()->roles == config('constants.MANAGER_ROLE_VALUE'))
+            <!-- if (auth()->user()->roles == config('constants.MANAGER_ROLE_VALUE')) -->
             <button class="btn btn-primary" data-bs-target="#link_software_modal" data-bs-toggle="modal">Add</button>
             <div class="modal modal fade" tabindex='-1' id="link_software_modal">
                 <div class="modal-dialog modal-dialog-centered">
@@ -423,7 +423,7 @@
                     </div>
                 </div>
             </div>
-            @endif
+             <!-- endif -->
         </div>
         <div class="ms-3">
             @if(!empty(session('ul_alert')))
@@ -450,7 +450,7 @@
                     @if ($linkedSoftwares)
                         @foreach ($linkedSoftwares as $software)
                             <tr>
-                                <td><a href="{{ route('softwares.details', ['id' => $software['id']]) }}">{{ $software['software_name'] }}</a></td>
+                                <td><a href="{{ route('softwares.details', ['id' => $software['software_id']]) }}">{{ $software['software_name'] }}</a></td>
                                 <td>{{ $software['software_type'] }}</td>
                                 <td>{{ $software['linkageRemarks'] }}</td>
                                 @if (auth()->user()->roles == config('constants.MANAGER_ROLE_VALUE'))
