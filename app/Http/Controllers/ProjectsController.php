@@ -216,6 +216,7 @@ class ProjectsController extends Controller
         return Redirect::back();
     }
 
+    // Function for approving linkage requests: New Linkage or Linkage Update
     public function storeLinkage(Request $request){
         $id = $request->input('id');
 
@@ -243,7 +244,7 @@ class ProjectsController extends Controller
             $requestor = Employees::where('id', $projectLinkDetails->updated_by)->first();
         }
 
-        // 5. Verify if status id Pending for approval
+        // 5. Verify if status is Pending for approval
         if($projectLinkDetails->approved_status == config('constants.APPROVED_STATUS_PENDING')){
 
             // 5.1.1 Update the data to: Approved
@@ -267,7 +268,7 @@ class ProjectsController extends Controller
                 'assignee' => $recipient->first_name .' ' .$recipient->last_name,
                 'project_name' => $projectData->name,
             ];
-            Mail::to($recipient->email)->send(new MailProjects($mailData, config('constants.MAIL_PROJECT_EMPLOYEE_LINKAGE_UPDATE_BY_MANAGER')));
+            Mail::to($recipient->email)->send(new MailProjects($mailData, config('constants.MAIL_PROJECT_DETAIL_UPDATE_APPROVAL')));
 
             // 5.1.4 Alert message to be displayed to Request table in Project view
             $alert = 'Successfully approved the project linkage.';
@@ -297,7 +298,7 @@ class ProjectsController extends Controller
                 'project_name' => $projectData->name,
             ];
 
-            Mail::to($recipient->email)->send(new MailProjects($mailData, config('constants.MAIL_PROJECT_EMPLOYEE_LINKAGE_UPDATE_BY_MANAGER')));
+            Mail::to($recipient->email)->send(new MailProjects($mailData, config('constants.MAIL_PROJECT_NEW_LINKAGE_BY_NON_MANAGER_APPROVAL')));
 
             // 5.2.4 Alert message to be displayed to Request table in Project view
             $alert = 'Successfully approved the project linkage detail update.';
@@ -337,7 +338,7 @@ class ProjectsController extends Controller
             $requestor = Employees::where('id', $projectLinkDetails->updated_by)->first();
         }
 
-        // 5. Verify if status id Pending for approval
+        // 5. Verify if status is Pending for approval
         if($projectLinkDetails->approved_status == config('constants.APPROVED_STATUS_PENDING')){
 
             // 5.1.1 Update the data to: Reject
@@ -364,7 +365,7 @@ class ProjectsController extends Controller
                 'project_name' => $projectData->name,
             ];
 
-            Mail::to($recipient->email)->send(new MailProjects($mailData, config('constants.MAIL_PROJECT_EMPLOYEE_LINKAGE_UPDATE_BY_MANAGER')));
+            Mail::to($recipient->email)->send(new MailProjects($mailData, config('constants.MAIL_PROJECT_DETAIL_UPDATE_REJECTION')));
 
             // 5.1.4 Alert message to be displayed to Request table in Project view
             $alert = 'Rejected project linkage.';
@@ -394,10 +395,10 @@ class ProjectsController extends Controller
                 'project_name' => $projectData->name,
             ];
 
-            Mail::to($recipient->email)->send(new MailProjects($mailData, config('constants.MAIL_PROJECT_EMPLOYEE_LINKAGE_UPDATE_BY_MANAGER')));
+            Mail::to($recipient->email)->send(new MailProjects($mailData, config('constants.MAIL_PROJECT_NEW_LINKAGE_BY_NON_MANAGER_REJECTION')));
             
             // 5.2.4 Alert message to be displayed to Request table in Project view
-            $alert = 'Rejected the project linkage detail update.';    
+            $alert = 'Rejected the detail update of project linkage.';    
         }
 
         // 6. Save alert message to session
