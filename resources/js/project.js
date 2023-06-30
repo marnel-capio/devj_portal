@@ -60,7 +60,8 @@ $(document).ready( function () {
 	});
 
     
-    //link project submission
+    // Link Project to Employee submission
+
     $("#pj_submit_btn").click( function (e) {
         $("#link_update_spinner").show();
 
@@ -119,8 +120,24 @@ $(document).ready( function () {
 				updateProjectMemberTable(data);
 			}
 
-		}).fail(function(){
-			console.log('error');
+		}).fail(function (ddata, exception) {
+			var msg = '';
+			if (ddata.status === 0) {
+				msg = 'Not connect.\n Verify Network.';
+			} else if (ddata.status == 404) {
+				msg = 'Requested page not found. [404]';
+			} else if (ddata.status == 500) {
+				msg = 'Internal Server Error [500].';
+			} else if (exception === 'parsererror') {
+				msg = 'Requested JSON parse failed.';
+			} else if (exception === 'timeout') {
+				msg = 'Time out error.';
+			} else if (exception === 'abort') {
+				msg = 'Ajax request aborted.';
+			} else {
+				msg = 'Uncaught Error.\n' + ddata.responseText;
+			}
+			console.log('error: ' + msg);
 		});
 
         e.preventDefault();
@@ -255,8 +272,24 @@ $(document).ready( function () {
 				updateProjectMemberTable(data);
 			}
 
-		}).fail(function(){
-			console.log('error');
+		}).fail(function (ddata, exception) {
+			var msg = '';
+			if (ddata.status === 0) {
+				msg = 'Not connect.\n Verify Network.';
+			} else if (ddata.status == 404) {
+				msg = 'Requested page not found. [404]';
+			} else if (ddata.status == 500) {
+				msg = 'Internal Server Error [500].';
+			} else if (exception === 'parsererror') {
+				msg = 'Requested JSON parse failed.';
+			} else if (exception === 'timeout') {
+				msg = 'Time out error.';
+			} else if (exception === 'abort') {
+				msg = 'Ajax request aborted.';
+			} else {
+				msg = 'Uncaught Error.\n' + ddata.responseText;
+			}
+			console.log('error: ' + msg);
 		});
 
 		e.preventDefault();

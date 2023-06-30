@@ -23,7 +23,7 @@ There is a new request to link an employee to a project.<br>
 Request summary:<br>
 &nbsp;&nbsp;Project name: {{ $mailData['project_name'] }}<br>
 &nbsp;&nbsp;Requestor: {{ $mailData['requestor'] }}<br>
-&nbsp;&nbsp;Member: {{ $mailData['assignee'] }}<br>
+&nbsp;&nbsp;Member: {{ $mailData['member'] }}<br>
 <br>
 Check the request <a href="{{ url($mailData['link']) }}">here</a>.
 
@@ -46,7 +46,7 @@ There is a new request to update the details of a project linkage.<br>
 Request summary:<br>
 &nbsp;&nbsp;Project name: {{ $mailData['project_name'] }}<br>
 &nbsp;&nbsp;Requestor: {{ $mailData['requestor'] }}<br>
-&nbsp;&nbsp;Member: {{ $mailData['assignee'] }}<br>
+&nbsp;&nbsp;Member: {{ $mailData['member'] }}<br>
 <br>
 Check the request <a href="{{ url($mailData['link']) }}">here</a>.
 
