@@ -82,6 +82,7 @@
                                 <form action="#" id="link_employee_form">
                                     @csrf
                                     <input type="text" name="project_id" value="{{ $projectData->id }}" hidden>
+                                    <input type="text" name="employee_role" value="{{ Auth::user()->roles }}" hidden>
                                     <div class="row mb-2">
                                         <div class="col-12 g-3 form-floating">
                                         @if (in_array(Auth::user()->roles, [config('constants.ADMIN_ROLE_VALUE'), config('constants.MANAGER_ROLE_VALUE')]))
@@ -221,6 +222,8 @@
                         <form action="#" id="update_employee_linkage_form">
                             @csrf
                             <input type="text" name="linkage_id" value="" hidden>
+                            <input type="text" name="employee_id" value="{{Auth::user()->id}}" hidden>
+                            <input type="text" name="employee_role" value="{{Auth::user()->roles}}" hidden>
                             <div class="row mb-2">
                                 <div class="col-6 g-3 form-floating">
                                     <input type="date" name="project_start" class="form-control" id="update_link_project_start" min="{{ date('Y-m-d', strtotime($projectData->start_date)) }}" max="{{ !empty($projectData->end_date) ? date('Y-m-d', strtotime($projectData->end_date)) : "" }}" required>

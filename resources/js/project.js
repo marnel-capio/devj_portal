@@ -8,6 +8,7 @@ const PROJECT_ROLES = [
 						'Programmer',
 						'QA',
 					];
+const EMPLOYEE_ROLE_MANAGER = 2;
 
 $(document).ready( function () {
 
@@ -74,7 +75,10 @@ $(document).ready( function () {
 			project_role: $("#link_role > option:selected").val(),
 			project_onsite: $("#link_onsite").is(':checked') ? 1 : 0,
 			remarks: $("#link_remarks").val(),
-			is_employee: true
+			is_employee: true,
+
+			// Role of Logged-in User
+			employee_role: $("#link_employee_form > input[name=employee_role").val(),
 		};
 
 		$.ajax({
@@ -90,7 +94,7 @@ $(document).ready( function () {
 			if(!data.success){
 				$("#le_success_msg").empty();
 
-                //remove error messages
+                // Remove error messages
                 $("#link_employee_form").find("[name]").each( function () {
                     if ($('#link_employee_form  #link_' + $(this).attr('name') + '_error').length > 0 ) {
                         $('#link_employee_form  #link_' + $(this).attr('name') + '_error').empty();
@@ -103,9 +107,9 @@ $(document).ready( function () {
                 }
 
 			}else{
-                //reset form
+                // Reset form
 				$("#link_employee_form").trigger('reset');
-                //remove error messages
+                // Remove error messages
                 $("#link_employee_form").find("[name]").each( function () {
                     if ($('#link_employee_form #link_' + $(this).attr('name') + '_error').length > 0 ) {
                         $('#link_employee_form #link_' + $(this).attr('name') + '_error').empty();
@@ -116,8 +120,8 @@ $(document).ready( function () {
 				$("#member_list > option[value=" + postData.employee_id + "]").remove();
 				$("#le_success_msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;' + data.message + '.').addClass("text-success mb-2 text-start");
 
-				//update projects table
-				updateProjectMemberTable(data);
+				// Update the Project Members' table
+				updateProjectMemberTable(data, postData.employee_id, postData.employee_role);
 			}
 
 		}).fail(function (ddata, exception) {
@@ -146,7 +150,7 @@ $(document).ready( function () {
 	$('#link_employee_modal').on('hidden.bs.modal', function(){
 		$("#le_success_msg").empty();
 
-		//remove error messages
+		// Remove error messages
 		$("#link_employee_form").find("[name]").each( function () {
 			if ($('#link_employee_form  #link_' + $(this).attr('name') + '_error').length > 0 ) {
 				$('#link_employee_form  #link_' + $(this).attr('name') + '_error').empty();
@@ -154,8 +158,8 @@ $(document).ready( function () {
 		});
 	});
 
-	function updateProjectMemberTable (data) {
-		//update projects table
+	function updateProjectMemberTable (data, employee_id, employee_role) {
+		// Clear and Reload Projects table to update
 		pj_table.clear().draw();
 		let url, newRow, modalData;
 		data.update.forEach(function(memberData){
@@ -173,12 +177,14 @@ $(document).ready( function () {
 				'<a href="' + url + '" class="text-decoration-none">' + memberData.member_name + '</a>',
 				PROJECT_ROLES[Number(memberData.project_role_type) - 1],
 				memberData.onsite_flag ? 'Yes' : 'No',
-				memberData.membership_date,
+				memberData.membership_date
 			];
 
-			if (memberData.isActive) {
-				//add update button
-				newRow.push('<button class="btn btn-link btn-sm text-success employee_linkage_update_btn" data-bs-target="#update_employee_linkage_modal" data-bs-toggle="modal" data-modaldata=\'' + JSON.stringify(modalData) +'\'>Update : '+ memberData.project_role_type +'</button>');
+			if (memberData.isActive && (employee_id == memberData.employee_id || employee_role == EMPLOYEE_ROLE_MANAGER)) {
+				// Add update button
+				newRow.push('<button class="btn btn-link btn-sm text-success employee_linkage_update_btn" \
+									 data-bs-target="#update_employee_linkage_modal" data-bs-toggle="modal" \
+									 data-modaldata=\'' + JSON.stringify(modalData) + '\'>Update</button>');
 			} else {
 				newRow.push('');
 			}
@@ -228,7 +234,11 @@ $(document).ready( function () {
 			project_role: $("#update_link_role > option:selected").val(),
 			project_onsite: $("#update_employee_linkage_form  input[name=onsite]").is(':checked') ? 1 : 0,
 			remarks: $("#update_link_remarks").val(),
-			is_employee_update: true
+			is_employee_update: true,
+
+			// ID and Role of Logged-in User
+			employee_id: $("#update_employee_linkage_form input[name=employee_id]").val(),
+			employee_role: $("#update_employee_linkage_form input[name=employee_role]").val(),
 		};
 
 		$.ajax({
@@ -244,7 +254,7 @@ $(document).ready( function () {
 			if(!data.success){
 				$("#ue_success_msg").empty();
 
-				//remove error messages
+				// Remove error messages
 				$("#update_employee_linkage_form").find("[name]").each( function () {
 					if ($('#update_employee_linkage_form #link_' + $(this).attr('name') + '_error').length > 0 ) {
 						$('#update_employee_linkage_form #link_' + $(this).attr('name') + '_error').empty();
@@ -257,9 +267,9 @@ $(document).ready( function () {
 				}
 
 			}else{
-				//reset form
+				// Reset form
 				$("#update_employee_linkage_form").trigger('reset');
-				//remove error messages
+				// Remove error messages
 				$("#update_employee_linkage_form").find("[name]").each( function () {
 					if ($('#link_employee_form #link_' + $(this).attr('name') + '_error').length > 0 ) {
 						$('#link_employee_form #link_' + $(this).attr('name') + '_error').empty();
@@ -268,8 +278,8 @@ $(document).ready( function () {
 
 				$("#ue_success_msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;' + data.message + '.').addClass("text-success mb-2 text-start");
 
-				//update projects table
-				updateProjectMemberTable(data);
+				// Update the Project Members' table
+				updateProjectMemberTable(data, postData.employee_id, postData.employee_role);
 			}
 
 		}).fail(function (ddata, exception) {
@@ -298,7 +308,7 @@ $(document).ready( function () {
 	$('#update_employee_linkage_modal').on('hidden.bs.modal', function(){
 		$("#ue_success_msg").empty();
 
-		//remove error messages
+		// Remove error messages
 		$("#update_employee_linkage_form").find("[name]").each( function () {
 			if ($('#update_employee_linkage_form > #link_' + $(this).attr('name') + '_error').length > 0 ) {
 				$('#update_employee_linkage_form > #link_' + $(this).attr('name') + '_error').empty();
@@ -330,7 +340,7 @@ $(document).ready( function () {
 			if(!data.success){
 				$("#ls_success_msg").empty();
 
-                //remove error messages
+                // Remove error messages
                 $("#link_software_form").find("[name]").each( function () {
                     if ($('#link_software_form #link_' + $(this).attr('name') + '_error').length > 0 ) {
                         $('#link_software_form #link_' + $(this).attr('name') + '_error').empty();
@@ -343,9 +353,9 @@ $(document).ready( function () {
                 }
 
 			}else{
-                //reset form
+                // Reset form
 				$("#link_software_form").trigger('reset');
-                //remove error messages
+                // Remove error messages
                 $("#link_software_form").find("[name]").each( function () {
                     if ($('#link_software_form #link_' + $(this).attr('name') + '_error').length > 0 ) {
                         $('#link_software_form #link_' + $(this).attr('name') + '_error').empty();
@@ -368,7 +378,7 @@ $(document).ready( function () {
 					];
 
 					if (data.isManager) {
-						//add action column
+						// Add action column
 						newRow.push('<button class="btn btn-link btn-sm text-danger software_linkage_remove_btn" form="remove_software_form" data-linkid="' + softwareData.id + '" data-softwarename="' + softwareData.software_name + '">Remove</button>');
 					}
 					
@@ -391,7 +401,7 @@ $(document).ready( function () {
 	$('#link_software_modal').on('hidden.bs.modal', function(){
 		$("#ls_success_msg").empty();
 
-		//remove error messages
+		// Remove error messages
 		$("#link_software_form").find("[name]").each( function () {
 			if ($('#link_software_form #link_' + $(this).attr('name') + '_error').length > 0 ) {
 				$('#link_software_form #link_' + $(this).attr('name') + '_error').empty();
@@ -414,7 +424,7 @@ $(document).ready( function () {
 	});
 
 	$("#proj_members_tbl").on('click', '.employee_linkage_update_btn', function () {
-		//render data on update modal
+		// Render data on update modal
 		let linkageData = $(this).data('modaldata');
 
 		$("#member_info").text('Member: ' + linkageData.member);
