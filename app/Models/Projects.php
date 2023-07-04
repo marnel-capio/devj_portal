@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use App\Mail\Employee;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -60,7 +61,7 @@ class Projects extends Model
                                 name,
                                 start_date,
                                 end_date,
-                                IF(end_date, "Finish", "On-Going") as status
+                                IF(end_date IS NOT NULL AND end_date<=CURRENT_DATE, "' . config("constants.PROJECT_STATUS_FINISH_TEXT") . '", "' . config("constants.PROJECT_STATUS_ONGOING_TEXT") . '") as status
                             ');
 
         if (!empty($keyword)) {
@@ -68,15 +69,20 @@ class Projects extends Model
         }
         
 
+        // To get projects for: Filter in Project List
         if(!empty($status))
         {
-            if($status == config('constants.PROJECT_STATUS_FILTER_ONGOING'))//status is on going
+            // Filter for: Status is On-Going
+            if($status == config('constants.PROJECT_STATUS_FILTER_ONGOING')) 
             {
-                $query = $query->whereNull('end_date');
+                $query = $query ->whereNull('end_date')
+                                ->orWhere('end_date', ">", Carbon::today());
             }
-            else if($status == config('constants.PROJECT_STATUS_FILTER_FINISH'))//status is finish
+            // Filter for: Status is Finished
+            else if($status == config('constants.PROJECT_STATUS_FILTER_FINISH'))
             {
-                $query = $query->whereNotNull('end_date');
+                $query = $query ->whereNotNull('end_date')
+                                ->whereDate('end_date', "<=", Carbon::today());
 
             }
 

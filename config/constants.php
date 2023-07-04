@@ -127,6 +127,6 @@ return [
     'PROJECT_STATUS_FILTER_FINISH' => 2,
 
     'PROJECT_STATUS_ONGOING_TEXT' => 'On-Going',
-    'PROJECT_STATUS_FINISH_TEXT' => 'Finish',
+    'PROJECT_STATUS_FINISH_TEXT' => 'Finished',
 
 ];

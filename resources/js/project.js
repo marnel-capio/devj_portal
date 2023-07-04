@@ -178,7 +178,7 @@ $(document).ready( function () {
 
 			if (memberData.isActive) {
 				//add update button
-				newRow.push('<button class="btn btn-link btn-sm text-success employee_linkage_update_btn" data-bs-target="#update_employee_linkage_modal" data-bs-toggle="modal" data-modaldata=\'' + JSON.stringify(modalData) +'\'>Update</button>');
+				newRow.push('<button class="btn btn-link btn-sm text-success employee_linkage_update_btn" data-bs-target="#update_employee_linkage_modal" data-bs-toggle="modal" data-modaldata=\'' + JSON.stringify(modalData) +'\'>Update : '+ memberData.project_role_type +'</button>');
 			} else {
 				newRow.push('');
 			}
@@ -445,7 +445,7 @@ $(document).ready( function () {
         filterProjectList();
     });
 
-    $("#soft-search-input").on("input",function(){
+    $("#proj-search-input").on("input",function(){
         filterProjectList();
     });
 
@@ -461,9 +461,10 @@ $(document).ready( function () {
                 }, 
 		}).done(function(data){
 			if(data.success){
+				alert("status: " + status + "\nkeyword: " + keyword);
 				project_list.clear().draw();
 
-				data.update.forEach(function(project){0
+				data.update.forEach(function(project){
 					//get only YYYY-MM-DD from date
 					let start_date ="";
 					let end_date ="";
