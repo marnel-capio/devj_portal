@@ -92,4 +92,16 @@ class Projects extends Model
 
     }
 
+    
+    static function getProjectOriginalData($id)
+    {
+        $projectOriginalData = self::select('name', 'start_date', 'end_date', 'remarks')
+            ->where('id', $id)->first();
+        
+        $projectOriginalData->start_date = Carbon::parse($projectOriginalData->start_date)->format('Y-m-d');
+        $projectOriginalData->end_date = Carbon::parse($projectOriginalData->end_date)->format('Y-m-d');
+
+        return $projectOriginalData;
+    }
+
 }
