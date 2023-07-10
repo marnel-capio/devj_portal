@@ -471,7 +471,6 @@ $(document).ready( function () {
                 }, 
 		}).done(function(data){
 			if(data.success){
-				alert("status: " + status + "\nkeyword: " + keyword);
 				project_list.clear().draw();
 
 				data.update.forEach(function(project){

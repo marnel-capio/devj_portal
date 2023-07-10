@@ -22,4 +22,9 @@ $(document).ready(function () {
 		"stateSave": true,
 		"pageLength": 10
 	});
+
+	$("#project-link-request").DataTable({
+		"stateSave": true,
+		"pageLength": 10
+	});
 });
