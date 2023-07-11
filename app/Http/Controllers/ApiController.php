@@ -111,6 +111,14 @@ class ApiController extends Controller
     }
     
 
+
+    /**
+     * Link software to the project from Project details screen
+     *
+     * @param LinkProject $request
+     * @return void
+     */
+
     public function softwarelinkProject(LinkProject $request){
         $request->validated();
 
@@ -129,7 +137,7 @@ class ApiController extends Controller
         $software = Softwares::where('id', $data['software_id'])->first();
         $project = Projects::where('id', $data['project_id'])->first();
 
-        $message = 'Added Successfully';
+        $message = 'Software added successfully';
         ProjectSoftwares::create($insertData);
 
         //check logined employee role
@@ -981,7 +989,7 @@ class ApiController extends Controller
     }
 
     /**
-     * Link software to a project from employee details screen
+     * Link a project to the Software from Software details screen
      *
      * @param LinkProject $request
      * @return void
@@ -998,7 +1006,8 @@ class ApiController extends Controller
         ];
 
         //insert data
-        ProjectSoftwares::insert($insertData);
+        ProjectSoftwares::create($insertData);
+        $message = "Software was successfully linked";
 
         $projectData = Projects::where('id', $insertData['project_id'])->first();
         $softwareData = Softwares::where('id', $insertData['software_id'])->first();
@@ -1006,7 +1015,7 @@ class ApiController extends Controller
         Logs::createLog('Project',"Linked the {$softwareData->software_name} to {$projectData->name}" );
 
         return response()->json(['success' => true, 
-                                    'message' => 'Software was successfully linked.', 
+                                    'message' => $message, 
                                     'update' => ProjectSoftwares::getLinkedSoftwareByProject($insertData['project_id']),
                                     'isManager' => Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')],
                                     200);

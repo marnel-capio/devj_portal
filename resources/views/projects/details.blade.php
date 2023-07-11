@@ -376,7 +376,6 @@
             <div>
                 <h4 class="text-start d-inline-block">Linked Softwares</h4>
             </div>
-            <!-- if (auth()->user()->roles == config('constants.MANAGER_ROLE_VALUE')) -->
             <button class="btn btn-primary" data-bs-target="#link_software_modal" data-bs-toggle="modal">Add</button>
             <div class="modal modal fade" tabindex='-1' id="link_software_modal">
                 <div class="modal-dialog modal-dialog-centered">
@@ -426,7 +425,6 @@
                     </div>
                 </div>
             </div>
-             <!-- endif -->
         </div>
         <div class="ms-3">
             @if(!empty(session('ul_alert')))

@@ -29,7 +29,7 @@ $(document).ready( function () {
         "sDom": "lrt<'#bottom.row'<'#info.col'i><'#pagination.col'p>>",
 	});
 
-//=====================================Project Members==========================================
+// =====================================Project Members==========================================
     hideShowPJHistory();
     $("#show_hist").on('change', function () {
         hideShowPJHistory();
@@ -101,7 +101,7 @@ $(document).ready( function () {
                     }
                 });
 
-                //display error message
+                // Display error message
                 for (key in data.data) {
                     $('#link_employee_form #link_'  + key + '_error').html(data.data[key][0]).addClass('text-danger text-start');
                 }
@@ -194,7 +194,7 @@ $(document).ready( function () {
 		});
 
 		$("#proj_members_tbl > tbody > tr").each(function () {
-			//fix text alignment of remove button
+			// Fix text alignment of remove button
 			$(this).find(':nth-last-child(1)').addClass('text-center');
 		});
 	}
@@ -222,7 +222,7 @@ $(document).ready( function () {
 		return date.getFullYear() + separator + month + separator + day;
 	}
 
-	//update linkage submission
+	// Update linkage submission
 	$("#update_pj_submit_btn").click( function (e) {
 		$("#link_update_spinner").show();
 
@@ -261,7 +261,7 @@ $(document).ready( function () {
 					}
 				});
 
-				//display error message
+				// Display error message
 				for (key in data.data) {
 					$('#update_employee_linkage_form #link_'  + key + '_error').html(data.data[key][0]).addClass('text-danger text-start');
 				}
@@ -316,7 +316,7 @@ $(document).ready( function () {
 		});
 	});
 
-    //link software submission
+    // Link software submission
     $("#ls_submit_btn").click( function (e) {
         $("#link_software_spinner").show();
 
@@ -347,7 +347,7 @@ $(document).ready( function () {
                     }
                 });
 
-                //display error message
+                // Display error message
                 for (key in data.data) {
                     $('#link_software_form #link_'  + key + '_error').html(data.data[key][0]).addClass('text-danger text-start');
                 }
@@ -366,7 +366,7 @@ $(document).ready( function () {
 				$("#software_list > option[value=" + postData.software_id + "]").remove();
 				$("#ls_success_msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;' + data.message + '.').addClass("text-success mb-2 text-start");
 
-				//update projects table
+				// Update projects table
 				s_table.clear().draw();
 				let url, newRow;
 				data.update.forEach(function(softwareData){
@@ -374,7 +374,7 @@ $(document).ready( function () {
 					newRow = [
 						'<a href="' + url + '" class="text-decoration-none">' + softwareData.software_name + '</a>',
 						softwareData.software_type,
-						softwareData.linkageRemarks,	//currently from softwares table
+						softwareData.linkageRemarks,	// currently from softwares table
 					];
 
 					if (data.isManager) {
@@ -386,7 +386,7 @@ $(document).ready( function () {
 				});
 
 				$("#linked_softwares_tbl > tbody > tr").each(function () {
-					//fix text alignment of remove button
+					// Fix text alignment of remove button
 					$(this).find(':last-child').addClass('text-center');
 				});
 			}
@@ -409,15 +409,15 @@ $(document).ready( function () {
 		});
 	});
 
-	//software linkage removal
+	// Software linkage removal
 	$("#linked_softwares_tbl").on('click', '.software_linkage_remove_btn', function (e) {
 		let linkageId =  $(this).data('linkid');
 		let softwareName = $(this).data('softwarename');
 		if (confirm('Are sure you want to remove ' + softwareName + '?')) {
-			//set id in software removal form
+			// Set id in software removal form
 			$("#remove_software_form > input[name=id").val(linkageId);
 		} else {
-			//cancel form submission
+			// Cancel form submission
 			return false;
 		}
 
@@ -474,7 +474,7 @@ $(document).ready( function () {
 				project_list.clear().draw();
 
 				data.update.forEach(function(project){
-					//get only YYYY-MM-DD from date
+					// Get only YYYY-MM-DD from date
 					let start_date ="";
 					let end_date ="";
 					if(project['start_date'])
