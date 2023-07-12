@@ -294,7 +294,7 @@ class ProjectsController extends Controller
                     ->update($update);
 
             // 5.2.2 Create logs
-            Logs::createLog("Projects", 'Project Linkage Detail Update Approval');
+            Logs::createLog("Projects", 'Project Linkage Detail Update');
 
             // 5.2.3 Send mail to requestor
             $mailData = [

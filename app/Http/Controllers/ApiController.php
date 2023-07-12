@@ -869,7 +869,7 @@ class ApiController extends Controller
             }
 
             $message = 'Employee has been successfully linked.';
-            $logMessage = "{$project->name} is linked to {$requestor}.";
+            $logMessage = "{$project->name} project is linked to {$employee->full_name}.";
         }else{
             // if an employee edits his own data and is not a manager
             $insertData['approved_status'] = config('constants.APPROVED_STATUS_PENDING');

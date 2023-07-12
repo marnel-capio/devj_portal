@@ -64,7 +64,7 @@ $(document).ready( function () {
     // Link Project to Employee submission
 
     $("#pj_submit_btn").click( function (e) {
-        $("#link_update_spinner").show();
+        $("#link_create_spinner").show();
 
 		var postData = {
 			_token: $("#link_employee_form > input[name=_token]").val(),
@@ -88,7 +88,7 @@ $(document).ready( function () {
 			dataType: "json",
 			encode: true,
 		}).done(function(data){
-            $("#link_update_spinner").hide();
+            $("#link_create_spinner").hide();
 
 			// display error
 			if(!data.success){
