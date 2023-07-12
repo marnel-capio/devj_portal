@@ -227,7 +227,7 @@ class ApiController extends Controller
             {
                 $logMessage = "{$requestor} requests to link {$project->name} project to {$employee->full_name}.";
             } else {
-                $logMessage = "{$requestor} requests linkage to {$project->name} project.";
+                $logMessage = "{$requestor} requests to link {$project->name} project.";
             }
         }
         
@@ -893,7 +893,7 @@ class ApiController extends Controller
             {
                 $logMessage = "{$requestor} requests to link {$project->name} project to {$employee->full_name}.";
             } else {
-                $logMessage = "{$requestor} requests linkage to {$project->name} project.";
+                $logMessage = "{$requestor} requests to link {$project->name} project.";
             }
             
         }
