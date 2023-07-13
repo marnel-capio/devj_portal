@@ -480,21 +480,25 @@ $(document).ready( function () {
 					if(project['start_date'])
 					{
 						if(project['start_date'] !== ""){
-							start_date = new Date(project['start_date']).toISOString().slice(0, 10);
+							sd = new Date(project['start_date']);
+							sd.setHours(sd.getHours() + 8); // JavaScript converts date to +0:00. Add 8 Hrs to convert to PHT (+8:00)
+							start_date = sd.toISOString().slice(0, 10);
 						}
 					}
 					if(project['end_date'])
 					{
 						if(project['end_date'] !== ""){
-							end_date = new Date(project['end_date']).toISOString().slice(0, 10);
+							ed = new Date(project['end_date']);
+							ed.setHours(ed.getHours() + 8); // JavaScript converts date to +0:00. Add 8 Hrs to convert to PHT (+8:00)
+							end_date = ed.toISOString().slice(0, 10);
 						}
 					}
 
                     url = window.location.href+"/"+project['id'];
                     project_list.row.add([
 						'<a href="'+url+'">'+ project['name']+'</a>', 
-						start_date, 
-						end_date, 
+						start_date,
+						end_date,
 						project['status']])
 						.draw(false);
 				});
