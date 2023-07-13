@@ -92,15 +92,17 @@ class LinkProject extends FormRequest
         $rules = array();
         $isLinkEmployee = $this->input('is_employee');
         $isUpdateLinkEmployee = $this->input('is_employee_update');
+        $isFromProjectDetails = $this->input('is_from_ProjectDetails');
 
-        //check if the page is for employee
+        // Validation for: employee linking to a project. 
+        // From: employee OR project details page
         if(strpos($this->header('referer'), route('employees.details', ['id' => $id])) !== FALSE 
             || (strpos($this->header('referer'), route('projects.details', ['id' => $id])) !== FALSE && $isLinkEmployee) ){
             $employeeId = $this->input('employee_id');
             $projectDetails = Projects::where('id', $this->input('project_id'))->first();
             $emprules = [
-                'employee_id' => ['required', function ($atribute, $value, $fail) {
-                    //check if employee exists in DB
+                'employee_id' => ['required', 'exists:employees,id', function ($attribute, $value, $fail) {
+                    // Checks if employee exists in DB
                     $employeeData = Employees::where('id', $value)
                                             ->where('active_status', 1)
                                             ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
@@ -109,7 +111,7 @@ class LinkProject extends FormRequest
                         $fail('The selected employee does not exist.');
                     }
                 }],
-                'project_id' =>['required', 'exists:projects,id', function($atribute, $value, $fail) use ($employeeId) {
+                'project_id' => ['required', 'exists:projects,id', function($attribute, $value, $fail) use ($employeeId) {
                     if(EmployeesProjects::checkIfProjectIsOngoing($value, $employeeId)){
                         $fail('Employee is already a member of the selected project.');
                     }
@@ -131,8 +133,8 @@ class LinkProject extends FormRequest
 
             $rules = $emprules;
         }
+        // Validation for: Employee-Project linkage update
         else if (strpos($this->header('referer'), route('projects.details', ['id' => $id])) !== FALSE && $isUpdateLinkEmployee) {
-            //check if request is for linkage update
             $projectDetails = Projects::where('id', $id)->first();
 
             $rules = [    
@@ -150,23 +152,44 @@ class LinkProject extends FormRequest
                 }
             }
         }
-        //check if page is software
-        else
-        {
+        // Validation for: software linkage
+        else if ((strpos($this->header('referer'), route('softwares.details', ['id' => $id])) !== FALSE) ||
+                 (strpos($this->header('referer'), route('projects.details', ['id' => $id])) !== FALSE && $isFromProjectDetails)) {
             $softwareId = $this->input('software_id');
             $projectDetails = Projects::where('id', $this->input('project_id'))->first();
             $softrules = [
-                'software_id' => ['required', function ($atribute, $value, $fail) {
-                    //check if employee exists in DB
-                    $employeeData = Softwares::where('id', $value)
-                                            ->where('active_status', 1)
+                'software_id' => ['required', 'exists:softwares,id', function ($attribute, $value, $fail) {
+                    // Checks if software exists in DB
+                    $softwareData = Softwares::where('id', $value)
                                             ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
-
-                    if (empty($employeeData)) {
+                    if (empty($softwareData)) {
                         $fail('The selected software does not exist.');
                     }
                 }],
-                'project_id' =>['required', 'exists:projects,id', function($atribute, $value, $fail) use ($softwareId) {
+                'project_id' => ['required', 'exists:projects,id', function($attribute, $value, $fail) use ($softwareId) {
+                    // Checks if project exists in DB
+                    if(ProjectSoftwares::checkIfSoftwareExists($value, $softwareId)){
+                        $fail('Selected project is already linked.');
+                    }
+                }],
+                'remarks' => 'max:1024',
+            ];
+            $rules =  $softrules;
+        }
+        else {
+            $softwareId = $this->input('software_id');
+            $projectDetails = Projects::where('id', $this->input('project_id'))->first();
+            $softrules = [
+                'software_id' => ['required', 'exists:softwares,id', function ($attribute, $value, $fail) {
+                    //check if software exists in DB
+                    $softwareData = Softwares::where('id', $value)
+                                            ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
+
+                    if (empty($softwareData)) {
+                        $fail('The selected software does not exist.');
+                    }
+                }],
+                'project_id' => ['required', 'exists:projects,id', function($attribute, $value, $fail) use ($softwareId) {
                     if(ProjectSoftwares::checkIfSoftwareExists($value, $softwareId)){
                         $fail('Selected Project name is already linked.');
                     }

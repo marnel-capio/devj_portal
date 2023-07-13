@@ -320,7 +320,8 @@ $(document).ready( function () {
 			_token: $("#link_software_form > input[name=_token]").val(),
 			software_id: $("#software_list > option:selected").val(),
 			project_id: $("#link_software_form > input[name=project_id]").val(),
-			remarks: $("#link_software_remarks").val()
+			remarks: $("#link_software_remarks").val(),
+			is_from_ProjectDetails: true
 		};
 
 		$.ajax({
