@@ -984,7 +984,10 @@ class ApiController extends Controller
 
         return response()->json(['success' => true, 
                                     'message' => $message, 
-                                    'update' => EmployeesProjects::getProjectMembersById($originalData['project_id'])]
+                                    'update' => EmployeesProjects::getProjectMembersById($originalData['project_id']),
+                                    'employee_id' => $employee->id,
+                                    'employee_role' => $employee->roles
+                                    ]
                                 , 200);
     }
 

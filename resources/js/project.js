@@ -235,10 +235,6 @@ $(document).ready( function () {
 			project_onsite: $("#update_employee_linkage_form  input[name=onsite]").is(':checked') ? 1 : 0,
 			remarks: $("#update_link_remarks").val(),
 			is_employee_update: true,
-
-			// ID and Role of Logged-in User
-			employee_id: $("#update_employee_linkage_form input[name=employee_id]").val(),
-			employee_role: $("#update_employee_linkage_form input[name=employee_role]").val(),
 		};
 
 		$.ajax({
@@ -279,7 +275,7 @@ $(document).ready( function () {
 				$("#ue_success_msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;' + data.message + '.').addClass("text-success mb-2 text-start");
 
 				// Update the Project Members' table
-				updateProjectMemberTable(data, postData.employee_id, postData.employee_role);
+				updateProjectMemberTable(data, data.employee_id, data.employee_role);
 			}
 
 		}).fail(function (ddata, exception) {
