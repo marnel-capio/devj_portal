@@ -375,7 +375,7 @@
         </form>
     </div>
     @if ($detailOnly)
-    {{-- <div class="emp-regist-category mb-4 p-3 rounded-3 table-avoid-overflow">
+    <div class="emp-regist-category mb-4 p-3 rounded-3 table-avoid-overflow">
         <div class="d-flex justify-content-between">
             <h4 class="text-start">Projects</h4>
             <button class="btn btn-primary" data-bs-target="#linkProjectModal" data-bs-toggle="modal">Add</button>
@@ -392,7 +392,7 @@
                 @if(!empty($empProject))
                     @foreach ($empProject as $project)
                         <tr>
-                            <td><a href="{{ route('project.details', ['id' => $project['project_id']]) }}" class="text-decoration-none">{{ $project['name'] }}</a></td>
+                            <td><a href="{{ route('projects.details', ['id' => $project['project_id']]) }}" class="text-decoration-none">{{ $project['name'] }}</a></td>
                             <td>{{ date("Y/m/d", strtotime($project['start_date']))  }} - {{ $project['end_date'] ? date("Y/m/d", strtotime($project['end_date'])) : '' }}</td>
                             <td>{{ $project['project_status'] }}</td>
                         </tr>
@@ -400,7 +400,7 @@
                 @endif
             </tbody>
         </table>
-    </div> --}}
+    </div>
     <div class="emp-regist-category mb-4 p-3 rounded-3 table-avoid-overflow">
         <div class="d-flex justify-content-between">
             <h4 class="text-start">Laptops</h4>
@@ -471,8 +471,8 @@
     </div>
     @endif
 
-    @if ( $detailOnly && ($userInfo->id == $employee->id || in_array($userInfo->roles, [config('constants.ADMIN_ROLE_VALUE'), config('constants.MANAGER_ROLE_VALUE')])))
-    {{-- <div class="modal fade" tabindex="-1" id="linkProjectModal">
+    @if ($detailOnly)
+    <div class="modal fade" tabindex="-1" id="linkProjectModal">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -488,42 +488,50 @@
                                 <div class="col-12 g-3 form-floating">
                                     <select name="project_id" class="form-select" id="projectList" required>
                                         @foreach ( $projectList as $project )
-                                            <option data-mindate="{{ date('Y-m-d', strtotime($project['start_date']))  }}" data-maxdate="{{ !empty($project['end_date']) ? date('Y-m-d', strtotime($project['end_date'])) : date("Y-m-d")  }}" value="{{ $project['id'] }}">{{ $project['name'] }}</option>
+                                            <option data-mindate="{{ date('Y-m-d', strtotime($project['start_date']))  }}" data-maxdate="{{ !empty($project['end_date']) ? date('Y-m-d', strtotime($project['end_date'])) : ""  }}" value="{{ $project['id'] }}">{{ $project['name'] }}</option>
                                         @endforeach
                                     </select>
                                     <label for="projectList" class="text-center">Project Name</label>
-                                    <p id="error-lp-proj-name"></p>
+                                    <span id="error-lp-proj-name"></span>
                                 </div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-6 g-3 form-floating">
                                     <input type="date" name="project_start_date" class="form-control" id="project-start" required>
                                     <label for="project-start" class="text-center">Start Date</label>
-                                    <p id="error-lp-proj-start"></p>
+                                    <span id="error-lp-proj-start"></span>
                                 </div>
                                 <div class="col-6 g-3 form-floating">
                                     <input type="date" name="project_end_date" class="form-control" id="project-end" required>
                                     <label for="project-end" class="text-center">End Date</label>
-                                    <p id="error-lp-proj-end"></p>
+                                    <span id="error-lp-proj-end"></span>
                                 </div>
                             </div>
                             <div class="row mb-2">
-                                <div class="col-12 g-3 form-floating">
+                                <div class="col-6 g-3 form-floating">
                                     <select name="project_role" id="projectRoleList" class="form-select" required>
-                                        <option value="{{ config('constants.PROJECT_ROLE_TEAM_LEAD') }}">Team Lead</option>
-                                        <option value="{{ config('constants.PROJECT_ROLE_PROGRAMMER') }}">Programmer</option>
-                                        <option value="{{ config('constants.PROJECT_ROLE_QA') }}">QA</option>
+                                        @foreach (config('constants.PROJECT_ROLES') as $val => $text )
+                                        <option value="{{ $val }}">{{ $text }}</option>
+                                        @endforeach
                                     </select>
                                     <label for="projectRoleList" class="text-center">Role</label>
-                                    <p id="error-lp-proj-role"></p>
+                                    <span id="error-lp-proj-role"></span>
+                                </div>
+                                <div class="col-6 g-3 text-start">
+                                    <p></p>
+                                    <div class="form-check">
+                                        <label for="project_onsite" class="form-check-label user-select-none">Onsite</label>
+                                        <input type="checkbox" class="form-check-input" name="project_onsite" id="project_onsite" value="1">
+                                    </div>  
                                 </div>
                             </div>
-                            <div class="row mb-2">
-                                <div class="col-6 g-3 text-start">
-                                    <div class="form-check">
-                                        <label for="project_onsite" class="form-check-label">Onsite</label>
-                                        <input type="checkbox" class="form-check-input" name="project_onsite" id="project-onsite" value="1">
-                                    </div>  
+                            <div class="row pt-2">
+                                <h6 class="text-start">Remarks</h6>
+                            </div>
+                            <div class="row text-start">
+                                <div class="gs-3 ge-3 gt-1">
+                                    <textarea name="remarks" id="link_remarks" rows="3" class="form-control"></textarea>
+                                    <span id="error-lp-remarks"></span>
                                 </div>
                             </div>
                         </form>
@@ -535,7 +543,7 @@
                 </div>
             </div>
         </div>
-    </div> --}}
+    </div>
 
     <div class="modal fade" tabindex="-1" id="linkLaptopModal">
         <div class="modal-dialog modal-dialog-centered">
@@ -557,7 +565,7 @@
                                         @endforeach
                                     </select>
                                     <label for="laptopList" class="text-center">Tag Number</label>
-                                    <p id="error-laptop-id"></p>
+                                    <span id="error-laptop-id"></span>
                                 </div>
                             </div>
                             <div class="row mb-4 text-start">
@@ -580,7 +588,7 @@
                             <div class="row text-start">
                                 <div class="gs-3 ge-3 gt-1">
                                     <textarea name="remarks" id="ll-remarks" rows="3" class="form-control"></textarea>
-                                    <p id="error-ll-remarks"></p>
+                                    <span id="error-ll-remarks"></span>
                                 </div>
                             </div>
                         </form>

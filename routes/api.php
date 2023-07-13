@@ -20,7 +20,9 @@ use App\Http\Controllers\ApiController;
 Route::middleware('auth:sanctum')->controller(ApiController::class)->group(function(){
     Route::post('/changePassword', 'changePassword')->name('api.changePassword');
     Route::post('/linkLaptop', 'linkLaptop')->name('api.linkLaptop');
-    Route::post('/linkProject', 'linkProject')->name('api.linkProject');
+    Route::post('/linkProjectToEmployee', 'linkProjectToEmployee')->name('api.linkProjectToEmployee');
+    Route::post('/linkEmployeeToProject', 'linkEmployeeToProject')->name('api.linkEmployeeToProject');
+    Route::post('/updateEmployeeProjectLinkage', 'updateEmployeeProjectLinkage')->name('api.updateEmployeeProjectLinkage');
     Route::get('/softwares/search', 'getSoftwareByFilter')->name('api.softwaresearch');
     Route::post('/softwarelinkProject', 'softwarelinkProject')->name('api.softwarelinkProject');
     Route::get('/employees/search', 'getEmployeeByFilter')->name('api.filterEmployee');
@@ -32,4 +34,6 @@ Route::middleware('auth:sanctum')->controller(ApiController::class)->group(funct
     Route::post('/laptops/update', 'updateLaptopDetails')->name('api.updateLaptop');
     Route::post('/laptops/updateLinkage', 'updateLaptopLinkage')->name('api.updateLaptopLinkage');
     Route::post('/laptops/registLinkage', 'registLaptopLinkage')->name('api.registLaptopLinkage');
+    Route::post('/linkSoftwareToProject', 'linkSoftwareToProject')->name('api.linkSoftwareToProject');
+    Route::get('/projects/search', 'getProjectByFilter')->name('api.filterProject');
 });

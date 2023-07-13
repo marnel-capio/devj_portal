@@ -48,4 +48,29 @@ class ProjectSoftwares extends Model
                             ->toArray();
         return !empty($detail);
     }    
+
+    /**
+     * Return the linked softwares by project id
+     *
+     * @param [type] $id
+     * @return void
+     */
+    static function getLinkedSoftwareByProject ($id) {
+        return self::selectRaw('
+                    s.software_name,
+                    st.type_name as software_type,
+                    s.remarks,
+                    ps.remarks as linkageRemarks,
+                    ps.id,
+                    ps.software_id
+                ')
+                ->from('projects_softwares AS ps')
+                ->leftJoin('softwares AS s', 's.id', 'ps.software_id')
+                ->leftJoin('software_types AS st', 'st.id', 's.software_type_id')
+                ->where('ps.project_id', $id)
+                ->orderBy('s.software_name', 'asc')
+                ->orderBy('ps.id', 'asc')
+                ->get()
+                ->toArray();
+    }
 }

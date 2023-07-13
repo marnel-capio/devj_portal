@@ -115,15 +115,14 @@
 	{{-- This section is for Software list --}}
 	<div class="row-req-table row group-category-home p-2"> 
 		<div class="col table-avoid-overflow">
-	  		<h3 class="mb-4"> Software Request </h3>
+			<h3 class="mb-4"> Software Request </h3>
 			<table id="software-request" class="table table-striped request-table" >
 				<thead>
 					<tr>
-						<th style="width:18%">Software Name</th>
-						<th style="width:18%">Type</th>
-						<th style="width:18%">Status</th>
-						<th style="width:25%">Purpose</th>
-						<th style="width:12%">Action</th>
+						<th style="width:23%">Software Name</th>
+						<th style="width:23%">Type</th>
+						<th style="width:29%">Purpose</th>
+						<th style="width:16%">Action</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -131,19 +130,6 @@
 						<tr>
 							<td>{{ $software['software_name'] }}</td>
 							<td>{{ $software['type'] }}</td>
-							<td>
-								@if ($software['approved_status'] == config('constants.APPROVED_STATUS_REJECTED')) 
-									{{config('constants.APPROVED_STATUS_REJECTED_TEXT')}}
-								@elseif ($software['approved_status'] == config('constants.APPROVED_STATUS_APPROVED')) 
-									{{config('constants.APPROVED_STATUS_APPROVED_TEXT')}}
-								@elseif ($software['approved_status'] == config('constants.APPROVED_STATUS_PENDING')) 
-									{{config('constants.APPROVED_STATUS_PENDING_TEXT')}}
-								@elseif ($software['approved_status'] == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')) 
-									{{config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE_TEXT')}}
-								@else
-									-
-								@endif
-							</td>
 							<td>{{ $software['remarks'] }}</td>
 							<td><a href="{{ route('softwares.request', ['id' => $software['id']]) }}"><i class="bi bi-eye"></i>View</a></td>
 						</tr>
@@ -152,6 +138,38 @@
 			</table>
 		</div>
 	</div>	
+	{{-- This section is for Project Link list --}}
+	<div class="row-req-table row group-category-home p-2"> 
+		<div class="col table-avoid-overflow">
+			<h3 class="mb-4"> Project Link Request </h3>
+			<table id="project-link-request" class="table table-striped request-table" >
+				<thead>
+					<tr>
+						<th style="width:30%">Project Name</th>
+						<th style="width:30%">Linked Employee</th>
+						<th style="width:14%">Start Date</th>
+						<th style="width:14%">End Date</th>
+						<th style="width:12%">Action</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach ($projectLinkRequest as $projectlink)
+						<tr>
+							<td>{{ $projectlink['project_name'] }}</td>
+							<td>{{ $projectlink['linked_employee'] }}</td>
+							<td>{{date("Y-m-d", strtotime($projectlink['start_date']) )}}</td>
+							@if(strlen( $projectlink['end_date'] ) !== 0)
+								<td>{{date("Y-m-d", strtotime($projectlink['end_date']) )}}</td>
+							@else
+								<td>{{'-'}}</td>
+							@endif
+							<td><a href="{{ route('projects.details', ['id' => $projectlink['project_id']]) ."#link_request_tbl" }}"><i class="bi bi-eye"></i>View</a></td>
+						</tr>
+					@endforeach
+				</tbody>
+			</table>
+		</div>
+	</div>
 </div>
 
 

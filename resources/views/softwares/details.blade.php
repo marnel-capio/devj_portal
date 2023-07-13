@@ -149,7 +149,7 @@
             </div>
         </form>
     </div>
-   {{-- @if ($detailOnly && $is_project_display)
+   @if ($detailOnly && $is_project_display)
     <div class="soft-regist-category mb-4 p-3 rounded-3 table-avoid-overflow">
         <div class="d-flex justify-content-between">
             <h4 class="text-start">Projects</h4>
@@ -167,7 +167,7 @@
                 @if(!empty($softProject))
                     @foreach ($softProject as $project)
                         <tr>
-                            <td><a href="{{ route('project.details', ['id' => $project['project_id']]) }}" class="text-decoration-none">{{ $project['name'] }}</a></td>
+                            <td><a href="{{ route('projects.details', ['id' => $project['project_id']]) }}" class="text-decoration-none">{{ $project['name'] }}</a></td>
                             <td>{{ date("Y/m/d", strtotime($project['start_date']))  }} - {{ $project['end_date'] ? date("Y/m/d", strtotime($project['end_date'])) : '' }}</td>
                             <td>{{ $project['project_status'] }}</td>
                         </tr>
@@ -176,7 +176,7 @@
             </tbody>
         </table>
     </div>
-    @endif--}}
+    @endif
 
     @if (!$detailOnly)
     <div class="text-center p-4">
@@ -211,7 +211,7 @@
     </div>
     @endif
 
-    {{-- @if ($detailOnly && $is_project_display)
+    @if ($detailOnly && $is_project_display)
     <div class="modal fade" tabindex="-1" id="linkProjectModal">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -235,15 +235,15 @@
                                     <p id="error-lp-proj-name"></p>
                                 </div>
                             </div>
-                            <div class="row mb-2 ps-3 pe-3">
-                                <div class="col-12 g-3 form-floating">
-                                    <div class="mb-2 form-floating">
-                                        <textarea class="form-control" name="project_remarks" placeholder="Remarks" rows="5" id="project_remarks" required></textarea>
-                                        <label class="text-center" for="remarks">Remarks</label>
-                                    </div>
-                                    <p id="error-lp-proj-reason"></p>
-                                </div>
+                            <div class="row pt-2">
+                                <h6 class="text-start">Remarks</h6>
                             </div>
+                            <div class="row text-start">
+                                <div class="gs-3 ge-3 gt-1">
+                                    <textarea class="form-control" rows="3" name="project_remarks" rows="5" id="project_remarks" required></textarea>
+                                    <span id="error-lp-proj-reason"></span>
+                                </div>
+                            </div>                            
                         </form>
                     </div>
                 </div>
@@ -254,7 +254,7 @@
             </div>
         </div>
     </div>
-    @endif--}}
+    @endif
 
 
 </div>

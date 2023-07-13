@@ -32,12 +32,11 @@
                         <li><a href="{{ route('softwares.create') }}" class="dropdown-item small text-white">Create Software</a></li>
                     </ul>
                 </li>
- 
-                {{-- <li class="nav-item dropdown">
+                <li class="nav-item dropdown">
                     <a href="#" class="nav-link text-white"  role="button">Projects</a>
                     <ul class="dropdown-menu">
                         <li><a href="{{ route('projects') }}" class="dropdown-item small text-white">View Projects</a></li>
-                        @if (in_array($userInfo->roles, [config('constants.ADMIN_ROLE_VALUE'), config('constants.MANAGER_ROLE_VALUE')]))
+                        @if ($userInfo->roles == config('constants.MANAGER_ROLE_VALUE'))
                             <li><hr class="dropdown-divider"></li>
                             <li><a href="{{ route('projects.create') }}" class="dropdown-item small text-white">Create Project</a></li>
                         @endif
@@ -54,8 +53,7 @@
                             @endif
                         </ul>
                     </li>
-                @endif 
-                --}}
+                @endif
             </ul>
             <ul class="navbar-nav mb-2 mb-lg-0">
                 <li class="nav-item dropdown">

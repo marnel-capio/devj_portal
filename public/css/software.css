@@ -1,1 +1,23 @@
-.filter-software{width:60px}.soft-regist-category{background-color:#f2f2f2}.softtext-danger{text-align:left}.softrqst-btn{width:110px}table#project-tbl>thead>tr>th{text-align:center}
+.filter-software {
+	width: 60px;
+}
+
+/* software registration */
+.soft-regist-category{
+    background-color: #F2F2F2;
+}
+
+.softtext-danger{
+    text-align: left;
+}
+
+.softrqst-btn {
+    width: 110px;
+}
+
+table#project-tbl  > thead > tr > th{
+    text-align: center;
+}
+
+
+
