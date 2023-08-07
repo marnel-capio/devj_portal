@@ -182,7 +182,7 @@
                                 <td>{{ $member['membership_date'] }}</td>
                                 <td class="text-center">
                                     {{-- Check if update button should be displayed --}}
-                                    @if ($member['isActive'] and ((auth()->user()->roles == config('constants.MANAGER_ROLE_VALUE')) or auth()->user()->id == $member['employee_id']))
+                                    @if ($member['isActive'] and ((auth()->user()->roles == config('constants.MANAGER_ROLE_VALUE')) or (auth()->user()->roles == config('constants.ADMIN_ROLE_VALUE')) or auth()->user()->id == $member['employee_id']))
                                         <button class="btn btn-link btn-sm text-success employee_linkage_update_btn" 
                                             data-bs-target="#update_employee_linkage_modal" 
                                             data-bs-toggle="modal" 
@@ -222,6 +222,7 @@
                         <form action="#" id="update_employee_linkage_form">
                             @csrf
                             <input type="text" name="linkage_id" value="" hidden>
+                            <input type="text" name="employee_role" value="{{ Auth::user()->roles }}" hidden>
                             <div class="row mb-2">
                                 <div class="col-6 g-3 form-floating">
                                     <input type="date" name="project_start" class="form-control" id="update_link_project_start" min="{{ date('Y-m-d', strtotime($projectData->start_date)) }}" max="{{ !empty($projectData->end_date) ? date('Y-m-d', strtotime($projectData->end_date)) : "" }}" required>

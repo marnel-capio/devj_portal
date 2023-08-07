@@ -58,7 +58,7 @@ class LinkProject extends FormRequest
         return [
             'project_start.after_or_equal' => "The start date must be on or after the project's start date.",
             'project_start.before' => "The start date must be before the project's end date.",
-            'project_end.after' => "The end date must be after the project's start date.",
+            'project_end.after' => "The end date must be after the employee's linkage start date.",
             'project_end.before_or_equal' => "The end date must be on or before the project's end date.",
         ];
     }
@@ -133,7 +133,7 @@ class LinkProject extends FormRequest
 
             $rules = $emprules;
         }
-        // Validation for: Employee-Project linkage update
+        // Validation For: Employee-Project linkage update in Project details page
         else if (strpos($this->header('referer'), route('projects.details', ['id' => $id])) !== FALSE && $isUpdateLinkEmployee) {
             $projectDetails = Projects::where('id', $id)->first();
 
@@ -143,15 +143,27 @@ class LinkProject extends FormRequest
             ];
 
             if(!empty($projectDetails)){
+
+                // Validate employee's start date
                 $rules['project_start'] = "required|date|after_or_equal:{$projectDetails->start_date}";
-                if(!empty($projectDetails->end_date) && $projectDetails->end_date != "0000-00-00 00:00:00"){
+                // Validate employee's end date
+                if($this->filled('project_end')){
+                    $rules['project_end'] = "required|date|after:". $this->input('project_start');
+                }
+
+                // If project has: end date
+                // Validate employee's start date
+                if((!empty($projectDetails->end_date) && $projectDetails->end_date != "0000-00-00 00:00:00")){
+                    // Validate employee's start date
                     $rules['project_start'] = "required|date|after_or_equal:{$projectDetails->start_date}|before:{$projectDetails->end_date}";
+                    // Validate employee's end date
                     if($this->filled('project_end')){
-                        $rules['project_end'] = "date|after:{$projectDetails->start_date}|before_or_equal:{$projectDetails->end_date}";
+                        $rules['project_end'] = "required|date|after:". $this->input('project_start') . "|before_or_equal:{$projectDetails->end_date}";
                     }
                 }
             }
         }
+        
         // Validation for: software linkage
         else if ((strpos($this->header('referer'), route('softwares.details', ['id' => $id])) !== FALSE) ||
                  (strpos($this->header('referer'), route('projects.details', ['id' => $id])) !== FALSE && $isFromProjectDetails)) {

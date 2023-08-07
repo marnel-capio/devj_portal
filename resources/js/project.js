@@ -8,6 +8,7 @@ const PROJECT_ROLES = [
 						'Programmer',
 						'QA',
 					];
+const EMPLOYEE_ROLE_ADMIN = 1;
 const EMPLOYEE_ROLE_MANAGER = 2;
 
 $(document).ready( function () {
@@ -29,7 +30,7 @@ $(document).ready( function () {
         "sDom": "lrt<'#bottom.row'<'#info.col'i><'#pagination.col'p>>",
 	});
 
-// =====================================Project Members==========================================
+	// ===================================== Project Members ==========================================
     hideShowPJHistory();
     $("#show_hist").on('change', function () {
         hideShowPJHistory();
@@ -158,7 +159,16 @@ $(document).ready( function () {
 		});
 	});
 
+	/**
+	 * Updates the Project Members table after Add Member or Update Linkage of Existing Member
+	 * 
+	 * @param {object} data 
+	 * @param {int} employee_id 
+	 * @param {int} employee_role
+	 * @returns 
+	 */
 	function updateProjectMemberTable (data, employee_id, employee_role) {
+		
 		// Clear and Reload Projects table to update
 		pj_table.clear().draw();
 		let url, newRow, modalData;
@@ -173,6 +183,7 @@ $(document).ready( function () {
 				project_role_type: memberData.project_role_type,
 				remarks: memberData.remarks
 			};
+
 			newRow = [
 				'<a href="' + url + '" class="text-decoration-none">' + memberData.member_name + '</a>',
 				PROJECT_ROLES[Number(memberData.project_role_type) - 1],
@@ -180,7 +191,7 @@ $(document).ready( function () {
 				memberData.membership_date
 			];
 
-			if (memberData.isActive && (employee_id == memberData.employee_id || employee_role == EMPLOYEE_ROLE_MANAGER)) {
+			if (memberData.isActive && (employee_id == memberData.employee_id || employee_role == EMPLOYEE_ROLE_MANAGER || employee_role == EMPLOYEE_ROLE_ADMIN)) {
 				// Add update button
 				newRow.push('<button class="btn btn-link btn-sm text-success employee_linkage_update_btn" \
 									 data-bs-target="#update_employee_linkage_modal" data-bs-toggle="modal" \
@@ -235,7 +246,13 @@ $(document).ready( function () {
 			project_onsite: $("#update_employee_linkage_form  input[name=onsite]").is(':checked') ? 1 : 0,
 			remarks: $("#update_link_remarks").val(),
 			is_employee_update: true,
+			
+			// Role of Logged-in User
+			employee_role: $("#link_employee_form > input[name=employee_role").val(),
 		};
+		
+		$("#link_project_start_error").empty();
+		$("#link_project_end_error").empty();
 
 		$.ajax({
 			type: "POST",
@@ -275,7 +292,7 @@ $(document).ready( function () {
 				$("#ue_success_msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;' + data.message + '.').addClass("text-success mb-2 text-start");
 
 				// Update the Project Members' table
-				updateProjectMemberTable(data, data.employee_id, data.employee_role);
+				updateProjectMemberTable(data, postData.employee_id, postData.employee_role);
 			}
 
 		}).fail(function (ddata, exception) {
