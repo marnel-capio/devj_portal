@@ -42,7 +42,7 @@ class ProjectsRequest extends FormRequest
             'remarks' => 'max:1024',
         ];
         if(strpos($this->header('referer'), route('projects.create')) !== FALSE){
-            $rules['name'] = ['required', 'max:512', function ($attribute, $value, $fail) {
+            $rules['name'] = ['required', 'max:80', function ($attribute, $value, $fail) {
                 $data = Projects::where('name', $value)->first();
                 if (!empty($data)) {
                     $fail('The project has already been registered.');
@@ -50,7 +50,7 @@ class ProjectsRequest extends FormRequest
             }];
         }else{
             $id = $this->input('id');
-            $rules['name'] = ['required', 'max:512', function ($attribute, $value, $fail) use ($id) {
+            $rules['name'] = ['required', 'max:80', function ($attribute, $value, $fail) use ($id) {
                 $data = Projects::where('name', $value)->where('id', '!=', $id)->first();
                 if (!empty($data)) {
                     $fail('The project has already been registered.');

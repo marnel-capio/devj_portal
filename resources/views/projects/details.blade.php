@@ -341,7 +341,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">
-                            Reject Laptop Link Request
+                            Rejection Reason
                         </h5>
                     </div>
                     <div class="modal-body">
