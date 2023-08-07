@@ -207,7 +207,7 @@ $(document).ready( function () {
 	 * @returns 
 	 */
 	function getDate(date, separator = '-') {
-		if (typeof date == null || date == '') {
+		if (date == null || date == '') {
 			return '';
 		}
 		date = new Date(date);
