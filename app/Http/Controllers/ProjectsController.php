@@ -44,7 +44,7 @@ class ProjectsController extends Controller
         $id = Projects::create($insertData)->id;
 
         //create logs
-        Logs::createLog("Projects", 'Project registration of ' .$insertData['name'] .'.');
+        Logs::createLog("Project", 'Project registration of ' .$insertData['name'] .'.');
 
         //add success message to session
         session(['regist_update_alert' => 'Project was successfully registered!']);
@@ -187,15 +187,16 @@ class ProjectsController extends Controller
         Projects::where('id', $id)->update($updateData);
         
         //format log
-        $log = "Project updated by manager: ";
+        $log = "Project updated by manager. Update data: {";
         foreach($updateData as $key => $value){
             if($value != $originalData[$key] && !in_array($key, ['updated_by', 'password'])){
-                $log .= "{$key}: {$originalData[$key]} > {$value}, ";
+                $log .= "'$key': '{$originalData[$key]}' > '{$value}', ";
             }
         }
         $log = rtrim($log, ", ");
+        $log .= "}";
 
-        Logs::createLog("Projects", $log);
+        Logs::createLog("Project", $log);
 
         //add success message to session
         session(['regist_update_alert' => 'Project was successfully updated!']);
@@ -218,7 +219,7 @@ class ProjectsController extends Controller
         $projectData = Projects::where('id', $linkageData->project_id)->first();
         $softwareData = Softwares::where('id', $linkageData->software_id)->first();
 
-        Logs::createLog("Projects", "Remove linkage of {$softwareData->software_name} to {$projectData->name}");
+        Logs::createLog("Project", "Remove linkage of {$softwareData->software_name} to {$projectData->name}");
 
         session(['linked_soft_alert' => 'Software was successfully removed.']);
 
@@ -265,7 +266,7 @@ class ProjectsController extends Controller
                     ]);
 
             // 5.1.2 Create log
-            Logs::createLog("Projects", 'Project Linkage Request Approval');
+            Logs::createLog("Project", 'Project Linkage Request Approval');
 
             // 5.1.3 Mail the account to be linked
             $mailData = [
@@ -294,7 +295,7 @@ class ProjectsController extends Controller
                     ->update($update);
 
             // 5.2.2 Create logs
-            Logs::createLog("Projects", 'Project Linkage Detail Update');
+            Logs::createLog("Project", 'Project Linkage Detail Update');
 
             // 5.2.3 Send mail to requestor
             $mailData = [
@@ -360,7 +361,7 @@ class ProjectsController extends Controller
                     ]);
 
             // 5.1.2 Create logs
-            Logs::createLog("Projects", 'Project Linkage Request Rejection');
+            Logs::createLog("Project", 'Project Linkage Request Rejection');
 
             // 5.1.3 Send mail to requestor
             $mailData = [
@@ -390,7 +391,7 @@ class ProjectsController extends Controller
                     ->update($update);
 
             // 5.2.2 Create logs
-            Logs::createLog("Projects", 'Project Linkage Detail Update Rejection');
+            Logs::createLog("Project", 'Project Linkage Detail Update Rejection');
 
             // 5.3.3 Send mail to requestor
             $mailData = [
