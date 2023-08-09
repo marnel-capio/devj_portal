@@ -251,8 +251,9 @@ $(document).ready( function () {
 			employee_role: $("#link_employee_form > input[name=employee_role").val(),
 		};
 		
-		$("#link_project_start_error").empty();
-		$("#link_project_end_error").empty();
+		$("#update_employee_linkage_form #link_project_start_error").empty();
+		$("#update_employee_linkage_form #link_project_end_error").empty();
+		
 
 		$.ajax({
 			type: "POST",
@@ -337,8 +338,7 @@ $(document).ready( function () {
 			_token: $("#link_software_form > input[name=_token]").val(),
 			software_id: $("#software_list > option:selected").val(),
 			project_id: $("#link_software_form > input[name=project_id]").val(),
-			remarks: $("#link_software_remarks").val(),
-			is_from_ProjectDetails: true
+			remarks: $("#link_software_remarks").val()
 		};
 
 		$.ajax({

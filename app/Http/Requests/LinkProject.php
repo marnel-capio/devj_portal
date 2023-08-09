@@ -84,7 +84,7 @@ class LinkProject extends FormRequest
     public function rules()
     {   
         $referer = $this->header('referer');
-        //get the id this will be used for page checking
+        // Get the ID. Used for page checking
     
         $slash_last_pos = strrpos($referer, '/');
         $id = substr($referer,$slash_last_pos + 1, strlen($referer) - $slash_last_pos - 1); 
@@ -92,10 +92,9 @@ class LinkProject extends FormRequest
         $rules = array();
         $isLinkEmployee = $this->input('is_employee');
         $isUpdateLinkEmployee = $this->input('is_employee_update');
-        $isFromProjectDetails = $this->input('is_from_ProjectDetails');
 
-        // Validation for: employee linking to a project. 
-        // From: employee OR project details page
+        // Validation for: 
+        // 1.   New Employee linkage. REFERRER: 'employee' OR 'project' details page
         if(strpos($this->header('referer'), route('employees.details', ['id' => $id])) !== FALSE 
             || (strpos($this->header('referer'), route('projects.details', ['id' => $id])) !== FALSE && $isLinkEmployee) ){
             $employeeId = $this->input('employee_id');
@@ -122,18 +121,28 @@ class LinkProject extends FormRequest
             ];
     
             if(!empty($projectDetails)){
+                // Validate employee's start date
                 $emprules['project_start'] = "required|date|after_or_equal:{$projectDetails->start_date}";
+                // Validate employee's end date
+                if($this->filled('project_end')){
+                    $emprules['project_end'] = "required|date|after:". $this->input('project_start');
+                }
+                
+                // If project has: end_date
                 if(!empty($projectDetails->end_date) && $projectDetails->end_date != "0000-00-00 00:00:00"){
+                    // Validate employee's start_date
                     $emprules['project_start'] = "required|date|after_or_equal:{$projectDetails->start_date}|before:{$projectDetails->end_date}";
+
+                    // Validate employee's end_date
                     if($this->filled('project_end')){
-                        $emprules['project_end'] = "date|after:{$projectDetails->start_date}|before_or_equal:{$projectDetails->end_date}";
+                        $emprules['project_end'] = "date|after:". $this->input('project_start') . "|before_or_equal:{$projectDetails->end_date}";
                     }
                 }
             }
 
             $rules = $emprules;
         }
-        // Validation For: Employee-Project linkage update in Project details page
+        //  2. Update of Employee linkage. REFERRER: 'project' details page
         else if (strpos($this->header('referer'), route('projects.details', ['id' => $id])) !== FALSE && $isUpdateLinkEmployee) {
             $projectDetails = Projects::where('id', $id)->first();
 
@@ -143,51 +152,29 @@ class LinkProject extends FormRequest
             ];
 
             if(!empty($projectDetails)){
-
-                // Validate employee's start date
+                // Validate employee's start_date
                 $rules['project_start'] = "required|date|after_or_equal:{$projectDetails->start_date}";
-                // Validate employee's end date
+                // Validate employee's end_date
                 if($this->filled('project_end')){
-                    $rules['project_end'] = "required|date|after:". $this->input('project_start');
+                    $rules['project_end'] = "date|after:". $this->input('project_start');
                 }
 
-                // If project has: end date
-                // Validate employee's start date
+                // If project has: end_date
                 if((!empty($projectDetails->end_date) && $projectDetails->end_date != "0000-00-00 00:00:00")){
-                    // Validate employee's start date
+                    // Validate employee's start_date
                     $rules['project_start'] = "required|date|after_or_equal:{$projectDetails->start_date}|before:{$projectDetails->end_date}";
-                    // Validate employee's end date
+
+                    // Validate employee's end_date
                     if($this->filled('project_end')){
-                        $rules['project_end'] = "required|date|after:". $this->input('project_start') . "|before_or_equal:{$projectDetails->end_date}";
+                        $rules['project_end'] = "date|after:". $this->input('project_start') . "|before_or_equal:{$projectDetails->end_date}";
                     }
                 }
             }
         }
         
-        // Validation for: software linkage
-        else if ((strpos($this->header('referer'), route('softwares.details', ['id' => $id])) !== FALSE) ||
-                 (strpos($this->header('referer'), route('projects.details', ['id' => $id])) !== FALSE && $isFromProjectDetails)) {
-            $softwareId = $this->input('software_id');
-            $projectDetails = Projects::where('id', $this->input('project_id'))->first();
-            $softrules = [
-                'software_id' => ['required', 'exists:softwares,id', function ($attribute, $value, $fail) {
-                    // Checks if software exists in DB
-                    $softwareData = Softwares::where('id', $value)
-                                            ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
-                    if (empty($softwareData)) {
-                        $fail('The selected software does not exist.');
-                    }
-                }],
-                'project_id' => ['required', 'exists:projects,id', function($attribute, $value, $fail) use ($softwareId) {
-                    // Checks if project exists in DB
-                    if(ProjectSoftwares::checkIfSoftwareExists($value, $softwareId)){
-                        $fail('Selected project is already linked.');
-                    }
-                }],
-                'remarks' => 'max:1024',
-            ];
-            $rules =  $softrules;
-        }
+        // 3.   New Software linkage
+        // else if ((strpos($this->header('referer'), route('softwares.details', ['id' => $id])) !== FALSE) ||
+        //          (strpos($this->header('referer'), route('projects.details', ['id' => $id])) !== FALSE && $isFromProjectDetails))
         else {
             $softwareId = $this->input('software_id');
             $projectDetails = Projects::where('id', $this->input('project_id'))->first();
