@@ -100,21 +100,19 @@ class LinkProject extends FormRequest
             $employeeId = $this->input('employee_id');
             $projectDetails = Projects::where('id', $this->input('project_id'))->first();
             $emprules = [
-                'employee_id' => ['required', 'exists:employees,id', function ($attribute, $value, $fail) {
-                    // Checks if employee exists in DB
-                    $employeeData = Employees::where('id', $value)
-                                            ->where('active_status', 1)
-                                            ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
-
-                    if (empty($employeeData)) {
-                        $fail('The selected employee does not exist.');
-                    }
-                }],
-                'project_id' => ['required', 'exists:projects,id', function($attribute, $value, $fail) use ($employeeId) {
-                    if(EmployeesProjects::checkIfProjectIsOngoing($value, $employeeId)){
-                        $fail('Employee is already a member of the selected project.');
-                    }
-                }],
+                'employee_id' => ['required', 
+                                function ($attribute, $value, $fail) {
+                                        if (empty(Employees::getActiveEmployeeDetails($value))) {
+                                            $fail('The selected employee does not exist.');
+                                        }
+                                }],
+                'project_id' => ['required', 
+                                'exists:projects,id', 
+                                function($attribute, $value, $fail) use ($employeeId) {
+                                    if(EmployeesProjects::checkIfProjectIsOngoing($value, $employeeId)){
+                                        $fail('Employee is already a member of the selected project.');
+                                    }
+                                }],
     
                 'project_role' => 'required|in:1,2,3',
                 'remarks' => 'max:1024,'

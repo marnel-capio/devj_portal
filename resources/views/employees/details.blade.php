@@ -502,7 +502,7 @@
                                     <span id="error-lp-proj-start"></span>
                                 </div>
                                 <div class="col-6 g-3 form-floating">
-                                    <input type="date" name="project_end_date" class="form-control" id="project-end" required>
+                                    <input type="date" name="project_end_date" class="form-control" id="project-end">
                                     <label for="project-end" class="text-center">End Date</label>
                                     <span id="error-lp-proj-end"></span>
                                 </div>

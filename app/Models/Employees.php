@@ -96,4 +96,18 @@ class Employees extends Authenticatable
                     ->get()
                     ->toArray();
     }
+
+    /**
+     * Get the active, approved, or employee with pending update.
+     *
+     * @param [type] $id
+     * @return array
+     */
+    static function getActiveEmployeeDetails($id){
+        return self::where('id', $id)
+                ->where('active_status', 1)
+                ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+                ->get()
+                ->toArray();
+    }
 }
