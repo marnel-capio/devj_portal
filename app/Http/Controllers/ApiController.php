@@ -207,7 +207,7 @@ class ApiController extends Controller
                 $this->sendMailForEmployeeUpdate($employee->email, $mailData, config('constants.MAIL_EMPLOYEE_PROJECT_LINK_BY_MANAGER'));
             }
             $message = 'Added ' . $project->name . ' Project Successfully';
-            $logMessage = "Project is linked to {$employee->full_name}";
+            $logMessage = "Project '$project->name'  is linked to {$employee->full_name}";
         }else{
             // If an employee edits his own data and is not the manager
 
@@ -907,7 +907,7 @@ class ApiController extends Controller
             }
 
             $message = 'Employee has been successfully linked.';
-            $logMessage = "{$project->name} project is linked to {$employee->full_name}.";
+            $logMessage = "Linked {$employee->full_name} to {$project->name}.";
         }else{
             // if an employee edits his own data and is not a manager
             $insertData['approved_status'] = config('constants.APPROVED_STATUS_PENDING');
@@ -927,13 +927,13 @@ class ApiController extends Controller
             Mail::to(Employees::getEmailOfManagers())->send(new Project($mailData, config('constants.MAIL_PROJECT_EMPLOYEE_LINKAGE_REQUEST')));
 
             $message = 'Request for linkage has been sent.';
-            if(Auth::user()->id != $employee->id)
-            {
-                $logMessage = "{$requestor} requests to link {$project->name} project to {$employee->full_name}.";
-            } else {
-                $logMessage = "{$requestor} requests to link {$project->name} project.";
-            }
-            
+            // if(Auth::user()->id != $employee->id)
+            // {
+            //     $logMessage = "{$requestor} requests to link {$project->name} project to {$employee->full_name}.";
+            // } else {
+            //     $logMessage = "{$requestor} requests to link {$project->name} project.";
+            // }
+            $logMessage = "Linked {$employee->full_name} to project: {$project->name}.";
         }
         
         Logs::createLog("Project", $logMessage);
@@ -945,6 +945,15 @@ class ApiController extends Controller
                                 , 200);
     }
 
+
+
+    /**
+     * Update employee's project linkage data
+     * Referrer: project details page -> Project Members table
+     *
+     * @param LinkProject $request
+     * @return response()->json()
+     */
     public function updateEmployeeProjectLinkage (LinkProject $request) {
         $request->validated();
 
@@ -1018,7 +1027,7 @@ class ApiController extends Controller
             $message = 'Request for linkage has been sent.';
         }
         
-        Logs::createLog("Employee", "Updated the linkage data of {$employee->first_name} {$employee->last_name} to {$project->name}");
+        Logs::createLog("Project", "Updated the linkage data of {$employee->first_name} {$employee->last_name} to {$project->name}");
 
         return response()->json(['success' => true, 
                                     'message' => $message, 

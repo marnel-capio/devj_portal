@@ -105,6 +105,7 @@ Route::middleware(['auth', 'web', 'isActive'])->group(function(){
         Route::post('/removeSoftware', 'removeLinkedSoftwareToProject')->name('projects.removeSoftware');
         Route::get('/{id}/request', 'detailview')->name('projects.request')->whereNumber('id');
         Route::post('/storeLinkage', 'storeLinkage')->name('projects.storeLinkage');
+        Route::post('/approveLinkage', 'approveLinkage')->name('projects.approveLinkage');
         Route::post('/rejectLinkage', 'rejectLinkage')->name('projects.rejectLinkage');
 
     });

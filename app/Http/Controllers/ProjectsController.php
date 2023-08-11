@@ -226,11 +226,17 @@ class ProjectsController extends Controller
         return Redirect::back();
     }
 
-    // Function for approving linkage requests: New Linkage or Linkage Update
+    /**
+     * Store linkage detail.
+     * 1. Creating linkage request: New Linkage or Linkage Update
+     * 2. Saving updated data by manager
+     *
+     * @return bool
+     */
     public function storeLinkage(Request $request){
         $id = $request->input('id');
 
-        // 1. Validate IF ID is included in the request. ELSE, show error page
+        // Validate IF ID is included in the request. ELSE, show error page
         $error = $this->validateRequest($id, self::PROJECT_LINK_REQUEST);
         if($error){
             return view('error.requestError')
@@ -240,21 +246,15 @@ class ProjectsController extends Controller
         }
 
         $projectLinkDetails = EmployeesProjects::where('id', $id)->first();
-
-        // 2. Get project data
-        $projectData = Projects::where('id', $projectLinkDetails->project_id)->first();
-        
-        // 3. Get mail recipient
+        $projectData = Projects::where('id', $projectLinkDetails->project_id)->first();        
         $recipient = Employees::where('id', $projectLinkDetails->employee_id)->first();
-        
-        // 4. Get account to be linked
         if($projectLinkDetails->employee_id == $projectLinkDetails->updated_by){
             $requestor = $recipient;
         }else{
             $requestor = Employees::where('id', $projectLinkDetails->updated_by)->first();
         }
 
-        // 5. Verify if status is Pending for approval
+        // 5. If status is Pending for approval
         if($projectLinkDetails->approved_status == config('constants.APPROVED_STATUS_PENDING')){
 
             // 5.1.1 Update the data to: Approved
@@ -266,7 +266,7 @@ class ProjectsController extends Controller
                     ]);
 
             // 5.1.2 Create log
-            Logs::createLog("Project", 'Project Linkage Request Approval');
+            Logs::createLog("Project", "Updated the linkage data of $recipient->first_name $recipient->last_name to $projectData->name.");
 
             // 5.1.3 Mail the account to be linked
             $mailData = [
@@ -295,7 +295,8 @@ class ProjectsController extends Controller
                     ->update($update);
 
             // 5.2.2 Create logs
-            Logs::createLog("Project", 'Project Linkage Detail Update');
+            // Branches going here: Requested by admin/engineer approved by manager.
+            Logs::createLog("Project", "Linked $recipient->first_name $recipient->last_name to $projectData->name.");
 
             // 5.2.3 Send mail to requestor
             $mailData = [
@@ -319,9 +320,13 @@ class ProjectsController extends Controller
         return Redirect::back();
     }
 
-    
-    public function rejectLinkage(Request $request){
+
+
+    // Function for 
+    // 1. approving linkage requests: New Linkage or Linkage Update
+    public function approveLinkage(Request $request){
         $id = $request->input('id');
+        $alert = "";
 
         // 1. Validate IF ID is included in the request. ELSE, show error page
         $error = $this->validateRequest($id, self::PROJECT_LINK_REQUEST);
@@ -333,25 +338,105 @@ class ProjectsController extends Controller
         }
 
         $projectLinkDetails = EmployeesProjects::where('id', $id)->first();
-        $reason = $request->input('reason');
 
-        // 2. Get project data
         $projectData = Projects::where('id', $projectLinkDetails->project_id)->first();
-
-        // 3. Get mail recipient
         $recipient = Employees::where('id', $projectLinkDetails->employee_id)->first();
-
-        // 4. Get requestor
         if($projectLinkDetails->employee_id == $projectLinkDetails->updated_by){
             $requestor = $recipient;
         }else{
             $requestor = Employees::where('id', $projectLinkDetails->updated_by)->first();
         }
 
-        // 5. Verify if status is Pending for approval
+        // Approve request for: NEW EMPLOYEE-PROJECT LINKAGE
         if($projectLinkDetails->approved_status == config('constants.APPROVED_STATUS_PENDING')){
 
-            // 5.1.1 Update the data to: Reject
+            EmployeesProjects::where('id', $id)
+                    ->update([
+                        'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
+                        'updated_by' => Auth::user()->id,
+                        'approved_by' => Auth::user()->id,
+                    ]);
+
+            Logs::createLog("Project", "Approved the linkage of $recipient->first_name $recipient->last_name to $projectData->name.");
+
+            $mailData = [
+                'link' => route('projects.details', ['id' => $projectLinkDetails->project_id]),
+                'firstName' => $recipient->first_name,
+                'currentUserId' => Auth::user()->id,
+                'module' => "Project",
+                'requestor' => !empty($requestor) ? $requestor->first_name .' ' .$requestor->last_name : 'unknown',
+                'assignee' => $recipient->first_name .' ' .$recipient->last_name,
+                'project_name' => $projectData->name,
+            ];
+            Mail::to($recipient->email)->send(new MailProjects($mailData, config('constants.MAIL_PROJECT_DETAIL_UPDATE_APPROVAL')));
+
+            $alert = 'Successfully approved the project linkage.';
+
+        } 
+
+        // Approve request for: UPDATE DATA OF EMPLOYEE-PROJECT LINKAGE
+        else {
+            // Save temporary data
+            $update = json_decode($projectLinkDetails->update_data, true);
+            $update['updated_by'] = Auth::user()->id;
+            $update['approved_by'] = Auth::user()->id;
+            $update['update_data'] = NULL;
+            $update['approved_status'] = config('constants.APPROVED_STATUS_APPROVED');
+
+            EmployeesProjects::where('id', $id)
+                    ->update($update);
+
+            // Create logs
+            Logs::createLog("Project", "Approved the linkage update of $recipient->first_name $recipient->last_name to $projectData->name.");
+
+            // Send mail to requestor
+            $mailData = [
+                'link' => route('projects.details', ['id' => $projectLinkDetails->project_id]),
+                'firstName' => $recipient->first_name,
+                'currentUserId' => Auth::user()->id,
+                'module' => "Project",
+                'requestor' => !empty($requestor) ? $requestor->first_name .' ' .$requestor->last_name : 'unknown',
+                'assignee' => $recipient->first_name .' ' .$recipient->last_name,
+                'project_name' => $projectData->name,
+            ];
+
+            Mail::to($recipient->email)->send(new MailProjects($mailData, config('constants.MAIL_PROJECT_NEW_LINKAGE_BY_NON_MANAGER_APPROVAL')));
+
+            // Alert message to be displayed to Request table in Project view
+            $alert = 'Successfully approved the project linkage detail update.';
+        }
+
+        session(['ela_alert'=> $alert]);
+        return Redirect::back();
+    }
+
+    
+    public function rejectLinkage(Request $request){
+        $id = $request->input('id');
+
+        // Validate IF ID is included in the request. ELSE, show error page
+        $error = $this->validateRequest($id, self::PROJECT_LINK_REQUEST);
+        if($error){
+            return view('error.requestError')
+                        ->with([
+                            'error' => $error
+                        ]);
+        }
+
+        $projectLinkDetails = EmployeesProjects::where('id', $id)->first();
+        $reason = $request->input('reason');
+
+        $projectData = Projects::where('id', $projectLinkDetails->project_id)->first();
+        $recipient = Employees::where('id', $projectLinkDetails->employee_id)->first();
+        if($projectLinkDetails->employee_id == $projectLinkDetails->updated_by){
+            $requestor = $recipient;
+        }else{
+            $requestor = Employees::where('id', $projectLinkDetails->updated_by)->first();
+        }
+
+        // Reject request for: NEW EMPLOYEE-PROJECT LINKAGE
+        if($projectLinkDetails->approved_status == config('constants.APPROVED_STATUS_PENDING')){
+
             EmployeesProjects::where('id', $id)
                     ->update([
                         'approved_status' => config('constants.APPROVED_STATUS_REJECTED'),
@@ -360,10 +445,8 @@ class ProjectsController extends Controller
                         'approved_by' => Auth::user()->id,
                     ]);
 
-            // 5.1.2 Create logs
-            Logs::createLog("Project", 'Project Linkage Request Rejection');
+            Logs::createLog("Project", "Rejected the linkage of $recipient->first_name $recipient->last_name to $projectData->name.");
 
-            // 5.1.3 Send mail to requestor
             $mailData = [
                 'link' => route('projects.details', ['id' => $projectLinkDetails->project_id]),
                 'reason' => $reason,
@@ -377,10 +460,12 @@ class ProjectsController extends Controller
 
             Mail::to($recipient->email)->send(new MailProjects($mailData, config('constants.MAIL_PROJECT_DETAIL_UPDATE_REJECTION')));
 
-            // 5.1.4 Alert message to be displayed to Request table in Project view
             $alert = 'Rejected project linkage.';
-        }else{
-            // 5.2.1 Reset the data
+        }
+
+        // Reject request for: UPDATE DATA OF EMPLOYEE-PROJECT LINKAGE
+        else {
+            // Reset the data
             $update['updated_by'] = Auth::user()->id;
             $update['approved_by'] = Auth::user()->id;
             $update['reasons'] = $reason;
@@ -390,10 +475,10 @@ class ProjectsController extends Controller
             EmployeesProjects::where('id', $id)
                     ->update($update);
 
-            // 5.2.2 Create logs
-            Logs::createLog("Project", 'Project Linkage Detail Update Rejection');
+            // Create logs
+            Logs::createLog("Project", "Rejected the linkage update of $recipient->first_name $recipient->last_name to $projectData->name.");
 
-            // 5.3.3 Send mail to requestor
+            // Send mail to requestor
             $mailData = [
                 'link' => route('projects.details', ['id' => $projectLinkDetails->project_id]),
                 'reason' => $reason,
@@ -407,11 +492,11 @@ class ProjectsController extends Controller
 
             Mail::to($recipient->email)->send(new MailProjects($mailData, config('constants.MAIL_PROJECT_NEW_LINKAGE_BY_NON_MANAGER_REJECTION')));
             
-            // 5.2.4 Alert message to be displayed to Request table in Project view
-            $alert = 'Rejected the detail update of project linkage.';    
+            // Alert message to be displayed to Request table in Project view
+            $alert = 'Rejected the request to update project linkage.';    
         }
 
-        // 6. Save alert message to session
+        // Save alert message to session
         session(['elr_alert'=> $alert]);
         return Redirect::back();
     }

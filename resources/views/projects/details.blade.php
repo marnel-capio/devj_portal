@@ -316,11 +316,11 @@
                                 
                                 @if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE') )
                                     <td>
-                                        <button class="btn btn-link btn-sm text-decoration-none reject-link-btn" data-bs-target="#rejectLinkageRequestModal" data-bs-toggle="modal" data-linkid="{{ $member['id'] }}">
+                                        <button class="btn btn-link btn-sm text-decoration-none reject-link-btn" id="reject_btn" data-bs-target="#rejectLinkageRequestModal" data-bs-toggle="modal" data-linkid="{{ $member['id'] }}">
                                             <span class="text-danger">Reject</span>
                                         </button>
                                         /
-                                        <button class="btn btn-link btn-sm text-decoration-none approve-link-btn" form="link-request-form" data-linkid="{{ $member['id'] }}">
+                                        <button class="btn btn-link btn-sm text-decoration-none approve-link-btn" id="approve_btn" form="link-request-form" data-linkid="{{ $member['id'] }}">
                                             <span class="text-success">Approve</span>
                                         </button>
                                     </td>
@@ -364,7 +364,7 @@
                 </div>
             </div>
         </div>
-        <form action="{{ route('projects.storeLinkage') }}" id="link-request-form" method="POST">
+        <form action="{{ route('projects.approveLinkage') }}" id="link-request-form" method="POST">
             @csrf
             <input type="text" hidden name="id" value="" id="approve-link-in">
         </form>
