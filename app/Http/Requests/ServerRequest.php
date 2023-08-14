@@ -97,13 +97,13 @@ class ServerRequest extends FormRequest
             'os_type' => 'in:1,2',
             'remarks' => 'max:1024',
             //memory usage details
-            'memory_used' => 'required|decimal|gte:0',
+            'memory_used' => 'required|decimal:0,2|gte:0',
             'memory_used_unit' => 'required|in:1,2,3,4,5',
-            'memory_used_percentage' => 'required|decimal|gte:0|lte:100',
-            'memory_free' => 'required|decimal|gte:0',
+            'memory_used_percentage' => 'required|decimal:0,2|gte:0|lte:100',
+            'memory_free' => 'required|decimal:0,2|gte:0',
             'memory_free_unit' => 'required|in:1,2,3,4,5',
-            'memory_free_percentage' => 'required|decimal|gte:0|lte:100',
-            'memory_total' => 'required|decimal|gt:0',
+            'memory_free_percentage' => 'required|decimal:0,2|gte:0|lte:100',
+            'memory_total' => 'required|decimal:0,2|gt:0',
             'memory_total_unit' => 'required|in:1,2,3,4,5',
             'hdd' => 'min:1',
         ];
@@ -111,25 +111,25 @@ class ServerRequest extends FormRequest
         //cpu usage
         if ($this->input('os_type') == 1) {
             $rules = array_merge($rules, [
-                'us' => 'required|decimal|gte:0|lte:100',
-                'ni' => 'required|decimal|gte:0|lte:100',
-                'sy' => 'required|decimal|gte:0|lte:100',
+                'us' => 'required|decimal:0,2|gte:0|lte:100',
+                'ni' => 'required|decimal:0,2|gte:0|lte:100',
+                'sy' => 'required|decimal:0,2|gte:0|lte:100',
             ]);
         } else {
-            $rules['other_os_percentage'] = 'required|decimal';
+            $rules['other_os_percentage'] = 'required|decimal:0,2';
         }
 
         //hdd_usage
         for ( $i = 1 ; $i <= $this->input('partitions_count') ; $i++ ) {
             $rules = array_merge($rules, [
                 'hdd.' .$i .'.partition_name' => 'required|max:80',
-                'hdd.' .$i .'.used' => 'required|decimal|gte:0',
+                'hdd.' .$i .'.used' => 'required|decimal:0,2|gte:0',
                 'hdd.' .$i .'.used_unit' => 'required|in:1,2,3,4,5',
-                'hdd.' .$i .'.used_percentage' => 'required|decimal|gte:0|lte:100',
-                'hdd.' .$i .'.free' => 'required|decimal|gte:0',
+                'hdd.' .$i .'.used_percentage' => 'required|decimal:0,2|gte:0|lte:100',
+                'hdd.' .$i .'.free' => 'required|decimal:0,2|gte:0',
                 'hdd.' .$i .'.free_unit' => 'required|in:1,2,3,4,5',
-                'hdd.' .$i .'.free_percentage' => 'required|decimal|gte:0|lte:100',
-                'hdd.' .$i .'.total' => 'required|decimal|gt:0',
+                'hdd.' .$i .'.free_percentage' => 'required|decimal:0,2|gte:0|lte:100',
+                'hdd.' .$i .'.total' => 'required|decimal:0,2|gt:0',
                 'hdd.' .$i .'.total_unit' => 'required|in:1,2,3,4,5',
             ]);
         }
