@@ -28,7 +28,7 @@ $(document).ready(function () {
 
     clearFilter();
 
-    $("#server-status").on('change', function () {
+    $(".server-status").on('change', function () {
         var filterVal = $("input[name=serverStatus]:checked").val();
         
         if (filterVal == 1) { 
