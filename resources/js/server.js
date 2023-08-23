@@ -5,7 +5,7 @@ const SERVER_STATUS_3_MAX_VALUE = 100;
 const SERVER_STATUS_NAME_1 = 'Normal';
 const SERVER_STATUS_NAME_2 = 'Stable';
 const SERVER_STATUS_NAME_3 = 'Critical';
-const KB_TO_BYTES = 1024; //binary system is used 
+const KB_TO_BYTES = 1024; // Binary system is used 
 const SERVER_LIST_STATUS_INDEX = 6;
 
 $(document).ready(function () {
@@ -13,7 +13,7 @@ $(document).ready(function () {
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 
-//******************************************** Server List ********************************************/
+// ******************************************** Server List ********************************************/
 
     var serverList = $("#server_list").DataTable({
         "stateSave": true,
@@ -56,14 +56,14 @@ $(document).ready(function () {
         serverList.search('').draw();
     }
     
-    //server deletion
+    // Server deletion
     $('#server_list').on('click', '.delete_server', function (e) {
-        //get id and server name
+        // Get id and server name
         let id = $(this).data('id');
         let serverName = $(this).data('server_name');
 
         if ( confirm(`Are you sure you want to delete ${serverName}?`) ) {
-            //delete server
+            // Delete server
             console.log('delete server');
             $.ajax({
                 type: "GET",
@@ -77,7 +77,7 @@ $(document).ready(function () {
                 if (data.success) {
                     location.reload();
                 } else {
-                    //display error
+                    // Display error
                     $(`<div class="alert alert-danger" role="alert">${data.error}</div>`).insertBefore('.container-list-table');
                 }
             }).fail( function () {
@@ -92,16 +92,16 @@ $(document).ready(function () {
 
 
 
-//******************************************** Server Regist/Update ********************************************/
+// ******************************************** Server Regist/Update ********************************************/
 
-    //===================================================HDD USAGE===================================================
+    // ===================================================HDD USAGE===================================================
 
     /**
      * add new partition
      */
     $("#add_partition").click(function (e) {
         
-        //get last partition to clone
+        // Get last partition to clone
         var elementToClone = $(".partition_section").last();
 
         if($(".partition_section").length == 1){
@@ -111,14 +111,14 @@ $(document).ready(function () {
         var clonedElement = elementToClone.clone();
 
         clonedElement.find('[id]').each(function(){
-            //update indices in ids
+            // Update indices in ids
             $(this).attr('id', $(this).attr('id').replace(/(\d+)/, function(str, substr){return (parseInt(substr) + 1)}));
         });
         clonedElement.find('[name]').each(function(){
-            //increment index
+            // Increment index
             $(this).attr('name', $(this).attr('name').replace(/(\d+)/, function(str, substr){return (parseInt(substr) + 1)}));
 
-            //reset inputs
+            // Reset inputs
             if($(this).attr('type') == 'radio') {
                 if($(this).attr('value') == 1){
                     $(this).prop('checked', true);
@@ -128,26 +128,26 @@ $(document).ready(function () {
             }else if($(this).attr('type') == 'text'){
                 $(this).val('');
             }else{
-                //unit dropdown
+                // Unit dropdown
                 $(this).val(1);
             }
 
-            //enable size inputs, disable inputs for oercentage
         });
+        // Enable size inputs, disable inputs for percentage
         clonedElement.find('[for]').each(function(){
-            //update indices in for attribute
+            // Update indices in for attribute
             $(this).attr('for', $(this).attr('for').replace(/(\d+)/, function(str, substr){return (parseInt(substr) + 1)}));
         });
 
-        //remove errors in cloned elements
+        // Remove errors in cloned elements
         clonedElement.find('.text-danger').each( function () {
             $(this).html('');
         });
 
-        //add new element
+        // Add new element
         elementToClone.after(clonedElement);
 
-        //get input index
+        // Get input index
         var partitionIndex = parseInt(clonedElement.find('.partition_name').attr('id').match(/\d+/));
         enableDisableHDDInputs(partitionIndex, true);
 
@@ -167,7 +167,7 @@ $(document).ready(function () {
     hideRemoveButton();
     function hideRemoveButton(){
         if($(".partition_section").length == 1){
-            //hide remove button if only 1 hdd partition is displayed
+            // Hide remove button if only 1 hdd partition is displayed
             $(".partition_section .remove_partition").hide();
         }else{
             $(".partition_section .remove_partition").show();
@@ -180,15 +180,15 @@ $(document).ready(function () {
             var partition = $(this);
 
             partition.find('[id]').each(function(){
-                //update indices in ids
+                // Update indices in ids
                 $(this).attr('id', $(this).attr('id').replace(/(\d+)/, index));
             });
             partition.find('[name]').each(function(){
-                //update indices in inputs
+                // Update indices in inputs
                 $(this).attr('name', $(this).attr('name').replace(/(\d+)/, index));
             });
             partition.find('[for]').each(function(){
-                //update indices in labels
+                // Update indices in labels
                 $(this).attr('for', $(this).attr('for').replace(/(\d+)/, index));
             });
 
@@ -211,25 +211,25 @@ $(document).ready(function () {
         partitionIndex = parseInt(partitionIndex);
 
         if($("#hdd_size_radio_" + partitionIndex).is(':checked')){
-            enableDisableHDDInputs(partitionIndex);
+            enableDisableHDDInputs(partitionIndex, true);
         } else if($("#hdd_percentage_radio_" + partitionIndex).is(':checked')){
             enableDisableHDDInputs(partitionIndex, false);
         }
     }
 
-    function enableDisableHDDInputs(pIndex, sizeSelected = true) {
-        var sizeProp = sizeSelected ? false : true;
-        var percentProp = sizeSelected ? true : false;
+    function enableDisableHDDInputs(pIndex, isSizeSelected = true) {
+        var sizeProp = isSizeSelected ? false : true;
+        var percentProp = isSizeSelected ? true : false;
 
-        //percentage inputs
+        // Percentage inputs
         $("#hdd_used_percentage_" + pIndex).prop('disabled', percentProp);
-        $("#hdd_free_percentage_" + pIndex).prop('disabled', percentProp);
+        $("#hdd_free_percentage_" + pIndex).prop('disabled', true);
 
-        //size inputs
+        // Size inputs
         $("#hdd_used_" + pIndex).prop('disabled', sizeProp);
         $("#hdd_used_unit_" + pIndex).prop('disabled', sizeProp);
-        $("#hdd_free_" + pIndex).prop('disabled', sizeProp);
-        $("#hdd_free_unit_" + pIndex).prop('disabled', sizeProp);
+        $("#hdd_free_" + pIndex).prop('disabled', true);
+        $("#hdd_free_unit_" + pIndex).prop('disabled', true);
     }
 
     /**
@@ -242,28 +242,25 @@ $(document).ready(function () {
 
     function checkAndSetMemoryInputOption () {
         if($("#memory_size_radio").is(':checked')){
-            enableDisableMemoryInputs();
+            enableDisableMemoryInputs(true);
         } else if($("#memory_percentage_radio").is(':checked')){
             enableDisableMemoryInputs(false);
         }
     }
 
-    function enableDisableMemoryInputs(sizeSelected = true) {
-        var sizeProp = sizeSelected ? false : true;
-        var percentProp = sizeSelected ? true : false;
+    function enableDisableMemoryInputs(isSizeSelected = true) {
+        var sizeProp = isSizeSelected ? false : true;
+        var percentProp = isSizeSelected ? true : false;
 
-        //percentage inputs
-        $("#memory_percentage_section").find('input[type=text]').each( function () { 
-            $(this).prop('disabled', percentProp);
-        });
+        // Percentage inputs
+        $("#memory_used_percentage").prop('disabled', percentProp);
+        $("#memory_free_percentage").prop('disabled', true);
 
-        //used inputs
-        $("#memory_size_section").find('input[type=text]').each( function () { 
-            $(this).prop('disabled', sizeProp);
-        });
-        $("#memory_size_section").find('select').each( function () { 
-            $(this).prop('disabled', sizeProp);
-        });
+        // Size inputs
+        $("#memory_used").prop('disabled', sizeProp);
+        $("#memory_used_unit").prop('disabled', sizeProp);
+        $("#memory_free").prop('disabled', true);
+        $("#memory_free_unit").prop('disabled', true);
     }
 
     /**
@@ -276,26 +273,26 @@ $(document).ready(function () {
 
     function checkAndSetOsType () {
         if($("#linux_radio").is(':checked')){
-            enableDisableCPUInputs();
+            enableDisableCPUInputs(true);
         } else if($("#other_os_radio").is(':checked')){
             enableDisableCPUInputs(false);
         }
     }
 
-    function enableDisableCPUInputs(linuxSelected = true) {
-        var linuxProp = linuxSelected ? false : true;
-        var othersProp = linuxSelected ? true : false;
+    function enableDisableCPUInputs(isLinuxSelected = true) {
+        var linuxProp = isLinuxSelected ? false : true;
+        var othersProp = isLinuxSelected ? true : false;
 
-        //linux inputs
+        // Linux inputs
         $("#linux_usage").find('input[type=text]').each( function() {
             $(this).prop('disabled', linuxProp);
         });
 
-        //others inputs
+        // Others inputs
         $("input[name=other_os_percentage").prop('disabled', othersProp);
     }
 
-    //Values calculations/conversions for HDD usage and Memory usage and CPU Usage
+    // Values calculations/conversions for HDD usage and Memory usage and CPU Usage
 
     /**
      * HDD Status Calculation
@@ -339,17 +336,17 @@ $(document).ready(function () {
             var totalValueInBytes = convertToBytes(totalValue, totalUnit);
 
             if (parent.find('.hdd_size_radio').is(':checked') && parent.find('.hdd_used').val() != '' && parent.find('.hdd_used_unit').val() != '') {
-                //get the memory values for calculation
+                // Get the memory values for calculation
                 var useUnit = getFloatValueForHDD(parent.find('.hdd_used_unit').val());
                 var useValueInBytes = convertToBytes(getFloatValueForHDD(parent.find('.hdd_used').val()), useUnit);
                 var freeUnit = useUnit;
                 var freeValue = getFreeSizeValue(totalValueInBytes, useValueInBytes, freeUnit);
 
-                //set value of free size
+                // Set value of free size
                 parent.find('.hdd_free_unit > option[value=' + useUnit + ']').prop('selected', true);
                 parent.find('.hdd_free').val(freeValue);
 
-                //set value of percentage
+                // Set value of percentage
                 percentage = parseFloat(((useValueInBytes *  100)/ totalValueInBytes)).toFixed(2);
                 var freePercentage = parseFloat(100 - percentage).toFixed(2);
                 parent.find('.hdd_used_percentage').val(percentage);
@@ -358,19 +355,19 @@ $(document).ready(function () {
             } else if (parent.find('.hdd_percentage_radio').is(':checked') && parent.find('.hdd_used_percentage').val() != ''){
 
                 percentage = parseFloat(parent.find('.hdd_used_percentage').val().toString());
-                //set value of free percentage
+                // Set value of free percentage
                 var freePercentage = parseFloat(100 - percentage).toFixed(2);
                 parent.find('.hdd_free_percentage').val(freePercentage); 
 
-                //set unit of free size and used size
+                // Set unit of free size and used size
                 parent.find('.hdd_free_unit > option[value=' + totalUnit + ']').prop('selected', true);
                 parent.find('.hdd_used_unit > option[value=' + totalUnit + ']').prop('selected', true);
 
                 
-                //calculate the used and free size
+                // Calculate the used and free size
                 var useValue = ((percentage * totalValue) / 100).toFixed(2);
                 var freeValue = (totalValue - useValue).toFixed(2);
-                //set value on screen
+                // Set value on screen
                 parent.find('.hdd_used').val(useValue);
                 parent.find('.hdd_free').val(freeValue);
             }
@@ -390,9 +387,9 @@ $(document).ready(function () {
 
             if (partition.find('.hdd_total').val() != '' && partition.find('.hdd_total_unit').val() != '' 
                 && partition.find('.hdd_used').val() != '' && partition.find('.hdd_used_unit').val() != '') {
-                    //convert total hdd size to Bytes
+                    // Convert total hdd size to Bytes
                     totalValueInBytes = convertToBytes(getFloatValueForHDD(partition.find('.hdd_total').val()), getFloatValueForHDD(partition.find('.hdd_total_unit').val()));
-                    //convert parition usage size to Bytes
+                    // Convert parition usage size to Bytes
                     useValueInBytes = convertToBytes(getFloatValueForHDD(getFloatValueForHDD(partition.find('.hdd_used').val())), getFloatValueForHDD(partition.find('.hdd_used_unit').val()));
 
                     hddTotalSummation += totalValueInBytes;
@@ -401,11 +398,11 @@ $(document).ready(function () {
         });
 
         if (hddTotalSummation != 0) {
-            //calculate total hdd usage
+            // Calculate total hdd usage
             var totalUsagePercentage = (hddUsedSummation / hddTotalSummation) * 100;
             totalUsagePercentage = totalUsagePercentage.toFixed(2);  
 
-            //get status
+            // Get status
             changeStatusBasedOnUsage($("#hdd_status"), $("input[name=hdd_status]"), totalUsagePercentage);
         }
 
@@ -440,13 +437,13 @@ $(document).ready(function () {
 
     function calculateAndSetCPUStatus(){
         var percentage;
-        //get percentage
+        // Get percentage
         if ($("#other_os_radio").is(':checked') && $("input[name=other_os_percentage]").val() != ''){
             percentage = getFloatValue($("input[name=other_os_percentage]"));
         } else if ($("#linux_radio").is(':checked')  && ($("#us").val() != '' || $("#ni").val() != '' || $("#sy").val() != '')) {
             percentage = (getFloatValue($("#us")) + getFloatValue($("#ni")) + getFloatValue($("#sy")))/3;
         }
-        //get status
+        // Get status
         changeStatusBasedOnUsage($("#cpu_status"), $("input[name=cpu_status]"), percentage);
     }
 
@@ -484,17 +481,17 @@ $(document).ready(function () {
 
             if ($("#memory_size_radio").is(':checked') && $("#memory_used").val() != '' && $("#memory_used_unit").val() != '') {
 
-                //get the memory values for calculation
+                // Get the memory values for calculation
                 var useUnit = getFloatValue($("#memory_used_unit > option:selected"));
                 var useValueInBytes = convertToBytes(getFloatValue($("#memory_used")), useUnit);
                 var freeUnit = useUnit;
                 var freeValue = getFreeSizeValue(totalValueInBytes, useValueInBytes, freeUnit);
 
-                //calculate and set value of free usage
-                $("#memory_free_unit > option[value=" + useUnit + "]").prop('selected', true);  //set the unit of free size to the same unit with usage size
+                // Calculate and set value of free usage
+                $("#memory_free_unit > option[value=" + useUnit + "]").prop('selected', true);  // Set the unit of free size to the same unit with usage size
                 $("input[name=memory_free]").val(freeValue);
 
-                //set value of memory percentage
+                // Set value of memory percentage
                 percentage = parseFloat(((useValueInBytes *  100)/ totalValueInBytes)).toFixed(2);
                 var freePercentage = parseFloat(100 - percentage).toFixed(2);
                 $("input[name=memory_used_percentage]").val(percentage);
@@ -502,29 +499,29 @@ $(document).ready(function () {
 
             } else if ($("#memory_percentage_radio").is(':checked') && $("#memory_used_percentage").val() != '') {
                 percentage = parseFloat($("#memory_used_percentage").val().toString());
-                //set value of free percentage
+                // Set value of free percentage
                 var freePercentage = parseFloat(100 - percentage).toFixed(2);
                 $("#memory_free_percentage").val(freePercentage);
 
-                //set unit of free size and used size
+                // Set unit of free size and used size
                 $("#memory_free_unit option[value=" + totalUnit + "]").prop('selected', true);
                 $("#memory_used_unit option[value=" + totalUnit + "]").prop('selected', true);
 
-                //calculate the used and free size
+                // Calculate the used and free size
                 var useValue = ((percentage * totalValue) / 100).toFixed(2);
                 var freeValue = (totalValue - useValue).toFixed(2);
 
-                //set value on screen
+                // Set value on screen
                 $("#memory_used").val(useValue);
                 $("#memory_free").val(freeValue);
             }
 
-            //get status
+            // Get status
             changeStatusBasedOnUsage($("#memory_status"), $("input[name=memory_status]"), percentage);
         }
     }
     
-//******************************************** Common Functions ********************************************/
+// ******************************************** Common Functions ********************************************/
 
     /**
      * Returns the equivalent size in Bytes
@@ -563,15 +560,15 @@ $(document).ready(function () {
 
         if (typeof percentage !== 'undefined' && (Number.isInteger(percentage) || percentage.toString().match(/\d+[.]?\d+/) !== null)) {
             if (percentage <= SERVER_STATUS_1_MAX_VALUE) {
-                //Normal
+                // Normal
                 statusSelector.text(SERVER_STATUS_NAME_1).removeClass("text-danger text-primary").addClass("text-black");
                 inputSelector.val(1)
             }else if (percentage <= SERVER_STATUS_2_MAX_VALUE) {
-                //Stable
+                // Stable
                 statusSelector.text(SERVER_STATUS_NAME_2).removeClass("text-danger text-black").addClass("text-primary");
                 inputSelector.val(2)
             }else {
-                //Critical
+                // Critical
                 statusSelector.text(SERVER_STATUS_NAME_3).removeClass("text-black text-primary").addClass("text-danger");
                 inputSelector.val(3)
             }
@@ -585,7 +582,7 @@ $(document).ready(function () {
      * enable all the fields on screen before form submission
      */
     function enableAllFields(){
-        //all
+        // All
         $("#usage").find('input').each( function () {
             $(this).prop('disabled', false);
         });
@@ -596,10 +593,10 @@ $(document).ready(function () {
     }
 
 
-    //==================================form submission
+    // ==================================form submission
     $("#server_reg_form").on('submit', function () {
 
-        //enable disabled fields before submission
+        // Enable disabled fields before submission
         enableAllFields();
         $("input[name=partitions_count]").val($(".partition_section").length);
 

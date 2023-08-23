@@ -190,16 +190,12 @@ class ServerController extends Controller
             'memory_used_size' => $data['memory_used'],
             'memory_used_size_type' => $data['memory_used_unit'],
             'memory_used_percentage' => $data['memory_used_percentage'],
-            'memory_free_size' => $data['memory_free'],
-            'memory_free_size_type' => $data['memory_free_unit'],
-            'memory_free_percentage' => $data['memory_free_percentage'],
+            'memory_free_size' => $data['memory_total_unit'] == $data['memory_used_unit'] ? ($data['memory_total'] - $data['memory_used']) : $data['memory_free'],
+            'memory_free_size_type' => $data['memory_used_unit'],
+            'memory_free_percentage' => (100 - $data['memory_used_percentage']),
             'memory_total' => $data['memory_total'],
             'memory_total_size_type' => $data['memory_total_unit'],
             'os_type' => $data['os_type'],
-            'other_os_percentage' => $data['other_os_percentage'],
-            'linux_us_percentage' => $data['us'],
-            'linux_ni_percentage' => $data['ni'],
-            'linux_sy_percentage' => $data['sy'],
             'hdd_status' => $data['hdd_status'],
             'ram_status' => $data['memory_status'],
             'cpu_status' => $data['cpu_status'],
@@ -207,6 +203,19 @@ class ServerController extends Controller
             'status' => isset($data['status']) && $data['status'] ? 1 : 0,
             'updated_by' => Auth::user()->id,
         ];
+        
+        if($data['os_type'] == 1)
+        {
+                $serverData['linux_us_percentage'] = $data['us'];
+                $serverData['linux_ni_percentage'] = $data['ni'];
+                $serverData['linux_sy_percentage'] = $data['sy'];
+                $serverData['other_os_percentage'] = null;
+        } else {
+                $serverData['linux_us_percentage'] = null;
+                $serverData['linux_ni_percentage'] = null;
+                $serverData['linux_sy_percentage'] = null;
+                $serverData['other_os_percentage'] = $data['other_os_percentage'];
+        }
 
         if (!$forUpdate) {
             //for new registration
@@ -229,9 +238,9 @@ class ServerController extends Controller
             'hdd_used_size' => $hddData['used'],
             'hdd_used_size_type' => $hddData['used_unit'],
             'hdd_used_percentage' => $hddData['used_percentage'],
-            'hdd_free_size' => $hddData['free'],
-            'hdd_free_size_type' => $hddData['free_unit'],
-            'hdd_free_percentage' => $hddData['free_percentage'],
+            'hdd_free_size' => $hddData['total_unit'] == $hddData['used_unit'] ? ($hddData['total'] - $hddData['used']) : $hddData['free'],
+            'hdd_free_size_type' => $hddData['used_unit'],
+            'hdd_free_percentage' => (100 - $hddData['used_percentage']),
             'hdd_total' => $hddData['total'],
             'hdd_total_size_type' => $hddData['total_unit'],
             'updated_by' => Auth::user()->id,
