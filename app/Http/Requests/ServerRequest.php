@@ -73,7 +73,12 @@ class ServerRequest extends FormRequest
     public function messages()
     {
         return [
-            'hdd.min' => 'The server cannot be registered without an HDD partition.'
+            'hdd.min' => 'The server cannot be registered without an HDD partition.',
+
+            // This error is to handle maximum amount of digits accepted by Database
+            'memory_used.lt' => "'Used size' number of digits exceeded. Select Different size/unit.",
+            'memory_free.lt' => "'Free size' number of digits exceeded. Select Different size/unit.",
+            'memory_total.lt' => "'Total size' number of digits exceeded. Select Different size/unit.",
         ];
     }
 
@@ -97,13 +102,13 @@ class ServerRequest extends FormRequest
             'os_type' => 'in:1,2',
             'remarks' => 'max:1024',
             //memory usage details
-            'memory_used' => 'required|decimal:0,2|gte:0',
+            'memory_used' => 'required|decimal:0,2|gte:0|lt:1000000',
             'memory_used_unit' => 'required|in:1,2,3,4,5',
             'memory_used_percentage' => 'required|decimal:0,2|gte:0|lte:100',
-            'memory_free' => 'required|decimal:0,2|gte:0',
+            'memory_free' => 'required|decimal:0,2|gte:0|lt:1000000',
             'memory_free_unit' => 'required|in:1,2,3,4,5',
             'memory_free_percentage' => 'required|decimal:0,2|gte:0|lte:100',
-            'memory_total' => 'required|decimal:0,2|gt:0',
+            'memory_total' => 'required|decimal:0,2|gt:0|lt:1000000',
             'memory_total_unit' => 'required|in:1,2,3,4,5',
             'hdd' => 'min:1',
         ];
@@ -123,13 +128,13 @@ class ServerRequest extends FormRequest
         for ( $i = 1 ; $i <= $this->input('partitions_count') ; $i++ ) {
             $rules = array_merge($rules, [
                 'hdd.' .$i .'.partition_name' => 'required|max:80',
-                'hdd.' .$i .'.used' => 'required|decimal:0,2|gte:0',
+                'hdd.' .$i .'.used' => 'required|decimal:0,2|gte:0|lt:1000000',
                 'hdd.' .$i .'.used_unit' => 'required|in:1,2,3,4,5',
                 'hdd.' .$i .'.used_percentage' => 'required|decimal:0,2|gte:0|lte:100',
-                'hdd.' .$i .'.free' => 'required|decimal:0,2|gte:0',
+                'hdd.' .$i .'.free' => 'required|decimal:0,2|gte:0|lt:1000000',
                 'hdd.' .$i .'.free_unit' => 'required|in:1,2,3,4,5',
                 'hdd.' .$i .'.free_percentage' => 'required|decimal:0,2|gte:0|lte:100',
-                'hdd.' .$i .'.total' => 'required|decimal:0,2|gt:0',
+                'hdd.' .$i .'.total' => 'required|decimal:0,2|gt:0|lt:1000000',
                 'hdd.' .$i .'.total_unit' => 'required|in:1,2,3,4,5',
             ]);
         }
