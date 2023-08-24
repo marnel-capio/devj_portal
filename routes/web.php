@@ -10,6 +10,7 @@ use App\Http\Controllers\LaptopsController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\ProjectsController;
+use App\Http\Controllers\ServerController;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Support\Facades\Route;
@@ -110,13 +111,19 @@ Route::middleware(['auth', 'web', 'isActive'])->group(function(){
 
     });
 
-    Route::prefix('/servers')->group(function(){
-        Route::get('/', function(){
-            return 'Welcome to Servers List'; //dummy
-        })->name('servers');
-        Route::get('/create', function(){
-            return 'You can add server data here'; //dummy
-        })->name('servers.create');
+    Route::prefix('/servers')->controller(ServerController::class)->group(function(){
+
+        Route::get('/', 'index')->name('servers.index');
+        Route::get('/download', 'download')->name('servers.download');
+        Route::get('/create', 'create')->name('servers.create');
+        Route::post('/regist', 'regist')->name('servers.regist');
+        Route::get('/{id}', 'details')->name('servers.details')->whereNumber('id');
+        Route::get('/{id}/edit', 'edit')->name('servers.edit')->whereNumber('id');
+        Route::post('/store', 'store')->name('servers.store');
+        Route::get('/help', function () {
+            //input guide
+            return view('servers.help');
+        })->name('servers.help');
     });
 
 });

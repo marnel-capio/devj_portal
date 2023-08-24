@@ -36,4 +36,5 @@ Route::middleware('auth:sanctum')->controller(ApiController::class)->group(funct
     Route::post('/laptops/registLinkage', 'registLaptopLinkage')->name('api.registLaptopLinkage');
     Route::post('/linkSoftwareToProject', 'linkSoftwareToProject')->name('api.linkSoftwareToProject');
     Route::get('/projects/search', 'getProjectByFilter')->name('api.filterProject');
+    Route::get('/servers/delete', 'deleteServer');
 });

@@ -129,6 +129,32 @@ return [
     //Search filter constant
     'SOFTWARE_FILTER_STATUS_ALL' => 5,
     'SOFTWARE_FILTER_TYPE_ALL' => 7,
+
+    //Server Module
+    'SIZE_UNITS' => [
+        1 => 'B',
+        2 => 'kB',
+        3 => 'MB',
+        4 => 'GB',
+        5 => 'TB'
+    ],
+
+    'STATUS_NAMES' => [
+        1 => 'Normal',
+        2 => 'Stable',
+        3 => 'Critical'
+    ],
+
+    'STATUS_CLASS' => [
+        1 => 'text-black',
+        2 => 'text-primary',
+        3 => 'text-danger',
+    ],
+
+    'KB_TO_BYTES' => 1024,
+
+    'SERVER_FILE_SHEET_COVER' => 1,
+    'SERVER_FILE_SHEET_REVISION' => 2,
     'SOFTWARE_FILTER_TYPE_ALL' => 999,
     'SOFTWARE_FILTER_TYPE_ALL_NAME' => 'All',
     'FILE_TYPE_PDF' => 'pdf',

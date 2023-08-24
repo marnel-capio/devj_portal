@@ -27,5 +27,9 @@ class AppServiceProvider extends ServiceProvider
         Validator::extend('alpha_space', function($attribute, $value){
             return preg_match('@^[A-Za-z\s]+$@', $value);
         });
+
+        Validator::extend('decimal', function($attribute, $value){
+            return preg_match('@^\d+(\.)?(\d{1,2})?$@', $value);
+        });
     }
 }

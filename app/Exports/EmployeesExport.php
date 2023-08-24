@@ -15,7 +15,6 @@ use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use PhpOffice\PhpSpreadsheet\Style\Border as StyleBorder;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup as WorksheetPageSetup;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
@@ -122,6 +121,7 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithEvent
                         ->setSelectedCell('A1')
                         ->getPageSetup()
                         ->setOrientation(WorksheetPageSetup::ORIENTATION_LANDSCAPE);
+                    $event->sheet->setSelectedCell('A1');
                 },
             ];
         }

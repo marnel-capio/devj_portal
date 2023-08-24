@@ -37,3 +37,11 @@ mix.js('resources/js/app.js', 'public/js')
         //
     ])
     .minify('public/css/project.css')
+    .js('resources/js/server.js', 'public/js')
+    .minify('public/js/server.js')
+    .postCss('resources/css/server.css', 'public/css', [
+        //
+    ])
+    .minify('public/css/server.css')
+
+

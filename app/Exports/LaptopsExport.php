@@ -19,8 +19,6 @@ use PhpOffice\PhpSpreadsheet\Style\Color;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-use function PHPUnit\Framework\isNull;
-
 class LaptopsExport implements 
                         FromView,
                         WithEvents,
@@ -154,7 +152,6 @@ class LaptopsExport implements
                                             ];
         }
 
-        // dd($style);
         foreach($this->grayRows as $idx => $value){
             $style["A" .$value .":M" .$value] = [
                 'fill' => [
