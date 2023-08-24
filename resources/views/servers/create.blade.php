@@ -334,7 +334,7 @@
                                                     <div class="row g-0 pt-2 text-center">
                                                         <div class="col-6 form-floating">
                                                             <input name="{{ 'hdd[' .$index .'][used_percentage]' }}" type="text" class="form-control hdd_used_percentage" id="{{ 'hdd_used_percentage_' .$index }}" placeholder="used" disabled value="{{ old('hdd.' .$index .'.used_percentage') }}">
-                                                            <label for="{{ 'hdd_used_percentage_' .$index }}" required>% Used</label>
+                                                            <label for="{{ 'hdd_used_percentage_' .$index }}">% Used</label>
                                                         </div>
                                                         @if ($errors->has('hdd.' .$index .'.used_percentage'))
                                                         <p class="text-danger text-start">{{ $errors->first('hdd.' .$index .'.used_percentage') }}</p>
@@ -343,7 +343,7 @@
                                                     <div class="row g-0 pt-2 text-center">
                                                         <div class="col-6 form-floating">
                                                             <input name="{{ 'hdd[' .$index .'][free_percentage]' }}" type="text" class="form-control hdd_free_percentage" id="{{ 'hdd_free_percentage_' .$index }}" placeholder="Free" disabled value="{{ old('hdd.' .$index .'.free_percentage') }}">
-                                                            <label for="{{ 'hdd_free_percentage_' .$index }}" required>% Free</label>
+                                                            <label for="{{ 'hdd_free_percentage_' .$index }}">% Free</label>
                                                         </div>
                                                         @if ($errors->has('hdd.' .$index .'.free_percentage'))
                                                         <p class="text-danger text-start">{{ $errors->first('hdd.' .$index .'.free_percentage') }}</p>
