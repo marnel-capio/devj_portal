@@ -223,13 +223,13 @@ $(document).ready(function () {
 
         // Percentage inputs
         $("#hdd_used_percentage_" + pIndex).prop('disabled', percentProp);
-        $("#hdd_free_percentage_" + pIndex).prop('disabled', true);
+        $("#hdd_free_percentage_" + pIndex).prop('disabled', percentProp);
 
         // Size inputs
         $("#hdd_used_" + pIndex).prop('disabled', sizeProp);
         $("#hdd_used_unit_" + pIndex).prop('disabled', sizeProp);
-        $("#hdd_free_" + pIndex).prop('disabled', true);
-        $("#hdd_free_unit_" + pIndex).prop('disabled', true);
+        $("#hdd_free_" + pIndex).prop('disabled', sizeProp);
+        $("#hdd_free_unit_" + pIndex).prop('disabled', sizeProp);
     }
 
     /**
@@ -253,14 +253,17 @@ $(document).ready(function () {
         var percentProp = isSizeSelected ? true : false;
 
         // Percentage inputs
-        $("#memory_used_percentage").prop('disabled', percentProp);
-        $("#memory_free_percentage").prop('disabled', true);
+        $("#memory_percentage_section").find('input[type=text]').each( function () { 
+            $(this).prop('disabled', percentProp);
+        });
 
         // Size inputs
-        $("#memory_used").prop('disabled', sizeProp);
-        $("#memory_used_unit").prop('disabled', sizeProp);
-        $("#memory_free").prop('disabled', true);
-        $("#memory_free_unit").prop('disabled', true);
+        $("#memory_size_section").find('input[type=text]').each( function () { 
+            $(this).prop('disabled', sizeProp);
+        });
+        $("#memory_size_section").find('select').each( function () { 
+            $(this).prop('disabled', sizeProp);
+        });
     }
 
     /**

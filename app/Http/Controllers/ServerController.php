@@ -78,7 +78,7 @@ class ServerController extends Controller
     public function regist (ServerRequest $request) {
         //request validation
         $request->validated();
-        
+
         //get data from request
         $data = $request->except(['_token']);
         
@@ -200,9 +200,9 @@ class ServerController extends Controller
             'memory_used_size' => $data['memory_used'],
             'memory_used_size_type' => $data['memory_used_unit'],
             'memory_used_percentage' => $data['memory_used_percentage'],
-            'memory_free_size' => $data['memory_total_unit'] == $data['memory_used_unit'] ? ($data['memory_total'] - $data['memory_used']) : $data['memory_free'],
-            'memory_free_size_type' => $data['memory_used_unit'],
-            'memory_free_percentage' => (100 - $data['memory_used_percentage']),
+            'memory_free_size' => $data['memory_free'],
+            'memory_free_size_type' => $data['memory_free_unit'],
+            'memory_free_percentage' => $data['memory_free_percentage'],
             'memory_total' => $data['memory_total'],
             'memory_total_size_type' => $data['memory_total_unit'],
             'os_type' => $data['os_type'],
@@ -248,9 +248,9 @@ class ServerController extends Controller
             'hdd_used_size' => $hddData['used'],
             'hdd_used_size_type' => $hddData['used_unit'],
             'hdd_used_percentage' => $hddData['used_percentage'],
-            'hdd_free_size' => $hddData['total_unit'] == $hddData['used_unit'] ? ($hddData['total'] - $hddData['used']) : $hddData['free'],
-            'hdd_free_size_type' => $hddData['used_unit'],
-            'hdd_free_percentage' => (100 - $hddData['used_percentage']),
+            'hdd_free_size' => $hddData['free'],
+            'hdd_free_size_type' => $hddData['free_unit'],
+            'hdd_free_percentage' => $hddData['free_percentage'],
             'hdd_total' => $hddData['total'],
             'hdd_total_size_type' => $hddData['total_unit'],
             'updated_by' => Auth::user()->id,
