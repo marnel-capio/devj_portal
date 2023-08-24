@@ -78,8 +78,18 @@ class ServerController extends Controller
     public function regist (ServerRequest $request) {
         //request validation
         $request->validated();
+        
         //get data from request
         $data = $request->except(['_token']);
+        
+        // Validate if HDD is not empty
+        if(empty($data['hdd'])){
+            return view('error.requestError')
+                        ->with([
+                            'error' => "The server cannot be registered without an HDD partition."
+                        ]);
+        }
+
         //save data in servers table
         $serverData = $this->extractServerDataFromRequest($data, false);
         $serverId = Servers::create($serverData)->id;
