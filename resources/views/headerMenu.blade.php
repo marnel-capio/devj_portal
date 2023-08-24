@@ -41,7 +41,7 @@
                             <li><a href="{{ route('projects.create') }}" class="dropdown-item small text-white">Create Project</a></li>
                         @endif
                     </ul>
-                </li> --}}
+                </li>
                 @if ($userInfo->roles === config('constants.MANAGER_ROLE_VALUE') ||  $userInfo->server_manage_flag)
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link text-white"  role="button">Servers</a>
