@@ -66,20 +66,34 @@ class ServerRequest extends FormRequest
     }
 
     /**
-     * Get the error messages for the defined validation rules.
+     * Sets the error messages for the defined validation rules.
      *
      * @return array
      */
     public function messages()
     {
-        return [
+        $messages = [
             'hdd.min' => 'The server cannot be registered without an HDD partition.',
 
-            // This error is to handle maximum amount of digits accepted by Database
-            'memory_used.lt' => "'Used size' number of digits exceeded. Select Different size/unit.",
-            'memory_free.lt' => "'Free size' number of digits exceeded. Select Different size/unit.",
-            'memory_total.lt' => "'Total size' number of digits exceeded. Select Different size/unit.",
+            // Validations below prevents app break for max input, but this validation does not exist in BD as of 2023-08-31
+            'memory_used.lt' => "'Used size' number of digits exceeded max value.",
+            'memory_free.lt' => "'Free size' number of digits exceeded max value.",
+            'memory_total.lt' => "'Total size' number of digits exceeded max value.",
         ];
+
+
+        // Validations below prevents app break for max input, but this validation does not exist in BD as of 2023-08-31
+        // HDD partitions
+        for ( $i = 1 ; $i <= $this->input('partitions_count') ; $i++ ) {
+            $messages = array_merge($messages, [
+                'hdd.' .$i .'.used.lt' => "'Used size' number of digits exceeded max value.",
+                'hdd.' .$i .'.free.lt' => "'Free size' number of digits exceeded max value.",
+                'hdd.' .$i .'.total.lt' => "'Total size' number of digits exceeded max value.",
+            ]);
+        }
+
+
+        return $messages;
     }
 
     /**

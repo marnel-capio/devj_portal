@@ -22,7 +22,7 @@
                 <h4 class="fw-semi-bold">Server Details</h4>
                 <div class="row mb-2 ps-5 pe-3">
                     <div class="col-lg-3 col-6 g-3 form-floating">
-                       <input type="text" name="server_name" class="form-control" id="server_name" placeholder="Server Name" value="{{ old('server_name', !empty($serverData) ? $serverData->server_name : '') }}" required>
+                       <input type="text" name="server_name" class="form-control" id="server_name" placeholder="Server Name" value="{{ old('server_name', !empty($serverData) ? $serverData->server_name : '') }}" >
                        <label for="server_name" >Server Name</label>
                        @if ($errors->has('server_name'))
                        <p class="text-danger text-start">{{ $errors->first('server_name') }}</p>
@@ -37,14 +37,14 @@
                 </div>
                 <div class="row mb-2 ps-5 pe-3">
                     <div class="col-lg-3 col-4 g-3 form-floating">
-                        <input type="text" name="server_ip" class="form-control" id="server_ip" placeholder="IP Address" value="{{ old('server_ip', !empty($serverData) ? $serverData->server_ip : '') }}" required>
+                        <input type="text" name="server_ip" class="form-control" id="server_ip" placeholder="IP Address" value="{{ old('server_ip', !empty($serverData) ? $serverData->server_ip : '') }}" >
                         <label for="server_ip" >IP Address</label>
                         @if ($errors->has('server_ip'))
                         <p class="text-danger text-start">{{ $errors->first('server_ip') }}</p>
                         @endif
                      </div>
                      <div class="col-lg-3 col-4 g-3 form-floating">
-                        <input type="text" name="os" class="form-control" id="os" placeholder="Operating System" value="{{ old('os', !empty($serverData) ? $serverData->os : '') }}" required>
+                        <input type="text" name="os" class="form-control" id="os" placeholder="Operating System" value="{{ old('os', !empty($serverData) ? $serverData->os : '') }}" >
                         <label for="os" >Operating System</label>
                         @if ($errors->has('os'))
                         <p class="text-danger text-start">{{ $errors->first('os') }}</p>
@@ -60,21 +60,21 @@
                 </div>
                 <div class="row mb-2 ps-5 pe-3">
                     <div class="col-lg-3 col-4 g-3 form-floating">
-                        <input type="text" name="cpu" class="form-control" id="cpu" placeholder="CPU" value="{{ old('cpu', !empty($serverData) ? $serverData->cpu : '') }}" required>
+                        <input type="text" name="cpu" class="form-control" id="cpu" placeholder="CPU" value="{{ old('cpu', !empty($serverData) ? $serverData->cpu : '') }}" >
                         <label for="cpu" >Processor</label>
                         @if ($errors->has('cpu'))
                         <p class="text-danger text-start">{{ $errors->first('cpu') }}</p>
                         @endif
                     </div>
                     <div class="col-lg-3 col-4 g-3 form-floating">
-                        <input type="text" name="memory" class="form-control" id="memory" placeholder="Memory" value="{{ old('memory', !empty($serverData) ? $serverData->memory : '') }}" required>
+                        <input type="text" name="memory" class="form-control" id="memory" placeholder="Memory" value="{{ old('memory', !empty($serverData) ? $serverData->memory : '') }}" >
                         <label for="memory" >RAM</label>
                         @if ($errors->has('memory'))
                         <p class="text-danger text-start">{{ $errors->first('memory') }}</p>
                         @endif
                     </div>
                     <div class="col-lg-3 col-4 g-3 form-floating">
-                        <input type="text" name="server_hdd" class="form-control" id="server_hdd" placeholder="HDD" value="{{ old('server_hdd', !empty($serverData) ? $serverData->hdd : '') }}" required>
+                        <input type="text" name="server_hdd" class="form-control" id="server_hdd" placeholder="HDD" value="{{ old('server_hdd', !empty($serverData) ? $serverData->hdd : '') }}" >
                         <label for="server_hdd" >HDD</label>
                         @if ($errors->has('server_hdd'))
                         <p class="text-danger text-start">{{ $errors->first('server_hdd') }}</p>
@@ -86,7 +86,7 @@
                 </div>
                 <div class="row mb-2 ps-5 pe-3">
                     <div class="col-lg-9 g-3">
-                        <textarea class="form-control" name="function_role"  rows="3" id="function_role" required>{{ old('function_role', !empty($serverData) ? $serverData->function_role : '') }}</textarea>
+                        <textarea class="form-control" name="function_role"  rows="3" id="function_role" >{{ old('function_role', !empty($serverData) ? $serverData->function_role : '') }}</textarea>
                     </div>
                     @if ($errors->has('function_role'))
                     <p class="text-danger text-start">{{ $errors->first('function_role') }}</p>
@@ -146,9 +146,9 @@
                                         <div class="row p-2">
                                             <div class="col-md-8 col-9">
                                                 <div class="row">
-                                                    <label for="partition_1" class="col-auto fs-5 fw-bold align-baseline radio">Partition name:</label>
+                                                    <label for="partition_1" class="col-auto fs-5 fw-bold align-baseline radio">Partition name XXX:</label>
                                                     <div class="col-auto">
-                                                    <input name="{{ 'hdd[' .$index .'][partition_name]' }}" type="text" class="form-control partition_name" id="{{ 'partition' .$index }}" value="{{ $partition['hdd_partition'] }}" required>
+                                                    <input name="{{ 'hdd[' .$index .'][partition_name]' }}" type="text" class="form-control partition_name" id="{{ 'partition' .$index }}" value="{{ $partition['hdd_partition'] }}" >
                                                     </div>
                                                 </div>
                                             </div>
@@ -159,17 +159,23 @@
                                         <div class="p-2">
                                             <div class="row g-0 pt-1">
                                                 <div class="col-3 form-floating">
-                                                    <input name="{{ 'hdd[' .$index .'][total]' }}" type="text" class="form-control hdd_total" id="{{ 'hdd_total_' .$index }}" placeholder="total" value="{{ $partition['hdd_total'] }}" required>
+                                                    <input name="{{ 'hdd[' .$index .'][total]' }}" type="text" class="form-control hdd_total" id="{{ 'hdd_total_' .$index }}" placeholder="total" value="{{ $partition['hdd_total'] }}" >
                                                     <label for="{{ 'hdd_total_' .$index }}">Total</label>
                                                 </div>
                                                 <div class="col-2 form-floating">
-                                                    <select name="{{ 'hdd[' .$index .'][total_unit]' }}" id="{{ 'hdd_total_unit_' .$index }}" class="form-select form-control hdd_total_unit" required>
+                                                    <select name="{{ 'hdd[' .$index .'][total_unit]' }}" id="{{ 'hdd_total_unit_' .$index }}" class="form-select form-control hdd_total_unit" >
                                                         @foreach (config('constants.SIZE_UNITS') as $idx => $val)
                                                             <option value="{{ $idx }}" {{ $partition['hdd_total_size_type'] == $idx ? 'selected' : '' }}>{{ $val }}</option>
                                                         @endforeach
                                                     </select>
                                                     <label for="{{ 'hdd_total_unit_' .$index }}">Unit</label>
                                                 </div>
+                                                @if ($errors->has('hdd.' .$index .'.total'))
+                                                <p class="text-danger text-start">{{ $errors->first('hdd.' .$index .'.total') }}</p>
+                                                @endif
+                                                @if ($errors->has('hdd.' .$index .'.total_unit'))
+                                                <p class="text-danger text-start">{{ $errors->first('hdd.' .$index .'.total_unit') }}</p>
+                                                @endif
                                             </div>
                                             <div class="mt-2 pt-1 fw-semibold">
                                                 Select mode of input:
@@ -182,31 +188,44 @@
                                                     </div>
                                                     <div class="row g-0 pt-2 text-center">
                                                         <div class="col-6 form-floating">
-                                                            <input name="{{ 'hdd[' .$index .'][used]' }}" type="text" class="form-control hdd_used" id="{{ 'hdd_used_' .$index }}" placeholder="used" value="{{ $partition['hdd_used_size'] }}" required>
+                                                            <input name="{{ 'hdd[' .$index .'][used]' }}" type="text" class="form-control hdd_used" id="{{ 'hdd_used_' .$index }}" placeholder="used" value="{{ $partition['hdd_used_size'] }}" >
                                                             <label for="{{ 'hdd_used_' .$index }}">Used</label>
                                                         </div>
                                                         <div class="col-4 form-floating">
-                                                            <select name="{{ 'hdd[' .$index .'][used_unit]' }}" id="{{ 'hdd_used_unit_' .$index }}" class="form-select form-control hdd_used_unit" required>
+                                                            <select name="{{ 'hdd[' .$index .'][used_unit]' }}" id="{{ 'hdd_used_unit_' .$index }}" class="form-select form-control hdd_used_unit" >
                                                                 @foreach (config('constants.SIZE_UNITS') as $idx => $val)
                                                                     <option value="{{ $idx }}" {{ $partition['hdd_used_size_type'] == $idx ? 'selected' : '' }}>{{ $val }}</option>
                                                                 @endforeach
                                                             </select>
                                                             <label for="{{ 'hdd_used_unit_' .$index }}">Unit</label>
                                                         </div>
+                                                        
+                                                        @if ($errors->has('hdd.' .$index .'.used'))
+                                                        <p class="text-danger text-start">{{ $errors->first('hdd.' .$index .'.used') }}</p>
+                                                        @endif
+                                                        @if ($errors->has('hdd.' .$index .'.used_unit'))
+                                                        <p class="text-danger text-start">{{ $errors->first('hdd.' .$index .'.used_unit') }}</p>
+                                                        @endif
                                                     </div>
                                                     <div class="row g-0 pt-2 text-center">
                                                         <div class="col-6 form-floating">
-                                                            <input name="{{ 'hdd[' .$index .'][free]' }}" type="text" class="form-control hdd_free" id="{{ 'hdd_free_' .$index }}" placeholder="Free" value="{{ $partition['hdd_free_size'] }}" required>
+                                                            <input name="{{ 'hdd[' .$index .'][free]' }}" type="text" class="form-control hdd_free" id="{{ 'hdd_free_' .$index }}" placeholder="Free" value="{{ $partition['hdd_free_size'] }}" >
                                                             <label for="{{ 'hdd_free_' .$index }}">Free</label>
                                                         </div>
                                                         <div class="col-4 form-floating">
-                                                            <select name="{{ 'hdd[' .$index .'][free_unit]' }}" id="{{ 'hdd_free_unit_' .$index }}" class="form-select form-control hdd_free_unit" required>
+                                                            <select name="{{ 'hdd[' .$index .'][free_unit]' }}" id="{{ 'hdd_free_unit_' .$index }}" class="form-select form-control hdd_free_unit" >
                                                                 @foreach (config('constants.SIZE_UNITS') as $idx => $val)
                                                                     <option value="{{ $idx }}" {{ $partition['hdd_free_size_type'] == $idx ? 'selected' : '' }}>{{ $val }}</option>
                                                                 @endforeach
                                                             </select>
                                                             <label for="{{ 'hdd_free_unit_' .$index }}">Unit</label>
                                                         </div>
+                                                        @if ($errors->has('hdd.' .$index .'.free'))
+                                                        <p class="text-danger text-start">{{ $errors->first('hdd.' .$index .'.free') }}</p>
+                                                        @endif
+                                                        @if ($errors->has('hdd.' .$index .'.free_unit'))
+                                                        <p class="text-danger text-start">{{ $errors->first('hdd.' .$index .'.free_unit') }}</p>
+                                                        @endif
                                                     </div>
                                                 </div>
                                                 <div class="col">
@@ -216,13 +235,13 @@
                                                     </div>
                                                     <div class="row g-0 pt-2 text-center">
                                                         <div class="col-6 form-floating">
-                                                            <input name="{{ 'hdd[' .$index .'][used_percentage]' }}" type="text" class="form-control hdd_used_percentage" id="{{ 'hdd_used_percentage_' .$index }}" placeholder="used" disabled value="{{ $partition['hdd_used_percentage'] }}" required>
+                                                            <input name="{{ 'hdd[' .$index .'][used_percentage]' }}" type="text" class="form-control hdd_used_percentage" id="{{ 'hdd_used_percentage_' .$index }}" placeholder="used" disabled value="{{ $partition['hdd_used_percentage'] }}" >
                                                             <label for="{{ 'hdd_used_percentage_' .$index }}">% Used</label>
                                                         </div>
                                                     </div>
                                                     <div class="row g-0 pt-2 text-center">
                                                         <div class="col-6 form-floating">
-                                                            <input name="{{ 'hdd[' .$index .'][free_percentage]' }}" type="text" class="form-control hdd_free_percentage" id="{{ 'hdd_free_percentage_' .$index }}" placeholder="Free" disabled value="{{ $partition['hdd_free_percentage'] }}" required>
+                                                            <input name="{{ 'hdd[' .$index .'][free_percentage]' }}" type="text" class="form-control hdd_free_percentage" id="{{ 'hdd_free_percentage_' .$index }}" placeholder="Free" disabled value="{{ $partition['hdd_free_percentage'] }}" >
                                                             <label for="{{ 'hdd_free_percentage_' .$index }}">% Free</label>
                                                         </div>
                                                     </div>
@@ -244,7 +263,7 @@
                                                 <div class="row">
                                                     <label for="partition_1" class="col-auto fs-5 fw-bold align-baseline radio">Partition name:</label>
                                                     <div class="col-auto">
-                                                    <input name="{{ 'hdd[' .$index .'][partition_name]' }}" type="text" class="form-control partition_name" id="{{ 'partition' .$index }}" value="{{ old('hdd.' .$index .'.partition_name') }}" required>
+                                                    <input name="{{ 'hdd[' .$index .'][partition_name]' }}" type="text" class="form-control partition_name" id="{{ 'partition' .$index }}" value="{{ old('hdd.' .$index .'.partition_name') }}" >
                                                     </div>
                                                     @if ($errors->has('hdd.' .$index .'.partition_name'))
                                                     <p class="text-danger text-start">{{ $errors->first('hdd.' .$index .'.partition_name') }}</p>
@@ -287,11 +306,11 @@
                                                     </div>
                                                     <div class="row g-0 pt-2 text-center">
                                                         <div class="col-6 form-floating">
-                                                            <input name="{{ 'hdd[' .$index .'][used]' }}" type="text" class="form-control hdd_used" id="{{ 'hdd_used_' .$index }}" placeholder="used" value="{{ old('hdd.' .$index .'.used') }}" required>
+                                                            <input name="{{ 'hdd[' .$index .'][used]' }}" type="text" class="form-control hdd_used" id="{{ 'hdd_used_' .$index }}" placeholder="used" value="{{ old('hdd.' .$index .'.used') }}" >
                                                             <label for="{{ 'hdd_used_' .$index }}">Used</label>
                                                         </div>
                                                         <div class="col-4 form-floating">
-                                                            <select name="{{ 'hdd[' .$index .'][used_unit]' }}" id="{{ 'hdd_used_unit_' .$index }}" class="form-select form-control hdd_used_unit" required>
+                                                            <select name="{{ 'hdd[' .$index .'][used_unit]' }}" id="{{ 'hdd_used_unit_' .$index }}" class="form-select form-control hdd_used_unit" >
                                                                 @foreach (config('constants.SIZE_UNITS') as $idx => $val)
                                                                     <option value="{{ $idx }}" {{ old('hdd.' . $index .'.used_unit') == $idx ? 'selected' : '' }}>{{ $val }}</option>
                                                                 @endforeach
@@ -307,11 +326,11 @@
                                                     </div>
                                                     <div class="row g-0 pt-2 text-center">
                                                         <div class="col-6 form-floating">
-                                                            <input name="{{ 'hdd[' .$index .'][free]' }}" type="text" class="form-control hdd_free" id="{{ 'hdd_free_' .$index }}" placeholder="Free" value="{{ old('hdd.' .$index .'.free') }}" required>
+                                                            <input name="{{ 'hdd[' .$index .'][free]' }}" type="text" class="form-control hdd_free" id="{{ 'hdd_free_' .$index }}" placeholder="Free" value="{{ old('hdd.' .$index .'.free') }}" >
                                                             <label for="{{ 'hdd_free_' .$index }}">Free</label>
                                                         </div>
                                                         <div class="col-4 form-floating">
-                                                            <select name="{{ 'hdd[' .$index .'][free_unit]' }}" id="{{ 'hdd_free_unit_' .$index }}" class="form-select form-control hdd_free_unit" required>
+                                                            <select name="{{ 'hdd[' .$index .'][free_unit]' }}" id="{{ 'hdd_free_unit_' .$index }}" class="form-select form-control hdd_free_unit" >
                                                                 @foreach (config('constants.SIZE_UNITS') as $idx => $val)
                                                                     <option value="{{ $idx }}" {{ old('hdd.' . $index .'.free_unit') == $idx ? 'selected' : '' }}>{{ $val }}</option>
                                                                 @endforeach
@@ -374,11 +393,11 @@
                             </div>
                             <div class="row g-0 pt-3">
                                 <div class="col-3 form-floating">
-                                    <input name="memory_total" type="text" class="form-control" id="memory_total" placeholder="total" value="{{ old('memory_total', !empty($serverData) ? $serverData->memory_total : '') }}" required>
+                                    <input name="memory_total" type="text" class="form-control" id="memory_total" placeholder="total" value="{{ old('memory_total', !empty($serverData) ? $serverData->memory_total : '') }}" >
                                     <label for="memory_total">Total</label>
                                 </div>
                                 <div class="col-2 form-floating">
-                                    <select name="memory_total_unit" id="memory_total_unit" class="form-select form-control" required>
+                                    <select name="memory_total_unit" id="memory_total_unit" class="form-select form-control" >
                                         @foreach (config('constants.SIZE_UNITS') as $idx => $val)
                                             <option value="{{ $idx }}" {{ old('memory_total_unit', !empty($serverData) ? $serverData->memory_total_size_type : 1) == $idx ? 'selected' : '' }}>{{ $val }}</option>
                                         @endforeach
@@ -403,11 +422,11 @@
                                     </div>
                                     <div class="row g-0 pt-2 text-center">
                                         <div class="col-6 form-floating">
-                                            <input name="memory_used" type="text" class="form-control" id="memory_used" placeholder="used" value="{{ old('memory_used', !empty($serverData) ? $serverData->memory_used_size : '') }}" required>
+                                            <input name="memory_used" type="text" class="form-control" id="memory_used" placeholder="used" value="{{ old('memory_used', !empty($serverData) ? $serverData->memory_used_size : '') }}" >
                                             <label for="memory_used">Used</label>
                                         </div>
                                         <div class="col-4 form-floating">
-                                            <select name="memory_used_unit" id="memory_used_unit" class="form-select form-control" required>
+                                            <select name="memory_used_unit" id="memory_used_unit" class="form-select form-control" >
                                                 @foreach (config('constants.SIZE_UNITS') as $idx => $val)
                                                     <option value="{{ $idx }}" {{ old('memory_used_unit', !empty($serverData) ? $serverData->memory_used_size_type : 1) == $idx ? 'selected' : '' }}>{{ $val }}</option>
                                                 @endforeach
@@ -423,11 +442,11 @@
                                     </div>
                                     <div class="row g-0 pt-2 text-center">
                                         <div class="col-6 form-floating">
-                                            <input name="memory_free" type="text" class="form-control" id="memory_free" placeholder="Free" value="{{ old('memory_free', !empty($serverData) ? $serverData->memory_free_size : '') }}" required>
+                                            <input name="memory_free" type="text" class="form-control" id="memory_free" placeholder="Free" value="{{ old('memory_free', !empty($serverData) ? $serverData->memory_free_size : '') }}" >
                                             <label for="memory_free">Free</label>
                                         </div>
                                         <div class="col-4 form-floating">
-                                            <select name="memory_free_unit" id="memory_free_unit" class="form-select form-control" required>
+                                            <select name="memory_free_unit" id="memory_free_unit" class="form-select form-control" >
                                                 @foreach (config('constants.SIZE_UNITS') as $idx => $val)
                                                     <option value="{{ $idx }}" {{ old('memory_free_unit', !empty($serverData) ? $serverData->memory_free_size_type : 1) == $idx ? 'selected' : '' }}>{{ $val }}</option>
                                                 @endforeach
@@ -449,7 +468,7 @@
                                     </div>
                                     <div class="row g-0 pt-2 text-center">
                                         <div class="col-6 form-floating">
-                                            <input name="memory_used_percentage" type="text" class="form-control" id="memory_used_percentage" placeholder="used" disabled value="{{ old('memory_used_percentage', !empty($serverData) ? $serverData->memory_used_percentage : '') }}" required>
+                                            <input name="memory_used_percentage" type="text" class="form-control" id="memory_used_percentage" placeholder="used" disabled value="{{ old('memory_used_percentage', !empty($serverData) ? $serverData->memory_used_percentage : '') }}" >
                                             <label for="memory_used_percentage">% Used</label>
                                         </div>
                                         @if ($errors->has('memory_used_percentage'))
@@ -458,7 +477,7 @@
                                     </div>
                                     <div class="row g-0 pt-2 text-center">
                                         <div class="col-6 form-floating">
-                                            <input name="memory_free_percentage" type="text" class="form-control" id="memory_free_percentage" placeholder="Free" disabled value="{{ old('memory_free_percentage', !empty($serverData) ? $serverData->memory_free_percentage : '') }}" required>
+                                            <input name="memory_free_percentage" type="text" class="form-control" id="memory_free_percentage" placeholder="Free" disabled value="{{ old('memory_free_percentage', !empty($serverData) ? $serverData->memory_free_percentage : '') }}" >
                                             <label for="memory_free_percentage">% Free</label>
                                         </div>
                                         @if ($errors->has('memory_free_percentage'))
@@ -493,7 +512,7 @@
                                     </div>
                                     <div class="row g-0 pt-2 text-center">
                                         <div class="col-lg-8 col-md-6 col-8 form-floating">
-                                            <input name="us" type="text" class="form-control" id="us" placeholder="us" value="{{ old('us', !empty($serverData) ? $serverData->linux_us_percentage : '') }}" required>
+                                            <input name="us" type="text" class="form-control" id="us" placeholder="us" value="{{ old('us', !empty($serverData) ? $serverData->linux_us_percentage : '') }}" >
                                             <label for="us">% us</label>
                                         </div>
                                         @if ($errors->has('us'))
@@ -502,7 +521,7 @@
                                     </div>
                                     <div class="row g-0 pt-2 text-center">
                                         <div class="col-lg-8 col-md-6 col-8 form-floating">
-                                            <input name="ni" type="text" class="form-control" id="ni" placeholder="ni" value="{{ old('ni', !empty($serverData) ? $serverData->linux_ni_percentage : '') }}" required>
+                                            <input name="ni" type="text" class="form-control" id="ni" placeholder="ni" value="{{ old('ni', !empty($serverData) ? $serverData->linux_ni_percentage : '') }}" >
                                             <label for="ni">% ni</label>
                                         </div>
                                         @if ($errors->has('ni'))
@@ -511,7 +530,7 @@
                                     </div>
                                     <div class="row g-0 pt-2 text-center">
                                         <div class="col-lg-8 col-md-6 col-8 form-floating">
-                                            <input name="sy" type="text" class="form-control" id="sy" placeholder="sy" value="{{ old('sy', !empty($serverData) ? $serverData->linux_sy_percentage : '') }}" required>
+                                            <input name="sy" type="text" class="form-control" id="sy" placeholder="sy" value="{{ old('sy', !empty($serverData) ? $serverData->linux_sy_percentage : '') }}" >
                                             <label for="sy">% sy</label>
                                         </div>
                                         @if ($errors->has('sy'))
@@ -526,7 +545,7 @@
                                     </div>
                                     <div class="row g-0 pt-2 text-center">
                                         <div class="col-lg-8 col-md-6 col-8 form-floating">
-                                            <input name="other_os_percentage" type="text" class="form-control" disabled value="{{ old('other_os_percentage', !empty($serverData) ? $serverData->other_os_percentage : '') }}" required>
+                                            <input name="other_os_percentage" type="text" class="form-control" disabled value="{{ old('other_os_percentage', !empty($serverData) ? $serverData->other_os_percentage : '') }}" >
                                         </div>
                                         @if ($errors->has('other_os_percentage'))
                                         <p class="text-danger text-start">{{ $errors->first('other_os_percentage') }}</p>
