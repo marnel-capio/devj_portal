@@ -41,6 +41,7 @@ class ServerController extends Controller
      * @return void
      */
     public function details ($id) {
+        // Check if logged-in user is Manager or Server Manager
         abort_if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE') && !Auth::user()->server_manage_flag, 403);
 
         $serverData = Servers::selectRaw('s.*, CONCAT(e.first_name, " ", e.last_name) AS updater')
@@ -48,6 +49,9 @@ class ServerController extends Controller
                                 ->leftjoin('employees AS e', 'e.id', 's.updated_by')
                                 ->where('s.id', $id)
                                 ->first();
+
+        // Abort if server ID is not valid
+        abort_if(empty($serverData), 404);
 
         $partitionData = ServersPartitions::where('server_id', $id)->get()->toArray();
 
