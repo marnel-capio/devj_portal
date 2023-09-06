@@ -134,7 +134,10 @@
 
                     <div class="row g-3 mb-2 pt-3" id="hdd_partitions">
 
-                        @if (!empty($partitionData) && empty(session()->getOldInput()))
+                        @php
+                            $oldSession = session()->getOldInput();
+                        @endphp
+                        @if (!empty($partitionData) && empty($oldSession))
                             {{-- First display of HDD partitions upon entry of edit screen --}}
                             @foreach ( $partitionData as $idx => $partition )
                                 @php
@@ -254,12 +257,9 @@
                                     </div>
                                 </div>
                             @endforeach
-                        @elseif (!empty(session()->getOldInput()))
+                        @elseif (!empty($oldSession))
                             {{-- Display HDD Partitions from last session, e.g if input error is detected--}}
-                            @for ( $index = 1 ; $index <= old('partitions_count') ; $index++ )
-                                @php
-                                    $old = session()->getOldInput();
-                                @endphp
+                            @for ( $index = 1 ; $index <= $oldSession['partitions_count'] ; $index++ )
                                 <div class="partition_section col-md-6" >
                                     <input type="text" hidden name="{{ 'hdd[' .$index .'][id]' }}" value="{{ old('hdd[' .$index .'][id]') }}">
                                     <div class="hdd_partition p-1 pt-2">
@@ -271,7 +271,7 @@
                                                     
                                                     </p>
                                                     <div class="col-auto">
-                                                    <input name="{{ 'hdd[' .$index .'][partition_name]' }}" type="text" class="form-control partition_name" id="{{ 'partition' .$index }}" value="{{ $old['hdd'][$index]['partition_name'] }}" required> 
+                                                    <input name="{{ 'hdd[' .$index .'][partition_name]' }}" type="text" class="form-control partition_name" id="{{ 'partition' .$index }}" value="{{ $oldSession['hdd'][$index]['partition_name'] }}" required> 
                                                     </div>
                                                     @if ($errors->has('hdd.' .$index .'.partition_name'))
                                                     <p class="text-danger text-start">{{ $errors->first('hdd.' .$index .'.partition_name') }}</p>
@@ -285,13 +285,13 @@
                                         <div class="p-2">
                                             <div class="row g-0 pt-1">
                                                 <div class="col-3 form-floating">
-                                                    <input name="{{ 'hdd[' .$index .'][total]' }}" type="text" class="form-control hdd_total" id="{{ 'hdd_total_' .$index }}" placeholder="total" value="{{ $old['hdd'][$index]['total'] }}" required>
+                                                    <input name="{{ 'hdd[' .$index .'][total]' }}" type="text" class="form-control hdd_total" id="{{ 'hdd_total_' .$index }}" placeholder="total" value="{{ $oldSession['hdd'][$index]['total'] }}" required>
                                                     <label for="{{ 'hdd_total_' .$index }}">Total</label>
                                                 </div>
                                                 <div class="col-2 form-floating">
                                                     <select name="{{ 'hdd[' .$index .'][total_unit]' }}" id="{{ 'hdd_total_unit_' .$index }}" class="form-select form-control hdd_total_unit" required>
                                                         @foreach (config('constants.SIZE_UNITS') as $idx => $val)
-                                                            <option value="{{ $idx }}" {{ $old['hdd'][$index]['total_unit'] == $idx ? 'selected' : '' }}>{{ $val }}</option>
+                                                            <option value="{{ $idx }}" {{ $oldSession['hdd'][$index]['total_unit'] == $idx ? 'selected' : '' }}>{{ $val }}</option>
                                                         @endforeach
                                                     </select>
                                                     <label for="{{ 'hdd_total_unit_' .$index }}">Unit</label>
@@ -314,13 +314,13 @@
                                                     </div>
                                                     <div class="row g-0 pt-2 text-center">
                                                         <div class="col-6 form-floating">
-                                                            <input name="{{ 'hdd[' .$index .'][used]' }}" type="text" class="form-control hdd_used" id="{{ 'hdd_used_' .$index }}" placeholder="used" value="{{ $old['hdd'][$index]['used'] }}" required>
+                                                            <input name="{{ 'hdd[' .$index .'][used]' }}" type="text" class="form-control hdd_used" id="{{ 'hdd_used_' .$index }}" placeholder="used" value="{{ $oldSession['hdd'][$index]['used'] }}" required>
                                                             <label for="{{ 'hdd_used_' .$index }}">Used</label>
                                                         </div>
                                                         <div class="col-4 form-floating">
                                                             <select name="{{ 'hdd[' .$index .'][used_unit]' }}" id="{{ 'hdd_used_unit_' .$index }}" class="form-select form-control hdd_used_unit" required>
                                                                 @foreach (config('constants.SIZE_UNITS') as $idx => $val)
-                                                                    <option value="{{ $idx }}" {{ $old['hdd'][$index]['used_unit'] == $idx ? 'selected' : '' }}>{{ $val }}</option>
+                                                                    <option value="{{ $idx }}" {{ $oldSession['hdd'][$index]['used_unit'] == $idx ? 'selected' : '' }}>{{ $val }}</option>
                                                                 @endforeach
                                                             </select>
                                                             <label for="{{ 'hdd_used_unit_' .$index }}">Unit</label>
@@ -335,13 +335,13 @@
                                                     </div>
                                                     <div class="row g-0 pt-2 text-center">
                                                         <div class="col-6 form-floating">
-                                                            <input name="{{ 'hdd[' .$index .'][free]' }}" type="text" class="form-control hdd_free" id="{{ 'hdd_free_' .$index }}" placeholder="Free" value="{{ $old['hdd'][$index]['free'] }}" required>
+                                                            <input name="{{ 'hdd[' .$index .'][free]' }}" type="text" class="form-control hdd_free" id="{{ 'hdd_free_' .$index }}" placeholder="Free" value="{{ $oldSession['hdd'][$index]['free'] }}" required>
                                                             <label for="{{ 'hdd_free_' .$index }}">Free</label>
                                                         </div>
                                                         <div class="col-4 form-floating">
                                                             <select name="{{ 'hdd[' .$index .'][free_unit]' }}" id="{{ 'hdd_free_unit_' .$index }}" class="form-select form-control hdd_free_unit" required>
                                                                 @foreach (config('constants.SIZE_UNITS') as $idx => $val)
-                                                                    <option value="{{ $idx }}" {{ $old['hdd'][$index]['free_unit'] == $idx ? 'selected' : '' }}>{{ $val }}</option>
+                                                                    <option value="{{ $idx }}" {{ $oldSession['hdd'][$index]['free_unit'] == $idx ? 'selected' : '' }}>{{ $val }}</option>
                                                                 @endforeach
                                                             </select>
                                                             <label for="{{ 'hdd_free_unit_' .$index }}">Unit</label>
@@ -361,13 +361,13 @@
                                                     </div>
                                                     <div class="row g-0 pt-2 text-center">
                                                         <div class="col-6 form-floating">
-                                                            <input name="{{ 'hdd[' .$index .'][used_percentage]' }}" type="text" class="form-control hdd_used_percentage" id="{{ 'hdd_used_percentage_' .$index }}" placeholder="used" disabled value="{{ $old['hdd'][$index]['used_percentage'] }}" required>
+                                                            <input name="{{ 'hdd[' .$index .'][used_percentage]' }}" type="text" class="form-control hdd_used_percentage" id="{{ 'hdd_used_percentage_' .$index }}" placeholder="used" disabled value="{{ $oldSession['hdd'][$index]['used_percentage'] }}" required>
                                                             <label for="{{ 'hdd_used_percentage_' .$index }}">% Used</label>
                                                         </div>
                                                     </div>
                                                     <div class="row g-0 pt-2 text-center">
                                                         <div class="col-6 form-floating">
-                                                            <input name="{{ 'hdd[' .$index .'][free_percentage]' }}" type="text" class="form-control hdd_free_percentage" id="{{ 'hdd_free_percentage_' .$index }}" placeholder="Free" disabled value="{{ $old['hdd'][$index]['free_percentage'] }}" required>
+                                                            <input name="{{ 'hdd[' .$index .'][free_percentage]' }}" type="text" class="form-control hdd_free_percentage" id="{{ 'hdd_free_percentage_' .$index }}" placeholder="Free" disabled value="{{ $oldSession['hdd'][$index]['free_percentage'] }}" required>
                                                             <label for="{{ 'hdd_free_percentage_' .$index }}">% Free</label>
                                                         </div>
                                                     </div>
@@ -378,6 +378,7 @@
                                 </div>
                             @endfor
                         @else
+                            {{-- HDD Partitions for CREATE/REGISTER SERVER --}}
                             @php
                                 $partitionCount = old('partitions_count', 1);
                             @endphp
