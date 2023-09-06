@@ -134,8 +134,8 @@
 
                     <div class="row g-3 mb-2 pt-3" id="hdd_partitions">
 
-                        @if (!empty($partitionData))
-                            {{-- for detail screen and edit screen --}}
+                        @if (!empty($partitionData) && old('partitions_count') <= 1)
+                            {{-- for edit screen --}}
                             @foreach ( $partitionData as $idx => $partition )
                                 @php
                                     $index = $idx + 1;
@@ -146,7 +146,7 @@
                                         <div class="row p-2">
                                             <div class="col-md-8 col-9">
                                                 <div class="row">
-                                                    <label for="partition_1" class="col-auto fs-5 fw-bold align-baseline radio">Partition name:</label>
+                                                    <label for="partition_1" class="col-auto fs-5 fw-bold align-baseline radio">Partition name ::</label>
                                                     <div class="col-auto">
                                                     <input name="{{ 'hdd[' .$index .'][partition_name]' }}" type="text" class="form-control partition_name" id="{{ 'partition' .$index }}" value="{{ $partition['hdd_partition'] }}" required> 
                                                     </div>
@@ -254,6 +254,130 @@
                                     </div>
                                 </div>
                             @endforeach
+                        @elseif (old('partitions_count') > 1)
+                            {{-- for update screen of failed Submit to display HDD --}}
+                            @for ( $index = 1 ; $index <= old('partitions_count') ; $index++ )
+                                 @php
+                                    $old = session()->getOldInput();
+                                @endphp
+                                <div class="partition_section col-md-6" >
+                                    <!-- <input type="text" hidden name="{ { 'hdd[' .$index .'][id]' }}" value="{ { $partition['id'] }}"> -->
+                                    <input type="text" hidden name="{{ 'hdd[' .$index .'][id]' }}" value="{{ old('hdd[' .$index .'][id]') }}">
+                                    <div class="hdd_partition p-1 pt-2">
+                                        <div class="row p-2">
+                                            <div class="col-md-8 col-9">
+                                                <div class="row">
+                                                    <label for="partition_1" class="col-auto fs-5 fw-bold align-baseline radio">Partition name :</label>
+                                                    <p>
+                                                    
+                                                    </p>
+                                                    <div class="col-auto">
+                                                    <input name="{{ 'hdd[' .$index .'][partition_name]' }}" type="text" class="form-control partition_name" id="{{ 'partition' .$index }}" value="{{ $old['hdd'][$index]['partition_name'] }}" required> 
+                                                    </div>
+                                                    @if ($errors->has('hdd.' .$index .'.partition_name'))
+                                                    <p class="text-danger text-start">{{ $errors->first('hdd.' .$index .'.partition_name') }}</p>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 col-3 text-end">
+                                                <button class="btn btn-danger remove_partition">Remove</button>
+                                            </div>
+                                        </div>
+                                        <div class="p-2">
+                                            <div class="row g-0 pt-1">
+                                                <div class="col-3 form-floating">
+                                                    <input name="{{ 'hdd[' .$index .'][total]' }}" type="text" class="form-control hdd_total" id="{{ 'hdd_total_' .$index }}" placeholder="total" value="{{ $old['hdd'][$index]['total'] }}" required>
+                                                    <label for="{{ 'hdd_total_' .$index }}">Total</label>
+                                                </div>
+                                                <div class="col-2 form-floating">
+                                                    <select name="{{ 'hdd[' .$index .'][total_unit]' }}" id="{{ 'hdd_total_unit_' .$index }}" class="form-select form-control hdd_total_unit" required>
+                                                        @foreach (config('constants.SIZE_UNITS') as $idx => $val)
+                                                            <option value="{{ $idx }}" {{ $old['hdd'][$index]['total_unit'] == $idx ? 'selected' : '' }}>{{ $val }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                    <label for="{{ 'hdd_total_unit_' .$index }}">Unit</label>
+                                                </div>
+                                                @if ($errors->has('hdd.' .$index .'.total'))
+                                                <p class="text-danger text-start">{{ $errors->first('hdd.' .$index .'.total') }}</p>
+                                                @endif
+                                                @if ($errors->has('hdd.' .$index .'.total_unit'))
+                                                <p class="text-danger text-start">{{ $errors->first('hdd.' .$index .'.total_unit') }}</p>
+                                                @endif
+                                            </div>
+                                            <div class="mt-2 pt-1 fw-semibold">
+                                                Select mode of input:
+                                            </div>
+                                            <div class="row g-1 pt-2">
+                                                <div class="col">
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" class="form-check-input hdd_select_radio hdd_size_radio" name="{{ 'hdd[' .$index .'][input_type]' }}" id="{{ 'hdd_size_radio_' .$index }}" value="1" checked>
+                                                        <label class="form-check-label text-start" for="{{ 'hdd_size_radio_' .$index }}">Size</label>
+                                                    </div>
+                                                    <div class="row g-0 pt-2 text-center">
+                                                        <div class="col-6 form-floating">
+                                                            <input name="{{ 'hdd[' .$index .'][used]' }}" type="text" class="form-control hdd_used" id="{{ 'hdd_used_' .$index }}" placeholder="used" value="{{ $old['hdd'][$index]['used'] }}" required>
+                                                            <label for="{{ 'hdd_used_' .$index }}">Used</label>
+                                                        </div>
+                                                        <div class="col-4 form-floating">
+                                                            <select name="{{ 'hdd[' .$index .'][used_unit]' }}" id="{{ 'hdd_used_unit_' .$index }}" class="form-select form-control hdd_used_unit" required>
+                                                                @foreach (config('constants.SIZE_UNITS') as $idx => $val)
+                                                                    <option value="{{ $idx }}" {{ $old['hdd'][$index]['used_unit'] == $idx ? 'selected' : '' }}>{{ $val }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                            <label for="{{ 'hdd_used_unit_' .$index }}">Unit</label>
+                                                        </div>
+                                                        
+                                                        @if ($errors->has('hdd.' .$index .'.used'))
+                                                        <p class="text-danger text-start">{{ $errors->first('hdd.' .$index .'.used') }}</p>
+                                                        @endif
+                                                        @if ($errors->has('hdd.' .$index .'.used_unit'))
+                                                        <p class="text-danger text-start">{{ $errors->first('hdd.' .$index .'.used_unit') }}</p>
+                                                        @endif
+                                                    </div>
+                                                    <div class="row g-0 pt-2 text-center">
+                                                        <div class="col-6 form-floating">
+                                                            <input name="{{ 'hdd[' .$index .'][free]' }}" type="text" class="form-control hdd_free" id="{{ 'hdd_free_' .$index }}" placeholder="Free" value="{{ $old['hdd'][$index]['free'] }}" required>
+                                                            <label for="{{ 'hdd_free_' .$index }}">Free</label>
+                                                        </div>
+                                                        <div class="col-4 form-floating">
+                                                            <select name="{{ 'hdd[' .$index .'][free_unit]' }}" id="{{ 'hdd_free_unit_' .$index }}" class="form-select form-control hdd_free_unit" required>
+                                                                @foreach (config('constants.SIZE_UNITS') as $idx => $val)
+                                                                    <option value="{{ $idx }}" {{ $old['hdd'][$index]['free_unit'] == $idx ? 'selected' : '' }}>{{ $val }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                            <label for="{{ 'hdd_free_unit_' .$index }}">Unit</label>
+                                                        </div>
+                                                        @if ($errors->has('hdd.' .$index .'.free'))
+                                                        <p class="text-danger text-start">{{ $errors->first('hdd.' .$index .'.free') }}</p>
+                                                        @endif
+                                                        @if ($errors->has('hdd.' .$index .'.free_unit'))
+                                                        <p class="text-danger text-start">{{ $errors->first('hdd.' .$index .'.free_unit') }}</p>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" class="form-check-input hdd_select_radio hdd_percentage_radio" name="{{ 'hdd[' .$index .'][input_type]' }}" id="{{ 'hdd_percentage_radio_' .$index }}" value="2">
+                                                        <label class="form-check-label text-start" for="{{ 'hdd_percentage_radio_' .$index }}">Percentage</label>
+                                                    </div>
+                                                    <div class="row g-0 pt-2 text-center">
+                                                        <div class="col-6 form-floating">
+                                                            <input name="{{ 'hdd[' .$index .'][used_percentage]' }}" type="text" class="form-control hdd_used_percentage" id="{{ 'hdd_used_percentage_' .$index }}" placeholder="used" disabled value="{{ $old['hdd'][$index]['used_percentage'] }}" required>
+                                                            <label for="{{ 'hdd_used_percentage_' .$index }}">% Used</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row g-0 pt-2 text-center">
+                                                        <div class="col-6 form-floating">
+                                                            <input name="{{ 'hdd[' .$index .'][free_percentage]' }}" type="text" class="form-control hdd_free_percentage" id="{{ 'hdd_free_percentage_' .$index }}" placeholder="Free" disabled value="{{ $old['hdd'][$index]['free_percentage'] }}" required>
+                                                            <label for="{{ 'hdd_free_percentage_' .$index }}">% Free</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endfor
                         @else
                             @php
                                 $partitionCount = old('partitions_count', 1);
