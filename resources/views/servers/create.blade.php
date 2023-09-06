@@ -254,14 +254,13 @@
                                     </div>
                                 </div>
                             @endforeach
-                        @elseif (empty(session()->getOldInput()))
+                        @elseif (!empty(session()->getOldInput()))
                             {{-- Display HDD Partitions from last session, e.g if input error is detected--}}
                             @for ( $index = 1 ; $index <= old('partitions_count') ; $index++ )
                                 @php
                                     $old = session()->getOldInput();
                                 @endphp
                                 <div class="partition_section col-md-6" >
-                                    <!-- <input type="text" hidden name="{ { 'hdd[' .$index .'][id]' }}" value="{ { $partition['id'] }}"> -->
                                     <input type="text" hidden name="{{ 'hdd[' .$index .'][id]' }}" value="{{ old('hdd[' .$index .'][id]') }}">
                                     <div class="hdd_partition p-1 pt-2">
                                         <div class="row p-2">

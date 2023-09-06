@@ -135,7 +135,7 @@ class ServerRequest extends FormRequest
                 'sy' => 'required|decimal:0,2|gte:0|lte:100',
             ]);
         } else {
-            $rules['other_os_percentage'] = 'required|decimal:0,2';
+            $rules['other_os_percentage'] = 'required|decimal:0,2|gte:0|lte:100';
         }
 
         //hdd_usage

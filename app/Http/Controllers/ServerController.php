@@ -29,7 +29,22 @@ class ServerController extends Controller
     public function download () {
         Logs::createLog('Server', 'Downloaded Server Details for ' .date('F Y'));
 
-        $fileName = 'Dev J Server Capacity Monitoring_' .date('MY') .'.xlsx';
+        $fileName = 'Dev J Server Capacity Monitoring_' .date('MY') .'.xlsx';        
+
+        $activeServerCount = Servers::selectRaw('id')
+                                ->from('servers')
+                                ->where('status', 1)
+                                ->count();
+
+        // Return error if there are no active server
+        if(empty($activeServerCount) || $activeServerCount < 1){
+            session(['download_alert' => 'There are no active servers found!']);
+
+            return view('servers.index', [
+                'serverData' => Servers::getAllServer(),
+            ]);
+        }
+        
 
         return (new ServerExport())->download($fileName);
     }
