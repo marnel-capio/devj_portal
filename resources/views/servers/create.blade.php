@@ -134,8 +134,8 @@
 
                     <div class="row g-3 mb-2 pt-3" id="hdd_partitions">
 
-                        @if (!empty($partitionData) && old('partitions_count') <= 1)
-                            {{-- for edit screen --}}
+                        @if (!empty($partitionData) && empty(session()->getOldInput()))
+                            {{-- First display of HDD partitions upon entry of edit screen --}}
                             @foreach ( $partitionData as $idx => $partition )
                                 @php
                                     $index = $idx + 1;
@@ -146,7 +146,7 @@
                                         <div class="row p-2">
                                             <div class="col-md-8 col-9">
                                                 <div class="row">
-                                                    <label for="partition_1" class="col-auto fs-5 fw-bold align-baseline radio">Partition name ::</label>
+                                                    <label for="partition_1" class="col-auto fs-5 fw-bold align-baseline radio">Partition name:</label>
                                                     <div class="col-auto">
                                                     <input name="{{ 'hdd[' .$index .'][partition_name]' }}" type="text" class="form-control partition_name" id="{{ 'partition' .$index }}" value="{{ $partition['hdd_partition'] }}" required> 
                                                     </div>
@@ -254,10 +254,10 @@
                                     </div>
                                 </div>
                             @endforeach
-                        @elseif (old('partitions_count') > 1)
-                            {{-- for update screen of failed Submit to display HDD --}}
+                        @elseif (empty(session()->getOldInput()))
+                            {{-- Display HDD Partitions from last session, e.g if input error is detected--}}
                             @for ( $index = 1 ; $index <= old('partitions_count') ; $index++ )
-                                 @php
+                                @php
                                     $old = session()->getOldInput();
                                 @endphp
                                 <div class="partition_section col-md-6" >
@@ -267,7 +267,7 @@
                                         <div class="row p-2">
                                             <div class="col-md-8 col-9">
                                                 <div class="row">
-                                                    <label for="partition_1" class="col-auto fs-5 fw-bold align-baseline radio">Partition name :</label>
+                                                    <label for="partition_1" class="col-auto fs-5 fw-bold align-baseline radio">Partition name:</label>
                                                     <p>
                                                     
                                                     </p>
