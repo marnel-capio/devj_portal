@@ -121,11 +121,39 @@ $(document).ready(function () {
 	    }
 	});
 
+	$("#soft-reg-submit").click(function(){
+		$('#soft-reg-submit').prop('disabled', true);
+		$("#soft-reg-submit-spinner").show();
+	});
+
+	// Show Spinner for: Reject Software Request
+	$("#soft-reject-request").click(function(){
+		$("#soft-reject-request-spinner").show();
+	});
+
+	// Show Spinner for: Approve Software Request
+	$("#soft-approve-request").click(function(){
+		$('#soft-approve-request').prop('disabled', true);
+		$("#soft-approve-request-spinner").show();
+	});
+
+	// Show Spinner for: Submit the Software Reject
+	$("#soft-reject-sub").click(function() {
+		$("#soft-reject-sub-spinner").show();
+	});
+
+	
+    // On modal close,
+    $("#softwarerejectRequestModal").on("hidden.bs.modal", function() {
+        $(".spinner-border").hide();
+    });
+
 	$("#lp-submit-btn").click(function(e){
-		
+		$("#lp-submit-btn-spinner").show();
 		$("#error-lp-proj-reason").empty();
 		$("#error-lp-proj-name").empty();
 		$('#lp-submit-btn').prop('disabled', true);
+
 		var postData = {
 			_token: $("#linkProjectForm > input[name=_token]").val(),
 			software_id: $("#linkProjectForm > input[name=lp_software_id]").val(),
@@ -139,6 +167,7 @@ $(document).ready(function () {
 			dataType: "json",
 			encode: true,
 		}).done(function(data){
+			$("#lp-submit-btn-spinner").hide();
 			// display error
 			if(!data.success){
 				$("#lp-success-msg").empty();

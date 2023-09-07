@@ -685,7 +685,12 @@
                 </div>
             </section>
             <div class="text-center p-3">
-                <button class="btn btn-primary btn-lg mb-5" id="server-reg-submit" type="submit">Submit</button>
+                <button class="btn btn-primary btn-lg mb-5" id="server-reg-submit" type="submit">
+                    <span>Submit</span>
+                    <div id="server-reg-submit-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                        <span class="sr-only"></span>
+                    </div>
+                </button>
             </div>
         </form>
     </div>

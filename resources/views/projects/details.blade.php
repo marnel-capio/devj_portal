@@ -318,10 +318,16 @@
                                     <td>
                                         <button class="btn btn-link btn-sm text-decoration-none reject-link-btn" id="reject_btn" data-bs-target="#rejectLinkageRequestModal" data-bs-toggle="modal" data-linkid="{{ $member['id'] }}">
                                             <span class="text-danger">Reject</span>
+                                            <div id="reject_btn_spinner_{{ $member['id'] }}" class="spinner-border text-danger spinner-border-sm" role="status" style="display: none">
+                                                <span class="sr-only"></span>
+                                            </div>
                                         </button>
                                         /
                                         <button class="btn btn-link btn-sm text-decoration-none approve-link-btn" id="approve_btn" form="link-request-form" data-linkid="{{ $member['id'] }}">
                                             <span class="text-success">Approve</span>
+                                            <div id="approve_btn_spinner_{{ $member['id'] }}" class="spinner-border text-success spinner-border-sm" role="status" style="display: none">
+                                                <span class="sr-only"></span>
+                                            </div>
                                         </button>
                                     </td>
                                 @else
@@ -359,7 +365,12 @@
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button class="btn btn-danger" id="reject-sub" type="submit" form="reject-request-form">Reject</button>
+                        <button class="btn btn-danger" id="reject-sub" type="submit" form="reject-request-form">
+                            Reject 
+                            <div id="reject-sub-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                                <span class="sr-only"></span>
+                            </div>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -454,7 +465,14 @@
                                 <td>{{ $software['software_type'] }}</td>
                                 <td>{{ $software['linkageRemarks'] }}</td>
                                 @if (auth()->user()->roles == config('constants.MANAGER_ROLE_VALUE'))
-                                <td class="text-center"><button class="btn btn-link btn-sm text-danger software_linkage_remove_btn" form="remove_software_form" data-linkid="{{ $software['id'] }}" data-softwarename="{{ $software['software_name'] }}">Remove</button></td>
+                                <td class="text-center">
+                                    <button class="btn btn-link btn-sm text-danger software_linkage_remove_btn" form="remove_software_form" data-linkid="{{ $software['id'] }}" data-softwarename="{{ $software['software_name'] }}">
+                                        <span>Remove</span>
+                                        <div id="remove_software_spinner_{{ $software['id'] }}" class="spinner-border text-danger spinner-border-sm" role="status" style="display: none">
+                                            <span class="sr-only"></span>
+                                        </div>
+                                    </button>
+                                </td>
                                 @endif
                             </tr>
                         @endforeach

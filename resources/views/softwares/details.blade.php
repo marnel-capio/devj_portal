@@ -180,8 +180,16 @@
 
     @if (!$detailOnly)
     <div class="text-center p-4">
-        <button class="btn btn-danger btn-lg mb-5 me-4 rqst-btn"  data-bs-target="#softwarerejectRequestModal" data-bs-toggle="modal" id="soft-reject-request">Reject</button>
-        <button class="btn btn-success btn-lg mb-5 ms-4 rqst-btn" id="soft-approve-request"  form="soft-approve-request-form">Approve</button>
+        <button class="btn btn-danger btn-lg mb-5 me-4 rqst-btn"  data-bs-target="#softwarerejectRequestModal" data-bs-toggle="modal" id="soft-reject-request">
+            Reject <div id="soft-reject-request-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                <span class="sr-only"></span>
+            </div>
+        </button>
+        <button class="btn btn-success btn-lg mb-5 ms-4 rqst-btn" id="soft-approve-request"  form="soft-approve-request-form">
+            Approve <div id="soft-approve-request-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                <span class="sr-only"></span>
+            </div>
+        </button>
         <form action="{{ route('softwares.store') }}" method="POST" id="soft-approve-request-form">
             @csrf
             <input type="text" name="id" hidden value="{{ $software->id }}">
@@ -204,7 +212,11 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button class="btn btn-danger" id="soft-reject-sub" type="submit" form="soft-reject-request-form">Reject</button>
+                    <button class="btn btn-danger" id="soft-reject-sub" type="submit" form="soft-reject-request-form">
+                        Reject <div id="soft-reject-sub-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                            <span class="sr-only"></span>
+                        </div>
+                    </button>
                 </div>
             </div>
         </div>
@@ -249,7 +261,11 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button class="btn btn-primary" type="submit" id="lp-submit-btn">Link</button>
+                    <button class="btn btn-primary" type="submit" id="lp-submit-btn">
+                        Link  <div id="lp-submit-btn-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                            <span class="sr-only"></span>
+                        </div>
+                    </button>
                 </div>
             </div>
         </div>

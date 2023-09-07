@@ -427,6 +427,8 @@ $(document).ready( function () {
 	$("#linked_softwares_tbl").on('click', '.software_linkage_remove_btn', function (e) {
 		let linkageId =  $(this).data('linkid');
 		let softwareName = $(this).data('softwarename');
+
+		$("#remove_software_spinner_" + linkageId).show();
 		if (confirm('Are sure you want to remove ' + softwareName + '?')) {
 			// Set id in software removal form
 			$("#remove_software_form > input[name=id").val(linkageId);
@@ -525,13 +527,20 @@ $(document).ready( function () {
 	// Approve button for Approve Project Link Request
     $(".approve-link-btn").click(function(){
         var linkId = $(this).data('linkid');
+		$("#approve_btn_spinner_" + linkId).show();
         $("#approve-link-in").val(linkId);
     });
 
 	// Reject button for Reject Project Link Request
     $(".reject-link-btn").click(function(){
         var linkId = $(this).data('linkid');
+		$("#reject_btn_spinner_" + linkId).show();
         $("#reject-link-in").val(linkId);
+    });
+
+    // On modal close,
+    $("#rejectLinkageRequestModal").on("hidden.bs.modal", function() {
+        $(".spinner-border").hide();
     });
 
     // Reject modal
@@ -544,6 +553,7 @@ $(document).ready( function () {
 			return false;
 		}else {
 			$('#reject-sub').prop('disabled', true);
+			$('#reject-sub-spinner').show();
 		}
 	});
 

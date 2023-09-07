@@ -440,8 +440,16 @@
 
     @if (!$detailOnly)
     <div class="text-center p-4">
-        <button class="btn btn-danger btn-lg mb-5 me-4 rqst-btn"  data-bs-target="#rejectRequestModal" data-bs-toggle="modal" id="reject-request">Reject</button>
-        <button class="btn btn-success btn-lg mb-5 ms-4 rqst-btn" id="approve-request"  form="approve-request-form">Approve</button>
+        <button class="btn btn-danger btn-lg mb-5 me-4 rqst-btn"  data-bs-target="#rejectRequestModal" data-bs-toggle="modal" id="reject-request">
+            Reject  <div id="employee_reject_spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                <span class="sr-only"></span>
+            </div>
+        </button>
+        <button class="btn btn-success btn-lg mb-5 ms-4 rqst-btn" id="approve-request"  form="approve-request-form">
+            Approve <div id="employee_approve_spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                <span class="sr-only"></span>
+            </div>
+        </button>
         <form action="{{ route('employees.store') }}" method="POST" id="approve-request-form">
             @csrf
             <input type="text" name="id" hidden value="{{ $employee->id }}">
@@ -464,7 +472,11 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button class="btn btn-danger" id="reject-sub" type="submit" form="reject-request-form">Reject</button>
+                    <button class="btn btn-danger" id="reject-sub" type="submit" form="reject-request-form">
+                        Reject <div id="employee_reject_submit_spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                            <span class="sr-only"></span>
+                        </div>
+                    </button>
                 </div>
             </div>
         </div>

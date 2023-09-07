@@ -598,7 +598,8 @@ $(document).ready(function () {
 
     // ==================================form submission
     $("#server_reg_form").on('submit', function () {
-
+        $("#server-reg-submit").prop("disabled",true);
+        $("#server-reg-submit-spinner").show();
         // Enable disabled fields before submission
         enableAllFields();
         $("input[name=partitions_count]").val($(".partition_section").length);

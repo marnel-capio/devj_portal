@@ -489,9 +489,19 @@
                             @endif
                             @if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE') )
                                 <td>
-                                    <button class="btn btn-link btn-sm text-decoration-none reject-link-btn" data-bs-target="#rejectLinkageRequestModal" data-bs-toggle="modal" data-linkid="{{ $request['id'] }}"><span class="text-danger">Reject</span></button>
+                                    <button class="btn btn-link btn-sm text-decoration-none reject-link-btn" data-bs-target="#rejectLinkageRequestModal" data-bs-toggle="modal" data-linkid="{{ $request['id'] }}">
+                                        <span class="text-danger">Reject</span>
+                                        <div id="link_reject_spinner_{{ $request['id'] }}" class="spinner-border text-danger spinner-border-sm" role="status" style="display: none">
+                                            <span class="sr-only"></span>
+                                        </div>
+                                    </button>
                                     /
-                                    <button class="btn btn-link btn-sm text-decoration-none approve-link-btn" form="link-request-form" data-linkid="{{ $request['id'] }}"><span class="text-success">Approve</span></button>
+                                    <button class="btn btn-link btn-sm text-decoration-none approve-link-btn" form="link-request-form" data-linkid="{{ $request['id'] }}">
+                                        <span class="text-success">Approve</span>
+                                        <div id="link_approve_spinner_{{ $request['id'] }}" class="spinner-border text-success spinner-border-sm" role="status" style="display: none">
+                                            <span class="sr-only"></span>
+                                        </div>
+                                    </button>
                                 </td>
                             @else
                                 <td></td>
@@ -527,7 +537,11 @@
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button class="btn btn-danger" id="reject-sub" type="submit" form="reject-request-form">Reject</button>
+                        <button class="btn btn-danger" id="reject-sub" type="submit" form="reject-request-form">
+                            Reject
+                            <div id="link_reject_submit_spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                                <span class="sr-only"></span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -541,8 +555,16 @@
     
     @if (!$detailOnly && $userInfo->roles == config('constants.MANAGER_ROLE_VALUE'))
     <div class="text-center p-4">
-        <button class="btn btn-danger btn-lg mb-5 me-4 rqst-btn"  data-bs-target="#rejectRequestModal" data-bs-toggle="modal" id="reject-request">Reject</button>
-        <button class="btn btn-success btn-lg mb-5 ms-4 rqst-btn" id="approve-request"  form="approve-request-form">Approve</button>
+        <button class="btn btn-danger btn-lg mb-5 me-4 rqst-btn"  data-bs-target="#rejectRequestModal" data-bs-toggle="modal" id="reject-request">
+            Reject  <div id="laptop_reject_spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                <span class="sr-only"></span>
+            </div>
+        </button>
+        <button class="btn btn-success btn-lg mb-5 ms-4 rqst-btn" id="approve-request"  form="approve-request-form">
+            Approve <div id="laptop_approve_spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                <span class="sr-only"></span>
+            </div>
+        </button>
         <form action="{{ route('laptops.store') }}" method="POST" id="approve-request-form">
             @csrf
             <input type="text" name="id" hidden value="{{ $detail->id }}">
@@ -570,7 +592,11 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button class="btn btn-danger" id="reject-sub" type="submit" form="reject-request-form">Reject</button>
+                    <button class="btn btn-danger" id="reject-sub" type="submit" form="reject-request-form">
+                        Reject <div id="laptop_reject_submit_spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                            <span class="sr-only"></span>
+                        </div>
+                    </button>
                 </div>
             </div>
         </div>

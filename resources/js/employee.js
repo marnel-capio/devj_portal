@@ -5,7 +5,8 @@ const DEACTIVATE_EMPLOYEE_LINK = '/api/deactivateEmployee';
 const REACTIVATE_EMPLOYEE_LINK = '/api/reactivateEmployee';
 const TRANSFER_EMPLOYEE_LINK = '/api/transferEmployee';
 const REINSTATE_EMPLOYEE_LINK = '/api/reinstateEmployee';
-const NOTIFY_SURRENDER_OF_LAPTOPS_LINK = '/api/notifySurrender'
+const NOTIFY_SURRENDER_OF_LAPTOPS_LINK = '/api/notifySurrender';
+const APPROVE_EMPLOYEE_LINK = '/employees/store';
 const BU_LIST = {
     '1'  : 'Dev A',
     '2'  : 'Dev B',
@@ -379,8 +380,16 @@ $(document).ready(function () {
 		e.preventDefault();
 	});
 
-	//reject modal
+
+	// Click Reject button to display Reject Modal
+	$("#reject-request").click(function(){
+        $("#employee_reject_spinner").show();
+		$('#reject-request').prop('disabled', true);
+	})
+
+	// Submit the rejection reason 
 	$("#reject-request-form").submit(function(){
+        $("#employee_reject_submit_spinner").show();
 		if($("#reject-reason").val() == ""){
 			$("#reject-reason-error").html('The reason field is required.').addClass("text-danger text-start");
 			return false;
@@ -392,10 +401,11 @@ $(document).ready(function () {
 		}
 	});
 
-	//approve
+	// Approve Employee Detail Update/Creation request
 	$("#approve-request-form").submit(function(){
+        $("#employee_approve_spinner").show();
 		$('#approve-request').prop('disabled', true);
-	})
+	});
 
 	// edit submit
 	$("#emp-update-form").submit(function(){

@@ -218,8 +218,17 @@ $(document).ready(function(){
 	    }
 	});
 
-    //reject modal
+    
+	// Click Reject button to display Reject Modal
+	$("#reject-request").click(function(){
+        $("#laptop_reject_spinner").show();
+		$('#reject-request').prop('disabled', true);
+	})
+
+    // Reject modal
 	$("#reject-request-form").submit(function(){
+        $("#laptop_reject_submit_spinner").show();
+        $("#link_reject_submit_spinner").show();
 		if($("#reject-reason").val() == ""){
 			$("#reject-reason-error").html('The reason field is required.').addClass("text-danger text-start");
 			return false;
@@ -230,14 +239,36 @@ $(document).ready(function(){
 			$('#reject-sub').prop('disabled', true);
 		}
 	});
+    
+	// Approve Laptop Detail Update/Creation request
+	$("#approve-request-form").submit(function(){
+        $("#laptop_approve_spinner").show();
+		$('#approve-request').prop('disabled', true);
+	});
 
-    $(".reject-link-btn").click(function(){
+
+    // Reject laptop linkage to employee
+    $("#reject-sub").click(function(e){
+        $("reject-sub-spinner#").show();
+    });
+
+
+    // Submit laptop linkage to employee
+    $(".reject-link-btn").click(function(e){
         var linkId = $(this).data('linkid');
+        $("#link_reject_spinner_" + linkId).show();
         $("#reject-link-in").val(linkId);
     });
 
+    // On modal close,
+    $("#rejectLinkageRequestModal").on("hidden.bs.modal", function() {
+        $(".spinner-border").hide();
+    });
+
+    // Approve laptop linkage to employee
     $(".approve-link-btn").click(function(){
         var linkId = $(this).data('linkid');
+        $("#link_approve_spinner_" + linkId).show();
         $("#approve-link-in").val(linkId);
     });
 
