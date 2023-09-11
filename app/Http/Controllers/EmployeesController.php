@@ -50,6 +50,13 @@ class EmployeesController extends Controller
 
         $insertData = $this->getEmployeeData($request);
         $insertData['roles'] = $this->getRoleBasedOnPosition($insertData['position']);
+
+        $insertData = $this->validatePassportStatusandInputs($insertData);
+
+        // $objData = (object)$insertData;
+        // abort_if(!$this->validatePassportStatusandInputs($objData), 404);
+
+        unset($insertData["passport_status"]);
         
         if(isset($insertData['id'])){
             //update data only
@@ -122,6 +129,9 @@ class EmployeesController extends Controller
                 || (in_array(Auth::user()->roles, [config('constants.ADMIN_ROLE_VALUE'), config('constants.MANAGER_ROLE_VALUE')]) && $employeeDetails->approved_status == config('constants.APPROVED_STATUS_APPROVED') )){
             $allowedToEdit = true;
         }
+        
+        // Get passport status
+        $employeeDetails = $this->getPassportStatus($employeeDetails);
 
         return view('employees.details')
                     ->with([
@@ -162,6 +172,9 @@ class EmployeesController extends Controller
             }
         }
 
+        // Get passport status
+        $employee = $this->getPassportStatus($employee);
+
         abort_if((!$employee->active_status && $employee->approved_status == config('constants.APPROVED_STATUS_REJECTED'))
             || ($employee->active_status && in_array($employee->approved_status, [config('constants.APPROVED_STATUS_REJECTED'), config('constants.APPROVED_STATUS_PENDING')]))
             , 403); //invalid combination of approved_status and active_status
@@ -194,9 +207,12 @@ class EmployeesController extends Controller
             $updateData['roles'] = $rolebasedOnadminFlag;
         }
        
+        $updateData = $this->validatePassportStatusandInputs($updateData);
+
         unset($updateData['id']);
         unset($updateData['created_by']);
         unset($updateData['password']);
+        unset($updateData["passport_status"]);
 
         //check logined employee role
         if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
@@ -279,6 +295,11 @@ class EmployeesController extends Controller
         abort_if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE'), 403);   //can only be accessed by manager
 
         abort_if(empty($employeeDetails), 404); //employee does not exist
+
+        // Get passport status
+
+        $employeeDetails = $this->getPassportStatus($employeeDetails);
+
 
         $detailNote = $this->getAccountStatus($employeeDetails);
 
@@ -639,6 +660,119 @@ class EmployeesController extends Controller
 
         return $employee;
     }
+    
+
+    /**
+     * Get the passport status based on existing passport data
+     *
+     * @param [type] $employee
+     * @return array
+     */
+    private function getPassportStatus($employee) {
+
+        // set default value to true
+        $employee->passport_isComplete = true;
+
+        if($employee->passport_number   != null || 
+        $employee->date_of_issue         != null || 
+        $employee->issuing_authority     != null || 
+        $employee->passport_type         != null || 
+        $employee->passport_expiration_date != null || 
+        $employee->place_of_issue        != null)
+        {
+            // If at least 1 field is not empty, then the passport exists.
+            $employee->passport_status = 1;
+
+            // If at least 1 field is empty, then passport details are incomplete.
+            if($employee->passport_number   == null ||  
+            $employee->date_of_issue         == null ||  
+            $employee->issuing_authority     == null ||  
+            $employee->passport_type         == null ||  
+            $employee->passport_expiration_date == null ||  
+            $employee->place_of_issue        == null)
+            {
+                $employee->passport_isComplete = false;
+            }
+
+        } else if($employee->date_of_appointment != null) {
+            $employee->passport_status = 2;
+
+        } else {
+            $employee->passport_status = 3;
+            $employee->passport_isComplete = false;
+
+        }
+
+        return $employee;
+    }
+    
+    /**
+     * Validate combination of inputs and passport_status.
+     *
+     * @param [type] $employee
+     * @return bool
+     */
+    /* // remove function for now, can be used for future bug
+    private function validatePassportStatusandInputs($employee) {
+
+        if(($employee->passport_number   != null || 
+        $employee->date_of_issue         != null || 
+        $employee->issuing_authority     != null || 
+        $employee->passport_type         != null || 
+        $employee->passport_expiration_date != null || 
+        $employee->place_of_issue        != null) && $employee->passport_status != 1)
+        {
+            // If inputs are for status 1, but status != 1
+            return false;
+
+        } else if($employee->date_of_appointment != null && $employee->passport_status != 2) {
+            // If inputs are for status 2, but status != 2
+            return false;
+
+        } else if($employee->no_appointment_reason != null & $employee->passport_status != 3) {
+            // If inputs are for status 3, but status != 3
+            return false;
+
+        } else {
+            return true;
+        }
+    }
+    */
+    
+    /**
+     * Validate combination of inputs and passport_status.
+     * Accept fields only based on selected passport_status
+     *
+     * @param [array] $employee
+     * @return array
+     */
+    private function validatePassportStatusandInputs($employee) {
+
+        // Accept fields only based on selected passport_status
+        if($employee['passport_status'] == 1) {
+            $employee['date_of_appointment'] = null;      // 2
+            $employee['no_appointment_reason'] = null;    // 3
+        } else if($employee['passport_status'] == 2) {
+            $employee['passport_number'] = null;          // 1
+            $employee['date_of_issue'] = null;            // 1
+            $employee['issuing_authority'] = null;        // 1
+            $employee['passport_type'] = null;            // 1
+            $employee['passport_expiration_date'] = null; // 1
+            $employee['place_of_issue'] = null;           // 1
+            $employee['no_appointment_reason'] = null;    // 3
+        } else {
+            $employee['passport_number'] = null;          // 1
+            $employee['date_of_issue'] = null;            // 1
+            $employee['issuing_authority'] = null;        // 1
+            $employee['passport_type'] = null;            // 1
+            $employee['passport_expiration_date'] = null; // 1
+            $employee['place_of_issue'] = null;           // 1
+            $employee['date_of_appointment'] = null;      // 2
+        }
+        
+        return $employee;
+    }
+    
 
     /**
      * Send notification to all active employee

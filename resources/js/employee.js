@@ -107,6 +107,9 @@ $(document).ready(function () {
 	//disable submit button if not all required fields have value
 	checkRequiredFields();
 
+	
+
+
 	$(":input[required]").change(function(){
 		checkRequiredFields();
 	});
@@ -409,6 +412,8 @@ $(document).ready(function () {
 
 	// edit submit
 	$("#emp-update-form").submit(function(){
+        $("#employee-update-submit-spinner").show();
+
 		if($("#active-status").is(':checked')){
 			$("#active-status-hidden").prop('disabled', true);
 		}
@@ -599,6 +604,54 @@ $(document).ready(function () {
 		})
 	});
 
+
+	
+	$("#emp-reg-submit").click(function(e){
+		$("#employee-reg-submit-spinner").show();
+	});
+
 	//end for employee bu transfer/reinstate
+
+    /**
+     * Passport details display
+     */
+
+	var passport_status = $("input[name=passport_status]:checked").prop("value");
+	enableDisablePassportInputs(passport_status);
+
+    $("input[name=passport_status]").change(function () {
+		var val = $(this).attr("value");
+        enableDisablePassportInputs(val);
+    });
+	
+    function enableDisablePassportInputs(passport_status = 1) {
+		$("#withPassport").addClass("d-none");
+		$("#withAppointment").addClass("d-none");
+		$("#withoutAppointment").addClass("d-none");
+		$("#passport-status-switch-spinner").show();
+
+		if(passport_status == 1) {
+			// $("#withPassport").find('input').each( function() {
+			// 	$(this).prop('disabled', false);
+			// });
+			// $("#withPassport").find('select').each( function() {
+			// 	$(this).prop('disabled', false);
+			// });
+			$("#withPassport").removeClass("d-none");
+
+		} else if(passport_status == 2) {
+			// $("#date_of_appointment").prop('disabled', false);
+			$("#withAppointment").removeClass("d-none");
+
+		} else if(passport_status == 3) {
+			// $("#no_appointment_reason").prop('disabled', false);
+			$("#withoutAppointment").removeClass("d-none");
+
+		} else {
+			alert("Wrong passport status detected. Please refresh the page");
+		}
+		$("#passport-status-switch-spinner").hide();
+
+    }
 
 });

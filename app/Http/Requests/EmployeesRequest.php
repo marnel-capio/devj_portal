@@ -40,6 +40,15 @@ class EmployeesRequest extends FormRequest
             'cellphone_number' => 'contact number',
             'current_address_postalcode' => 'postal code',
             'permanent_address_postalcode' => 'postal code',
+
+            'passport_number' => 'Passport Number',
+            'date_of_issue' => 'Date of Issue',
+            'issuing_authority' => 'Issuing Authority',
+            'passport_type' => 'Passport Type',
+            'passport_expiration_date' => 'Passport Expiration Date',
+            'place_of_issue' => 'Place of Issue',
+            'date_of_appointment' => 'Date of Appointment',
+            'no_appointment_reason' => 'Reason for No Appointment',
         ];
     }
 
@@ -53,6 +62,15 @@ class EmployeesRequest extends FormRequest
         return [
             'birthdate.regex' => "The birth date must be a valid date.",
             'birthdate.date' => "The birth date must be a valid date.",
+            'current_address_postalcode.lt' => "The postal code exceeds max digits",
+            'permanent_address_postalcode.lt' => "The postal code exceeds max digits",
+            
+            'date_of_issue.regex' => "The date of issue must be a valid date.",
+            'date_of_issue.date' => "The date of issue must be a valid date.",
+            'passport_expiration_date.regex' => "The Passport expiration date must be a valid date.",
+            'passport_expiration_date.date' => "The Passport expiration date must be a valid date.",
+            'date_of_appointment.regex' => "The Passport expiration date must be a valid date.",
+            'date_of_appointment.date' => "The Passport expiration date must be a valid date.",
         ];
     }
 
@@ -74,15 +92,35 @@ class EmployeesRequest extends FormRequest
                 'position' => 'required|in:1,2,3,4,5,6,7,8,9',
                 'email' => ['required', 'email', 'max:80', 'min:15', new AWSEmailAddress()],
                 'cellphone_number' => 'required|numeric|digits:10',
-                'current_address_street' => 'required',
-                'current_address_city' => 'required',
-                'current_address_province' => 'required',
-                'current_address_postalcode' =>'required|numeric',
-                'permanent_address_street' => 'required',
-                'permanent_address_city' => 'required',
-                'permanent_address_province' => 'required',
-                'permanent_address_postalcode' =>'required|numeric',
+                'current_address_street' => 'required|max:80',
+                'current_address_city' => 'required|max:80',
+                'current_address_province' => 'required|max:80',
+                'current_address_postalcode' =>'required|numeric|gte:0|lt:100000000000',
+                'permanent_address_street' => 'required|max:80',
+                'permanent_address_city' => 'required|max:80',
+                'permanent_address_province' => 'required|max:80',
+                'permanent_address_postalcode' =>'required|numeric|gte:0|lt:100000000000',
+                'passport_status' => 'required|in:1,2,3',
+
             ];
+
+            if ($this->input('passport_status') == 1) {
+                // Required if with valid passport
+                $rules = array_merge($rules, [
+                    'passport_number' => 'required|max:80',
+                    'issuing_authority' => 'required|max:80',
+                    'passport_type' => 'required|in:1,2,3',
+                    'place_of_issue' => 'required|max:80',
+                    'date_of_issue' => 'required|date|regex:/^\d{4}-\d{2}-\d{2}$/',
+                    'passport_expiration_date' => 'required|date|regex:/^\d{4}-\d{2}-\d{2}$/',
+                ]);
+            } else if ($this->input('passport_status') == 2){
+                // Required field if no valid passport
+                $rules['date_of_appointment'] = 'required|date|regex:/^\d{4}-\d{2}-\d{2}$/';
+            }
+            else if($this->input('passport_status') == 3) {
+                $rules['no_appointment_reason'] = 'required|max:1024';
+            }
 
             if(strpos($this->header('referer'), route('employees.create')) !== FALSE){
                 $rules['password'] = ['required', 'min:8', 'max:16', new Password()];

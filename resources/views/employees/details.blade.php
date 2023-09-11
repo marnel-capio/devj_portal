@@ -26,6 +26,12 @@
                 <i class="bi bi-info-circle-fill"></i>&nbsp;{{ $buTransferNote }}
             </div>
             @endif
+            
+            @if (isset($employee->passport_isComplete) && $employee->passport_isComplete == false)
+            <div>
+                <i class="bi bi-info-circle-fill"></i>&nbsp;Passport details are incomplete
+            </div>
+            @endif
         </div>
         
         <div class="">
@@ -270,7 +276,7 @@
                 </div>
             </div>
             <div class="emp-regist-category mb-4 p-3 rounded-3">
-                <h4 class="text-start">Contact </h4>
+                <h4 class="text-start">Contact Details</h4>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-4 g-3 form-floating">
                         <input type="text" class="form-control" name="email" id="email" placeholder="Email" required value="{{ $employee->email }}" disabled>
@@ -298,6 +304,109 @@
                         <label for="other_contact" class="text-center">Other Contact Info (optional)</label>
                         @if ($errors->has('other_contact_info'))
                         <p class="text-danger">{{ $errors->first('other_contact_info') }}</p>
+                        @endif
+                    </div>
+                </div>
+            </div>
+            
+            {{-- Passport Details --}}
+            <div class="emp-regist-category mb-4 p-3 rounded-3">
+                <h4 class="text-start">Passport Details</h4>
+
+                <div class="row row-list">
+                    <div class="col-lg-1 col-2" id="status-label">
+                        Status: 
+                    </div>
+                    <div class="col-lg-11 col-10" style="text-align: left">
+                        <input class="passport_status" type="radio" name="passport_status" id="status-withPassport" value="1" {{ old('passport_status', $employee ? $employee->passport_status : '') == 1 ? "checked" : "" }} disabled>
+                        <label class="form-check-label" for="status-withPassport">
+                            With Passport
+                        </label>
+                        &nbsp;&nbsp;
+                        <input class="passport_status" type="radio" name="passport_status" id="status-withAppointment" value="2" {{ old('passport_status', $employee ? $employee->passport_status : '') == 2 ? "checked" : "" }} disabled>
+                        <label class="form-check-label" for="status-withAppointment">
+                            With scheduled appointment
+                        </label>
+                        &nbsp;&nbsp;
+                        <input class="passport_status" type="radio" name="passport_status" id="status-withoutAppointment" value="3" {{ old('passport_status', $employee ? $employee->passport_status : '') == 3 ? "checked" : "" }} disabled>
+                        <label class="form-check-label" for="status-withoutAppointment">
+                            Without scheduled appointment
+                        </label>
+                    </div>
+                </div>
+
+                {{-- With Valid Passport section --}}
+                <div id="withPassport" class="">
+                    <div class="row mb-2 ps-3 pe-3">
+                        <div class="col-4 g-3 form-floating">
+                            <input type="text" class="form-control" name="passport_number" id="passport_number" placeholder="Passport Number" required value="{{ $employee->passport_number }}" disabled>
+                            <label for="passport_number" class="text-center">Passport Number</label>
+                            @if ($errors->has('passport_number'))
+                            <p class="text-danger">{{ $errors->first('passport_number') }}</p>
+                            @endif
+                        </div>
+                        <div class="col-4 g-3 form-floating">
+                            <input type="text" class="form-control" name="passport_type" id="passport_type" placeholder="Passport Type" required value="{{ $employee->passport_type }}" disabled>
+                            <label for="passport_type" class="text-center">Passport Type</label>
+                            @if ($errors->has('passport_type'))
+                            <p class="text-danger">{{ $errors->first('passport_type') }}</p>
+                            @endif
+                        </div>
+                        <div class="col-4 g-3 form-floating">
+                            <input type="text" class="form-control" name="issuing_authority" id="issuing_authority" placeholder="Issuing Authority" required value="{{ $employee->issuing_authority }}" disabled>
+                            <label for="issuing_authority" class="text-center">Issuing Authority</label>
+                            @if ($errors->has('issuing_authority'))
+                            <p class="text-danger">{{ $errors->first('issuing_authority') }}</p>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="row mb-2 ps-3 pe-3">
+                        <div class="col-4 g-3 form-floating">
+                            <input type="date" class="form-control" name="date_of_issue" id="date_of_issue" placeholder="Date of issue" value="{{ old('date_of_issue') ?: $employee->date_of_issue }}" pattern="\d{4}-\d{2}-\d{2}" required disabled>
+                            <label  class="text-center" for="date_of_issue">Date of Issue</label>
+                            @if ($errors->has('date_of_issue'))
+                            <p class="text-danger">{{ $errors->first('date_of_issue') }}</p>
+                            @endif
+                        </div>
+                        <div class="col-4 g-3 form-floating">
+                            <input type="date" class="form-control" name="passport_expiration_date" id="passport_expiration_date" placeholder="Valid until" value="{{ old('passport_expiration_date') ?: $employee->passport_expiration_date }}" pattern="\d{4}-\d{2}-\d{2}" required disabled>
+                            <label  class="text-center" for="passport_expiration_date">Valid Until</label>
+                            @if ($errors->has('passport_expiration_date'))
+                            <p class="text-danger">{{ $errors->first('passport_expiration_date') }}</p>
+                            @endif
+                        </div>
+                        <div class="col-4 g-3 form-floating">
+                            <input type="text" class="form-control" name="place_of_issue" id="place_of_issue" placeholder="Issuing Authority" required value="{{ $employee->place_of_issue }}" disabled>
+                            <label for="place_of_issue" class="text-center">Issuing Authority</label>
+                            @if ($errors->has('place_of_issue'))
+                            <p class="text-danger">{{ $errors->first('place_of_issue') }}</p>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                {{-- With Passport Appointment section --}}
+                <div id="withAppointment" class="">
+                    <div class="row mb-2 ps-3 pe-3">
+                        <div class="col-4 g-3 form-floating">
+                            <input type="date" class="form-control" name="date_of_appointment" id="date_of_appointment" placeholder="Date of appointment" value="{{ old('date_of_appointment') ?: $employee->date_of_appointment }}" pattern="\d{4}-\d{2}-\d{2}" required disabled>
+                            <label  class="text-center" for="date_of_appointment">Date of Appointment</label>
+                            @if ($errors->has('date_of_appointment'))
+                            <p class="text-danger">{{ $errors->first('date_of_appointment') }}</p>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Without Passport Appointment section --}}
+                <div id="withoutAppointment" class="d-none" style="text-align: left">
+                    <div class="row mb-2 ps-5 pe-3">
+                        <div class="col-lg-9 g-3">
+                            <h5>Reason for No Appointment</h5>
+                            <textarea class="form-control" name="no_appointment_reason"  rows="3" id="no_appointment_reason" placeholder="Please state the reason for not having a passport appointment" required disabled>{{ old('no_appointment_reason') ?: $employee->no_appointment_reason }}</textarea>
+                        </div>
+                        @if ($errors->has('no_appointment_reason'))
+                        <p class="text-danger text-start">{{ $errors->first('no_appointment_reason') }}</p>
                         @endif
                     </div>
                 </div>

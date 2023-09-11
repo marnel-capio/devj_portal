@@ -113,7 +113,7 @@ class ServerRequest extends FormRequest
             'memory' => 'required|max:80',
             'server_hdd' => 'required|max:80',
             'function_role' => 'required|max:1024',
-            'os_type' => 'in:1,2',
+            'os_type' => 'required|in:1,2',
             'remarks' => 'max:1024',
             //memory usage details
             'memory_used' => 'required|decimal:0,2|gte:0|lt:1000000',
