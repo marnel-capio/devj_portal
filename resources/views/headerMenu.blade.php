@@ -57,8 +57,10 @@
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link text-white text-nowrap"  role="button"><i class="bi bi-person-fill"> </i>{{ $userInfo->last_name .', ' .$userInfo->first_name }}</a>
                     <ul class="dropdown-menu">
+                        @if ($userInfo->email != 'devj-portal@awsys-i.com')
                         <li><a href="{{ route('employees.details', ['id' => $userInfo->id]) }}" class="dropdown-item small text-white">My Details</a></li>
                         <li><hr class="dropdown-divider"></li>
+                        @endif
                         <li><a href="{{ route('logout') }}" class="dropdown-item small text-white">Logout</a></li>
                     </ul>
                 </li>
