@@ -256,41 +256,6 @@
 
             {{-- Current Address --}}
             <div class="emp-regist-category mb-4 p-3 rounded-3">
-                <h4 class="text-start">Current Address</h4>
-                <div class="row mb-2 ps-3 pe-3">
-                    <div class="col-12 g-3 form-floating">
-                        <input type="text" class="form-control" name="current_address_street" id="cur-add-strt" placeholder="Street" required value="{{ old('current_address_street', $employee ? $employee->current_address_street : '') }}">
-                        <label for="cur-add-strt" class="text-center">Street</label>
-                        @if ($errors->has('current_address_street'))
-                        <p class="text-danger">{{ $errors->first('current_address_street') }}</p>
-                        @endif
-                    </div>
-                </div>
-                <div class="row mb-2 ps-3 pe-3">
-                    <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="current_address_city" id="cur-add-town" placeholder="Town" required value="{{ old('current_address_city', $employee ? $employee->current_address_city : '') }}">
-                        <label for="cur-add-town" class="text-center">Town/City</label>
-                        @if ($errors->has('current_address_city'))
-                        <p class="text-danger">{{ $errors->first('current_address_city') }}</p>
-                        @endif
-                    </div>
-                    <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="current_address_province" id="cur-add-prov" placeholder="Province" required value="{{ old('current_address_province', $employee ? $employee->current_address_province : '') }}">
-                        <label for="cur-add-prov" class="text-center">Province/Region</label>
-                        @if ($errors->has('current_address_province'))
-                        <p class="text-danger">{{ $errors->first('current_address_province') }}</p>
-                        @endif
-                    </div>
-                    <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="current_address_postalcode" id="cur-add-postal" placeholder="Postal Code" required value="{{ old('current_address_postalcode', $employee ? $employee->current_address_postalcode : '') }}">
-                        <label for="cur-add-postal" class="text-center">Postal Code</label>
-                        @if ($errors->has('current_address_postalcode'))
-                        <p class="text-danger">{{ $errors->first('current_address_postalcode') }}</p>
-                        @endif
-                    </div>
-                </div>
-            </div>
-            <div class="emp-regist-category mb-4 p-3 rounded-3">
                 <h4 class="text-start">Permanent Address</h4>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-12 g-3 form-floating">
@@ -321,6 +286,41 @@
                         <label for="perm-add-postal" class="text-center">Postal Code</label>
                         @if ($errors->has('permanent_address_postalcode'))
                         <p class="text-danger">{{ $errors->first('permanent_address_postalcode') }}</p>
+                        @endif
+                    </div>
+                </div>
+            </div>
+            <div class="emp-regist-category mb-4 p-3 rounded-3">
+                <h4 class="text-start">Current Address</h4>
+                <div class="row mb-2 ps-3 pe-3">
+                    <div class="col-12 g-3 form-floating">
+                        <input type="text" class="form-control" name="current_address_street" id="cur-add-strt" placeholder="Street" required value="{{ old('current_address_street', $employee ? $employee->current_address_street : '') }}">
+                        <label for="cur-add-strt" class="text-center">Street</label>
+                        @if ($errors->has('current_address_street'))
+                        <p class="text-danger">{{ $errors->first('current_address_street') }}</p>
+                        @endif
+                    </div>
+                </div>
+                <div class="row mb-2 ps-3 pe-3">
+                    <div class="col-4 g-3 form-floating">
+                        <input type="text" class="form-control" name="current_address_city" id="cur-add-town" placeholder="Town" required value="{{ old('current_address_city', $employee ? $employee->current_address_city : '') }}">
+                        <label for="cur-add-town" class="text-center">Town/City</label>
+                        @if ($errors->has('current_address_city'))
+                        <p class="text-danger">{{ $errors->first('current_address_city') }}</p>
+                        @endif
+                    </div>
+                    <div class="col-4 g-3 form-floating">
+                        <input type="text" class="form-control" name="current_address_province" id="cur-add-prov" placeholder="Province" required value="{{ old('current_address_province', $employee ? $employee->current_address_province : '') }}">
+                        <label for="cur-add-prov" class="text-center">Province/Region</label>
+                        @if ($errors->has('current_address_province'))
+                        <p class="text-danger">{{ $errors->first('current_address_province') }}</p>
+                        @endif
+                    </div>
+                    <div class="col-4 g-3 form-floating">
+                        <input type="text" class="form-control" name="current_address_postalcode" id="cur-add-postal" placeholder="Postal Code" required value="{{ old('current_address_postalcode', $employee ? $employee->current_address_postalcode : '') }}">
+                        <label for="cur-add-postal" class="text-center">Postal Code</label>
+                        @if ($errors->has('current_address_postalcode'))
+                        <p class="text-danger">{{ $errors->first('current_address_postalcode') }}</p>
                         @endif
                     </div>
                 </div>
