@@ -139,7 +139,7 @@
                         Status: 
                     </div>
                     <div class="col-lg-11 col-10" style="text-align: left">
-                        <input class="passport_status" type="radio" name="passport_status" id="status-withPassport" value="1" {{ old('passport_status', $employee ? $employee->passport_status : '') == 1 ? "checked" : "" }}>
+                        <input class="passport_status" type="radio" name="passport_status" id="status-withPassport" value="1" checked>
                         <label class="form-check-label" for="status-withPassport">
                             With Passport
                         </label>

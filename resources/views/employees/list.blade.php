@@ -50,6 +50,32 @@
 				</label>
 			</div>
 		</div>
+        <div class="row row-list">
+        	<div class="col-1 filter-employee">
+				Passport: 
+			</div>
+			<div class="col-11">
+				<input class="search-status-rdb-input-2" type="radio" name="passportStatus" id="passportStatus-all" value="1" checked>
+				<label class="search-status-rdb-label  form-check-label" for="passportStatus-all">
+				    All
+				</label>
+				&nbsp;&nbsp;
+				<input class="search-status-rdb-input-2" type="radio" name="passportStatus" id="passportStatus-withPassport" value="2" >
+				<label class="search-status-rdb-label form-check-label" for="passportStatus-withPassport">
+					With Passport
+				</label>
+				&nbsp;&nbsp;
+				<input class="search-status-rdb-input-2" type="radio" name="passportStatus" id="passportStatus-withAppointment" value="3" >
+				<label class="search-status-rdb-label form-check-label" for="passportStatus-withAppointment">
+					With scheduled appointment
+				</label>
+				&nbsp;&nbsp;
+				<input class="search-status-rdb-input-2" type="radio" name="passportStatus" id="passportStatus-withoutAppointment" value="4" >
+				<label class="search-status-rdb-label form-check-label" for="passportStatus-withoutAppointment">
+					Without scheduled appointment
+				</label>
+			</div>
+		</div>
 		@endif
 		<div class="row row-list">
         	<div class="col-1 filter-employee">
@@ -93,12 +119,23 @@
 		                <th>City</th>
 		                <th>Province</th>
 						<th>BU Assignment</th>
-		                <th>Status</th>
+		                <th>Account Status</th>
+		                <th>With Valid Passport</th>
+						<!-- headers to add if passport filter is selected
+						rdb:all <th> : With Valid Passport ; Expiration Date
+						rdb:1	<th> : Passport Valid Until
+						rdb:2	<th> : Passport Appointment Date
+						rdb:3	<th> : Reason for No Scheduled Appointment
+					
+						-->
 		            </tr>
 		        </thead>
 		        <tbody>
 		        	@foreach ($employee_request as $user)
-		        	<?php $id = $user["id"]; ?>
+					@php
+						$id = $user['id'];
+						$user = app\Http\Controllers\EmployeesController::getPassportStatus($user);
+					@endphp
 		            <tr>
 		                <td><a href='{!! url("/employees/$id"); !!}'>{{$user['last_name']}}, {{$user['first_name']}} ({{$user['middle_name']}})</a></td>
 		                <td>{{$user['email']}}</td>
@@ -123,6 +160,9 @@
 		                		@endif
 		                	@endif
 		                </td>
+						<td>
+							Yes [{{ $user['passport_status'] }}]
+						</td>
 		            </tr>
 		            @endforeach
 		        </tbody>

@@ -45,11 +45,14 @@ return [
     'POSITION_9_NAME' => 'Manager',
 
     // Employee table - passport type
-    
-    
     'PASSPORT_TYPE_1_NAME' => 'Ordinary',
     'PASSPORT_TYPE_2_NAME' => 'Official',
     'PASSPORT_TYPE_3_NAME' => 'Diplomatic',
+
+    // Employee table - passport status
+    'PASSPORT_STATUS_1_NAME' => 'With Passport',
+    'PASSPORT_STATUS_2_NAME' => 'With Appointment',
+    'PASSPORT_STATUS_3_NAME' => 'Without Passport',
 
     //Employee - BU List - for BU transfer - Dev J is excluded
     'BU_LIST' => [
