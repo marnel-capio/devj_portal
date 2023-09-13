@@ -51,26 +51,26 @@
 			</div>
 		</div>
         <div class="row row-list">
-        	<div class="col-1 filter-employee">
+        	<div class="col-1 filter-employee" style="margin-right:10px">
 				Passport: 
 			</div>
 			<div class="col-11">
-				<input class="search-status-rdb-input-2" type="radio" name="passportStatus" id="passportStatus-all" value="1" checked>
+				<input class="search-status-rdb-input" type="radio" name="passportStatus" id="passportStatus-all" value="1" checked>
 				<label class="search-status-rdb-label  form-check-label" for="passportStatus-all">
 				    All
 				</label>
 				&nbsp;&nbsp;
-				<input class="search-status-rdb-input-2" type="radio" name="passportStatus" id="passportStatus-withPassport" value="2" >
+				<input class="search-status-rdb-input" type="radio" name="passportStatus" id="passportStatus-withPassport" value="2" >
 				<label class="search-status-rdb-label form-check-label" for="passportStatus-withPassport">
 					With Passport
 				</label>
 				&nbsp;&nbsp;
-				<input class="search-status-rdb-input-2" type="radio" name="passportStatus" id="passportStatus-withAppointment" value="3" >
+				<input class="search-status-rdb-input" type="radio" name="passportStatus" id="passportStatus-withAppointment" value="3" >
 				<label class="search-status-rdb-label form-check-label" for="passportStatus-withAppointment">
 					With scheduled appointment
 				</label>
 				&nbsp;&nbsp;
-				<input class="search-status-rdb-input-2" type="radio" name="passportStatus" id="passportStatus-withoutAppointment" value="4" >
+				<input class="search-status-rdb-input" type="radio" name="passportStatus" id="passportStatus-withoutAppointment" value="4" >
 				<label class="search-status-rdb-label form-check-label" for="passportStatus-withoutAppointment">
 					Without scheduled appointment
 				</label>
@@ -120,7 +120,11 @@
 		                <th>Province</th>
 						<th>BU Assignment</th>
 		                <th>Account Status</th>
-		                <th>With Valid Passport</th>
+		                @if(auth()->user()->roles == config('constants.MANAGER_ROLE_VALUE'))
+			                <th>Passport Valid Until</th>
+			                <th>Passport Appointment Date</th>
+			                <th>No Appointment Reason</th>
+		                @endif
 						<!-- headers to add if passport filter is selected
 						rdb:all <th> : With Valid Passport ; Expiration Date
 						rdb:1	<th> : Passport Valid Until
@@ -160,9 +164,12 @@
 		                		@endif
 		                	@endif
 		                </td>
-						<td>
-							Yes [{{ $user['passport_status'] }}]
-						</td>
+
+		                @if(auth()->user()->roles == config('constants.MANAGER_ROLE_VALUE'))
+			                <td>{{$user['passport_expiration_date']}}</td>
+			                <td>{{$user['date_of_appointment']}}</td>
+			                <td>{{$user['no_appointment_reason']}}</td>
+		                @endif
 		            </tr>
 		            @endforeach
 		        </tbody>
