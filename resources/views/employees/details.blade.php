@@ -346,7 +346,13 @@
                             @endif
                         </div>
                         <div class="col-4 g-3 form-floating">
-                            <input type="text" class="form-control" name="passport_type" id="passport_type" placeholder="Passport Type" required value="{{ $employee->passport_type }}" disabled>
+                            <select name="passport_type" id="passport_type" class="form-select form-control" disabled>
+                                <option value="">Select passport type</option>
+                                <option {{ old('passport_type', $employee ? $employee->passport_type : '') == 1 ? "selected" : "" }} value="1">{{ config('constants.PASSPORT_TYPE_1_NAME') }}</option>
+                                <option {{ old('passport_type', $employee ? $employee->passport_type : '') == 2 ? "selected" : "" }} value="2">{{ config('constants.PASSPORT_TYPE_2_NAME') }}</option>
+                                <option {{ old('passport_type', $employee ? $employee->passport_type : '') == 3 ? "selected" : "" }} value="3">{{ config('constants.PASSPORT_TYPE_3_NAME') }}</option>
+                            </select>
+                            <!-- <input type="text" class="form-control" name="passport_type" id="passport_type" placeholder="Passport Type" required value="{{ $employee->passport_type }}" disabled> -->
                             <label for="passport_type" class="text-center">Passport Type</label>
                             @if ($errors->has('passport_type'))
                             <p class="text-danger">{{ $errors->first('passport_type') }}</p>
