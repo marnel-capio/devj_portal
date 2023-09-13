@@ -58,47 +58,62 @@ $(document).ready(function () {
 
     function filterEmployeeList() {
       var keyword = $("input[name='searchInput']").val();
-        var filter = $("input[name='searchFilter']:checked").val();
-        var status = $("input[name='employeeStatus']:checked").val();
-        $.ajax({
-            type:"get",
-            url:"api/employees/search",
-            data :{
-                    'keyword' : keyword , 
-                    'filter' : filter ,   
-                    'status' : status ,   
-                    // 'token' : $('meta[name="csrf-token"]').attr('content'),           
-                },          
-            success:function(res){
-                employee_list.clear().draw();
-                var result = JSON.parse(res);
-                // console.log(result);
-                result.forEach(function(employee) {
-                    var status = "";
-                    if (employee['active_status'] == 0) {
-                        if (employee['approved_status'] == 1 || employee['approved_status'] == 2 || employee['approved_status'] == 4) {
-                            status = "Deactivated";
-                        } else {
-                            status = "Pending for Approval";
-                        }
-                    } else if (employee['active_status'] == 1) {
-                        if (employee['approved_status'] == 1) {
-                            status = "Deactivated";
-                        } else if (employee['approved_status'] == 2 || employee['approved_status'] == 4) {
-                            status = "Active";
-                        } else {
-                            status = "Pending for Approval";
-                        }
-                    }
-					let buAssignment = '';
-					if (employee['bu_transfer_flag']) {
-						buAssignment =  BU_LIST[employee['bu_transfer_assignment']];
-					}
-                    url = window.location.href+"/"+employee['id'];
-                    employee_list.row.add(['<a href="'+url+'">'+employee['last_name']+', '+employee['first_name']+' ('+employee['middle_name']+')</a>', employee['email'], employee['cellphone_number'],employee['current_address_city'],employee['current_address_province'],buAssignment,status]).draw(false);
-                });
+    var filter = $("input[name='searchFilter']:checked").val();
+    var status = $("input[name='employeeStatus']:checked").val();
+    var passport = $("input[name='passportStatus']:checked").val();
+    
+    if (passport == undefined) {
+        passport = "";
+    }
+
+    $.ajax({
+      type: "get",
+      url: "api/employees/search",
+      data: {
+        'keyword': keyword,
+        'filter': filter,
+        'status': status,
+        'passport' : passport
+        // 'token' : $('meta[name="csrf-token"]').attr('content'),           
+      },
+
+      success: function success(res) {
+        employee_list.clear().draw();
+        var result = JSON.parse(res);
+        // console.log(result);
+        result.forEach(function (employee) {
+          var status = "";
+          if (employee['active_status'] == 0) {
+            if (employee['approved_status'] == 1 || employee['approved_status'] == 2 || employee['approved_status'] == 4) {
+              status = "Deactivated";
+            } else {
+              status = "Pending for Approval";
             }
-       });
+          } else if (employee['active_status'] == 1) {
+            if (employee['approved_status'] == 1) {
+              status = "Deactivated";
+            } else if (employee['approved_status'] == 2 || employee['approved_status'] == 4) {
+              status = "Active";
+            } else {
+              status = "Pending for Approval";
+            }
+          }
+          var buAssignment = '';
+          if (employee['bu_transfer_flag']) {
+            buAssignment = BU_LIST[employee['bu_transfer_assignment']];
+          }
+          url = window.location.href + "/" + employee['id'];
+
+          if (passport == "") {
+              employee_list.row.add(['<a href="' + url + '">' + employee['last_name'] + ', ' + employee['first_name'] + ' (' + employee['middle_name'] + ')</a>', employee['email'], employee['cellphone_number'], employee['current_address_city'], employee['current_address_province'], buAssignment, status]).draw(false);
+          } else {
+
+              employee_list.row.add(['<a href="' + url + '">' + employee['last_name'] + ', ' + employee['first_name'] + ' (' + employee['middle_name'] + ')</a>', employee['email'], employee['cellphone_number'], employee['current_address_city'], employee['current_address_province'], buAssignment, status, employee['passport_expiration_date'],employee['date_of_appointment'],employee['no_appointment_reason']]).draw(false);
+          }
+          
+        });
+      }
+    });
     }
 
 
