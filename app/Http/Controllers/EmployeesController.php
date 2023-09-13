@@ -670,7 +670,7 @@ class EmployeesController extends Controller
      * @param [type] $employee
      * @return array
      */
-    private function getPassportStatus($employee) {
+    public static function getPassportStatus($employee) {
 
         // set default value to true
         $employee->passport_isComplete = true;

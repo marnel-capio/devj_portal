@@ -280,8 +280,9 @@ class ApiController extends Controller
             'keyword' => $request->get('keyword'),
             'filter' => $request->get('filter'),
             'status' => $request->get('status'),
+            'passport' => $request->get('passport'),
         ];
-        $employee = Employees::whereIn('approved_status', [2,4]);
+        $employee = Employees::whereIn('approved_status', [2,4])->whereNot('email', 'devj-portal@awsys-i.com');
                     
        // get employees
         if (!empty($searchFilter['keyword'])) {
@@ -295,6 +296,21 @@ class ApiController extends Controller
                 $employee = $employee->where('current_address_city','LIKE','%'.$searchFilter['keyword'].'%');
             } else if ($searchFilter['filter'] == 3) {
                 $employee = $employee->where('current_address_province','LIKE','%'.$searchFilter['keyword'].'%');
+            }
+        }
+
+        if (!empty($searchFilter['passport'])){
+            if ($searchFilter['passport'] == 2) {
+                $employee = $employee->whereNotNull('passport_number')
+                                        ->whereNotNull('date_of_issue')
+                                        ->whereNotNull('issuing_authority')
+                                        ->whereNotNull('passport_type')
+                                        ->whereNotNull('passport_expiration_date')
+                                        ->whereNotNull('place_of_issue');
+            } else if ($searchFilter['passport'] == 3) {
+                $employee = $employee->whereNotNull('date_of_appointment');
+            } else if ($searchFilter['passport'] == 4) {
+                $employee = $employee->whereNotNull('no_appointment_reason');
             }
         }
 
@@ -313,6 +329,7 @@ class ApiController extends Controller
 
         $employee = $employee->orderBy('last_name', 'ASC')
                 ->get();
+
 
         return json_encode($employee);
     }
