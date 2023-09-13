@@ -555,7 +555,7 @@
 
     @if (!$detailOnly)
     <div class="text-center p-4">
-        <button class="btn btn-danger btn-lg mb-5 me-4 rqst-btn"  data-bs-target="#rejectRequestModal" data-bs-toggle="modal" id="reject-request">
+        <button class="btn btn-danger btn-lg mb-5 ms-4 rqst-btn"  data-bs-target="#rejectRequestModal" data-bs-toggle="modal" id="reject-request">
             Reject  <div id="employee_reject_spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
                 <span class="sr-only"></span>
             </div>
