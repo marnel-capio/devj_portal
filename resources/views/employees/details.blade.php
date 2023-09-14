@@ -382,8 +382,8 @@
                             @endif
                         </div>
                         <div class="col-4 g-3 form-floating">
-                            <input type="text" class="form-control" name="place_of_issue" id="place_of_issue" placeholder="Issuing Authority" required value="{{ $employee->place_of_issue }}" disabled>
-                            <label for="place_of_issue" class="text-center">Issuing Authority</label>
+                            <input type="text" class="form-control" name="place_of_issue" id="place_of_issue" placeholder="Place of Issue" required value="{{ $employee->place_of_issue }}" disabled>
+                            <label for="place_of_issue" class="text-center">Place of Issue</label>
                             @if ($errors->has('place_of_issue'))
                             <p class="text-danger">{{ $errors->first('place_of_issue') }}</p>
                             @endif
