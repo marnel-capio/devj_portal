@@ -2,32 +2,73 @@
 
 @include('headerMenu')
 
+@php $headerData = app\Http\Controllers\HomeController::getHeaderData(auth()->user()->id);
+@endphp
 <div class="container container-req-table">
 	<div class="row-req-table row">
 		<div class="px-0">
-			<div>
-				<h3 class="mb-4"> Welcome, {{ auth()->user()->first_name }}</h3>
+			<div class="row">
+				<div class="col col-lg-7">
+					<h3 class="mb-4"> Welcome, {{ auth()->user()->first_name }}</h3>
+				</div>
+				<div class="col col-lg-5 dash-date">
+					<span> Today is {{ ($headerData)['date'] }} </span>
+				</div>
 			</div>
 			<div class="container">
 				<div class="row">
-					<div class="col col-lg-7 py-2 px-4">
+					<div class="group-category-home col col-lg-7 py-2 px-4 mx-4">
+						<h4 class="mt-1">Notifications</h4>
+						@if(false)
+							@foreach ($headerData['logs'] as $logs)
+								<p>
+									<span>{{ $logs['create_time']}}: </span> <span>{{ $logs['activity'] }}</span>
+								</p>
+							@endforeach
+						@else
+							<i>No new notification found</i>
+						@endif
 					</div>
-					<div class="group-category-home border rounded border-light col col-lg-5 py-2 px-4">
+					<div class="group-category-home border rounded border-light col col-lg-4 py-2 px-4">
 						<h4 class="mt-1">Requests</h4>
 						<div class="dash-summary-row row mb-1">
-							<div class="col col-md-11 col-sm-9"><a href="#div-employee-request"><span class="dash-summary dash-header">Employee Request</span></a> </div><div class="dash-summary dash-count col col-md-1 col-sm-1">{{$employee_request->count()}}</div>
+							<div class="col col-md-8 col-sm-8">
+								<a href="#div-employee-request"><span class="dash-summary dash-header">Employee Request</span></a>
+							</div>
+							<div class="dash-summary dash-count col col-md-4 col-sm-4">
+								<span>{{$employee_request != null ? count($employee_request) : "0"}}</span>
+							</div>
 						</div>
 						<div class="dash-summary-row row mb-1">
-							<div class="col col-md-11 col-sm-9"><a href="#div-laptop-request"><span class="dash-summary dash-header">Laptop Request</span></a> </div><div class="dash-summary dash-count col col-md-1 col-sm-1">{{$laptopRequest != null ? count($laptopRequest) : "0"}}</div>
+							<div class="col col-md-8 col-sm-8">
+								<a href="#div-laptop-request"><span class="dash-summary dash-header">Laptop Request</span></a>
+							</div>
+							<div class="dash-summary dash-count col col-md-4 col-sm-4">
+								{{$laptopRequest != null ? count($laptopRequest) : "0"}}
+							</div>
 						</div>
 						<div class="dash-summary-row row mb-1">
-							<div class="col col-md-11 col-sm-9"><a href="#div-laptop-link-request"><span class="dash-summary dash-header">Laptop Link</span></a> </div><div class="dash-summary dash-count col col-md-1 col-sm-1">{{$laptopLinkRequest != null ? count($laptopLinkRequest) : "0"}}</div>
+							<div class="col col-md-8 col-sm-8">
+								<a href="#div-laptop-link-request"><span class="dash-summary dash-header">Laptop Link</span></a>
+							</div>
+							<div class="dash-summary dash-count col col-md-4 col-sm-4">
+								{{$laptopLinkRequest != null ? count($laptopLinkRequest) : "0"}}</div>
 						</div>
 						<div class="dash-summary-row row mb-1">
-							<div class="col col-md-11 col-sm-9"><a href="#div-software-request"><span class="dash-summary dash-header">Software Request</span></a> </div><div class="dash-summary dash-count col col-md-1 col-sm-1">{{$softwareRequest != null ? $softwareRequest->count() : "0"}}</div>
+							<div class="col col-md-8 col-sm-8"><a href="#div-software-request">
+								<span class="dash-summary dash-header">Software Request</span></a>
+							</div>
+							<div class="dash-summary dash-count col col-md-4 col-sm-4">
+								{{$softwareRequest != null ? $softwareRequest->count() : "0"}}
+							</div>
 						</div>
 						<div class="dash-summary-row row mb-1">
-							<div class="col col-md-11 col-sm-9"><a href="#div-project-link-request"><span class="dash-summary dash-header">Project Link</span></a> </div><div class="dash-summary dash-count col col-md-1 col-sm-1">{{$projectLinkRequest != null ? count($projectLinkRequest) : "0"}}</div>
+							<div class="col col-md-8 col-sm-8">
+								<a href="#div-project-link-request"><span class="dash-summary dash-header">Project Link</span></a>
+							</div>
+							<div class="dash-summary dash-count col col-md-4 col-sm-4">
+								{{$projectLinkRequest != null ? count($projectLinkRequest) : "0"}}
+							</div>
 						</div>
 					</div>
 				</div>

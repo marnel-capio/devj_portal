@@ -25,4 +25,12 @@ class Logs extends Model
 
         self::create($create); 
     }
+
+    public static function getLogOfUser($id)
+    {
+        return self::where('created_by', $id)
+                ->orderBy('id', 'desc')
+                ->get()->take("5")
+                ->toArray();
+    }
 }

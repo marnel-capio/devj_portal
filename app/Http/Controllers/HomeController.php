@@ -9,6 +9,8 @@ use App\Models\Softwares;
 use App\Models\EmployeesProjects;
 use App\Models\EmployeesLaptops;
 use App\Models\Laptops;
+use App\Models\Logs;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {   
@@ -31,6 +33,19 @@ class HomeController extends Controller
                                 'laptopLinkRequest' => EmployeesLaptops::getLinkLaptopRequest(),
                                 'projectLinkRequest' => EmployeesProjects::getProjectEmployeeLinkRequest(),
                             ]);
+    }
+    /**
+     * Display data
+     *
+     * @return void
+     */
+    public static function getHeaderData($id){
+        $data = [];
+        $data['date'] = Carbon::now()->toDayDateTimeString();
+        
+        $data['logs'] = Logs::getLogOfUser($id);
+       
+        return $data;
     }
 
     /**
