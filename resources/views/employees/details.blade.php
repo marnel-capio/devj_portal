@@ -555,12 +555,12 @@
 
     @if (!$detailOnly)
     <div class="text-center p-4">
-        <button class="btn btn-danger btn-lg mb-5 ms-4 rqst-btn"  data-bs-target="#rejectRequestModal" data-bs-toggle="modal" id="reject-request">
+        <button class="btn btn-danger btn-lg mb-5 ms-4 rqst-btn"  data-bs-target="#rejectRequestModal" data-bs-toggle="modal" id="reject-request" style="width: 150px">
             Reject  <div id="employee_reject_spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
                 <span class="sr-only"></span>
             </div>
         </button>
-        <button class="btn btn-success btn-lg mb-5 ms-4 rqst-btn" id="approve-request"  form="approve-request-form">
+        <button class="btn btn-success btn-lg mb-5 ms-4 rqst-btn" id="approve-request"  form="approve-request-form" style="width: 150px">
             Approve <div id="employee_approve_spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
                 <span class="sr-only"></span>
             </div>
