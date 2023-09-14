@@ -7,6 +7,7 @@ use App\Rules\AWSEmailAddress;
 use App\Rules\Password;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class EmployeesRequest extends FormRequest
 {
@@ -62,15 +63,21 @@ class EmployeesRequest extends FormRequest
         return [
             'birthdate.regex' => "The birth date must be a valid date.",
             'birthdate.date' => "The birth date must be a valid date.",
+            'birthdate.before' => "The age must be at least 18 years old.",
+
             'current_address_postalcode.lt' => "The postal code exceeds max digits",
             'permanent_address_postalcode.lt' => "The postal code exceeds max digits",
             
-            'date_of_issue.regex' => "The date of issue must be a valid date.",
-            'date_of_issue.date' => "The date of issue must be a valid date.",
+            'date_of_issue.regex' => "The Date of Issue must be a valid date.",
+            'date_of_issue.date' => "The Date of Issue must be a valid date.",
+            'date_of_issue.before_or_equal' => "The Date of Issue must be on or before today.",
+            
             'passport_expiration_date.regex' => "The Passport expiration date must be a valid date.",
             'passport_expiration_date.date' => "The Passport expiration date must be a valid date.",
-            'date_of_appointment.regex' => "The Passport expiration date must be a valid date.",
-            'date_of_appointment.date' => "The Passport expiration date must be a valid date.",
+            
+            'date_of_appointment.regex' => "The Date of Appointment must be a valid date.",
+            'date_of_appointment.date' => "The Date of Appointment date must be a valid date.",
+            'date_of_appointment.after_or_equal' => "The Date of Appointment must be on or after today.",
         ];
     }
 
@@ -87,7 +94,7 @@ class EmployeesRequest extends FormRequest
                 'first_name' => 'required|max:80|alpha_space',
                 'middle_name' => 'required|max:80|alpha_space',
                 'last_name' => 'required|max:80|alpha_space',
-                'birthdate' => 'required|date|regex:/^\d{4}-\d{2}-\d{2}$/',
+                'birthdate' => 'required|date|regex:/^\d{4}-\d{2}-\d{2}$/|before:' . Carbon::now()->subYears(18)->format('Y-m-d'),
                 'gender' => 'required|in:0,1',
                 'position' => 'required|in:1,2,3,4,5,6,7,8,9',
                 'email' => ['required', 'email', 'max:80', 'min:15', new AWSEmailAddress()],
@@ -111,12 +118,12 @@ class EmployeesRequest extends FormRequest
                     'issuing_authority' => 'required|max:80',
                     'passport_type' => 'required|in:1,2,3',
                     'place_of_issue' => 'required|max:80',
-                    'date_of_issue' => 'required|date|regex:/^\d{4}-\d{2}-\d{2}$/',
-                    'passport_expiration_date' => 'required|date|regex:/^\d{4}-\d{2}-\d{2}$/',
+                    'date_of_issue' => 'required|date|regex:/^\d{4}-\d{2}-\d{2}$/|before_or_equal:today',
+                    'passport_expiration_date' => 'required|date|regex:/^\d{4}-\d{2}-\d{2}$/|after:today',
                 ]);
             } else if ($this->input('passport_status') == 2){
                 // Required field if no valid passport
-                $rules['date_of_appointment'] = 'required|date|regex:/^\d{4}-\d{2}-\d{2}$/';
+                $rules['date_of_appointment'] = 'required|date|regex:/^\d{4}-\d{2}-\d{2}$/|after_or_equal:today';
             }
             else if($this->input('passport_status') == 3) {
                 $rules['no_appointment_reason'] = 'required|max:1024';
