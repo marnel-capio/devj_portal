@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\updateContactDetailsMail;
 use App\Exports\EmployeesExport;
+use Illuminate\Support\Facades\Log;
 
 class EmployeesController extends Controller
 {
@@ -49,6 +50,7 @@ class EmployeesController extends Controller
         $request->validated();
 
         $insertData = $this->getEmployeeData($request);
+        Log::debug($insertData);
         $insertData['roles'] = $this->getRoleBasedOnPosition($insertData['position']);
 
         $insertData = $this->validatePassportStatusandInputs($insertData);
@@ -564,7 +566,7 @@ class EmployeesController extends Controller
      */
     private function getEmployeeData(EmployeesRequest $request){
         $data = $request->except(['_token', 'confirm_password', 'password', 'is_admin']);
-        $this->changeStringCase($data, ['email', 'password', 'other_contact_info']);
+        $this->changeStringCase($data, ['email', 'password', 'other_contact_info','passport_number','issuing_authority','place_of_issue','no_appointment_reason']);
         $data['password'] =  password_hash($request->input('password'), PASSWORD_BCRYPT);
         if(Auth::check()){
             //for data update
