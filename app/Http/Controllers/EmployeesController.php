@@ -34,7 +34,11 @@ class EmployeesController extends Controller
             ->where('active_status', 0)
             ->first();
 
+
             abort_if(empty($employee), 404);
+            
+            // Get passport status
+            $employee = $this->getPassportStatus($employee);
         }
 
         return view('employees.regist')->with(['employee' => $employee]);
