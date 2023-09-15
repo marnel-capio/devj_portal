@@ -113,16 +113,28 @@ class EmployeesProjects extends Model
                                 CONCAT(employees.last_name, ", ", employees.first_name) AS linked_employee,
                                 employees_projects.approved_status,
                                 employees_projects.start_date,
-                                employees_projects.end_date
+                                employees_projects.end_date,
+                                employees_projects.reasons
                             ')
                         ->leftJoin('projects', 'projects.id',  'employees_projects.project_id')                            
-                        ->leftJoin('employees', 'employees.id',  'employees_projects.employee_id')                            
-                        ->whereIn('employees_projects.approved_status', [config('constants.APPROVED_STATUS_PENDING'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
+                        ->leftJoin('employees', 'employees.id',  'employees_projects.employee_id');
 
 
         if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE')){
-            //get all software request of the current user only
-            $query->where('employees_projects.employee_id', Auth::user()->id);
+            $currentUserId = Auth::user()->id;
+            //get all laptop request and laptop linkage requests of the current user only
+            $query->where(function($query1) use ($currentUserId){
+                $query1->where(function($query2) use ($currentUserId){
+                    $query2->whereIn('employees_projects.approved_status', [config('constants.APPROVED_STATUS_REJECTED'),config('constants.APPROVED_STATUS_APPROVED')])
+                            ->where('employees_projects.prev_updated_by', $currentUserId);
+                })
+                ->orWhere(function($query2) use ($currentUserId){
+                    $query2->whereIn('employees_projects.approved_status',[config('constants.APPROVED_STATUS_PENDING'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+                            ->where('employees_projects.updated_by', $currentUserId);
+                });
+            });
+        } else {
+            $query->whereIn('employees_projects.approved_status', [config('constants.APPROVED_STATUS_PENDING'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
         }
         $query->orderBy('project_name', 'ASC');
         return $query->get()->toArray();

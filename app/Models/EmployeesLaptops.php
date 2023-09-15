@@ -117,18 +117,31 @@ class EmployeesLaptops extends Model
                                 employees_laptops.remarks,
                                 case when employees_laptops.vpn_flag then "Y" else "N" end as vpn_access,
                                 case when employees_laptops.brought_home_flag then "Y" else "N" end as brought_home,
-                                employees_laptops.update_time as request_date 
+                                employees_laptops.update_time as request_date,
+                                employees_laptops.approved_status,
+                                employees_laptops.reasons
                             ')
                         ->leftJoin('laptops', 'laptops.id', 'employees_laptops.laptop_id')
                         ->leftJoin('employees', 'employees.id', 'employees_laptops.employee_id')
                         ->whereIn('laptops.approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
                         ->where('laptops.status', 1)
-                        ->whereIn('employees_laptops.approved_status', [config('constants.APPROVED_STATUS_PENDING'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
                         ->whereIn('employees.approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
 
         if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE')){
+            $currentUserId = Auth::user()->id;
             //get all laptop request and laptop linkage requests of the current user only
-            $query->where('employees_laptops.employee_id', Auth::user()->id);
+            $query->where(function($query1) use ($currentUserId){
+                $query1->where(function($query2) use ($currentUserId){
+                    $query2->whereIn('employees_laptops.approved_status', [config('constants.APPROVED_STATUS_REJECTED'),config('constants.APPROVED_STATUS_APPROVED')])
+                            ->where('employees_laptops.prev_updated_by', $currentUserId);
+                })
+                ->orWhere(function($query2) use ($currentUserId){
+                    $query2->whereIn('employees_laptops.approved_status',[config('constants.APPROVED_STATUS_PENDING'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+                            ->where('employees_laptops.updated_by', $currentUserId);
+                });
+            });
+        } else {
+            $query->whereIn('employees_laptops.approved_status', [config('constants.APPROVED_STATUS_PENDING'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
         }
         $query->orderBy('employees.last_name', 'asc');
 

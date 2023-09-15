@@ -2,7 +2,9 @@
 
 @include('headerMenu')
 
-@php $headerData = app\Http\Controllers\HomeController::getHeaderData(auth()->user()->id);
+@php 
+	$headerData = app\Http\Controllers\HomeController::getHeaderData(auth()->user()->id);
+	$userInfo = Auth::user();
 @endphp
 <div class="container container-req-table">
 	<div class="row-req-table row">
@@ -59,7 +61,7 @@
 								<span class="dash-summary dash-header">Software Request</span></a>
 							</div>
 							<div class="dash-summary dash-count col col-md-4 col-sm-4">
-								{{$softwareRequest != null ? $softwareRequest->count() : "0"}}
+								{{$softwareRequest != null ?count($softwareRequest) : "0"}}
 							</div>
 						</div>
 						<div class="dash-summary-row row mb-1">
@@ -87,6 +89,8 @@
 						<th>Name</th>
 						<th>Email Address</th>
 						<th>Position</th>
+		                <th>Request Status</th>
+		                <th>Remarks</th>
 						<th>Actions</th>
 					</tr>
 				</thead>
@@ -118,8 +122,20 @@
 							-
 						@endif
 						</td>
+		                <td>
+		                	@if ($user['approved_status'] == 1) 
+		                		<p style="color: red">Rejected</p>
+		                	@elseif ($user['approved_status'] == 3 || $user['approved_status'] == 4) 
+		                		<p style="color: green">Pending</p>
+		                	@endif
+		                </td>
+		                <td>
+		                	{{ $user['reasons'] }}
+		                </td>
 						<td>	
-							<a href="{{ url("/employees/{$user['id']}/request") }}" alt="View"><i class="bi bi-eye"></i>View</a>
+							@if ($user['approved_status'] == 3 || $user['approved_status'] == 4) 
+		                		<a href="{{ url("/employees/{$user['id']}/request") }}" alt="View"><i class="bi bi-eye"></i>View</a>
+		                	@endif
 						</td>
 					</tr>
 				@endforeach
@@ -146,6 +162,8 @@
 							<th style="width:12%">Make</th>
 							<th style="width:12%">Model</th>
 							<th style="width:11%">Status</th>
+							<th style="width:11%">Request Status</th>
+							<th style="width:11%">Remarks</th>
 							<th style="width:11%">Action</th>
 						</tr>
 					</thead>
@@ -158,7 +176,23 @@
 							<td>{{ $request['laptop_make'] }}</td>
 							<td>{{ $request['laptop_model'] }}</td>
 							<td>{{ $request['status'] }}</td>
-							<td><a href="{{ route('laptops.request', ['id' => $request['id']]) }}"><i class="bi bi-eye"></i>View</a></td>
+			                <td>
+			                	@if ($request['approved_status'] == 1 || !empty($request['reasons'])) 
+			                		<p style="color: red">Rejected</p>
+			                	@elseif ($request['approved_status'] == 3 || $request['approved_status'] == 4) 
+			                		<p style="color: green">Pending</p>
+			                	@endif
+			                </td>
+			                <td>
+			                	{{ $request['reasons'] }}
+			                </td>
+							<td>
+								@if ($request['approved_status'] == 1 && $userInfo->id == $request['prev_updated_by']) 
+			                		<a href="{{ route('laptops.create', [$request['reject_code']]) }}"><i class="bi bi-eye"></i>View</a>
+			                	@elseif ($request['approved_status'] == 3 || $request['approved_status'] == 4) 
+			                		<a href="{{ route('laptops.request', ['id' => $request['id']]) }}"><i class="bi bi-eye"></i>View</a>
+			                	@endif
+							</td>
 						</tr>
 					@endforeach
 					</tbody>
@@ -182,6 +216,8 @@
 						<th style="width:21%">Tag Number</th>
 						<th style="width:21%">Make</th>
 						<th style="width:21%">Model</th>
+						<th style="width:11%">Request Status</th>
+						<th style="width:11%">Remarks</th>
 						<th style="width:11%">Action</th>
 					</tr>
 				</thead>
@@ -192,7 +228,21 @@
 							<td>{{ $request['tag_number'] }}</a></td>
 							<td>{{ $request['laptop_make'] }}</td>
 							<td>{{ $request['laptop_model'] }}</td>
-							<td><a href="{{ route('laptops.details', ['id' => $request['laptop_id']]) ."#link-req-tbl" }}"><i class="bi bi-eye"></i>View</a></td>
+			                <td>
+			                	@if ($request['approved_status'] == 1 || !empty($request['reasons'])) 
+			                		<p style="color: red">Rejected</p>
+			                	@elseif ($request['approved_status'] == 3 || $request['approved_status'] == 4) 
+			                		<p style="color: green">Pending</p>
+			                	@endif
+			                </td>
+			                <td>
+			                	{{ $request['reasons'] }}
+			                </td>
+							<td>
+								@if ($request['approved_status'] == 3 || $request['approved_status'] == 4) 
+								<a href="{{ route('laptops.details', ['id' => $request['laptop_id']]) ."#link-req-tbl" }}"><i class="bi bi-eye"></i>View</a>
+								@endif
+							</td>
 						</tr>
 					@endforeach
 				</tbody>
@@ -215,6 +265,8 @@
 						<th style="width:23%">Software Name</th>
 						<th style="width:23%">Type</th>
 						<th style="width:29%">Purpose</th>
+						<th style="width:11%">Request Status</th>
+						<th style="width:11%">Remarks</th>
 						<th style="width:16%">Action</th>
 					</tr>
 				</thead>
@@ -224,7 +276,24 @@
 							<td>{{ $software['software_name'] }}</td>
 							<td>{{ $software['type'] }}</td>
 							<td>{{ $software['remarks'] }}</td>
-							<td><a href="{{ route('softwares.request', ['id' => $software['id']]) }}"><i class="bi bi-eye"></i>View</a></td>
+							<td>
+			                	@if ($software['approved_status'] == 1 || !empty($software['reasons'])) 
+			                		<p style="color: red">Rejected</p>
+			                	@elseif ($software['approved_status'] == 3 || $software['approved_status'] == 4) 
+			                		<p style="color: green">Pending</p>
+			                	@endif
+			                </td>
+			                <td>
+			                	{{ $software['reasons'] }}
+			                </td>
+							<td>
+								@if ($software['approved_status'] == 1 && $userInfo->id == $software['prev_updated_by']) 
+			                		<a href="{{ route('softwares.create', [$software['reject_code']]) }}"><i class="bi bi-eye"></i>View</a>
+			                	@elseif ($software['approved_status'] == 3 || $software['approved_status'] == 4) 
+			                		<a href="{{ route('softwares.request', ['id' => $software['id']]) }}"><i class="bi bi-eye"></i>View</a>
+			                	@endif
+								
+							</td>
 						</tr>
 					@endforeach
 				</tbody>
@@ -248,6 +317,8 @@
 						<th style="width:30%">Linked Employee</th>
 						<th style="width:14%">Start Date</th>
 						<th style="width:14%">End Date</th>
+						<th style="width:11%">Request Status</th>
+						<th style="width:11%">Remarks</th>
 						<th style="width:12%">Action</th>
 					</tr>
 				</thead>
@@ -262,7 +333,23 @@
 							@else
 								<td>{{'-'}}</td>
 							@endif
-							<td><a href="{{ route('projects.details', ['id' => $projectlink['project_id']]) ."#link_request_tbl" }}"><i class="bi bi-eye"></i>View</a></td>
+
+							<td>
+			                	@if ($projectlink['approved_status'] == 1 || !empty($projectlink['reasons'])) 
+			                		<p style="color: red">Rejected</p>
+			                	@elseif ($projectlink['approved_status'] == 3 || $v['approved_status'] == 4) 
+			                		<p style="color: green">Pending</p>
+			                	@endif
+			                </td>
+			                <td>
+			                	{{ $projectlink['reasons'] }}
+			                </td>
+							<td>
+								@if ($projectlink['approved_status'] == 3 || $projectlink['approved_status'] == 4) 
+
+									<a href="{{ route('projects.details', ['id' => $projectlink['project_id']]) ."#link_request_tbl" }}"><i class="bi bi-eye"></i>View</a>
+								@endif
+						</td>
 						</tr>
 					@endforeach
 				</tbody>

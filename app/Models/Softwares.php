@@ -21,15 +21,32 @@ class Softwares extends Model
                                 software_types.type_name as type,
                                 softwares.approved_status,
                                 softwares.updated_by,
-                                softwares.remarks
+                                softwares.remarks,
+                                softwares.reasons,
+                                softwares.approved_status,
+                                softwares.reject_code,
+                                softwares.prev_updated_by
+
                             ')
-                        ->leftJoin('software_types', 'software_types.id',  'softwares.software_type_id')                            
-                        ->whereIn('softwares.approved_status', [config('constants.APPROVED_STATUS_PENDING'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
+                        ->leftJoin('software_types', 'software_types.id',  'softwares.software_type_id');
 
 
         if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE')){
             //get all software request of the current user only
-            $query->where('softwares.updated_by', Auth::user()->id);
+            $currentUserId = Auth::user()->id;
+            //get all laptop request and laptop linkage requests of the current user only
+            $query->where(function($query1) use ($currentUserId){
+                $query1->where(function($query2) use ($currentUserId){
+                    $query2->whereIn('softwares.approved_status', [config('constants.APPROVED_STATUS_REJECTED'),config('constants.APPROVED_STATUS_APPROVED')])
+                            ->where('softwares.prev_updated_by', $currentUserId);
+                })
+                ->orWhere(function($query2) use ($currentUserId){
+                    $query2->whereIn('softwares.approved_status',[config('constants.APPROVED_STATUS_PENDING'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+                            ->where('softwares.updated_by', $currentUserId);
+                });
+            });
+        } else {
+            $query->whereIn('softwares.approved_status', [config('constants.APPROVED_STATUS_PENDING'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
         }
         $query->orderBy('softwares.software_name', 'ASC');
         return $query->get()->toArray();

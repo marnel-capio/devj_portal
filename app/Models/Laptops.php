@@ -175,14 +175,29 @@ class Laptops extends Model
                                 peza_permit_number,
                                 laptop_make,
                                 laptop_model,
-                                CASE WHEN status=1 THEN "Active" ELSE "Inactive" END as status
-                            ')
-                        ->whereIn('approved_status', [config('constants.APPROVED_STATUS_PENDING'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
-
+                                CASE WHEN status=1 THEN "Active" ELSE "Inactive" END as status,
+                                approved_status,
+                                reasons,
+                                reject_code,
+                                prev_updated_by
+                            ');
 
         if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE')){
+            $currentUserId = Auth::user()->id;
             //get all laptop request and laptop linkage requests of the current user only
-            $query->where('updated_by', Auth::user()->id);
+            $query->where(function($query1) use ($currentUserId){
+                $query1->where(function($query2) use ($currentUserId){
+                    $query2->whereIn('approved_status', [config('constants.APPROVED_STATUS_REJECTED'),config('constants.APPROVED_STATUS_APPROVED')])
+                            ->where('prev_updated_by', $currentUserId);
+                })
+                ->orWhere(function($query2) use ($currentUserId){
+                    $query2->whereIn('approved_status',[config('constants.APPROVED_STATUS_PENDING'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+                            ->where('updated_by', $currentUserId);
+                });
+            });
+            
+        } else {
+            $query->whereIn('approved_status', [config('constants.APPROVED_STATUS_PENDING'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
         }
 
         return $query->get()->toArray();

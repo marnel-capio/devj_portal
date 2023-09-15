@@ -22,6 +22,7 @@
                 <div class="row mb-2 ps-5 pe-3">
                     <div class="col-4 g-3 form-floating">
                         <select name="software_type_id" id="software_type_id" class="form-select form-control">
+                            <option value=""></option>
                             @foreach ($software_types as $software_type)
                                 <option {{ old('software_type_id', $software ? $software->software_type_id : '') == $software_type['id'] ? "selected" : "" }} value="{{  $software_type['id']  }}">{{ $software_type['type_name'] }}</option>
                             @endforeach
