@@ -469,6 +469,7 @@ class SoftwaresController extends Controller
                     ->update([
                         'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
                         'updated_by' => Auth::user()->id,
+                        'prev_updated_by' => null, 
                     ]);
             }
 
@@ -479,6 +480,7 @@ class SoftwaresController extends Controller
                     'reasons' => NULL,
                     'approve_time' => date('Y-m-d H:i:s'),
                     'approved_by' => Auth::user()->id,
+                        'prev_updated_by' => null, 
                 ]);
 
             //send mail
@@ -502,6 +504,7 @@ class SoftwaresController extends Controller
             $softwareUpdate['approve_time'] = date('Y-m-d H:i:s');
             $softwareUpdate['update_data'] = NULL;
             $softwareUpdate['reasons'] = NULL;
+            $softwareUpdate['prev_updated_by'] = NULL;
             $softwareUpdate['approved_status'] = config('constants.APPROVED_STATUS_APPROVED');
 
             //update status of software type
@@ -568,7 +571,8 @@ class SoftwaresController extends Controller
                     'reasons' => $reason,
                     'reject_code' => $rejectCode,
                     'approve_time' => date('Y-m-d H:i:s'),
-                    'approved_by' => Auth::user()->id,                    
+                    'approved_by' => Auth::user()->id,  
+                    'prev_updated_by' => $software->updated_by,                    
                 ]);
             
             //send mail
@@ -591,7 +595,8 @@ class SoftwaresController extends Controller
                     'reasons' => $reason,
                     'update_data' => NULL,
                     'approve_time' => date('Y-m-d H:i:s'),
-                    'approved_by' => Auth::user()->id,                    
+                    'approved_by' => Auth::user()->id,   
+                    'prev_updated_by' => $software->updated_by,                  
                 ]);
             
             //send mail

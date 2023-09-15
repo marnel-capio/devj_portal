@@ -263,6 +263,8 @@ class ProjectsController extends Controller
                         'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
                         'updated_by' => Auth::user()->id,
                         'approved_by' => Auth::user()->id,
+                        'reasons' => null,
+                        'prev_updated_by' => null,
                     ]);
 
             // 5.1.2 Create log
@@ -289,6 +291,8 @@ class ProjectsController extends Controller
             $update['updated_by'] = Auth::user()->id;
             $update['approved_by'] = Auth::user()->id;
             $update['update_data'] = NULL;
+            $update['prev_updated_by'] = NULL;
+            $update['reasons'] = NULL;
             $update['approved_status'] = config('constants.APPROVED_STATUS_APPROVED');
 
             EmployeesProjects::where('id', $id)
@@ -355,6 +359,8 @@ class ProjectsController extends Controller
                         'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
                         'updated_by' => Auth::user()->id,
                         'approved_by' => Auth::user()->id,
+                        'prev_updated_by' => null,
+                        'reasons' => null,
                     ]);
 
             Logs::createLog("Project", "Approved the linkage of $recipient->first_name $recipient->last_name to $projectData->name.");
@@ -381,6 +387,8 @@ class ProjectsController extends Controller
             $update['updated_by'] = Auth::user()->id;
             $update['approved_by'] = Auth::user()->id;
             $update['update_data'] = NULL;
+            $update['prev_updated_by'] = NULL;
+            $update['reasons'] = NULL;
             $update['approved_status'] = config('constants.APPROVED_STATUS_APPROVED');
 
             EmployeesProjects::where('id', $id)
@@ -443,6 +451,7 @@ class ProjectsController extends Controller
                         'reasons' => $reason, 
                         'updated_by' => Auth::user()->id,
                         'approved_by' => Auth::user()->id,
+                        'prev_updated_by' => $projectLinkDetails->updated_by,
                     ]);
 
             Logs::createLog("Project", "Rejected the linkage of $recipient->first_name $recipient->last_name to $projectData->name.");
@@ -470,6 +479,7 @@ class ProjectsController extends Controller
             $update['approved_by'] = Auth::user()->id;
             $update['reasons'] = $reason;
             $update['update_data'] = NULL;
+            $update['prev_updated_by'] = $projectLinkDetails->updated_by;
             $update['approved_status'] = config('constants.APPROVED_STATUS_APPROVED');
 
             EmployeesProjects::where('id', $id)

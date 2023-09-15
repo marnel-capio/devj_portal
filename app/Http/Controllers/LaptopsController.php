@@ -170,7 +170,8 @@ class LaptopsController extends Controller
                     EmployeesLaptops::where('id', $origLinkageData->id)
                                         ->update([
                                             'approved_status' => config('constants.APPROVED_STATUS_REJECTED'),
-                                            'updated_by' => Auth::user()->id
+                                            'updated_by' => Auth::user()->id,
+                                            'prev_updated_by' => $origLinkageData->updated_by,
                                         ]);
                 }
             }else{
@@ -354,6 +355,7 @@ class LaptopsController extends Controller
                         'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
                         'updated_by' => Auth::user()->id,
                         'approved_by' => Auth::user()->id,
+                        'prev_updated_by' => null,
                     ]);
             
             //check if pending registration has linkage data
@@ -366,7 +368,8 @@ class LaptopsController extends Controller
                                     ->update([
                                         'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
                                         'approved_by' => Auth::user()->id,
-                                        'updated_by' => Auth::user()->id
+                                        'updated_by' => Auth::user()->id,
+                                        'prev_updated_by' => null,
                                     ]);
             }
 
@@ -394,6 +397,7 @@ class LaptopsController extends Controller
             $update['updated_by'] = Auth::user()->id;
             $update['approved_by'] = Auth::user()->id;
             $update['update_data'] = NULL;
+            $update['prev_updated_by'] = NULL;
             $update['approved_status'] = config('constants.APPROVED_STATUS_APPROVED');
 
             Laptops::where('id', $id)
@@ -450,6 +454,7 @@ class LaptopsController extends Controller
                         'reasons' => $reason, 
                         'updated_by' => Auth::user()->id,
                         'approved_by' => Auth::user()->id,
+                        'prev_updated_by' => $laptopDetails->updated_by,
                     ]);
 
             //create logs
@@ -479,6 +484,7 @@ class LaptopsController extends Controller
                         'update_data' => NULL,
                         'updated_by' => Auth::user()->id,
                         'approved_by' => Auth::user()->id,
+                        'prev_updated_by' => $laptopDetails->updated_by,
                     ]);
 
             //create logs
@@ -539,6 +545,8 @@ class LaptopsController extends Controller
                         'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
                         'updated_by' => Auth::user()->id,
                         'approved_by' => Auth::user()->id,
+                        'prev_updated_by' => null,
+                        'reasons' => null,
                     ]);
 
             //create logs
@@ -566,6 +574,8 @@ class LaptopsController extends Controller
             $update['updated_by'] = Auth::user()->id;
             $update['approved_by'] = Auth::user()->id;
             $update['update_data'] = NULL;
+            $update['prev_updated_by'] = NULL;
+            $update['reasons'] = NULL;
             $update['approved_status'] = config('constants.APPROVED_STATUS_APPROVED');
 
             EmployeesLaptops::where('id', $id)
@@ -605,18 +615,18 @@ class LaptopsController extends Controller
         if(!empty($pendingApproval)){
             $reason = 'Laptop has been assigned to other employee';
             $pendingIds = array_column($pendingApproval, 'id');
-            EmployeesLaptops::whereIn('id', $pendingIds)
+    
+    
+            //send mail
+            foreach($pendingApproval as $request => $data){
+                EmployeesLaptops::where('id', $data['id'])
                                 ->update([
                                     'approved_status' => config('constants.APPROVED_STATUS_REJECTED'),
                                     'approved_by' => Auth::user()->id,
                                     'updated_by' => Auth::user()->id,
                                     'reasons' => $reason,
+                                    'prev_updated_by' => $data['employee_id'],
                                 ]);
-    
-            Logs::createLog('Laptop', 'Laptop Linkage Request Rejection');
-    
-            //send mail
-            foreach($pendingApproval as $request => $data){
                 $mailData = [
                     'link' => route('laptops.details', ['id' => $laptop_id]),
                     'reason' => $reason,
@@ -627,6 +637,7 @@ class LaptopsController extends Controller
                     'assignee' => $data['assignee_name'],
                     'tagNumber' => $data['tag_number']
                 ];
+                Logs::createLog('Laptop', 'Laptop Linkage Request Rejection');
                 Mail::to($data['email'])->send(new MailLaptops($mailData, config('constants.MAIL_LAPTOP_NEW_LINKAGE_BY_NON_MANAGER_REJECTION')));
             }
         }
@@ -672,6 +683,7 @@ class LaptopsController extends Controller
                         'reasons' => $reason, 
                         'updated_by' => Auth::user()->id,
                         'approved_by' => Auth::user()->id,
+                        'prev_updated_by' => $laptopLinkDetails->updated_by,
                     ]);
 
             //create logs
@@ -697,6 +709,7 @@ class LaptopsController extends Controller
             $update['approved_by'] = Auth::user()->id;
             $update['reasons'] = $reason;
             $update['update_data'] = NULL;
+            $update['prev_updated_by'] = $laptopLinkDetails->employee_id;
             $update['approved_status'] = config('constants.APPROVED_STATUS_APPROVED');
 
             EmployeesLaptops::where('id', $id)
