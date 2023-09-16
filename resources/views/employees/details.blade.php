@@ -42,9 +42,9 @@
                 @if($employee['passport_status'] == 3)
                         Please set a passport appointment
                 @elseif($employee['passport_status'] == 2)
-                        Your passport appointment is in: {{$employee['duration']}}
+                        Passport appointment is in: {{$employee['duration']}}
                 @else
-                        Your passport expires in: {{$employee['duration']}}. {{$employee["passport_isWarning"] ? "Please update your passport immediately" : ""}}
+                        Passport expires in: {{$employee['duration']}}. {{$employee["passport_isWarning"] ? "Please update passport immediately" : ""}}
                 @endif
             </div>
         </div>

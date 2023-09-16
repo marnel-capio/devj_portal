@@ -188,8 +188,14 @@ class Employees extends Authenticatable
         $employee["passport_isWarning"] = true;
         if($dur_days <= 31) {
             $employee["duration"] = "$dur_days " . ($dur_days == 1 ?  "day" : "days");
+            if($employee->passport_status == 2 && $dur_days > 7) {
+                $employee["passport_isWarning"] = false;
+            }
         } else if($dur_months <= 12) {
             $employee["duration"] = "$dur_months " . ($dur_months == 1 ? "month" : "months");
+            if($employee->passport_status == 2) {
+                $employee["passport_isWarning"] = false;
+            }
         } else{
             if($dur_years == 1) {
                 $employee["duration"] = "$dur_years year";
