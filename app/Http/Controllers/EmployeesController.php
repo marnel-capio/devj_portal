@@ -38,7 +38,7 @@ class EmployeesController extends Controller
             abort_if(empty($employee), 404);
             
             // Get passport status
-            $employee = $this->getPassportStatus($employee);
+            $employee = Employees::getPassportStatus($employee);
         }
 
         return view('employees.regist')->with(['employee' => $employee]);
@@ -137,7 +137,7 @@ class EmployeesController extends Controller
         }
         
         // Get passport status
-        $employeeDetails = $this->getPassportStatus($employeeDetails);
+        $employeeDetails = Employees::getPassportStatus($employeeDetails);
 
         return view('employees.details')
                     ->with([
@@ -179,7 +179,7 @@ class EmployeesController extends Controller
         }
 
         // Get passport status
-        $employee = $this->getPassportStatus($employee);
+        $employee = Employees::getPassportStatus($employee);
 
         abort_if((!$employee->active_status && $employee->approved_status == config('constants.APPROVED_STATUS_REJECTED'))
             || ($employee->active_status && in_array($employee->approved_status, [config('constants.APPROVED_STATUS_REJECTED'), config('constants.APPROVED_STATUS_PENDING')]))
@@ -304,7 +304,7 @@ class EmployeesController extends Controller
 
         // Get passport status
 
-        $employeeDetails = $this->getPassportStatus($employeeDetails);
+        $employeeDetails = Employees::getPassportStatus($employeeDetails);
 
 
         $detailNote = $this->getAccountStatus($employeeDetails);
@@ -669,84 +669,6 @@ class EmployeesController extends Controller
         return $employee;
     }
     
-
-    /**
-     * Get the passport status based on existing passport data
-     *
-     * @param [type] $employee
-     * @return array
-     */
-    public static function getPassportStatus($employee) {
-
-        // set default value to true
-        $employee->passport_isComplete = true;
-
-        if($employee->passport_number   != null || 
-        $employee->date_of_issue         != null || 
-        $employee->issuing_authority     != null || 
-        $employee->passport_type         != null || 
-        $employee->passport_expiration_date != null || 
-        $employee->place_of_issue        != null)
-        {
-            // If at least 1 field is not empty, then the passport exists.
-            $employee->passport_status = 1;
-
-            // If at least 1 field is empty, then passport details are incomplete.
-            if($employee->passport_number   == null ||  
-            $employee->date_of_issue         == null ||  
-            $employee->issuing_authority     == null ||  
-            $employee->passport_type         == null ||  
-            $employee->passport_expiration_date == null ||  
-            $employee->place_of_issue        == null)
-            {
-                $employee->passport_isComplete = false;
-            }
-
-        } else if($employee->date_of_appointment != null) {
-            $employee->passport_status = 2;
-
-        } else {
-            $employee->passport_status = 3;
-            $employee->passport_isComplete = false;
-
-        }
-
-        return $employee;
-    }
-    
-    /**
-     * Validate combination of inputs and passport_status.
-     *
-     * @param [type] $employee
-     * @return bool
-     */
-    /* // remove function for now, can be used for future bug
-    private function validatePassportStatusandInputs($employee) {
-
-        if(($employee->passport_number   != null || 
-        $employee->date_of_issue         != null || 
-        $employee->issuing_authority     != null || 
-        $employee->passport_type         != null || 
-        $employee->passport_expiration_date != null || 
-        $employee->place_of_issue        != null) && $employee->passport_status != 1)
-        {
-            // If inputs are for status 1, but status != 1
-            return false;
-
-        } else if($employee->date_of_appointment != null && $employee->passport_status != 2) {
-            // If inputs are for status 2, but status != 2
-            return false;
-
-        } else if($employee->no_appointment_reason != null & $employee->passport_status != 3) {
-            // If inputs are for status 3, but status != 3
-            return false;
-
-        } else {
-            return true;
-        }
-    }
-    */
-    
     /**
      * Validate combination of inputs and passport_status.
      * Accept fields only based on selected passport_status
@@ -832,4 +754,17 @@ class EmployeesController extends Controller
         }
 
     }
+
+    
+    /**
+     * Get the passport status based on existing passport data
+     *
+     * @param [type] $employee
+     * @return array
+     */
+    public static function getPassportStatus($employee) {
+        return Employees::getPassportStatus($employee);
+
+    }
+
 }

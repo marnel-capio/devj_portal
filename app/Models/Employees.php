@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Carbon\Carbon;
 
 class Employees extends Authenticatable
 {
@@ -22,6 +23,24 @@ class Employees extends Authenticatable
     protected $hidden = [
         'password',
     ];
+    
+    /**
+     * Get all employee requests
+     *
+     * @return void
+     */
+    static function getEmployeeRequest() {
+    	$employee = Employees::select('id','first_name','last_name','email','position','approved_status','reasons')
+                    ->where(function($query) {
+                        $query->where('active_status', 0)
+                            ->whereIN('approved_status', [1,3]);
+                    })
+                    ->orWhere('approved_status', 4)
+    				->orderBy('last_name', 'ASC')
+    				->get();
+
+        return $employee;
+    }
     
     /**
      * Get email of managers
@@ -110,4 +129,78 @@ class Employees extends Authenticatable
                 ->get()
                 ->toArray();
     }
+
+    
+
+    /**
+     * Get the passport status based on existing passport data
+     *
+     * @param [type] $employee
+     * @return array
+     */
+    static function getPassportStatus($employee) {
+
+        // set default value to true
+        $employee->passport_isComplete = true;
+
+        if($employee->passport_number   != null || 
+        $employee->date_of_issue         != null || 
+        $employee->issuing_authority     != null || 
+        $employee->passport_type         != null || 
+        $employee->passport_expiration_date != null || 
+        $employee->place_of_issue        != null)
+        {
+            // If at least 1 field is not empty, then the passport exists.
+            $employee->passport_status = 1;
+
+            // If at least 1 field is empty, then passport details are incomplete.
+            if($employee->passport_number   == null ||  
+            $employee->date_of_issue         == null ||  
+            $employee->issuing_authority     == null ||  
+            $employee->passport_type         == null ||  
+            $employee->passport_expiration_date == null ||  
+            $employee->place_of_issue        == null)
+            {
+                $employee->passport_isComplete = false;
+            }
+
+        } else if($employee->date_of_appointment != null) {
+            $employee->passport_status = 2;
+
+        } else {
+            $employee->passport_status = 3;
+
+        }
+
+        
+        $exp_date = Carbon::now();
+        if($employee->passport_status == 1){
+            $exp_date = new Carbon($employee['passport_expiration_date']);
+        }
+        elseif($employee->passport_status == 2) {
+            $exp_date = new Carbon($employee['date_of_appointment']);
+        }
+
+        $dur_years = Carbon::now()->diffInYears($exp_date);
+        $dur_months = Carbon::now()->diffInMonths($exp_date);
+        $dur_days = Carbon::now()->diffInDays($exp_date);
+
+        $employee["passport_isWarning"] = true;
+        if($dur_days <= 31) {
+            $employee["duration"] = "$dur_days " . ($dur_days == 1 ?  "day" : "days");
+        } else if($dur_months <= 12) {
+            $employee["duration"] = "$dur_months " . ($dur_months == 1 ? "month" : "months");
+        } else{
+            if($dur_years == 1) {
+                $employee["duration"] = "$dur_years year";
+            } else {
+                $employee["duration"] = "$dur_years years";
+                $employee["passport_isWarning"] = false;
+            }
+        }
+
+        return $employee;
+    }
+
+    
 }

@@ -32,6 +32,21 @@
                 <i class="bi bi-info-circle-fill"></i>&nbsp;Passport details are incomplete
             </div>
             @endif
+            
+            <div>
+                @if($employee["passport_isWarning"])
+                    <i class="bi bi-info-circle-fill"></i>
+                @else
+                    <i class="bi bi-info-circle-fill"></i>
+                @endif
+                @if($employee['passport_status'] == 3)
+                        Please set a passport appointment
+                @elseif($employee['passport_status'] == 2)
+                        Your passport appointment is in: {{$employee['duration']}}
+                @else
+                        Your passport expires in: {{$employee['duration']}}. {{$employee["passport_isWarning"] ? "Please update your passport immediately" : ""}}
+                @endif
+            </div>
         </div>
         
         <div class="">
@@ -733,7 +748,7 @@
         </div>
     </div>
     @endif
-
+	<button id="btnTop" title="Go to top"><i class="bi bi-arrow-up"></i></button> 
 </div>
 
 @include('footer')

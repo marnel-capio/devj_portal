@@ -2,73 +2,96 @@
 
 @include('headerMenu')
 
-@php 
-	$headerData = app\Http\Controllers\HomeController::getHeaderData(auth()->user()->id);
-	$userInfo = Auth::user();
-@endphp
 <div class="container container-req-table">
 	<div class="row-req-table row">
-		<div class="px-0">
-			<div class="row">
-				<div class="col col-lg-7">
-					<h3 class="mb-4"> Welcome, {{ auth()->user()->first_name }}</h3>
-				</div>
-				<div class="col col-lg-5 dash-date">
-					<span> Today is {{ ($headerData)['date'] }} </span>
-				</div>
-			</div>
-			<div class="container">
-				<div class="row">
-					<div class="group-category-home col col-lg-7 py-2 px-4 mx-4">
+		<div class="container">
+			<div class="row dash-head ">
+				{{-- Contains Urgent / Latest notifications --}}
+				<div class="group-category-home dash-notification-container col col-12 col-sm-12 col-lg-7 py-2 px-4 rounded">
+					<div class="row mb-3">
+						<div class="col col-12  col-md-12 col-lg-7">
+							<h3> Welcome, {{ auth()->user()->first_name }}</h3>
+						</div>
+						<div class="col col-12  col-md-12 col-lg-5">
+							<span> Today is {{ $date }} </span>
+						</div>
+					</div>
+					<!--div>
 						<h4 class="mt-1">Notifications</h4>
-						@if(false)
-							@foreach ($headerData['logs'] as $logs)
-								<p>
-									<span>{{ $logs['create_time']}}: </span> <span>{{ $logs['activity'] }}</span>
-								</p>
+					</div-->
+					<div class="dash-notifications">
+						@if($user["passport_isWarning"])
+							<div class="alert alert-danger" role="alert">
+						@else
+							<div class="alert alert-info" role="alert">
+						@endif
+						@if($user['passport_status'] == 3)
+								Please set a passport appointment!
+						@elseif($user['passport_status'] == 2)
+								Your passport appointment is in: {{$user['duration']}}
+						@else
+								Your passport expires in: {{$user['duration']}}
+								@if($user["passport_isWarning"])
+								<br> Please update your passport immediately.
+								@endif
+						@endif
+						</div>
+						<?php /*
+						@if(count($logs) > 0 || !empty($logs))
+							@foreach ($logs as $key => $log)
+								<div class="notif-entry">
+									<span class="notif-content">{{ $log['activity'] }}</span>
+									<span class="notif-time">
+										{{ app\Http\Controllers\HomeController::getTimePassed($log['create_time']) }} ago
+									</span>
+								</div>
 							@endforeach
 						@else
 							<i>No new notification found</i>
 						@endif
+						*/?>
 					</div>
-					<div class="group-category-home border rounded border-light col col-lg-4 py-2 px-4">
-						<h4 class="mt-1">Requests</h4>
+				</div>
+				{{-- Request Summary --}}
+				<div class="group-category-home dash-request-container col col-12 col-sm-12 col-lg-4 py-2 px-4 rounded">
+					<h4 class="mt-1">Requests</h4>
+					<div class="container">
 						<div class="dash-summary-row row mb-1">
 							<div class="col col-md-8 col-sm-8">
-								<a href="#div-employee-request"><span class="dash-summary dash-header">Employee Request</span></a>
+								<a href="#div-employee-request"><span class="dash-summary-items">Employee Request</span></a>
 							</div>
-							<div class="dash-summary dash-count col col-md-4 col-sm-4">
-								<span>{{$employee_request != null ? count($employee_request) : "0"}}</span>
+							<div class="dash-summary-count col col-md-4 col-sm-4">
+								{{$employee_request != null ? count($employee_request) : "0"}}
 							</div>
 						</div>
 						<div class="dash-summary-row row mb-1">
 							<div class="col col-md-8 col-sm-8">
-								<a href="#div-laptop-request"><span class="dash-summary dash-header">Laptop Request</span></a>
+								<a href="#div-laptop-request"><span class="dash-summary-items">Laptop Request</span></a>
 							</div>
-							<div class="dash-summary dash-count col col-md-4 col-sm-4">
+							<div class="dash-summary-count col col-md-4 col-sm-4">
 								{{$laptopRequest != null ? count($laptopRequest) : "0"}}
 							</div>
 						</div>
 						<div class="dash-summary-row row mb-1">
 							<div class="col col-md-8 col-sm-8">
-								<a href="#div-laptop-link-request"><span class="dash-summary dash-header">Laptop Link</span></a>
+								<a href="#div-laptop-link-request"><span class="dash-summary-items">Laptop Link</span></a>
 							</div>
-							<div class="dash-summary dash-count col col-md-4 col-sm-4">
+							<div class="dash-summary-count col col-md-4 col-sm-4">
 								{{$laptopLinkRequest != null ? count($laptopLinkRequest) : "0"}}</div>
 						</div>
 						<div class="dash-summary-row row mb-1">
 							<div class="col col-md-8 col-sm-8"><a href="#div-software-request">
-								<span class="dash-summary dash-header">Software Request</span></a>
+								<span class="dash-summary-items">Software Request</span></a>
 							</div>
-							<div class="dash-summary dash-count col col-md-4 col-sm-4">
+							<div class="dash-summary-count col col-md-4 col-sm-4">
 								{{$softwareRequest != null ?count($softwareRequest) : "0"}}
 							</div>
 						</div>
 						<div class="dash-summary-row row mb-1">
 							<div class="col col-md-8 col-sm-8">
-								<a href="#div-project-link-request"><span class="dash-summary dash-header">Project Link</span></a>
+								<a href="#div-project-link-request"><span class="dash-summary-items">Project Link</span></a>
 							</div>
-							<div class="dash-summary dash-count col col-md-4 col-sm-4">
+							<div class="dash-summary dash-summary-count col col-md-4 col-sm-4">
 								{{$projectLinkRequest != null ? count($projectLinkRequest) : "0"}}
 							</div>
 						</div>
@@ -77,6 +100,7 @@
 			</div>
 		</div>
 	</div>
+	<button id="btnTop" title="Go to top"><i class="bi bi-arrow-up"></i></button> 
 
 	@if(auth()->user()->roles == 2)
 	<div id="div-employee-request" class="row-req-table row group-category-home p-2">
@@ -134,7 +158,7 @@
 		                </td>
 						<td>	
 							@if ($user['approved_status'] == 3 || $user['approved_status'] == 4) 
-		                		<a href="{{ url("/employees/{$user['id']}/request") }}" alt="View"><i class="bi bi-eye"></i>View</a>
+		                		<a href="{{ url("/employees/{$user['id']}/request") }}" class="action-view" alt="View"><i class="bi bi-eye"></i>View</a>
 		                	@endif
 						</td>
 					</tr>
@@ -187,10 +211,10 @@
 			                	{{ $request['reasons'] }}
 			                </td>
 							<td>
-								@if ($request['approved_status'] == 1 && $userInfo->id == $request['prev_updated_by']) 
-			                		<a href="{{ route('laptops.create', [$request['reject_code']]) }}"><i class="bi bi-eye"></i>View</a>
+								@if ($request['approved_status'] == 1 && $user->id == $request['prev_updated_by']) 
+			                		<a href="{{ route('laptops.create', [$request['reject_code']]) }}" class="action-view"><i class="bi bi-eye"></i>View</a>
 			                	@elseif ($request['approved_status'] == 3 || $request['approved_status'] == 4) 
-			                		<a href="{{ route('laptops.request', ['id' => $request['id']]) }}"><i class="bi bi-eye"></i>View</a>
+			                		<a href="{{ route('laptops.request', ['id' => $request['id']]) }}" class="action-view"><i class="bi bi-eye"></i>View</a>
 			                	@endif
 							</td>
 						</tr>
@@ -240,7 +264,7 @@
 			                </td>
 							<td>
 								@if ($request['approved_status'] == 3 || $request['approved_status'] == 4) 
-								<a href="{{ route('laptops.details', ['id' => $request['laptop_id']]) ."#link-req-tbl" }}"><i class="bi bi-eye"></i>View</a>
+								<a href="{{ route('laptops.details', ['id' => $request['laptop_id']]) ."#link-req-tbl" }}" class="action-view"><i class="bi bi-eye"></i>View</a>
 								@endif
 							</td>
 						</tr>
@@ -287,10 +311,10 @@
 			                	{{ $software['reasons'] }}
 			                </td>
 							<td>
-								@if ($software['approved_status'] == 1 && $userInfo->id == $software['prev_updated_by']) 
-			                		<a href="{{ route('softwares.create', [$software['reject_code']]) }}"><i class="bi bi-eye"></i>View</a>
+								@if ($software['approved_status'] == 1 && $user->id == $software['prev_updated_by']) 
+			                		<a href="{{ route('softwares.create', [$software['reject_code']]) }}" class="action-view"><i class="bi bi-eye"></i>View</a>
 			                	@elseif ($software['approved_status'] == 3 || $software['approved_status'] == 4) 
-			                		<a href="{{ route('softwares.request', ['id' => $software['id']]) }}"><i class="bi bi-eye"></i>View</a>
+			                		<a href="{{ route('softwares.request', ['id' => $software['id']]) }}" class="action-view"><i class="bi bi-eye"></i>View</a>
 			                	@endif
 								
 							</td>
@@ -337,7 +361,7 @@
 							<td>
 			                	@if ($projectlink['approved_status'] == 1 || !empty($projectlink['reasons'])) 
 			                		<p style="color: red">Rejected</p>
-			                	@elseif ($projectlink['approved_status'] == 3 || $v['approved_status'] == 4) 
+			                	@elseif ($projectlink['approved_status'] == 3 || $projectlink['approved_status'] == 4) 
 			                		<p style="color: green">Pending</p>
 			                	@endif
 			                </td>
@@ -347,7 +371,7 @@
 							<td>
 								@if ($projectlink['approved_status'] == 3 || $projectlink['approved_status'] == 4) 
 
-									<a href="{{ route('projects.details', ['id' => $projectlink['project_id']]) ."#link_request_tbl" }}"><i class="bi bi-eye"></i>View</a>
+									<a href="{{ route('projects.details', ['id' => $projectlink['project_id']]) ."#link_request_tbl" }}" class="action-view"><i class="bi bi-eye"></i>View</a>
 								@endif
 						</td>
 						</tr>

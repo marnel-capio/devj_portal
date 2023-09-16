@@ -22,48 +22,43 @@ class HomeController extends Controller
     public function index(){
     	$employee_request = [];
     	if (Auth::user()->roles != 3) {
-    		$employee_request = $this->getEmployeeRequest();
+    		$employee_request = Employees::getEmployeeRequest();
     	}
        
         $software_request = Softwares::getSoftwareRequest();
+        $logs = Logs::getLogOfUser(Auth::user()->id);
+        $today = Carbon::now();
+
+        // Get the logged-in user's passport status
+        $user = Employees::getPassportStatus(Auth::user());
+
         return view('home', [   
+                                'user' => $user,
                                 'employee_request' => $employee_request,
                                 'softwareRequest' => $software_request,
                                 'laptopRequest' => Laptops::getLaptopRequest(),
                                 'laptopLinkRequest' => EmployeesLaptops::getLinkLaptopRequest(),
                                 'projectLinkRequest' => EmployeesProjects::getProjectEmployeeLinkRequest(),
+                                
+                                'date' => Carbon::now()->toDayDateTimeString(),
+                                'logs' => $logs,
                             ]);
     }
-    /**
-     * Display data
-     *
-     * @return void
-     */
-    public static function getHeaderData($id){
-        $data = [];
-        $data['date'] = Carbon::now()->toDayDateTimeString();
-        
-        $data['logs'] = Logs::getLogOfUser($id);
-       
-        return $data;
+
+    public static function getTimePassed($time) {
+        $time = new Carbon($time);
+        return $time->diffForHumans(Carbon::now(),true);
     }
-
+    
     /**
-     * Get all employee requests
+     * Get the passport status based on existing passport data
      *
-     * @return void
+     * @param [type] $employee
+     * @return array
      */
-    private function getEmployeeRequest() {
-    	$employee = Employees::select('id','first_name','last_name','email','position','approved_status','reasons')
-                    ->where(function($query) {
-                        $query->where('active_status', 0)
-                            ->whereIN('approved_status', [1,3]);
-                    })
-                    ->orWhere('approved_status', 4)
-    				->orderBy('last_name', 'ASC')
-    				->get();
+    public static function getPassportStatus($employee) {
+        return Employees::getPassportStatus($employee);
 
-        return $employee;
     }
 
 }
