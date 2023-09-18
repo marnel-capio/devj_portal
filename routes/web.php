@@ -62,6 +62,7 @@ Route::middleware(['auth', 'web', 'isActive'])->group(function(){
 
     Route::prefix('/laptops')->controller(LaptopsController::class)->group(function(){
         Route::get('/', 'index')->name('laptops.index');
+        Route::get('/clearRejectedLinkage', 'clearRejectedLinkage')->name('laptops.clearRejectedLinkage');
         Route::post('/download', 'download')->name('laptops.download');
         Route::get('/create/{rejectCode?}', 'create')->name('laptops.create');
         Route::post('/regist', 'regist')->name('laptops.regist');
@@ -71,7 +72,6 @@ Route::middleware(['auth', 'web', 'isActive'])->group(function(){
         Route::post('/reject', 'reject')->name('laptops.reject');
         Route::post('/storeLinkage', 'storeLinkage')->name('laptops.storeLinkage');
         Route::post('/rejectLinkage', 'rejectLinkage')->name('laptops.rejectLinkage');
-        Route::get('/clearRejectedLinkage', 'clearRejectedLinkage')->name('laptops.clearRejectLinkage');
 
         Route::get('/regist/complete', function(){
             return view('laptops.complete');
@@ -109,7 +109,7 @@ Route::middleware(['auth', 'web', 'isActive'])->group(function(){
         Route::post('/storeLinkage', 'storeLinkage')->name('projects.storeLinkage');
         Route::post('/approveLinkage', 'approveLinkage')->name('projects.approveLinkage');
         Route::post('/rejectLinkage', 'rejectLinkage')->name('projects.rejectLinkage');
-        Route::get('/clearRejectedLinkage', 'clearRejectedLinkage')->name('projects.clearRejectLinkage');
+        Route::get('/clearRejectedLinkage', 'clearRejectedLinkage')->name('projects.clearRejectedLinkage');
 
     });
 

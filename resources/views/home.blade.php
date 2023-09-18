@@ -51,13 +51,13 @@
 
 						@if(isset($laptopLinkRejectedCount)  && !empty($laptopLinkRejectedCount))
 							<div class="alert alert-danger" role="alert">
-								Your laptop link registration/update is rejected. Please see the details or <a href="{{ url("/laptops/clearRejectedLinkage") }}"> clear</a> the rejected data 
+								Your laptop link registration/update is rejected. Please see the details or <a href="{{ route('laptops.clearRejectedLinkage') }}">clear</a> the rejected data
 							</div>
 						@endif
 
 						@if(isset($projectLinkRejectedCount)  && !empty($projectLinkRejectedCount))
 							<div class="alert alert-danger" role="alert">
-								Your project link registration/update is rejected. Please see the details or <a href="{{ url("/projects/clearRejectedLinkage") }}"> clear</a> the rejected data 
+								Your project link registration/update is rejected. Please see the details or <a href="{{ route('projects.clearRejectedLinkage') }}">clear</a> the rejected data 
 							</div>
 						@endif
 						<?php /*
