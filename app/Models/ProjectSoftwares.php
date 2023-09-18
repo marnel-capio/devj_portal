@@ -29,8 +29,8 @@ class ProjectSoftwares extends Model
                                 projects.end_date as end_date,
                                 projects_softwares.update_time,
                                 case when isnull(projects.end_date) 
-                                    then "Ongoing" 
-                                    else "Ended"
+                                    then "' . config("constants.PROJECT_STATUS_ONGOING_TEXT") . '" 
+                                    else "' . config("constants.PROJECT_STATUS_FINISH_TEXT") . '"
                                     end as project_status',
                                 )
                     ->leftJoin('projects', 'projects.id',  'projects_softwares.project_id')

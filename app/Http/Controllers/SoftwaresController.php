@@ -219,7 +219,7 @@ class SoftwaresController extends Controller
                     ->with([
                         'allowedToEdit' => $allowedToEdit,
                         'software' => $softwareDetails,
-                        //'softProject' => ProjectSoftwares::getProjectBySoftware($id),
+                        'softProject' => ProjectSoftwares::getProjectBySoftware($id),
                         'detailNote' => $this->getSoftwareStatus($softwareDetails),
                         'readOnly' => true,
                         'detailOnly' => true,
