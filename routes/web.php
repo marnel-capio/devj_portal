@@ -71,6 +71,7 @@ Route::middleware(['auth', 'web', 'isActive'])->group(function(){
         Route::post('/reject', 'reject')->name('laptops.reject');
         Route::post('/storeLinkage', 'storeLinkage')->name('laptops.storeLinkage');
         Route::post('/rejectLinkage', 'rejectLinkage')->name('laptops.rejectLinkage');
+        Route::get('/clearRejectedLinkage', 'clearRejectedLinkage')->name('laptops.clearRejectLinkage');
 
         Route::get('/regist/complete', function(){
             return view('laptops.complete');
@@ -108,6 +109,7 @@ Route::middleware(['auth', 'web', 'isActive'])->group(function(){
         Route::post('/storeLinkage', 'storeLinkage')->name('projects.storeLinkage');
         Route::post('/approveLinkage', 'approveLinkage')->name('projects.approveLinkage');
         Route::post('/rejectLinkage', 'rejectLinkage')->name('projects.rejectLinkage');
+        Route::get('/clearRejectedLinkage', 'clearRejectedLinkage')->name('projects.clearRejectLinkage');
 
     });
 

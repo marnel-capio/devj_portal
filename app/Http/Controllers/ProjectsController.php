@@ -100,6 +100,7 @@ class ProjectsController extends Controller
             //check if current user is already a member of the project
             $employeeProjectData = EmployeesProjects::where('employee_id', Auth::user()->id)
                                                         ->where('project_id', $id)
+                                                        ->where('approved_status', "!=",1)
                                                         ->whereRaw('(end_date IS NULL or end_date > CURDATE())')
                                                         ->get()
                                                         ->toArray();
@@ -508,6 +509,20 @@ class ProjectsController extends Controller
 
         // Save alert message to session
         session(['elr_alert'=> $alert]);
+        return Redirect::back();
+    }
+
+    
+    public function clearRejectedLinkage() {
+
+        EmployeesProjects::where('prev_updated_by', Auth::user()->id)
+                    ->update([
+                        'updated_by' => Auth::user()->id,
+                        'approved_by' => Auth::user()->id,
+                        'prev_updated_by' => null,
+                    ]);
+        //create logs
+        Logs::createLog("Project", 'Rejected Project Linkage are all cleared.');
         return Redirect::back();
     }
     

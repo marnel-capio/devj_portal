@@ -738,6 +738,23 @@ class LaptopsController extends Controller
         return Redirect::back();
     }
 
+
+    /*
+    * Clear rejected linkage
+    */
+    public function clearRejectedLinkage() {
+
+        EmployeesLaptops::where('prev_updated_by', Auth::user()->id)
+                    ->update([
+                        'updated_by' => Auth::user()->id,
+                        'approved_by' => Auth::user()->id,
+                        'prev_updated_by' => null,
+                    ]);
+        //create logs
+        Logs::createLog("Laptop", 'Rejected Laptop Linkage are all cleared.');
+        return Redirect::back();    
+    }
+
     /**
      * additional validation for approval or rejection
      *

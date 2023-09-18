@@ -72,6 +72,7 @@ class EmployeesProjects extends Model
     static function checkIfProjectIsOngoing($projectId, $employeeId){
         $detail = self::where('project_id', $projectId)
                         ->where('employee_id', $employeeId)
+                        ->where('approved_status',"!=", config('constants.APPROVED_STATUS_REJECTED'))
                         ->where(function($query){
                             $query->whereNull('end_date')
                                 ->orWhere('end_date', '0')

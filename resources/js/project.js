@@ -90,6 +90,7 @@ $(document).ready( function () {
 			encode: true,
 		}).done(function(data){
             $("#link_create_spinner").hide();
+            console.log(data)
 
 			// display error
 			if(!data.success){
