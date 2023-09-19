@@ -37,27 +37,46 @@
 						@endif
 						</div>
 
+						@if(isset($employee_details)  && !empty($employee_details['reasons']))
+							<div class="alert alert-danger" role="alert">
+								Your update in account details has been rejected. <a href="{{ route('employees.clearRejectedUpdate') }}">Clear</a> the rejected data. </br>
+								Reasons: {{$employee_details['reasons']}}.
+							</div>
+						@endif
+
 						@if(isset($softwareRejectedCount)  && !empty($softwareRejectedCount))
 							<div class="alert alert-danger" role="alert">
-								Your software registration/update is rejected. Please see the details.
+								Your software registration is rejected. Please see the details.
+							</div>
+						@endif
+
+						@if(isset($softwareUpdateRejectedCount)  && !empty($softwareUpdateRejectedCount))
+							<div class="alert alert-danger" role="alert">
+								Your software update is rejected. Please see the details or <a href="{{ route('softwares.clearRejectedUpdate') }}">clear</a> the rejected data.
 							</div>
 						@endif
 
 						@if(isset($laptopRejectedCount)  && !empty($laptopRejectedCount))
 							<div class="alert alert-danger" role="alert">
-								Your laptop registration/update is rejected. Please see the details.
+								Your laptop registration is rejected. Please see the details.
+							</div>
+						@endif
+
+						@if(isset($laptopUpdateRejectedCount)  && !empty($laptopUpdateRejectedCount))
+							<div class="alert alert-danger" role="alert">
+								Your laptop update is rejected. Please see the details or <a href="{{ route('laptops.clearRejectedUpdate') }}">clear</a> the rejected data.
 							</div>
 						@endif
 
 						@if(isset($laptopLinkRejectedCount)  && !empty($laptopLinkRejectedCount))
 							<div class="alert alert-danger" role="alert">
-								Your laptop link registration/update is rejected. Please see the details or <a href="{{ route('laptops.clearRejectedLinkage') }}">clear</a> the rejected data
+								Your laptop link registration/update is rejected. Please see the details or <a href="{{ route('laptops.clearRejectedLinkage') }}">clear</a> the rejected data.
 							</div>
 						@endif
 
 						@if(isset($projectLinkRejectedCount)  && !empty($projectLinkRejectedCount))
 							<div class="alert alert-danger" role="alert">
-								Your project link registration/update is rejected. Please see the details or <a href="{{ route('projects.clearRejectedLinkage') }}">clear</a> the rejected data 
+								Your project link registration/update is rejected. Please see the details or <a href="{{ route('projects.clearRejectedLinkage') }}">clear</a> the rejected data.
 							</div>
 						@endif
 						<?php /*

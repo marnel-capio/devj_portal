@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\updateContactDetailsMail;
 use App\Exports\EmployeesExport;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redirect;
 
 class EmployeesController extends Controller
 {
@@ -502,6 +503,22 @@ class EmployeesController extends Controller
         }
 
         return redirect(route('home'));
+    }
+
+     
+    /*
+    * Clear rejected update
+    */
+    public function clearRejectedUpdate() {
+
+        Employees::where('created_by', Auth::user()->id)
+                    ->update([
+                        'updated_by' => Auth::user()->id,
+                        'reasons' => null,
+                    ]);
+        //create logs
+        Logs::createLog("Employee", 'Rejected Employee Update are all cleared.');
+        return Redirect::back();
     }
 
     /**

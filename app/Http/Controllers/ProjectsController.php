@@ -518,7 +518,6 @@ class ProjectsController extends Controller
         EmployeesProjects::where('prev_updated_by', Auth::user()->id)
                     ->update([
                         'updated_by' => Auth::user()->id,
-                        'approved_by' => Auth::user()->id,
                         'prev_updated_by' => null,
                     ]);
         //create logs

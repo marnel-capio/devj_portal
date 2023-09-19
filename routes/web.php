@@ -58,11 +58,13 @@ Route::middleware(['auth', 'web', 'isActive'])->group(function(){
         Route::get('/update/complete', function(){
             return view('employees.complete');
         })->name('employees.update.complete');
+        Route::get('/clearRejectedUpdate', 'clearRejectedUpdate')->name('employees.clearRejectedUpdate');
     });
 
     Route::prefix('/laptops')->controller(LaptopsController::class)->group(function(){
         Route::get('/', 'index')->name('laptops.index');
         Route::get('/clearRejectedLinkage', 'clearRejectedLinkage')->name('laptops.clearRejectedLinkage');
+        Route::get('/clearRejectedUpdate', 'clearRejectedUpdate')->name('laptops.clearRejectedUpdate');
         Route::post('/download', 'download')->name('laptops.download');
         Route::get('/create/{rejectCode?}', 'create')->name('laptops.create');
         Route::post('/regist', 'regist')->name('laptops.regist');
@@ -95,6 +97,7 @@ Route::middleware(['auth', 'web', 'isActive'])->group(function(){
         Route::get('/update/complete', function(){
             return view('softwares.complete');
         })->name('softwares.update.complete');        
+        Route::get('/clearRejectedUpdate', 'clearRejectedUpdate')->name('softwares.clearRejectedUpdate');
     });
 
     Route::prefix('/projects')->controller(ProjectsController::class)->group(function(){

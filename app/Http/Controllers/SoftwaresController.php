@@ -15,6 +15,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\SoftwaresRequest;
+use Illuminate\Support\Facades\Redirect;
 
 class SoftwaresController extends Controller
 {
@@ -469,7 +470,6 @@ class SoftwaresController extends Controller
                     ->update([
                         'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
                         'updated_by' => Auth::user()->id,
-                        'prev_updated_by' => null, 
                     ]);
             }
 
@@ -504,7 +504,6 @@ class SoftwaresController extends Controller
             $softwareUpdate['approve_time'] = date('Y-m-d H:i:s');
             $softwareUpdate['update_data'] = NULL;
             $softwareUpdate['reasons'] = NULL;
-            $softwareUpdate['prev_updated_by'] = NULL;
             $softwareUpdate['approved_status'] = config('constants.APPROVED_STATUS_APPROVED');
 
             //update status of software type
@@ -614,6 +613,24 @@ class SoftwaresController extends Controller
         }
 
         return redirect(route('home'));
+    }
+
+     
+    /*
+    * Clear rejected update
+    */
+    public function clearRejectedUpdate() {
+
+        Softwares::where('prev_updated_by', Auth::user()->id)
+                    ->where('approved_status', config('constants.APPROVED_STATUS_APPROVED'))
+                    ->update([
+                        'updated_by' => Auth::user()->id,
+                        'prev_updated_by' => null,
+                        'reasons' => null,
+                    ]);
+        //create logs
+        Logs::createLog("Software", 'Rejected Software Update are all cleared.');
+        return Redirect::back();
     }
 
     /**

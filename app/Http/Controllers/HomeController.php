@@ -24,26 +24,36 @@ class HomeController extends Controller
     	if (Auth::user()->roles != 3) {
     		$employee_request = Employees::getEmployeeRequest();
     	}
-       
+
+        $employeeDetails = Employees::getActiveEmployeeDetails(Auth::user()->id);
         $software_request = Softwares::getSoftwareRequest();
         $laptop_request = Laptops::getLaptopRequest();
         $laptopLink_request = EmployeesLaptops::getLinkLaptopRequest();
         $projetLink_request = EmployeesProjects::getProjectEmployeeLinkRequest();
 
+\Log::debug($employeeDetails);
+        $softwareUpdateRejected = array_filter($software_request, function($data) {
+            return ($data['prev_updated_by'] != "" && $data['approved_status'] == config('constants.APPROVED_STATUS_APPROVED'));
+        });
+
+        $laptopUpdateRejected = array_filter($laptop_request, function($data) {
+            return ($data['prev_updated_by'] != "" && $data['approved_status'] == config('constants.APPROVED_STATUS_APPROVED'));
+        });
+
         $softwareRejected = array_filter($software_request, function($data) {
-            return ($data['approved_status'] == 1);
+            return ($data['approved_status'] == config('constants.APPROVED_STATUS_REJECTED'));
         });
 
         $laptopRejected = array_filter($laptop_request, function($data) {
-            return ($data['approved_status'] == 1);
+            return ($data['approved_status'] == config('constants.APPROVED_STATUS_REJECTED'));
         });
 
         $laptopLinkRejected = array_filter($laptopLink_request, function($data) {
-            return ($data['approved_status'] == 1);
+            return ($data['approved_status'] == config('constants.APPROVED_STATUS_REJECTED'));
         });
 
         $projectLinkRejected = array_filter($projetLink_request, function($data) {
-            return ($data['approved_status'] == 1);
+            return ($data['approved_status'] == config('constants.APPROVED_STATUS_REJECTED'));
         });
 
 
@@ -55,6 +65,7 @@ class HomeController extends Controller
 
         return view('home', [   
                                 'user' => $user,
+                                'employee_details' => is_array($employeeDetails) ? $employeeDetails[0] : "",
                                 'employee_request' => $employee_request,
                                 'softwareRequest' => $software_request,
                                 'laptopRequest' => $laptop_request,
@@ -64,6 +75,8 @@ class HomeController extends Controller
                                 'laptopRejectedCount' => count($laptopRejected),
                                 'laptopLinkRejectedCount' => count($laptopLinkRejected),
                                 'projectLinkRejectedCount' => count($projectLinkRejected),
+                                'softwareUpdateRejectedCount' => count($softwareUpdateRejected),
+                                'laptopUpdateRejectedCount' => count($laptopUpdateRejected),
                                 'date' => Carbon::now()->toDayDateTimeString(),
                                 'logs' => $logs,
                             ]);
