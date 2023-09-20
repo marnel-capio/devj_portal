@@ -53,6 +53,7 @@ return [
     'PASSPORT_STATUS_1_NAME' => 'With Passport',
     'PASSPORT_STATUS_2_NAME' => 'With Appointment',
     'PASSPORT_STATUS_3_NAME' => 'Without Passport',
+    'PASSPORT_STATUS_4_NAME' => 'Waiting for Delivery',
 
     //Employee - BU List - for BU transfer - Dev J is excluded
     'BU_LIST' => [

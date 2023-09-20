@@ -20,22 +20,30 @@
 						<h4 class="mt-1">Notifications</h4>
 					</div-->
 					<div class="dash-notifications">
-						@if($user["passport_isWarning"])
-							<div class="alert alert-danger" role="alert">
-						@else
-							<div class="alert alert-info" role="alert">
-						@endif
-						@if($user['passport_status'] == 3)
-								Please set a passport appointment!
-						@elseif($user['passport_status'] == 2)
-								Your passport appointment is in: {{$user['duration']}}
-						@else
-								Your passport expires in: {{$user['duration']}}
-								@if($user["passport_isWarning"])
-								<br> Please update your passport immediately.
+						@if($user['passport_isAlertDisplayed'])
+							{{-- Set the Passport notification alert type --}}
+							@if($user["passport_isWarning"])
+								<div class="alert alert-danger" role="alert">
+							@else
+								<div class="alert alert-info" role="alert">
+							@endif
+
+								{{-- Set the Passport notification content --}}
+								{{ $user['passport_message'] }}
+
+								@if($user['passport_status'] == 1 && $user['is_date_passed']) 
+								<br>
+								Please consider renewing your Passport
 								@endif
+
+								<br>
+								<i><a href="{{route('employees.edit', ['id' => auth()->user()->id]) }}#passport-details">Update passport details</a></i>
+
+							</div>
 						@endif
-						</div>
+
+						<i>{{ isset($user['passport_expiration_date']) ? "{Expiration: " : ""}}{{ isset($user['date_of_appointment']) ? "{Appointment: " : ""}} {{isset($user['passport_expiration_date']) ? $user['passport_expiration_date']."}" : ""}} {{isset($user['date_of_appointment']) ? $user['date_of_appointment']."}" : ""}}</i>
+						<br><br>
 
 						@if(isset($employee_details)  && !empty($employee_details['reasons']))
 							<div class="alert alert-danger" role="alert">
@@ -99,6 +107,8 @@
 				<div class="group-category-home dash-request-container col col-12 col-sm-12 col-lg-4 py-2 px-4 rounded">
 					<h4 class="mt-1">Requests</h4>
 					<div class="container">
+						
+						@if(auth()->user()->roles == 2)
 						<div class="dash-summary-row row mb-1">
 							<div class="col col-md-8 col-sm-8">
 								<a href="#div-employee-request"><span class="dash-summary-items">Employee Request</span></a>
@@ -107,6 +117,7 @@
 								{{$employee_request != null ? count($employee_request) : "0"}}
 							</div>
 						</div>
+						@endif
 						<div class="dash-summary-row row mb-1">
 							<div class="col col-md-8 col-sm-8">
 								<a href="#div-laptop-request"><span class="dash-summary-items">Laptop Request</span></a>
@@ -117,7 +128,7 @@
 						</div>
 						<div class="dash-summary-row row mb-1">
 							<div class="col col-md-8 col-sm-8">
-								<a href="#div-laptop-link-request"><span class="dash-summary-items">Laptop Link</span></a>
+								<a href="#div-laptop-link-request"><span class="dash-summary-items">Laptop Link Request</span></a>
 							</div>
 							<div class="dash-summary-count col col-md-4 col-sm-4">
 								{{$laptopLinkRequest != null ? count($laptopLinkRequest) : "0"}}</div>
@@ -132,7 +143,7 @@
 						</div>
 						<div class="dash-summary-row row mb-1">
 							<div class="col col-md-8 col-sm-8">
-								<a href="#div-project-link-request"><span class="dash-summary-items">Project Link</span></a>
+								<a href="#div-project-link-request"><span class="dash-summary-items">Project Link Request</span></a>
 							</div>
 							<div class="dash-summary dash-summary-count col col-md-4 col-sm-4">
 								{{$projectLinkRequest != null ? count($projectLinkRequest) : "0"}}

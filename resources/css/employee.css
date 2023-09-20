@@ -25,4 +25,10 @@ table#project-tbl  > thead > tr > th{
     text-align: center;
 }
 
+.passport-status {
+    margin: 0.3em
+}
 
+.is-disabled {
+    background-color: #e9ecef;
+}

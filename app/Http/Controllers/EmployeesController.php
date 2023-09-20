@@ -60,16 +60,17 @@ class EmployeesController extends Controller
 
         $insertData = $this->validatePassportStatusandInputs($insertData);
 
+        $insertData = $this->validateAddressInputs($insertData);
+
         // $objData = (object)$insertData;
         // abort_if(!$this->validatePassportStatusandInputs($objData), 404);
-
-        unset($insertData["passport_status"]);
         
         if(isset($insertData['id'])){
             //update data only
             $id = $insertData['id'];
             unset($insertData['id']);
             unset($insertData['created_by']);
+            unset($insertData['copy_permanent_address']);
 
             $additionalData = [
                 'approved_status' => config('constants.APPROVED_STATUS_PENDING'),
@@ -215,11 +216,13 @@ class EmployeesController extends Controller
         }
        
         $updateData = $this->validatePassportStatusandInputs($updateData);
+       
+        $updateData = $this->validateAddressInputs($updateData);
 
         unset($updateData['id']);
         unset($updateData['created_by']);
         unset($updateData['password']);
-        unset($updateData["passport_status"]);
+        unset($updateData['copy_permanent_address']);
 
         //check logined employee role
         if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
@@ -697,25 +700,56 @@ class EmployeesController extends Controller
 
         // Accept fields only based on selected passport_status
         if($employee['passport_status'] == 1) {
-            $employee['date_of_appointment'] = null;      // 2
-            $employee['no_appointment_reason'] = null;    // 3
+            $employee['date_of_appointment'] = null;        // 2
+            $employee['no_appointment_reason'] = null;      // 3
+            $employee['date_of_delivery'] = null;           // 4
         } else if($employee['passport_status'] == 2) {
-            $employee['passport_number'] = null;          // 1
-            $employee['date_of_issue'] = null;            // 1
-            $employee['issuing_authority'] = null;        // 1
-            $employee['passport_type'] = null;            // 1
-            $employee['passport_expiration_date'] = null; // 1
-            $employee['place_of_issue'] = null;           // 1
-            $employee['no_appointment_reason'] = null;    // 3
-        } else {
-            $employee['passport_number'] = null;          // 1
-            $employee['date_of_issue'] = null;            // 1
-            $employee['issuing_authority'] = null;        // 1
-            $employee['passport_type'] = null;            // 1
-            $employee['passport_expiration_date'] = null; // 1
-            $employee['place_of_issue'] = null;           // 1
-            $employee['date_of_appointment'] = null;      // 2
+            $employee['passport_number'] = null;            // 1
+            $employee['date_of_issue'] = null;              // 1
+            $employee['issuing_authority'] = null;          // 1
+            $employee['passport_type'] = null;              // 1
+            $employee['passport_expiration_date'] = null;   // 1
+            $employee['place_of_issue'] = null;             // 1
+            $employee['no_appointment_reason'] = null;      // 3
+            $employee['date_of_delivery'] = null;           // 4
+        } else if($employee['passport_status'] == 3) {
+            $employee['passport_number'] = null;            // 1
+            $employee['date_of_issue'] = null;              // 1
+            $employee['issuing_authority'] = null;          // 1
+            $employee['passport_type'] = null;              // 1
+            $employee['passport_expiration_date'] = null;   // 1
+            $employee['place_of_issue'] = null;             // 1
+            $employee['date_of_appointment'] = null;        // 2
+            $employee['date_of_delivery'] = null;           // 4
+        } else if($employee['passport_status'] == 4) {
+            $employee['passport_number'] = null;            // 1
+            $employee['date_of_issue'] = null;              // 1
+            $employee['issuing_authority'] = null;          // 1
+            $employee['passport_type'] = null;              // 1
+            $employee['passport_expiration_date'] = null;   // 1
+            $employee['place_of_issue'] = null;             // 1
+            $employee['date_of_appointment'] = null;        // 2
+            $employee['no_appointment_reason'] = null;      // 3
         }
+        
+        return $employee;
+    }
+    
+    /**
+     * Accept fields from permanent address to current address
+     *
+     * @param [array] $employee
+     * @return array
+     */
+    private function validateAddressInputs($employee) {
+
+        // Accept fields only based on selected passport_status
+        if($employee['copy_permanent_address']) {
+            $employee['current_address_street'] = $employee['permanent_address_street'];
+            $employee['current_address_city'] = $employee['permanent_address_city'];
+            $employee['current_address_province'] = $employee['permanent_address_province'];
+            $employee['current_address_postalcode'] = $employee['permanent_address_postalcode'];
+        } 
         
         return $employee;
     }

@@ -160,6 +160,44 @@ $(document).ready(function () {
 		$('.btn-prevent-multiple-submit').prop('disabled', true);
 	});
 
+	$("#copy-permanent-address").click(function(){
+		var isSame = $("#copy-permanent-address").prop('checked');
+		
+		$("#cur-add-strt").val($("#perm-add-strt").val());
+		$("#cur-add-town").val($("#perm-add-town").val());
+		$("#cur-add-prov").val($("#perm-add-prov").val());
+		$("#cur-add-postal").val($("#perm-add-postal").val());
+		
+		$("#cur-add-strt").prop("readonly", isSame);
+		$("#cur-add-town").prop("readonly", isSame);
+		$("#cur-add-prov").prop("readonly", isSame);
+		$("#cur-add-postal").prop("readonly", isSame);
+		
+		if(isSame)
+		{
+			$("#cur-add-strt").addClass("is-disabled");
+			$("#cur-add-town").addClass("is-disabled");
+			$("#cur-add-prov").addClass("is-disabled");
+			$("#cur-add-postal").addClass("is-disabled");
+		} else {
+			$("#cur-add-strt").removeClass("is-disabled");
+			$("#cur-add-town").removeClass("is-disabled");
+			$("#cur-add-prov").removeClass("is-disabled");
+			$("#cur-add-postal").removeClass("is-disabled");
+		}
+	});
+
+
+	$("input[name *= 'permanent_address'").change(function(){
+		var isSame = $("#copy-permanent-address").prop('checked');
+		if(isSame) {
+			$("#cur-add-strt").val($("#perm-add-strt").val());
+			$("#cur-add-town").val($("#perm-add-town").val());
+			$("#cur-add-prov").val($("#perm-add-prov").val());
+			$("#cur-add-postal").val($("#perm-add-postal").val());
+		}
+	})
+
 	//end for employee registration
 
 	//start for employee details/request
@@ -643,24 +681,20 @@ $(document).ready(function () {
 		$("#withPassport").addClass("d-none");
 		$("#withAppointment").addClass("d-none");
 		$("#withoutAppointment").addClass("d-none");
+		$("#waitingDelivery").addClass("d-none");
 		$("#passport-status-switch-spinner").show();
 
 		if(passport_status == 1) {
-			// $("#withPassport").find('input').each( function() {
-			// 	$(this).prop('disabled', false);
-			// });
-			// $("#withPassport").find('select').each( function() {
-			// 	$(this).prop('disabled', false);
-			// });
 			$("#withPassport").removeClass("d-none");
 
 		} else if(passport_status == 2) {
-			// $("#date_of_appointment").prop('disabled', false);
 			$("#withAppointment").removeClass("d-none");
 
 		} else if(passport_status == 3) {
-			// $("#no_appointment_reason").prop('disabled', false);
 			$("#withoutAppointment").removeClass("d-none");
+
+		} else if(passport_status == 4) {
+			$("#waitingDelivery").removeClass("d-none");
 
 		} else {
 			alert("Wrong passport status detected. Please refresh the page");

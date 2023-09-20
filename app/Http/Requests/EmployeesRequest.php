@@ -50,6 +50,7 @@ class EmployeesRequest extends FormRequest
             'place_of_issue' => 'Place of Issue',
             'date_of_appointment' => 'Date of Appointment',
             'no_appointment_reason' => 'Reason for No Appointment',
+            'date_of_delivery' => 'Date of Delivery',
         ];
     }
 
@@ -68,6 +69,7 @@ class EmployeesRequest extends FormRequest
             'current_address_postalcode.lt' => "The postal code exceeds max digits",
             'permanent_address_postalcode.lt' => "The postal code exceeds max digits",
             
+            // --- Passport --- //
             'date_of_issue.regex' => "The Date of Issue must be a valid date.",
             'date_of_issue.date' => "The Date of Issue must be a valid date.",
             'date_of_issue.before_or_equal' => "The Date of Issue must be on or before today.",
@@ -78,6 +80,10 @@ class EmployeesRequest extends FormRequest
             'date_of_appointment.regex' => "The Date of Appointment must be a valid date.",
             'date_of_appointment.date' => "The Date of Appointment date must be a valid date.",
             'date_of_appointment.after_or_equal' => "The Date of Appointment must be on or after today.",
+            
+            'date_of_delivery.regex' => "The Date of Delivery must be a valid date.",
+            'date_of_delivery.date' => "The Date of Delivery date must be a valid date.",
+            'date_of_delivery.after_or_equal' => "The Date of Delivery must be on or after today.",
         ];
     }
 
@@ -107,7 +113,7 @@ class EmployeesRequest extends FormRequest
                 'permanent_address_city' => 'required|max:80',
                 'permanent_address_province' => 'required|max:80',
                 'permanent_address_postalcode' =>'required|numeric|gte:0|lt:100000000000',
-                'passport_status' => 'required|in:1,2,3',
+                'passport_status' => 'required|in:1,2,3,4',
 
             ];
 
@@ -127,6 +133,9 @@ class EmployeesRequest extends FormRequest
             }
             else if($this->input('passport_status') == 3) {
                 $rules['no_appointment_reason'] = 'required|max:1024';
+            }
+            else if($this->input('passport_status') == 4) {
+                $rules['date_of_delivery'] = 'required|date|regex:/^\d{4}-\d{2}-\d{2}$/|after_or_equal:today';
             }
 
             if(strpos($this->header('referer'), route('employees.create')) !== FALSE){

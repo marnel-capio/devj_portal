@@ -15,38 +15,35 @@
 
 <div class="container text-center ps-md-3 pe-md-3 pt-5">
     <div class="d-flex justify-content-between mb-2">
-        <div class="text-primary text-start">
-            @if (!empty($detailNote))
-            <div>
-                <i class="bi bi-info-circle-fill"></i>&nbsp;{{ $detailNote }}
+        <div class="row">
+            <div class="text-primary text-start">
+                @if (!empty($detailNote))
+                <div>
+                    <i class="bi bi-info-circle-fill"></i>&nbsp;{{ $detailNote }}
+                </div>
+                @endif
+                @if (!empty($buTransferNote))
+                <div>
+                    <i class="bi bi-info-circle-fill"></i>&nbsp;{{ $buTransferNote }}
+                </div>
+                @endif
             </div>
-            @endif
-            @if (!empty($buTransferNote))
-            <div>
-                <i class="bi bi-info-circle-fill"></i>&nbsp;{{ $buTransferNote }}
-            </div>
-            @endif
-            
-            @if (isset($employee->passport_isComplete) && $employee->passport_isComplete == false)
-            <div>
-                <i class="bi bi-info-circle-fill"></i>&nbsp;Passport details are incomplete
-            </div>
-            @endif
-            
-            <div>
+            @if($employee['passport_isAlertDisplayed'])
                 @if($employee["passport_isWarning"])
-                    <i class="bi bi-info-circle-fill"></i>
+                    <div class="text-danger text-start">
                 @else
-                    <i class="bi bi-info-circle-fill"></i>
+                    <div class="text-primary text-start">
                 @endif
-                @if($employee['passport_status'] == 3)
-                        Please set a passport appointment
-                @elseif($employee['passport_status'] == 2)
-                        Passport appointment is in: {{$employee['duration']}}
-                @else
-                        Passport expires in: {{$employee['duration']}}. {{$employee["passport_isWarning"] ? "Please update passport immediately" : ""}}
-                @endif
-            </div>
+                        <div>
+                            @if($employee["passport_isWarning"])
+                                <i class="bi bi-info-circle-fill"></i>
+                            @else
+                                <i class="bi bi-info-circle-fill"></i>
+                            @endif
+                            {{$employee['passport_message']}}
+                        </div>
+                    </div>
+            @endif
         </div>
         
         <div class="">
@@ -193,21 +190,21 @@
             <div class="emp-regist-category p-3 mb-4 rounded-3">
                 <h4 class="text-start">Employee </h4>
                 <div class="row mb-2 ps-3 pe-3">
-                    <div class="col-4 g-3 form-floating">
+                    <div class="col-12 col-md-4 g-3 form-floating">
                         <input type="text" class="form-control" name="first_name" id="first_name" placeholder="First Name" value="{{ $employee->first_name }}" required disabled>
                         <label class="text-center" for="first_name">First Name</label>
                         @if ($errors->has('first_name'))
                         <p class="text-danger">{{ $errors->first('first_name') }}</p>
                         @endif
                     </div>
-                    <div class="col-4 g-3 form-floating">
+                    <div class="col-12 col-md-4 g-3 form-floating">
                         <input type="text" class="form-control" name="middle_name" id="middle_name" placeholder="Middle Name" value="{{ $employee->middle_name }}" required disabled>
                         <label  class="text-center" for="middle_name">Middle Name</label>
                         @if ($errors->has('first_name'))
                         <p class="text-danger">{{ $errors->first('middle_name') }}</p>
                         @endif
                     </div>
-                    <div class="col-4 g-3 form-floating">
+                    <div class="col-12 col-md-4 g-3 form-floating">
                         <input type="text" class="form-control" name="last_name" id="last_name" placeholder="Last Name" value="{{ $employee->last_name }}" required disabled>
                         <label  class="text-center" for="last_name">Last Name</label>
                         @if ($errors->has('last_name'))
@@ -216,14 +213,14 @@
                     </div>
                 </div>
                 <div class="row mb-2 ps-3 pe-3">
-                    <div class="col-4 g-3 form-floating">
+                    <div class="col-12 col-sm-5 g-3 form-floating">
                         <input type="date" class="form-control" name="birthdate" id="birthdate" placeholder="birthdate" value="{{ old('birthdate') ?: $employee->birthdate }}" pattern="\d{4}-\d{2}-\d{2}" required disabled>
                         <label  class="text-center" for="birthdate">Birth Date</label>
                         @if ($errors->has('birthdate'))
                         <p class="text-danger">{{ $errors->first('birthdate') }}</p>
                         @endif
                     </div>
-                    <div class="col-lg-4 col-8 g-3 text-start">
+                    <div class="col-12 col-sm-7 g-3 text-start">
                         <div class="d-flex align-items-center ps-1" style="height: 100%">
                             <div class="d-inline">
                                 Gender:&nbsp&nbsp
@@ -245,7 +242,7 @@
                     </div>
                 </div>
                 <div class="row mb-2 ps-3 pe-3">
-                    <div class="col-md-6 col-8 g-3 form-floating">
+                    <div class="col-md-6 col-12 g-3 form-floating">
                         <select name="position" id="position" class="form-select form-control" disabled>
                             <option {{ $employee->position == 1 ? "selected" : "" }} value="1">{{ config('constants.POSITION_1_NAME') }}</option>
                             <option {{ $employee->position == 2 ? "selected" : "" }} value="2">{{ config('constants.POSITION_2_NAME') }}</option>
@@ -293,7 +290,7 @@
             <div class="emp-regist-category mb-4 p-3 rounded-3">
                 <h4 class="text-start">Contact Details</h4>
                 <div class="row mb-2 ps-3 pe-3">
-                    <div class="col-4 g-3 form-floating">
+                    <div class="col-12 col-md-4 g-3 form-floating">
                         <input type="text" class="form-control" name="email" id="email" placeholder="Email" required value="{{ $employee->email }}" disabled>
                         <label for="email" class="text-center">Email Address</label>
                         @if ($errors->has('email'))
@@ -302,7 +299,7 @@
                     </div>
                 </div>
                 <div class="row mb-2 ps-3 pe-3">
-                    <div class="col-4 g-3">
+                    <div class="col-12 col-md-4 g-3">
                         <div class="input-group">
                             <span class="input-group-text">+63</span>
                             <div class="form-floating">
@@ -314,7 +311,7 @@
                         <p class="text-danger">{{ $errors->first('cellphone_number') }}</p>
                         @endif
                     </div>
-                    <div class="col-4 g-3 form-floating">
+                    <div class="col-12 col-md-4  g-3 form-floating">
                         <input type="text" class="form-control" name="other_contact_info" id="other_contact" placeholder="Other Contact Number" value="{{ $employee->other_contact_info }}" disabled>
                         <label for="other_contact" class="text-center">Other Contact Info (optional)</label>
                         @if ($errors->has('other_contact_info'))
@@ -329,23 +326,25 @@
                 <h4 class="text-start">Passport Details</h4>
 
                 <div class="row row-list">
-                    <div class="col-lg-1 col-2" id="status-label">
+                    <div class="col-lg-1 col-12 text-start" id="status-label">
                         Status: 
                     </div>
-                    <div class="col-lg-11 col-10" style="text-align: left">
-                        <input class="passport_status" type="radio" name="passport_status" id="status-withPassport" value="1" {{ old('passport_status', $employee ? $employee->passport_status : '') == 1 ? "checked" : "" }} disabled>
-                        <label class="form-check-label" for="status-withPassport">
-                            With Passport
+                    <div class="col-lg-11 col-12" style="text-align: left">
+                        <input class="passport_status btn-check" type="radio" name="passport_status" id="status-withPassport" value="1" {{ old('passport_status', $employee ? $employee->passport_status : '') == 1 ? "checked" : "" }} disabled>
+                        <label class="form-check-label passport-status btn btn-outline-primary" for="status-withPassport">
+                            {{ config('constants.PASSPORT_STATUS_1_NAME') }}
                         </label>
-                        &nbsp;&nbsp;
-                        <input class="passport_status" type="radio" name="passport_status" id="status-withAppointment" value="2" {{ old('passport_status', $employee ? $employee->passport_status : '') == 2 ? "checked" : "" }} disabled>
-                        <label class="form-check-label" for="status-withAppointment">
-                            With scheduled appointment
+                        <input class="passport_status btn-check" type="radio" name="passport_status" id="status-waitingDelivery" value="4" {{ old('passport_status', $employee ? $employee->passport_status : '') == 4 ? "checked" : "" }} disabled>
+                        <label class="form-check-label passport-status btn btn-outline-primary" for="status-waitingDelivery">
+                            {{ config('constants.PASSPORT_STATUS_4_NAME') }}
                         </label>
-                        &nbsp;&nbsp;
-                        <input class="passport_status" type="radio" name="passport_status" id="status-withoutAppointment" value="3" {{ old('passport_status', $employee ? $employee->passport_status : '') == 3 ? "checked" : "" }} disabled>
-                        <label class="form-check-label" for="status-withoutAppointment">
-                            Without scheduled appointment
+                        <input class="passport_status btn-check" type="radio" name="passport_status" id="status-withAppointment" value="2" {{ old('passport_status', $employee ? $employee->passport_status : '') == 2 ? "checked" : "" }} disabled>
+                        <label class="form-check-label passport-status btn btn-outline-primary" for="status-withAppointment">
+                            {{ config('constants.PASSPORT_STATUS_2_NAME') }}
+                        </label>
+                        <input class="passport_status btn-check" type="radio" name="passport_status" id="status-withoutAppointment" value="3" {{ old('passport_status', $employee ? $employee->passport_status : '') == 3 ? "checked" : "" }} disabled>
+                        <label class="form-check-label passport-status btn btn-outline-primary" for="status-withoutAppointment">
+                            {{ config('constants.PASSPORT_STATUS_3_NAME') }}
                         </label>
                     </div>
                 </div>
@@ -353,14 +352,14 @@
                 {{-- With Valid Passport section --}}
                 <div id="withPassport" class="">
                     <div class="row mb-2 ps-3 pe-3">
-                        <div class="col-4 g-3 form-floating">
+                        <div class="col-12 col-md-4 g-3 form-floating">
                             <input type="text" class="form-control" name="passport_number" id="passport_number" placeholder="Passport Number" required value="{{ $employee->passport_number }}" disabled>
                             <label for="passport_number" class="text-center">Passport Number</label>
                             @if ($errors->has('passport_number'))
                             <p class="text-danger">{{ $errors->first('passport_number') }}</p>
                             @endif
                         </div>
-                        <div class="col-4 g-3 form-floating">
+                        <div class="col-12 col-md-4 g-3 form-floating">
                             <select name="passport_type" id="passport_type" class="form-select form-control" disabled>
                                 <option value="">Select passport type</option>
                                 <option {{ old('passport_type', $employee ? $employee->passport_type : '') == 1 ? "selected" : "" }} value="1">{{ config('constants.PASSPORT_TYPE_1_NAME') }}</option>
@@ -373,7 +372,7 @@
                             <p class="text-danger">{{ $errors->first('passport_type') }}</p>
                             @endif
                         </div>
-                        <div class="col-4 g-3 form-floating">
+                        <div class="col-12 col-md-4 g-3 form-floating">
                             <input type="text" class="form-control" name="issuing_authority" id="issuing_authority" placeholder="Issuing Authority" required value="{{ $employee->issuing_authority }}" disabled>
                             <label for="issuing_authority" class="text-center">Issuing Authority</label>
                             @if ($errors->has('issuing_authority'))
@@ -382,21 +381,21 @@
                         </div>
                     </div>
                     <div class="row mb-2 ps-3 pe-3">
-                        <div class="col-4 g-3 form-floating">
+                        <div class="col-6 col-md-4 g-3 form-floating">
                             <input type="date" class="form-control" name="date_of_issue" id="date_of_issue" placeholder="Date of issue" value="{{ old('date_of_issue') ?: $employee->date_of_issue }}" pattern="\d{4}-\d{2}-\d{2}" required disabled>
                             <label  class="text-center" for="date_of_issue">Date of Issue</label>
                             @if ($errors->has('date_of_issue'))
                             <p class="text-danger">{{ $errors->first('date_of_issue') }}</p>
                             @endif
                         </div>
-                        <div class="col-4 g-3 form-floating">
+                        <div class="col-6 col-md-4 g-3 form-floating">
                             <input type="date" class="form-control" name="passport_expiration_date" id="passport_expiration_date" placeholder="Valid until" value="{{ old('passport_expiration_date') ?: $employee->passport_expiration_date }}" pattern="\d{4}-\d{2}-\d{2}" required disabled>
                             <label  class="text-center" for="passport_expiration_date">Valid Until</label>
                             @if ($errors->has('passport_expiration_date'))
                             <p class="text-danger">{{ $errors->first('passport_expiration_date') }}</p>
                             @endif
                         </div>
-                        <div class="col-4 g-3 form-floating">
+                        <div class="col-12 col-md-4 g-3 form-floating">
                             <input type="text" class="form-control" name="place_of_issue" id="place_of_issue" placeholder="Place of Issue" required value="{{ $employee->place_of_issue }}" disabled>
                             <label for="place_of_issue" class="text-center">Place of Issue</label>
                             @if ($errors->has('place_of_issue'))
@@ -409,7 +408,7 @@
                 {{-- With Passport Appointment section --}}
                 <div id="withAppointment" class="">
                     <div class="row mb-2 ps-3 pe-3">
-                        <div class="col-4 g-3 form-floating">
+                        <div class="col-6 g-3 form-floating">
                             <input type="date" class="form-control" name="date_of_appointment" id="date_of_appointment" placeholder="Date of appointment" value="{{ old('date_of_appointment') ?: $employee->date_of_appointment }}" pattern="\d{4}-\d{2}-\d{2}" required disabled>
                             <label  class="text-center" for="date_of_appointment">Date of Appointment</label>
                             @if ($errors->has('date_of_appointment'))
@@ -431,42 +430,22 @@
                         @endif
                     </div>
                 </div>
-            </div>
-            <div class="emp-regist-category mb-4 p-3 rounded-3">
-                <h4 class="text-start">Current Address</h4>
-                <div class="row mb-2 ps-3 pe-3">
-                    <div class="col-12 g-3 form-floating">
-                        <input type="text" class="form-control" name="current_address_street" id="cur-add-strt" placeholder="Street" required value="{{ $employee->current_address_street }}" disabled>
-                        <label for="cur-add-strt" class="text-center">Street</label>
-                        @if ($errors->has('current_address_street'))
-                        <p class="text-danger">{{ $errors->first('current_address_street') }}</p>
-                        @endif
-                    </div>
-                </div>
-                <div class="row mb-2 ps-3 pe-3">
-                    <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="current_address_city" id="cur-add-town" placeholder="Town" required value="{{ $employee->current_address_city }}" disabled>
-                        <label for="cur-add-town" class="text-center">Town/City</label>
-                        @if ($errors->has('current_address_city'))
-                        <p class="text-danger">{{ $errors->first('current_address_city') }}</p>
-                        @endif
-                    </div>
-                    <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="current_address_province" id="cur-add-prov" placeholder="Province" required value="{{ $employee->current_address_province }}" disabled>
-                        <label for="cur-add-prov" class="text-center">Province/Region</label>
-                        @if ($errors->has('current_address_province'))
-                        <p class="text-danger">{{ $errors->first('current_address_province') }}</p>
-                        @endif
-                    </div>
-                    <div class="col-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="current_address_postalcode" id="cur-add-postal" placeholder="Postal Code" required value="{{ $employee->current_address_postalcode }}" disabled>
-                        <label for="cur-add-postal" class="text-center">Postal Code</label>
-                        @if ($errors->has('current_address_postalcode'))
-                        <p class="text-danger">{{ $errors->first('current_address_postalcode') }}</p>
-                        @endif
+
+                {{-- Waiting for Delivery section --}}
+                <div id="waitingDelivery" class="d-none" style="text-align: left">
+                    <div class="row mb-2 ps-3 pe-3">
+                        <div class="col-6 g-3 form-floating">
+                            <input type="date" class="form-control" name="date_of_delivery" id="date_of_delivery" placeholder="Date of delivery" value="{{ old('date_of_delivery') ?: $employee->date_of_delivery }}" pattern="\d{4}-\d{2}-\d{2}" required disabled>
+                            <label  class="text-center" for="date_of_delivery">Date of Delivery</label>
+                            @if ($errors->has('date_of_delivery'))
+                            <p class="text-danger">{{ $errors->first('date_of_delivery') }}</p>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
+
+            {{-- Permanent Address --}}
             <div class="emp-regist-category mb-4 p-3 rounded-3">
                 <h4 class="text-start">Permanent Address</h4>
                 <div class="row mb-2 ps-3 pe-3">
@@ -479,25 +458,62 @@
                     </div>
                 </div>
                 <div class="row mb-2 ps-3 pe-3">
-                    <div class="col-4 g-3 form-floating">
+                    <div class="col-12 col-lg-4 g-3 form-floating">
                         <input type="text" class="form-control" name="permanent_address_city" id="perm-add-town" placeholder="Town" required value="{{ $employee->permanent_address_city }}" disabled>
                         <label for="perm-add-town" class="text-center">Town/City</label>
                         @if ($errors->has('permanent_address_city'))
                         <p class="text-danger">{{ $errors->first('permanent_address_city') }}</p>
                         @endif
                     </div>
-                    <div class="col-4 g-3 form-floating">
+                    <div class="col-12 col-lg-4 g-3 form-floating">
                         <input type="text" class="form-control" name="permanent_address_province" id="perm-add-prov" placeholder="Province" required value="{{ $employee->permanent_address_province }}" disabled>
                         <label for="perm-add-prov" class="text-center">Province/Region</label>
                         @if ($errors->has('permanent_address_province'))
                         <p class="text-danger">{{ $errors->first('permanent_address_province') }}</p>
                         @endif
                     </div>
-                    <div class="col-4 g-3 form-floating">
+                    <div class="col-12 col-lg-4 g-3 form-floating">
                         <input type="text" class="form-control" name="permanent_address_postalcode" id="perm-add-postal" placeholder="Postal Code" required value="{{ $employee->permanent_address_postalcode }}" disabled>
                         <label for="perm-add-postal" class="text-center">Postal Code</label>
                         @if ($errors->has('permanent_address_postalcode'))
                         <p class="text-danger">{{ $errors->first('permanent_address_postalcode') }}</p>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            {{-- Current Address --}}
+            <div class="emp-regist-category mb-4 p-3 rounded-3">
+                <h4 class="text-start">Current Address</h4>
+                <div class="row mb-2 ps-3 pe-3">
+                    <div class="col-12 g-3 form-floating">
+                        <input type="text" class="form-control" name="current_address_street" id="cur-add-strt" placeholder="Street" required value="{{ $employee->current_address_street }}" disabled>
+                        <label for="cur-add-strt" class="text-center">Street</label>
+                        @if ($errors->has('current_address_street'))
+                        <p class="text-danger">{{ $errors->first('current_address_street') }}</p>
+                        @endif
+                    </div>
+                </div>
+                <div class="row mb-2 ps-3 pe-3">
+                    <div class="col-12 col-lg-4 g-3 form-floating">
+                        <input type="text" class="form-control" name="current_address_city" id="cur-add-town" placeholder="Town" required value="{{ $employee->current_address_city }}" disabled>
+                        <label for="cur-add-town" class="text-center">Town/City</label>
+                        @if ($errors->has('current_address_city'))
+                        <p class="text-danger">{{ $errors->first('current_address_city') }}</p>
+                        @endif
+                    </div>
+                    <div class="col-12 col-lg-4 g-3 form-floating">
+                        <input type="text" class="form-control" name="current_address_province" id="cur-add-prov" placeholder="Province" required value="{{ $employee->current_address_province }}" disabled>
+                        <label for="cur-add-prov" class="text-center">Province/Region</label>
+                        @if ($errors->has('current_address_province'))
+                        <p class="text-danger">{{ $errors->first('current_address_province') }}</p>
+                        @endif
+                    </div>
+                    <div class="col-12 col-lg-4 g-3 form-floating">
+                        <input type="text" class="form-control" name="current_address_postalcode" id="cur-add-postal" placeholder="Postal Code" required value="{{ $employee->current_address_postalcode }}" disabled>
+                        <label for="cur-add-postal" class="text-center">Postal Code</label>
+                        @if ($errors->has('current_address_postalcode'))
+                        <p class="text-danger">{{ $errors->first('current_address_postalcode') }}</p>
                         @endif
                     </div>
                 </div>
