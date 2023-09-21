@@ -117,7 +117,7 @@ class EmployeesRequest extends FormRequest
 
             ];
 
-            if ($this->input('passport_status') == 1) {
+            if ($this->input('passport_status') == config('constants.PASSPORT_STATUS_WITH_PASSPORT_VALUE')) {
                 // Required if with valid passport
                 $rules = array_merge($rules, [
                     'passport_number' => 'required|max:80',
@@ -127,14 +127,14 @@ class EmployeesRequest extends FormRequest
                     'date_of_issue' => 'required|date|regex:/^\d{4}-\d{2}-\d{2}$/|before_or_equal:today',
                     'passport_expiration_date' => 'required|date|regex:/^\d{4}-\d{2}-\d{2}$/|after:today',
                 ]);
-            } else if ($this->input('passport_status') == 2){
+            } else if ($this->input('passport_status') == config('constants.PASSPORT_STATUS_WITH_APPOINTMENT_VALUE')){
                 // Required field if no valid passport
                 $rules['date_of_appointment'] = 'required|date|regex:/^\d{4}-\d{2}-\d{2}$/|after_or_equal:today';
             }
-            else if($this->input('passport_status') == 3) {
+            else if($this->input('passport_status') == config('constants.PASSPORT_STATUS_WITHOUT_PASSPORT_VALUE')) {
                 $rules['no_appointment_reason'] = 'required|max:1024';
             }
-            else if($this->input('passport_status') == 4) {
+            else if($this->input('passport_status') == config('constants.PASSPORT_STATUS_WAITING_FOR_DELIVERY_VALUE')) {
                 $rules['date_of_delivery'] = 'required|date|regex:/^\d{4}-\d{2}-\d{2}$/|after_or_equal:today';
             }
 
