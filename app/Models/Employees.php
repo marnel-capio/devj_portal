@@ -140,6 +140,7 @@ class Employees extends Authenticatable
      */
     static function getPassportStatus($employee) {
 
+        // Determine the passport_status IF the passport_status from database is null/empty
         if($employee->passport_status == null || $employee->passport_status == "") {
             if($employee->passport_number   != null || 
             $employee->date_of_issue         != null || 
@@ -149,13 +150,16 @@ class Employees extends Authenticatable
             $employee->place_of_issue        != null)
             {
                 // If at least 1 field is not empty, then the passport exists.
-                $employee->passport_status = 1;
+                $employee->passport_status = config('constants.PASSPORT_STATUS_WITH_PASSPORT_VALUE');           // 1
     
             } else if($employee->date_of_appointment != null) {
-                $employee->passport_status = 2;
+                $employee->passport_status = config('constants.PASSPORT_STATUS_WITH_APPOINTMENT_VALUE');        // 2
+    
+            } else if($employee->date_of_delivery != null) {
+                $employee->passport_status = config('constants.PASSPORT_STATUS_WAITING_FOR_DELIVERY_VALUE');    // 4
     
             } else {
-                $employee->passport_status = 3;
+                $employee->passport_status = config('constants.PASSPORT_STATUS_WITHOUT_PASSPORT_VALUE');        // 3
     
             }
         }
@@ -164,13 +168,13 @@ class Employees extends Authenticatable
         // Initialize $today and $exp_date variables
         $exp_date = $today = Carbon::now();
 
-        if($employee->passport_status == 1){
+        if($employee->passport_status == config('constants.PASSPORT_STATUS_WITH_PASSPORT_VALUE')){
             $exp_date = new Carbon($employee['passport_expiration_date']);
         }
-        elseif($employee->passport_status == 2) {
+        elseif($employee->passport_status == config('constants.PASSPORT_STATUS_WITH_APPOINTMENT_VALUE')) {
             $exp_date = new Carbon($employee['date_of_appointment']);
         }
-        elseif($employee->passport_status == 4) {
+        elseif($employee->passport_status == config('constants.PASSPORT_STATUS_WAITING_FOR_DELIVERY_VALUE')) {
             $exp_date = new Carbon($employee['date_of_delivery']);
         }
 
@@ -194,7 +198,7 @@ class Employees extends Authenticatable
             $employee["duration_unit"] = $duration_days > 1 ?  "days" : "day";
 
             // If status is for appointment or delivery, set warning only if day 0 - 7 
-            $employee["passport_isWarning"] = (($employee->passport_status == 2 || $employee->passport_status == 4) && $duration_days > 6) ? false : true;
+            $employee["passport_isWarning"] = (($employee->passport_status == config('constants.PASSPORT_STATUS_WITH_APPOINTMENT_VALUE') || $employee->passport_status == config('constants.PASSPORT_STATUS_WAITING_FOR_DELIVERY_VALUE')) && $duration_days > 6) ? false : true;
 
             $employee['duration_days'] = $employee['duration'] + 1;
 
@@ -203,7 +207,7 @@ class Employees extends Authenticatable
             $employee["duration_unit"] = $duration_months == 1 ? "month" : "months";
 
             // If status is for appointment, do not set warning
-            $employee["passport_isWarning"] = ($employee->passport_status == 2) ? false : true;
+            $employee["passport_isWarning"] = ($employee->passport_status == config('constants.PASSPORT_STATUS_WITH_APPOINTMENT_VALUE')) ? false : true;
 
             // If duration is > 3 months from now, do not display alert
             $employee["passport_isAlertDisplayed"] = ($duration_months > 2 && !$employee["is_date_passed"]) ? false : true;
@@ -248,17 +252,17 @@ class Employees extends Authenticatable
     static function getPassportMessage($employee) {
         $passport_message = "null";
                 
-        if($employee['passport_status'] == 3)  {
+        if($employee['passport_status'] == config('constants.PASSPORT_STATUS_WITHOUT_PASSPORT_VALUE'))  {
             $passport_message = "Please consider setting a passport appointment as soon as possible.";
 
         }
         // For appointment, date is tomorrow onwards
-        elseif($employee['passport_status'] == 2 && !$employee['is_date_passed']){
+        elseif($employee['passport_status'] == config('constants.PASSPORT_STATUS_WITH_APPOINTMENT_VALUE') && !$employee['is_date_passed']){
             $passport_message = "Passport appointment is in " . (isset($employee['duration_days']) ? $employee['duration_days'] : $employee['duration']) . " " . $employee['duration_unit'];
 
         }
         // For appointment, date is now or passed already
-        elseif($employee['passport_status'] == 2 && $employee['is_date_passed']){
+        elseif($employee['passport_status'] == config('constants.PASSPORT_STATUS_WITH_APPOINTMENT_VALUE') && $employee['is_date_passed']){
             if($employee['duration'] == 0 && str_contains($employee['duration_unit'], "day")) {
                 $passport_message = "Passport appointment is today!";
             }
@@ -268,22 +272,22 @@ class Employees extends Authenticatable
 
         }
         // With passport, date is tomorrow onwards
-        elseif($employee['passport_status'] == 1 && !$employee['is_date_passed']) {
+        elseif($employee['passport_status'] == config('constants.PASSPORT_STATUS_WITH_PASSPORT_VALUE') && !$employee['is_date_passed']) {
             $passport_message = "Passport expires in " . (isset($employee['duration_days']) ? $employee['duration_days'] : $employee['duration']) . " " . $employee['duration_unit'];
 
         }
         // With passport, expired
-        elseif($employee['passport_status'] == 1 && $employee['is_date_passed']) {
+        elseif($employee['passport_status'] == config('constants.PASSPORT_STATUS_WITH_PASSPORT_VALUE') && $employee['is_date_passed']) {
             $passport_message = "Passport has expired!";
 
         }
         // For delivery, date is tomorrow onwards
-        elseif($employee['passport_status'] == 4 && !$employee['is_date_passed']){
+        elseif($employee['passport_status'] == config('constants.PASSPORT_STATUS_WAITING_FOR_DELIVERY_VALUE') && !$employee['is_date_passed']){
             $passport_message = "Passport delivery is in  " . (isset($employee['duration_days']) ? $employee['duration_days'] : $employee['duration']) . " " . $employee['duration_unit'];
 
         }
         // For delivery, date is passed
-        elseif($employee['passport_status'] == 4 && $employee['is_date_passed']){
+        elseif($employee['passport_status'] == config('constants.PASSPORT_STATUS_WAITING_FOR_DELIVERY_VALUE') && $employee['is_date_passed']){
             if($employee['duration'] == 0 && str_contains($employee['duration_unit'], "day")) {
                 $passport_message = "Passport delivery is today!";
             }

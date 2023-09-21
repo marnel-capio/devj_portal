@@ -174,19 +174,19 @@
                         Status: 
                     </div>
                     <div class="col-lg-11 col-12 text-start">
-                        <input class="passport_status btn-check" type="radio" name="passport_status" id="status-withPassport" value="1" {{ old('passport_status', $employee ? $employee->passport_status : '') == 1 ? "checked" : "" }}>
+                        <input class="passport_status btn-check" type="radio" name="passport_status" id="status-withPassport"       value="{{ config('constants.PASSPORT_STATUS_WITH_PASSPORT_VALUE')         }}" {{ old('passport_status', $employee ? $employee->passport_status : '') == config('constants.PASSPORT_STATUS_WITH_PASSPORT_VALUE')         ? "checked" : "" }}>
                         <label class="form-check-label passport-status btn btn-outline-primary" for="status-withPassport">
                             {{ config('constants.PASSPORT_STATUS_1_NAME') }}
                         </label>
-                        <input class="passport_status btn-check" type="radio" name="passport_status" id="status-waitingDelivery" value="4" {{ old('passport_status', $employee ? $employee->passport_status : '') == 4 ? "checked" : "" }}>
+                        <input class="passport_status btn-check" type="radio" name="passport_status" id="status-waitingDelivery"    value="{{ config('constants.PASSPORT_STATUS_WAITING_FOR_DELIVERY_VALUE')  }}" {{ old('passport_status', $employee ? $employee->passport_status : '') == config('constants.PASSPORT_STATUS_WAITING_FOR_DELIVERY_VALUE')  ? "checked" : "" }}>
                         <label class="form-check-label passport-status btn btn-outline-primary" for="status-waitingDelivery">
                             {{ config('constants.PASSPORT_STATUS_4_NAME') }}
                         </label>
-                        <input class="passport_status btn-check" type="radio" name="passport_status" id="status-withAppointment" value="2" {{ old('passport_status', $employee ? $employee->passport_status : '') == 2 ? "checked" : "" }}>
+                        <input class="passport_status btn-check" type="radio" name="passport_status" id="status-withAppointment"    value="{{ config('constants.PASSPORT_STATUS_WITH_APPOINTMENT_VALUE')      }}" {{ old('passport_status', $employee ? $employee->passport_status : '') == config('constants.PASSPORT_STATUS_WITH_APPOINTMENT_VALUE')      ? "checked" : "" }}>
                         <label class="form-check-label passport-status btn btn-outline-primary" for="status-withAppointment">
                             {{ config('constants.PASSPORT_STATUS_2_NAME') }}
                         </label>
-                        <input class="passport_status btn-check" type="radio" name="passport_status" id="status-withoutAppointment" value="3" {{ old('passport_status', $employee ? $employee->passport_status : '') == 3 ? "checked" : "" }}>
+                        <input class="passport_status btn-check" type="radio" name="passport_status" id="status-withoutAppointment" value="{{ config('constants.PASSPORT_STATUS_WITHOUT_PASSPORT_VALUE')      }}" {{ old('passport_status', $employee ? $employee->passport_status : '') == config('constants.PASSPORT_STATUS_WITHOUT_PASSPORT_VALUE')      ? "checked" : "" }}>
                         <label class="form-check-label passport-status btn btn-outline-primary" for="status-withoutAppointment">
                             {{ config('constants.PASSPORT_STATUS_3_NAME') }}
                         </label>
@@ -215,9 +215,9 @@
                         <div class="col-12 col-md-4 g-3 form-floating">
                         <select name="passport_type" id="passport_type" class="form-select form-control">
                                 <option value="">Select passport type</option>
-                                <option {{ old('passport_type', $employee->passport_type) == 1 ? "selected" : "" }} value="1">{{ config('constants.PASSPORT_TYPE_1_NAME') }}</option>
-                                <option {{ old('passport_type', $employee->passport_type) == 2 ? "selected" : "" }} value="2">{{ config('constants.PASSPORT_TYPE_2_NAME') }}</option>
-                                <option {{ old('passport_type', $employee->passport_type) == 3 ? "selected" : "" }} value="3">{{ config('constants.PASSPORT_TYPE_3_NAME') }}</option>
+                                <option {{ old('passport_type', $employee->passport_type) == config('constants.PASSPORT_TYPE_ORDINARY_VALUE')     ? "selected" : "" }} value="{{ config('constants.PASSPORT_TYPE_ORDINARY_VALUE')   }}">{{ config('constants.PASSPORT_TYPE_1_NAME') }}</option>
+                                <option {{ old('passport_type', $employee->passport_type) == config('constants.PASSPORT_TYPE_OFFICIAL_VALUE')     ? "selected" : "" }} value="{{ config('constants.PASSPORT_TYPE_OFFICIAL_VALUE')   }}">{{ config('constants.PASSPORT_TYPE_2_NAME') }}</option>
+                                <option {{ old('passport_type', $employee->passport_type) == config('constants.PASSPORT_TYPE_DIPLOMATIC_VALUE')   ? "selected" : "" }} value="{{ config('constants.PASSPORT_TYPE_DIPLOMATIC_VALUE') }}">{{ config('constants.PASSPORT_TYPE_3_NAME') }}</option>
                             </select>
                             <label  class="text-center" for="passport_type">Passport Type</label>
                             @if ($errors->has('passport_type'))

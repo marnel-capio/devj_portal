@@ -699,11 +699,11 @@ class EmployeesController extends Controller
     private function validatePassportStatusandInputs($employee) {
 
         // Accept fields only based on selected passport_status
-        if($employee['passport_status'] == 1) {
+        if($employee['passport_status'] == config('constants.PASSPORT_STATUS_WITH_PASSPORT_VALUE')) {
             $employee['date_of_appointment'] = null;        // 2
             $employee['no_appointment_reason'] = null;      // 3
             $employee['date_of_delivery'] = null;           // 4
-        } else if($employee['passport_status'] == 2) {
+        } else if($employee['passport_status'] == config('constants.PASSPORT_STATUS_WITH_APPOINTMENT_VALUE')) {
             $employee['passport_number'] = null;            // 1
             $employee['date_of_issue'] = null;              // 1
             $employee['issuing_authority'] = null;          // 1
@@ -712,7 +712,7 @@ class EmployeesController extends Controller
             $employee['place_of_issue'] = null;             // 1
             $employee['no_appointment_reason'] = null;      // 3
             $employee['date_of_delivery'] = null;           // 4
-        } else if($employee['passport_status'] == 3) {
+        } else if($employee['passport_status'] == config('constants.PASSPORT_STATUS_WITHOUT_PASSPORT_VALUE')) {
             $employee['passport_number'] = null;            // 1
             $employee['date_of_issue'] = null;              // 1
             $employee['issuing_authority'] = null;          // 1
@@ -721,7 +721,7 @@ class EmployeesController extends Controller
             $employee['place_of_issue'] = null;             // 1
             $employee['date_of_appointment'] = null;        // 2
             $employee['date_of_delivery'] = null;           // 4
-        } else if($employee['passport_status'] == 4) {
+        } else if($employee['passport_status'] == config('constants.PASSPORT_STATUS_WAITING_FOR_DELIVERY_VALUE')) {
             $employee['passport_number'] = null;            // 1
             $employee['date_of_issue'] = null;              // 1
             $employee['issuing_authority'] = null;          // 1

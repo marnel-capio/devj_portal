@@ -48,12 +48,21 @@ return [
     'PASSPORT_TYPE_1_NAME' => 'Ordinary',
     'PASSPORT_TYPE_2_NAME' => 'Official',
     'PASSPORT_TYPE_3_NAME' => 'Diplomatic',
+    
+    'PASSPORT_TYPE_ORDINARY_VALUE' => 1,
+    'PASSPORT_TYPE_OFFICIAL_VALUE' => 2,
+    'PASSPORT_TYPE_DIPLOMATIC_VALUE' => 3,
 
     // Employee table - passport status
     'PASSPORT_STATUS_1_NAME' => 'With Passport',
     'PASSPORT_STATUS_2_NAME' => 'With Appointment',
     'PASSPORT_STATUS_3_NAME' => 'Without Passport',
     'PASSPORT_STATUS_4_NAME' => 'Waiting for Delivery',
+
+    'PASSPORT_STATUS_WITH_PASSPORT_VALUE' => 1,
+    'PASSPORT_STATUS_WITH_APPOINTMENT_VALUE' => 2,
+    'PASSPORT_STATUS_WITHOUT_PASSPORT_VALUE' => 3,
+    'PASSPORT_STATUS_WAITING_FOR_DELIVERY_VALUE' => 4,
 
     //Employee - BU List - for BU transfer - Dev J is excluded
     'BU_LIST' => [
