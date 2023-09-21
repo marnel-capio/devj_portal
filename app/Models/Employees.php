@@ -227,6 +227,11 @@ class Employees extends Authenticatable
             $employee["passport_isWarning"] = true;
         }
 
+        // check if user is devj-portal do not display passport warning
+        if ($employee['email'] == config('constants.SYSTEM_EMAIL')) {
+            $employee["passport_isAlertDisplayed"] = false;
+        }
+
         $employee["passport_message"] = Employees::getPassportMessage($employee);
 
         return $employee;

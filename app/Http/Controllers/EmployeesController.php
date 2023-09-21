@@ -744,7 +744,7 @@ class EmployeesController extends Controller
     private function validateAddressInputs($employee) {
 
         // Accept fields only based on selected passport_status
-        if($employee['copy_permanent_address']) {
+        if(isset($employee['copy_permanent_address'])) {
             $employee['current_address_street'] = $employee['permanent_address_street'];
             $employee['current_address_city'] = $employee['permanent_address_city'];
             $employee['current_address_province'] = $employee['permanent_address_province'];

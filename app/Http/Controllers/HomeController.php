@@ -31,7 +31,6 @@ class HomeController extends Controller
         $laptopLink_request = EmployeesLaptops::getLinkLaptopRequest();
         $projetLink_request = EmployeesProjects::getProjectEmployeeLinkRequest();
 
-\Log::debug($employeeDetails);
         $softwareUpdateRejected = array_filter($software_request, function($data) {
             return ($data['prev_updated_by'] != "" && $data['approved_status'] == config('constants.APPROVED_STATUS_APPROVED'));
         });
