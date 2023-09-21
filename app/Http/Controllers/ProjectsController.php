@@ -100,7 +100,7 @@ class ProjectsController extends Controller
             //check if current user is already a member of the project
             $employeeProjectData = EmployeesProjects::where('employee_id', Auth::user()->id)
                                                         ->where('project_id', $id)
-                                                        ->where('approved_status', "!=",1)
+                                                        ->where('approved_status', "!=",config('constants.APPROVED_STATUS_REJECTED'))
                                                         ->whereRaw('(end_date IS NULL or end_date > CURDATE())')
                                                         ->get()
                                                         ->toArray();

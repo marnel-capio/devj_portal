@@ -765,8 +765,8 @@ class EmployeesController extends Controller
         $employee = Employees::select('id', 'email','first_name')
                     ->where('active_status',1)
                     ->where(function($query) {
-                        $query->where('approved_status', 2)
-                            ->orWhere('approved_status', 4);
+                        $query->where('approved_status', config('constants.APPROVED_STATUS_APPROVED'))
+                            ->orWhere('approved_status', config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE'));
                     })
                     ->where('email',"!=",config('constants.SYSTEM_EMAIL'))->get();
 

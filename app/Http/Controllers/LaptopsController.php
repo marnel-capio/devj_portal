@@ -296,7 +296,7 @@ class LaptopsController extends Controller
      */
     public function request($id){
         $laptopDetails = Laptops::where('id', $id)
-            ->whereIn('approved_status', [3,4])
+            ->whereIn('approved_status', [config('constants.APPROVED_STATUS_PENDING'),config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
             ->first();
 
         abort_if(empty($laptopDetails), 404);
