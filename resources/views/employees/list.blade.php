@@ -59,21 +59,17 @@
 				<label class="search-status-rdb-label  form-check-label" for="passportStatus-all">
 				    All
 				</label>
-				&nbsp;&nbsp;
-				<input class="search-status-rdb-input" type="radio" name="passportStatus" id="passportStatus-withPassport" value="2" >
-				<label class="search-status-rdb-label form-check-label" for="passportStatus-withPassport">
-					With Passport
-				</label>
-				&nbsp;&nbsp;
-				<input class="search-status-rdb-input" type="radio" name="passportStatus" id="passportStatus-withAppointment" value="3" >
-				<label class="search-status-rdb-label form-check-label" for="passportStatus-withAppointment">
-					With scheduled appointment
-				</label>
-				&nbsp;&nbsp;
-				<input class="search-status-rdb-input" type="radio" name="passportStatus" id="passportStatus-withoutAppointment" value="4" >
-				<label class="search-status-rdb-label form-check-label" for="passportStatus-withoutAppointment">
-					Without scheduled appointment
-				</label>
+				@php
+					$num = 2;
+				@endphp
+				@foreach (config('constants.PASSPORT_STATUS_LIST') as $name => $details)
+
+                  	&nbsp;&nbsp;
+					<input class="search-status-rdb-input" type="radio" name="passportStatus" id="passportStatus-{{$name}}" value="{{$num++}}" >
+					<label class="search-status-rdb-label form-check-label" for="passportStatus-{{$name}}">
+						{{  $details['name'] }}
+					</label>
+                @endforeach
 			</div>
 		</div>
 		@endif

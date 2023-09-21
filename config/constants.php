@@ -64,6 +64,25 @@ return [
     'PASSPORT_STATUS_WITHOUT_PASSPORT_VALUE' => 3,
     'PASSPORT_STATUS_WAITING_FOR_DELIVERY_VALUE' => 4,
 
+    'PASSPORT_STATUS_LIST' => [
+        'withPassport' => [
+                            "name" => 'With Passport',
+                            "val" => 1,
+                        ],
+        'waitingDelivery' => [
+                            "name" => 'Waiting for Delivery',
+                            "val" => 4,
+                        ],
+        'withAppointment' => [
+                            "name" => 'With Appointment',
+                            "val" => 2,
+                        ],
+        'withoutPassport' => [
+                            "name" => 'Without Appointment',
+                            "val" => 3,
+                        ],
+    ],
+
     //Employee - BU List - for BU transfer - Dev J is excluded
     'BU_LIST' => [
         1  => 'Dev A',

@@ -174,22 +174,12 @@
                         Status: 
                     </div>
                     <div class="col-lg-11 col-12 text-start">
-                        <input class="passport_status btn-check" type="radio" name="passport_status" id="status-withPassport"       value="{{ config('constants.PASSPORT_STATUS_WITH_PASSPORT_VALUE')         }}" {{ old('passport_status', $employee ? $employee->passport_status : '') == config('constants.PASSPORT_STATUS_WITH_PASSPORT_VALUE')         ? "checked" : "" }}>
-                        <label class="form-check-label passport-status btn btn-outline-primary" for="status-withPassport">
-                            {{ config('constants.PASSPORT_STATUS_1_NAME') }}
-                        </label>
-                        <input class="passport_status btn-check" type="radio" name="passport_status" id="status-waitingDelivery"    value="{{ config('constants.PASSPORT_STATUS_WAITING_FOR_DELIVERY_VALUE')  }}" {{ old('passport_status', $employee ? $employee->passport_status : '') == config('constants.PASSPORT_STATUS_WAITING_FOR_DELIVERY_VALUE')  ? "checked" : "" }}>
-                        <label class="form-check-label passport-status btn btn-outline-primary" for="status-waitingDelivery">
-                            {{ config('constants.PASSPORT_STATUS_4_NAME') }}
-                        </label>
-                        <input class="passport_status btn-check" type="radio" name="passport_status" id="status-withAppointment"    value="{{ config('constants.PASSPORT_STATUS_WITH_APPOINTMENT_VALUE')      }}" {{ old('passport_status', $employee ? $employee->passport_status : '') == config('constants.PASSPORT_STATUS_WITH_APPOINTMENT_VALUE')      ? "checked" : "" }}>
-                        <label class="form-check-label passport-status btn btn-outline-primary" for="status-withAppointment">
-                            {{ config('constants.PASSPORT_STATUS_2_NAME') }}
-                        </label>
-                        <input class="passport_status btn-check" type="radio" name="passport_status" id="status-withoutAppointment" value="{{ config('constants.PASSPORT_STATUS_WITHOUT_PASSPORT_VALUE')      }}" {{ old('passport_status', $employee ? $employee->passport_status : '') == config('constants.PASSPORT_STATUS_WITHOUT_PASSPORT_VALUE')      ? "checked" : "" }}>
-                        <label class="form-check-label passport-status btn btn-outline-primary" for="status-withoutAppointment">
-                            {{ config('constants.PASSPORT_STATUS_3_NAME') }}
-                        </label>
+                        @foreach (config('constants.PASSPORT_STATUS_LIST') as $name => $details)
+                             <input class="passport_status btn-check" type="radio" name="passport_status" id="status-{{$name}}" value="{{$details['val']}}" {{ old('passport_status', $employee ? $employee->passport_status : $details['val'] ) ==  $details['val']  ? "checked" : "" }}>
+                                <label class="form-check-label passport-status btn btn-outline-primary" for="status-{{$name}}">
+                                    {{  $details['name'] }}
+                                </label>
+                        @endforeach
                     </div>
                 </div>
 

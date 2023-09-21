@@ -308,8 +308,10 @@ class ApiController extends Controller
                                         ->whereNotNull('passport_expiration_date')
                                         ->whereNotNull('place_of_issue');
             } else if ($searchFilter['passport'] == 3) {
+                $employee = $employee->whereNotNull('date_of_delivery');
+            }else if ($searchFilter['passport'] == 4) {
                 $employee = $employee->whereNotNull('date_of_appointment');
-            } else if ($searchFilter['passport'] == 4) {
+            } else if ($searchFilter['passport'] == 5) {
                 $employee = $employee->whereNotNull('no_appointment_reason');
             }
         }
