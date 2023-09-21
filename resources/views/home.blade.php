@@ -5,9 +5,9 @@
 <div class="container container-req-table">
 	<div class="row-req-table row">
 		<div class="container">
-			<div class="row dash-head ">
+			<div class="row dash-head">
 				{{-- Contains Urgent / Latest notifications --}}
-				<div class="group-category-home dash-notification-container col col-12 col-sm-12 col-lg-7 py-2 px-4 rounded">
+				<div class="group-category-home dash-notification-container col col-12 col-lg-7 py-2 px-4 mb-3">
 					<div class="row mb-3">
 						<div class="col col-12  col-md-12 col-lg-7">
 							<h3> Welcome, {{ auth()->user()->first_name }}</h3>
@@ -31,7 +31,7 @@
 								{{-- Set the Passport notification content --}}
 								{{ $user['passport_message'] }}
 
-								@if($user['passport_status'] == 1 && $user['is_date_passed']) 
+								@if($user['passport_status'] == config('constants.PASSPORT_STATUS_WITH_PASSPORT_VALUE') && $user['is_date_passed']) 
 								<br>
 								Please consider renewing your Passport
 								@endif
@@ -103,11 +103,11 @@
 					</div>
 				</div>
 				{{-- Request Summary --}}
-				<div class="group-category-home dash-request-container col col-12 col-sm-12 col-lg-4 py-2 px-4 rounded">
+				<div class="group-category-home dash-request-container col col-12 col-lg-5 py-2 px-4  mb-3">
 					<h4 class="mt-1">Requests</h4>
 					<div class="container">
 						
-						@if(auth()->user()->roles == 2)
+						@if(auth()->user()->roles == config('constants.MANAGER_ROLE_VALUE') )
 						<div class="dash-summary-row row mb-1">
 							<div class="col col-md-8 col-sm-8">
 								<a href="#div-employee-request"><span class="dash-summary-items">Employee Request</span></a>
@@ -163,7 +163,7 @@
 	</div>
 	<button id="btnTop" title="Go to top"><i class="bi bi-arrow-up"></i></button> 
 
-	@if(auth()->user()->roles == 2)
+	@if(auth()->user()->roles == config('constants.MANAGER_ROLE_VALUE'))
 	<div id="div-employee-request" class="row-req-table row group-category-home p-2">
 		<div class="col table-avoid-overflow">
 		<h3 class="mb-4"> Employee Request </h3>
@@ -185,32 +185,32 @@
 						<td>{{$user['last_name']}}, {{$user['first_name']}}</td>
 						<td>{{$user['email']}}</td>
 						<td>
-						@if ($user['position'] == 1) 
+						@if ($user['position']      ==  config('constants.POSITION_JR_RESEARCH_DEVELOPMENT_VALUE')) 
 							{{config('constants.POSITION_1_NAME')}}
-						@elseif ($user['position'] == 2) 
+						@elseif ($user['position']  ==  config('constants.POSITION_ASSISTANT_RESEARCH_DEVELOPMENT_VALUE')) 
 							{{config('constants.POSITION_2_NAME')}}
-						@elseif ($user['position'] == 3) 
+						@elseif ($user['position']  ==  config('constants.POSITION_SR_ASSISTANT_RESEARCH_DEVELOPMENT_VALUE')) 
 							{{config('constants.POSITION_3_NAME')}}
-						@elseif ($user['position'] == 4) 
+						@elseif ($user['position']  ==  config('constants.POSITION_ASSOC_RESEARCH_DEVELOPMENT_VALUE')) 
 							{{config('constants.POSITION_4_NAME')}}
-						@elseif ($user['position'] == 5) 
+						@elseif ($user['position']  ==  config('constants.POSITION_SR_ASSOC_RESEARCH_DEVELOPMENT_VALUE')) 
 							{{config('constants.POSITION_5_NAME')}}
-						@elseif ($user['position'] == 6) 
+						@elseif ($user['position']  ==  config('constants.POSITION_SUPERVISOR_VALUE')) 
 							{{config('constants.POSITION_6_NAME')}}
-						@elseif ($user['position'] == 7) 
+						@elseif ($user['position']  ==  config('constants.POSITION_ADVISER_VALUE')) 
 							{{config('constants.POSITION_7_NAME')}}
-						@elseif ($user['position'] == 8) 
+						@elseif ($user['position']  ==  config('constants.POSITION_ASSSITANT_MANAGER_VALUE')) 
 							{{config('constants.POSITION_8_NAME')}}
-						@elseif ($user['position'] == 9) 
+						@elseif ($user['position']  ==  config('constants.POSITION_MANAGER_VALUE')) 
 							{{config('constants.POSITION_9_NAME')}}
 						@else
 							-
 						@endif
 						</td>
 		                <td>
-		                	@if ($user['approved_status'] == 1) 
+		                	@if ($user['approved_status'] == config('constants.APPROVED_STATUS_REJECTED')) 
 		                		<p style="color: red">Rejected</p>
-		                	@elseif ($user['approved_status'] == 3 || $user['approved_status'] == 4) 
+		                	@elseif ($user['approved_status'] == config('constants.APPROVED_STATUS_PENDING') || $user['approved_status'] == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')) 
 		                		<p style="color: green">Pending</p>
 		                	@endif
 		                </td>
@@ -218,7 +218,7 @@
 		                	{{ $user['reasons'] }}
 		                </td>
 						<td>	
-							@if ($user['approved_status'] == 3 || $user['approved_status'] == 4) 
+							@if ($user['approved_status'] == config('constants.APPROVED_STATUS_PENDING') || $user['approved_status'] == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')) 
 		                		<a href="{{ url("/employees/{$user['id']}/request") }}" class="action-view" alt="View"><i class="bi bi-eye"></i>View</a>
 		                	@endif
 						</td>
@@ -263,9 +263,9 @@
 							<td>{{ $request['laptop_model'] }}</td>
 							<td>{{ $request['status'] }}</td>
 			                <td>
-			                	@if ($request['approved_status'] == 1 || !empty($request['reasons'])) 
+			                	@if ($request['approved_status'] == config('constants.APPROVED_STATUS_REJECTED')  || !empty($request['reasons'])) 
 			                		<p style="color: red">Rejected</p>
-			                	@elseif ($request['approved_status'] == 3 || $request['approved_status'] == 4) 
+			                	@elseif ($request['approved_status'] == config('constants.APPROVED_STATUS_PENDING') || $request['approved_status'] == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')) 
 			                		<p style="color: green">Pending</p>
 			                	@endif
 			                </td>
@@ -273,9 +273,9 @@
 			                	{{ $request['reasons'] }}
 			                </td>
 							<td>
-								@if ($request['approved_status'] == 1 && $user->id == $request['prev_updated_by']) 
+								@if ($request['approved_status'] == config('constants.APPROVED_STATUS_REJECTED')  && $user->id == $request['prev_updated_by']) 
 			                		<a href="{{ route('laptops.create', [$request['reject_code']]) }}" class="action-view"><i class="bi bi-eye"></i>View</a>
-			                	@elseif ($request['approved_status'] == 3 || $request['approved_status'] == 4) 
+			                	@elseif ($request['approved_status'] == config('constants.APPROVED_STATUS_PENDING') || $request['approved_status'] == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')) 
 			                		<a href="{{ route('laptops.request', ['id' => $request['id']]) }}" class="action-view"><i class="bi bi-eye"></i>View</a>
 			                	@endif
 							</td>
@@ -317,9 +317,9 @@
 							<td>{{ $request['laptop_make'] }}</td>
 							<td>{{ $request['laptop_model'] }}</td>
 			                <td>
-			                	@if ($request['approved_status'] == 1 || !empty($request['reasons'])) 
+			                	@if ($request['approved_status'] == config('constants.APPROVED_STATUS_REJECTED')  || !empty($request['reasons'])) 
 			                		<p style="color: red">Rejected</p>
-			                	@elseif ($request['approved_status'] == 3 || $request['approved_status'] == 4) 
+			                	@elseif ($request['approved_status'] == config('constants.APPROVED_STATUS_PENDING') || $request['approved_status'] == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')) 
 			                		<p style="color: green">Pending</p>
 			                	@endif
 			                </td>
@@ -327,7 +327,7 @@
 			                	{{ $request['reasons'] }}
 			                </td>
 							<td>
-								@if ($request['approved_status'] == 3 || $request['approved_status'] == 4) 
+								@if ($request['approved_status'] == config('constants.APPROVED_STATUS_PENDING') || $request['approved_status'] == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')) 
 								<a href="{{ route('laptops.details', ['id' => $request['laptop_id']]) ."#link-req-tbl" }}" class="action-view"><i class="bi bi-eye"></i>View</a>
 								@endif
 							</td>
@@ -367,9 +367,9 @@
 							<td>{{ $software['type'] }}</td>
 							<td>{{ $software['remarks'] }}</td>
 							<td>
-			                	@if ($software['approved_status'] == 1 || !empty($software['reasons'])) 
+			                	@if ($software['approved_status'] == config('constants.APPROVED_STATUS_REJECTED')  || !empty($software['reasons'])) 
 			                		<p style="color: red">Rejected</p>
-			                	@elseif ($software['approved_status'] == 3 || $software['approved_status'] == 4) 
+			                	@elseif ($software['approved_status'] == config('constants.APPROVED_STATUS_PENDING') || $software['approved_status'] == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')) 
 			                		<p style="color: green">Pending</p>
 			                	@endif
 			                </td>
@@ -377,9 +377,9 @@
 			                	{{ $software['reasons'] }}
 			                </td>
 							<td>
-								@if ($software['approved_status'] == 1 && $user->id == $software['prev_updated_by']) 
+								@if ($software['approved_status'] == config('constants.APPROVED_STATUS_REJECTED')  && $user->id == $software['prev_updated_by']) 
 			                		<a href="{{ route('softwares.create', [$software['reject_code']]) }}" class="action-view"><i class="bi bi-eye"></i>View</a>
-			                	@elseif ($software['approved_status'] == 3 || $software['approved_status'] == 4) 
+			                	@elseif ($software['approved_status'] == config('constants.APPROVED_STATUS_PENDING') || $software['approved_status'] == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')) 
 			                		<a href="{{ route('softwares.request', ['id' => $software['id']]) }}" class="action-view"><i class="bi bi-eye"></i>View</a>
 			                	@endif
 								
@@ -427,9 +427,9 @@
 							@endif
 
 							<td>
-			                	@if ($projectlink['approved_status'] == 1 || !empty($projectlink['reasons'])) 
+			                	@if ($projectlink['approved_status'] == config('constants.APPROVED_STATUS_REJECTED')  || !empty($projectlink['reasons'])) 
 			                		<p style="color: red">Rejected</p>
-			                	@elseif ($projectlink['approved_status'] == 3 || $projectlink['approved_status'] == 4) 
+			                	@elseif ($projectlink['approved_status'] == config('constants.APPROVED_STATUS_PENDING') || $projectlink['approved_status'] == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')) 
 			                		<p style="color: green">Pending</p>
 			                	@endif
 			                </td>
@@ -437,7 +437,7 @@
 			                	{{ $projectlink['reasons'] }}
 			                </td>
 							<td>
-								@if ($projectlink['approved_status'] == 3 || $projectlink['approved_status'] == 4) 
+								@if ($projectlink['approved_status'] == config('constants.APPROVED_STATUS_PENDING') || $projectlink['approved_status'] == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')) 
 
 									<a href="{{ route('projects.details', ['id' => $projectlink['project_id']]) ."#link_request_tbl" }}" class="action-view"><i class="bi bi-eye"></i>View</a>
 								@endif

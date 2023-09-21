@@ -289,8 +289,8 @@
                 <div id="waitingDelivery" class="d-none">
                     <div class="row mb-2 ps-3 pe-3">
                         <div class="col-6 g-3 form-floating">
-                            <input type="date" class="form-control" name="date_of_delivery" id="date_of_delivery" placeholder="Date of delivery" value="{{ old('date_of_delivery', $employee->date_of_delivery) }}" pattern="\d{4}-\d{2}-\d{2}" >
-                            <label  class="text-center" for="date_of_delivery">Date of delivery</label>
+                            <input type="date" class="form-control" name="date_of_delivery" id="date_of_delivery" placeholder="Expected Date of Delivery" value="{{ old('date_of_delivery', $employee->date_of_delivery) }}" pattern="\d{4}-\d{2}-\d{2}" >
+                            <label  class="text-center" for="date_of_delivery">Expected Date of Delivery</label>
                             @if ($errors->has('date_of_delivery'))
                             <p class="text-danger">{{ $errors->first('date_of_delivery') }}</p>
                             @endif
