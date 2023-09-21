@@ -677,7 +677,7 @@ class EmployeesController extends Controller
     private function getEmployee() {
         $query = Employees::whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
         // do not display admin user
-        $query->whereNot('email', 'devj-portal@awsys-i.com');
+        $query->whereNot('email', config('constants.SYSTEM_EMAIL'));
         
         if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE')){
             $query->where('active_status', 1);
@@ -768,7 +768,7 @@ class EmployeesController extends Controller
                         $query->where('approved_status', 2)
                             ->orWhere('approved_status', 4);
                     })
-                    ->where('email',"!=",'devj-portal@awsys-i.com')->get();
+                    ->where('email',"!=",config('constants.SYSTEM_EMAIL'))->get();
 
         foreach ($employee as $key => $detail) {
             $email = $detail['email'];

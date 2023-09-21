@@ -282,7 +282,7 @@ class ApiController extends Controller
             'status' => $request->get('status'),
             'passport' => $request->get('passport'),
         ];
-        $employee = Employees::whereIn('approved_status', [2,4])->whereNot('email', 'devj-portal@awsys-i.com');
+        $employee = Employees::whereIn('approved_status', [2,4])->whereNot('email', config('constants.SYSTEM_EMAIL'));
                     
        // get employees
         if (!empty($searchFilter['keyword'])) {
