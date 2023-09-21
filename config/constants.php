@@ -195,4 +195,7 @@ return [
     'PROJECT_STATUS_ONGOING_TEXT' => 'On-Going',
     'PROJECT_STATUS_FINISH_TEXT' => 'Finished',
 
+
+    'SYSTEM_EMAIL' => 'devj-portal@awsys-i.com',
+
 ];
