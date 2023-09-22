@@ -42,8 +42,6 @@
 							</div>
 						@endif
 
-						<i>{{ isset($user['passport_expiration_date']) ? "{Expiration: " : ""}}{{ isset($user['date_of_appointment']) ? "{Appointment: " : ""}} {{isset($user['passport_expiration_date']) ? $user['passport_expiration_date']."}" : ""}} {{isset($user['date_of_appointment']) ? $user['date_of_appointment']."}" : ""}}</i>
-
 						@if(isset($employee_details)  && !empty($employee_details['reasons']))
 							<div class="alert alert-danger" role="alert">
 								Your update in account details has been rejected. <a href="{{ route('employees.clearRejectedUpdate') }}">Clear</a> the rejected data. </br>

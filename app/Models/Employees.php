@@ -129,9 +129,7 @@ class Employees extends Authenticatable
                 ->get()
                 ->toArray();
     }
-
     
-
     /**
      * Get the passport status based on existing passport data
      *
@@ -164,9 +162,21 @@ class Employees extends Authenticatable
             }
         }
 
+        $employee = Employees::getPassportDuration($employee);
+
+        $employee["passport_message"] = Employees::getPassportMessage($employee);
+        return $employee;
+    }
+
+    /**
+     * Get the passport duration based on existing passport data
+     *
+     * @param [type] $employee
+     * @return string
+     */
+    static function getPassportDuration($employee) {
         
         // Initialize $today and $exp_date variables
-
         $exp_date = $today = now()->startOfDay();
 
         if($employee->passport_status == config('constants.PASSPORT_STATUS_WITH_PASSPORT_VALUE')){
@@ -190,9 +200,7 @@ class Employees extends Authenticatable
         // Determine if Passport alert is to be displayed
         $employee["passport_isAlertDisplayed"] = true;
 
-
         $employee["passport_duration_string"];
-
 
         $isYearNotZero = $duration->y != 0;
         $isMonthNotZero = $duration->m != 0;
@@ -212,16 +220,12 @@ class Employees extends Authenticatable
             (!($isYearNotZero && $isMonthNotZero) ))
         ){
             $employee["passport_duration_string"] .= ($employee["passport_duration_string"] != "" ? " and " : "");
-            $employee["passport_duration_string"] .= ($duration->d + 1) . (($duration->d + 1 == 1) ? " day " : " days ");
+            $employee["passport_duration_string"] .= ($duration->d) . (($duration->d == 1) ? " day " : " days ");
         }
-
         
         if($today->equalTo($exp_date)) {
             $employee["passport_duration_string"] = "today";
         }
-
-
-        
         
         // Determine the time difference for duration
         
@@ -267,12 +271,10 @@ class Employees extends Authenticatable
             $employee["passport_isAlertDisplayed"] = false;
         }
 
-        $employee["passport_message"] = Employees::getPassportMessage($employee);
+        $employee["passport_duration_string"] = ($employee["passport_duration_string"] != "" ? $employee["passport_duration_string"] : "null");
+
         return $employee;
     }
-
-    
-
 
     /**
      * Get the passport status based on existing passport data
@@ -283,51 +285,57 @@ class Employees extends Authenticatable
     static function getPassportMessage($employee) {
         $passport_message = "null";
                 
+        // ----------------------------- No Appointment ---------------------------- //
         if($employee['passport_status'] == config('constants.PASSPORT_STATUS_WITHOUT_PASSPORT_VALUE'))  {
             $passport_message = "Please consider setting a passport appointment as soon as possible.";
-
         }
-        // For appointment, date is tomorrow onwards
+
+        // ----------------------------- With passport ----------------------------- //
+        // Date is today onwards
+        elseif($employee['passport_status'] == config('constants.PASSPORT_STATUS_WITH_PASSPORT_VALUE') && !$employee['is_date_passed']) {
+            if(str_contains($employee['passport_duration_string'], "today")) {
+                $passport_message = "Passport expires today!";
+            }
+            else {
+                $passport_message = "Passport expires in " . $employee['passport_duration_string'];
+            }
+        }
+        // Date < today (Expired)
+        elseif($employee['passport_status'] == config('constants.PASSPORT_STATUS_WITH_PASSPORT_VALUE') && $employee['is_date_passed']) {
+            $passport_message = "Passport has expired!";
+        }
+
+        // ---------------------------- For Appointment ---------------------------- //
+        // Date is today onwards
         elseif($employee['passport_status'] == config('constants.PASSPORT_STATUS_WITH_APPOINTMENT_VALUE') && !$employee['is_date_passed']){
-            $passport_message = "Passport appointment is in " . $employee['passport_duration_string'];
-
-        }
-        // For appointment, date is now or passed already
-        elseif($employee['passport_status'] == config('constants.PASSPORT_STATUS_WITH_APPOINTMENT_VALUE') && $employee['is_date_passed']){
             if(str_contains($employee['passport_duration_string'], "today")) {
                 $passport_message = "Passport appointment is today!";
             }
             else {
-                $passport_message = "Passport appointment was " . $employee['passport_duration_string'] . " ago!";
+                $passport_message = "Passport appointment is in " . $employee['passport_duration_string'];
             }
-
         }
-        // With passport, date is tomorrow onwards
-        elseif($employee['passport_status'] == config('constants.PASSPORT_STATUS_WITH_PASSPORT_VALUE') && !$employee['is_date_passed']) {
-            $passport_message = "Passport expires in " . $employee['passport_duration_string'];
-
+        // Date < today
+        elseif($employee['passport_status'] == config('constants.PASSPORT_STATUS_WITH_APPOINTMENT_VALUE') && $employee['is_date_passed']){
+            $passport_message = "Passport appointment was " . $employee['passport_duration_string'] . " ago!";
         }
-        // With passport, expired
-        elseif($employee['passport_status'] == config('constants.PASSPORT_STATUS_WITH_PASSPORT_VALUE') && $employee['is_date_passed']) {
-            $passport_message = "Passport has expired!";
 
-        }
-        // For delivery, date is tomorrow onwards
+        // ------------------------------ For Delivery ----------------------------- //
+        // Date is today onwards
         elseif($employee['passport_status'] == config('constants.PASSPORT_STATUS_WAITING_FOR_DELIVERY_VALUE') && !$employee['is_date_passed']){
-            $passport_message = "Passport delivery is in  " . $employee['passport_duration_string'];
-
-        }
-        // For delivery, date is passed
-        elseif($employee['passport_status'] == config('constants.PASSPORT_STATUS_WAITING_FOR_DELIVERY_VALUE') && $employee['is_date_passed']){
             if(str_contains($employee['passport_duration_string'], "today")) {
                 $passport_message = "Passport delivery is today!";
             }
             else {
-                $passport_message = "Passport delivery was " . $employee['passport_duration_string'] . " ago!";
+                $passport_message = "Passport delivery is in  " . $employee['passport_duration_string'];
             }
-
         }
-        // $passport_message = $employee["duration_diffForHumans"];
+        // Date < today
+        elseif($employee['passport_status'] == config('constants.PASSPORT_STATUS_WAITING_FOR_DELIVERY_VALUE') && $employee['is_date_passed']){
+            $passport_message = "Passport delivery was " . $employee['passport_duration_string'] . " ago!";
+        }
+        
+
         return $passport_message;
     }
 
