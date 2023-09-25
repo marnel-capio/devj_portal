@@ -353,8 +353,25 @@ $(document).ready(function () {
 				});
 			}
 			$('#lp-submit-btn').prop('disabled', false);
-		}).fail(function(){
-			console.log('error');
+		}).fail(function (data, exception) {
+			var msg = '';
+			if (data.status === 0) {
+				msg = 'Not connected.\n Verify Network.';
+			} else if (data.status == 404) {
+				msg = 'Requested page not found. [404]';
+			} else if (data.status == 500) {
+				msg = 'Internal Server Error [500].';
+			} else if (exception === 'parsererror') {
+				msg = 'Requested JSON parse failed.';
+			} else if (exception === 'timeout') {
+				msg = 'Time out error.';
+			} else if (exception === 'abort') {
+				msg = 'Ajax request aborted.';
+			} else {
+				msg = 'Uncaught Error.\n' + data.responseText;
+			}
+			console.log('error: ' + msg);
+			console.table(postData); // todo: delete this line. temporary only
 		});
 		
 		e.preventDefault();
