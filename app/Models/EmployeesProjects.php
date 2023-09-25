@@ -75,7 +75,6 @@ class EmployeesProjects extends Model
                         ->where('approved_status',"!=", config('constants.APPROVED_STATUS_REJECTED'))
                         ->where(function($query){
                             $query->whereNull('end_date')
-                                ->orWhere('end_date', '0')
                                 ->orWhere('end_date', '0000-00-00 00:00:00');
                             })
                             ->get()
