@@ -372,7 +372,6 @@ $(document).ready(function () {
 				msg = 'Uncaught Error.\n' + data.responseText;
 			}
 			console.log('error: ' + msg);
-			console.table(postData); // todo: delete this line. temporary only
 		});
 		
 		e.preventDefault();
