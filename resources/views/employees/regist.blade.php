@@ -47,7 +47,7 @@
                             </div>
                             <div class="d-inline">
                                 <div class="form-check form-check-inline">
-                                    <input type="radio" class="form-check-input" name="gender" id="femaleRadio" value="0" {{ old('gender', $employee ? $employee->gender : 0) == 0 ? "checked" : "" }} required>
+                                    <input type="radio" class="form-check-input" name="gender" id="femaleRadio" value="0" {{ old('gender', $employee ? $employee->gender : '') == 0 ? "checked" : "" }} required>
                                     <label class="form-check-label" for="femaleRadio">Female</label>
                                 </div>
                                 <div class="form-check form-check-inline">
