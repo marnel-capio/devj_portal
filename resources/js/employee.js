@@ -185,6 +185,7 @@ $(document).ready(function () {
 			$("#cur-add-prov").removeClass("is-disabled");
 			$("#cur-add-postal").removeClass("is-disabled");
 		}
+		checkRequiredFields();
 	});
 
 
