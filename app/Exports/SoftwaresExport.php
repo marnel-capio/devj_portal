@@ -327,7 +327,7 @@ class SoftwaresExport implements FromView, WithEvents, WithColumnWidths, WithSty
                             }
 
                             foreach ($this->rowHeightArray as $rowNumber => $rowHeight) {
-                                $event->sheet->getRowDimension($rowNumber)->setRowHeight($rowHeight, config('constants.DEFAULT_ROW_HEIGHT_UNIT'));
+                                $event->sheet->getRowDimension($rowNumber)->setRowHeight(-1);
                             }                    
         
                     },
