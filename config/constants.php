@@ -226,4 +226,8 @@ return [
 
     'SYSTEM_EMAIL' => 'devj-portal@awsys-i.com',
 
+    // Message
+    'SEND_NOTIFICATION_MESSAGE_SUCCESS' => "Successfully sent notifications to all active employees.",
+    'DOWNLOAD_MESSAGE_SUCCESS' => "Successfully downloaded file.",
+
 ];

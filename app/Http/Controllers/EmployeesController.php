@@ -785,7 +785,12 @@ class EmployeesController extends Controller
             } 
         }
         Logs::createLog("Employee", "Send notification to the active employee to remind them to update their contact details");
-        return redirect()->route('employees')->with(['success' => 1, "message" => "Successfully sent notifications to all active employees."]);
+        // return redirect()->route('employees')->with(['success' => 1, "message" => "Successfully sent notifications to all active employees."]);
+
+        return response()
+        ->json( ['success' => true, 
+                'message' => config('constants.SEND_NOTIFICATION_MESSAGE_SUCCESS')],
+                200);
     }
 
     /**
@@ -799,9 +804,12 @@ class EmployeesController extends Controller
         Logs::createLog("Employee", "Downloaded list of employee");
         // determine excel type
         if (Auth::user()->roles != 3) {
-            return (new EmployeesExport($request['searchInput'],$request['searchFilter'],$request['employeeStatus']))->download('DevJ Contact Details.xlsx');
+            return (new EmployeesExport($request['searchInput'],$request['searchFilter'],$request['employeeStatus']))
+            ->download('DevJ Contact Details.xlsx');
         } else {
-            return (new EmployeesExport($request['searchInput'],$request['searchFilter'],$request['employeeStatus'], 'pdf'))->download('DevJ Contact Details.pdf');
+            return (new EmployeesExport($request['searchInput'],$request['searchFilter'],$request['employeeStatus'], 'pdf'))
+            ->download('DevJ Contact Details.pdf')
+            ;
         }
 
     }

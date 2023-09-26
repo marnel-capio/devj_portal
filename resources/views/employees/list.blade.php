@@ -7,21 +7,27 @@
 	  {{session('message')}}
 	</div>
 @endif
+
+{{-- Notif for Send Notification --}}
+<div class="alert d-none" role="alert" id="header-alert">
+	<div id="header-alert-content">&nbsp;.</div>
+</div>
+
 <div class="container container-list-table mt-3 ms-4 mb-5">
 	<h3> Employee List </h3>
 	@if(auth()->user()->roles != 3)
 	<div class="row row-list">
 		<div class="col">
-			<a href='{!! url("/employees/sendNotification"); !!}' class="btn btn-primary float-end " id='send-notif'>
-				<div class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+			<a href='#' class="btn btn-primary float-end " id='send-notif'>
+				Send Notification
+				<div id="send-notif-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
   					<span class="sr-only"></span>
 				</div>
-				Send Notification
 			</a>
 		</div>
 	</div>
 	@endif
-	<form action='{!! url("/employees/download"); !!}' method="POST">
+	<form action='{!! url("/employees/download"); !!}' method="POST" id="employee-list-form">
         @csrf
 		@if(auth()->user()->roles == config('constants.MANAGER_ROLE_VALUE'))
         <div class="row row-list">
@@ -100,7 +106,12 @@
 			</div>
 
 			<div class="col">
-				<button type="submit" class="btn btn-primary float-end download-btn">Download</button>
+				<button class="btn btn-primary float-end download-btn" id="employee-download">
+					Download
+					<div id="employee-download-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+						<span class="sr-only"></span>
+					</div>
+				</button>
 			</div>
 		</div>
 	</form>
@@ -121,13 +132,6 @@
 			                <th>Passport Appointment Date</th>
 			                <th>No Appointment Reason</th>
 		                @endif
-						<!-- headers to add if passport filter is selected
-						rdb:all <th> : With Valid Passport ; Expiration Date
-						rdb:1	<th> : Passport Valid Until
-						rdb:2	<th> : Passport Appointment Date
-						rdb:3	<th> : Reason for No Scheduled Appointment
-					
-						-->
 		            </tr>
 		        </thead>
 		        <tbody>
