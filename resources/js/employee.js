@@ -85,11 +85,11 @@ $(document).ready(function () {
 		}
 
 
-		$("#header-alert-content").html(`<div id='header-alert-content'>${message}</div>`);
+		$("#header-alert").html(`<div id='header-alert-content'>${message}</div>`);
 
 		if(fadeout) {
 			setTimeout(function(){
-				$("#header-alert-content").fadeOut("fast", function() {
+				$("#header-alert-content").fadeOut("slow", function() {
 					$("#header-alert").removeClass("d-block");
 					$("#header-alert").addClass("d-none");
 				});
@@ -100,24 +100,20 @@ $(document).ready(function () {
 
     $("#send-notif").on("click", function() {
         $("#send-notif-spinner").show();
-
+		$("#send-notif").prop("disabled", true);
+		$("#send-notif").prop("id", "send-notif-sending");
 		setHeaderAlert("Notifications to employees are being sent . . .", 2, true);
 		
 		$.ajax({
 			type: "GET",
 			url: SEND_NOTIFICATION_LINK
+
 		}).done(function(data){
-			$("#send-notif-spinner").hide();
-	
 			if(data.success) {
 				setHeaderAlert(data.message, 1, true);
 			} else {
 				setHeaderAlert(data.message, 0, true);
 			}
-		
-
-			console.log("Message:" + data.message);
-			console.log("success?" + data.success);
 
 		}).fail(function (data, exception) {
 			var msg = '';
@@ -137,66 +133,27 @@ $(document).ready(function () {
 				msg = 'Uncaught Error.\n' + data.responseText;
 			}
 			console.log('error: ' + msg);
-
 			setHeaderAlert(msg + ". Consider refreshing the page", 0, true);
+
+		}).always(function() {
+			$("#send-notif-sending").prop("id", "send-notif");
+			$("#send-notif").removeAttr("disabled");
+			$("#send-notif-spinner").hide();
 		});
 
+		e.preventDefault();
     });
 
 	// Employee Download button is clicked
-	$("#employee-list-form").submit(function() {
+	$("#employee-download").on("click", function() {
 		$("#employee-download-spinner").show();
-
-		setHeaderAlert("Sending notifications to employees", 2, true);
-
-		var postData = {
-			_token: $("#employee-list-form > input[name=_token]").val(),
-			searchInput: $("#employee-list-form > input[name=searchInput]").val(),
-			passportStatus: $("#employee-list-form > input[name=passportStatus]").val(),
-			searchFilter: $("#employee-list-form > input[name=searchFilter]").val(),
-			employeeStatus: $("#employee-list-form > input[name=employeeStatus]").val()
-		};
-
-		console.table(postData);
-		alert(postData);
+		$("#employee-download").prop("disabled", true);
 		
-		$.ajax({
-			type: "POST",
-			url: DOWNLOAD_EMPLOYEE_LINK,
-			data: postData,
-			dataType: "json",
-			encode: true,
-		}).done(function(data){
-	
-	
-			if(data.success) {
-				setHeaderAlert(data.message, 1, true);
-			} else {
-				setHeaderAlert(data.message, 0, true);
-			}
+		setTimeout(function(){
 			$("#employee-download-spinner").hide();
+			$("#employee-download").prop("disabled", false);
+		}, 5000);
 
-		}).fail(function (data, exception) {
-			var msg = '';
-			if (data.status === 0) {
-				msg = 'Not connected.\nVerify Network.';
-			} else if (data.status == 404) {
-				msg = 'Requested page not found. [404]';
-			} else if (data.status == 500) {
-				msg = 'Internal Server Error [500].';
-			} else if (exception === 'parsererror') {
-				msg = 'Requested JSON parse failed.';
-			} else if (exception === 'timeout') {
-				msg = 'Time out error.';
-			} else if (exception === 'abort') {
-				msg = 'Ajax request aborted.';
-			} else {
-				msg = 'Uncaught Error.\n' + data.responseText;
-			}
-			console.log('error: ' + msg);
-
-			setHeaderAlert(msg + ". Consider refreshing the page", 0, true);
-		});
 	});
 
     $(".search-status-rdb-input").on("click", function(){
