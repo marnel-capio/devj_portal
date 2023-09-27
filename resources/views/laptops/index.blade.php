@@ -7,6 +7,12 @@
 	  {{session('message')}}
 	</div>
 @endif
+
+{{-- Notif for Alert Banner --}}
+<div class="alert d-none" role="alert" id="header-alert">
+	<div id="header-alert-content">&nbsp;.</div>
+</div>
+
 <div class="container container-list-table mt-3 ms-4 mb-5">
 	<h3> Laptop List </h3>
     <form action="{{  route('laptops.download')  }}" method="POST" id="download">

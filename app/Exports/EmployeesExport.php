@@ -28,12 +28,34 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithEvent
     private $status;
     private $fileType;
 
-    public function __construct($keyword,$filter,$status,$fileType = "")
+    public function __construct($keyword,$filter,$status,$passport_status,$fileType = "")
     {
         $this->keyword = $keyword;
         $this->filter = $filter;
         $this->status = $status;
         $this->fileType = $fileType;
+
+        switch($passport_status) {
+            case 2 :
+                // With Passport
+                $this->passport_status = 1;
+                break;
+            case 3 :
+                // Waiting Delivery
+                $this->passport_status = 4;
+                break;
+            case 4 :
+                // With Appointment
+                $this->passport_status = 2;
+                break;
+            case 5 :
+                // No appointment
+                $this->passport_status = 3;
+                break;
+            default:
+                $this->passport_status = 0;
+                break;
+        }
     }
 
     public function title(): string
@@ -134,6 +156,7 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithEvent
     {	
         $keyword = $this->keyword;
         $status = $this->status;
+        $passport_status = $this->passport_status;
 
         $employee = Employees::whereIn('approved_status',  [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
 
@@ -171,6 +194,10 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithEvent
             }
         }else{
             $employee = $employee->where('active_status', 1);
+        }
+
+        if($passport_status >= 1 && $passport_status <= 4) {
+            $employee = $employee->where('passport_status', $passport_status);
         }
 
         $employee = $employee->orderBy('last_name', 'ASC');

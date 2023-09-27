@@ -13,6 +13,14 @@
 </div>
 <div class="container-md ps-md-3 pe-md-3 pt-2 mb-3">
 @endif
+
+
+
+{{-- Notif for Alert Banner --}}
+<div class="alert d-none" role="alert" id="header-alert">
+	<div id="header-alert-content">&nbsp;.</div>
+</div>
+
 <div class="container container-list-table mt-3 ms-4 mb-5">
 	<h3> Server List </h3>
     <div class="row row-list">

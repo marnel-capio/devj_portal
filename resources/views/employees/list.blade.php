@@ -8,7 +8,7 @@
 	</div>
 @endif
 
-{{-- Notif for Send Notification --}}
+{{-- Notif for Alert Banner --}}
 <div class="alert d-none" role="alert" id="header-alert">
 	<div id="header-alert-content">&nbsp;.</div>
 </div>

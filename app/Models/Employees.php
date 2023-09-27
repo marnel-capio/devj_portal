@@ -138,30 +138,6 @@ class Employees extends Authenticatable
      */
     static function getPassportStatus($employee) {
 
-        // Determine the passport_status IF the passport_status from database is null/empty
-        if($employee->passport_status == null || $employee->passport_status == "") {
-            if($employee->passport_number   != null || 
-            $employee->date_of_issue         != null || 
-            $employee->issuing_authority     != null || 
-            $employee->passport_type         != null || 
-            $employee->passport_expiration_date != null || 
-            $employee->place_of_issue        != null)
-            {
-                // If at least 1 field is not empty, then the passport exists.
-                $employee->passport_status = config('constants.PASSPORT_STATUS_WITH_PASSPORT_VALUE');           // 1
-    
-            } else if($employee->date_of_appointment != null) {
-                $employee->passport_status = config('constants.PASSPORT_STATUS_WITH_APPOINTMENT_VALUE');        // 2
-    
-            } else if($employee->date_of_delivery != null) {
-                $employee->passport_status = config('constants.PASSPORT_STATUS_WAITING_FOR_DELIVERY_VALUE');    // 4
-    
-            } else {
-                $employee->passport_status = config('constants.PASSPORT_STATUS_WITHOUT_PASSPORT_VALUE');        // 3
-    
-            }
-        }
-
         $employee = Employees::getPassportDuration($employee);
 
         $employee["passport_message"] = Employees::getPassportMessage($employee);

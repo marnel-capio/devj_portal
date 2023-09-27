@@ -7,6 +7,12 @@
 	  {{session('message')}}
 	</div>
 @endif
+
+{{-- Notif for Alert Banner --}}
+<div class="alert d-none" role="alert" id="header-alert">
+	<div id="header-alert-content">&nbsp;.</div>
+</div>
+
 <div class="container container-list-table mt-3 ms-4 mb-5">
 	<div class="text-primary d-flex align-items-center">
 		@if (!empty($list_note_approve_by))

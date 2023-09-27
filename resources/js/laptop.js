@@ -15,6 +15,52 @@ $(document).ready(function(){
 	    }
     });
 
+    function setHeaderAlert(message, alertType = 2, displayed = true) {
+		if(!displayed) {
+			$("#header-alert").addClass("d-none");
+
+			return;
+		}
+
+		$("#header-alert").removeClass("d-none");
+		$("#header-alert").removeClass("alert-info");
+		$("#header-alert").removeClass("alert-success");
+		$("#header-alert").removeClass("alert-danger");
+
+		let fadeout = true;
+
+		switch(alertType) {
+			case 1:
+				$("#header-alert").addClass("alert-success");
+				fadeout = true;
+				break;
+			case 0:
+				$("#header-alert").addClass("alert-danger");
+				fadeout = true;
+				break;
+
+			default:
+				$("#header-alert").addClass("alert-info");
+				fadeout = false;
+				break;
+
+		}
+
+
+		$("#header-alert").html(`<div id='header-alert-content'>${message}</div>`);
+
+		if(fadeout) {
+			setTimeout(function(){
+				$("#header-alert-content").fadeOut("slow", function() {
+					$("#header-alert").removeClass("d-block");
+					$("#header-alert").addClass("d-none");
+				});
+			}, 5000);
+		}
+		
+	}
+
+
 	// Create button is clicked
 	$("#create-server").on("click", function() {
 		$("#create-server-spinner").show();
@@ -26,10 +72,12 @@ $(document).ready(function(){
 		$("#laptops-download-spinner").show();
 		$("#laptops-download").prop("disabled", true);
 		
+		setHeaderAlert("Requesting download current list", 2, true);
 		setTimeout(function(){
+			setHeaderAlert("Download request sent", 1, true);
 			$("#laptops-download-spinner").hide();
 			$("#laptops-download").prop("disabled", false);
-		}, 5000);
+		}, 1500);
 
 	});
 

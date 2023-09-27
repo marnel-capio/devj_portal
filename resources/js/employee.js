@@ -149,10 +149,12 @@ $(document).ready(function () {
 		$("#employee-download-spinner").show();
 		$("#employee-download").prop("disabled", true);
 		
+		setHeaderAlert("Requesting download current list", 2, true);
 		setTimeout(function(){
+			setHeaderAlert("Download request sent", 1, true);
 			$("#employee-download-spinner").hide();
 			$("#employee-download").prop("disabled", false);
-		}, 5000);
+		}, 1500);
 
 	});
 

@@ -301,18 +301,13 @@ class ApiController extends Controller
 
         if (!empty($searchFilter['passport'])){
             if ($searchFilter['passport'] == 2) {
-                $employee = $employee->whereNotNull('passport_number')
-                                        ->whereNotNull('date_of_issue')
-                                        ->whereNotNull('issuing_authority')
-                                        ->whereNotNull('passport_type')
-                                        ->whereNotNull('passport_expiration_date')
-                                        ->whereNotNull('place_of_issue');
+                $employee = $employee->where('passport_status',config('constants.PASSPORT_STATUS_WITH_PASSPORT_VALUE'));
             } else if ($searchFilter['passport'] == 3) {
-                $employee = $employee->whereNotNull('date_of_delivery');
+                $employee = $employee->where('passport_status',config('constants.PASSPORT_STATUS_WAITING_FOR_DELIVERY_VALUE'));
             }else if ($searchFilter['passport'] == 4) {
-                $employee = $employee->whereNotNull('date_of_appointment');
+                $employee = $employee->where('passport_status',config('constants.PASSPORT_STATUS_WITH_APPOINTMENT_VALUE'));
             } else if ($searchFilter['passport'] == 5) {
-                $employee = $employee->whereNotNull('no_appointment_reason');
+                $employee = $employee->where('passport_status',config('constants.PASSPORT_STATUS_WITHOUT_PASSPORT_VALUE'));
             }
         }
 
