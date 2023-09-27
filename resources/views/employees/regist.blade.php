@@ -84,54 +84,64 @@
                 </div>
             </div>
 
-            {{-- Contact Details --}}
-            <div class="emp-regist-category mb-4 p-3 rounded-3">
-                <h4 class="text-start">Contact Details</h4>
-                <div class="row mb-2 ps-3 pe-3">
-                    <div class="col-12 col-md-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="email" id="email" placeholder="Email" required value="{{ old('email', $employee ? $employee->email : '') }}">
-                        <label for="email" class="text-center">Email Address</label>
-                        @if ($errors->has('email'))
-                        <p class="text-danger">{{ $errors->first('email') }}</p>
-                        @endif
-                    </div>
-                </div>
-                <div class="row mb-2 ps-3 pe-3">
-                    <div class="col-12 col-md-4 g-3">
-                        <div class="input-group">
-                            <span class="input-group-text">+63</span>
-                            <div class="form-floating">
-                                <input type="text" class="form-control" name="cellphone_number" id="contact" placeholder="Contact Number" required value="{{ old('cellphone_number', $employee ? $employee->cellphone_number : '') }}">
-                                <label for="contact" class="text-center">Contact Number</label>
-                            </div>
-                        </div>
-                        @if ($errors->has('cellphone_number'))  
-                        <p class="text-danger">{{ $errors->first('cellphone_number') }}</p>
-                        @endif
-                    </div>
-                    <div class="col-12 col-md-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="other_contact_info" id="other_contact" placeholder="Other Contact Info" value="{{ old('other_contact_info', $employee ? $employee->other_contact_info : '') }}">
-                        <label for="other_contact" class="text-center">Other Contact Info (optional)</label>
-                        @if ($errors->has('other_contact_info'))
-                        <p class="text-danger">{{ $errors->first('other_contact_info') }}</p>
-                        @endif
-                    </div>
-                </div>
-                <div class="row mb-2 ps-3 pe-3">
-                    <div class="col-6 col-md-4 g-3 form-floating">
-                        <input type="password" class="form-control" name="password" id="emp-password" placeholder="Password" required>
-                        <label for="emp-password" class="text-center">Password</label>
-                        @if ($errors->has('password'))
-                        <p class="text-danger">{{ $errors->first('password') }}</p>
-                        @endif
-                    </div>
-                    <div class="col-6 col-md-4 g-3 form-floating">
-                        <input type="password" class="form-control" name="confirm_password" id="emp-confirm-password" placeholder="Confirm Password" required>
-                        <label for="emp-confirm-password" class="text-center">Confirm Password</label>
-                        <p id="confirm-pass-text"></p>
-                    </div>
+{{-- Contact Details --}}
+<div class="emp-regist-category mb-4 p-3 rounded-3">
+    <h4 class="text-start">Contact Details</h4>
+    <div class="row mb-2 ps-3 pe-3">
+        <div class="col-12 col-md-4 g-3 form-floating"
+            data-bs-toggle="tooltip" data-bs-placement="top"
+            title="Please enter AWS Email Address only">
+            <input type="text" class="form-control" name="email" id="email" placeholder="Email" required value="{{ old('email', $employee ? $employee->email : '') }}">
+            <label for="email" class="text-center">AWS Email Address</label>
+            @if ($errors->has('email'))
+            <p class="text-danger">{{ $errors->first('email') }}</p>
+            @endif
+        </div>
+    </div>
+    <div class="row mb-2 ps-3 pe-3">
+        <div class="col-12 col-md-4 g-3">
+            <div class="input-group">
+                <span class="input-group-text">+63</span>
+                <div class="form-floating">
+                    <input type="text" class="form-control" name="cellphone_number" id="contact" placeholder="Contact Number" required value="{{ old('cellphone_number', $employee ? $employee->cellphone_number : '') }}">
+                    <label for="contact" class="text-center">Contact Number</label>
                 </div>
             </div>
+            @if ($errors->has('cellphone_number'))  
+            <p class="text-danger">{{ $errors->first('cellphone_number') }}</p>
+            @endif
+        </div>
+
+        <div class="col-12 col-md-4 g-3 form-floating"
+            data-bs-toggle="tooltip" data-bs-placement="top"
+            title="Input secondary phone number or email">
+            <input type="text" class="form-control" name="other_contact_info" id="other_contact" placeholder="Other Contact Info" value="{{ old('other_contact_info', $employee ? $employee->other_contact_info : '') }}">
+            <label for="other_contact" class="text-center">Other Contact Info (optional)</label>
+            @if ($errors->has('other_contact_info'))
+            <p class="text-danger">{{ $errors->first('other_contact_info') }}</p>
+            @endif
+        </div>
+    </div>
+</div>
+
+{{-- Password --}}
+<div class="emp-regist-category mb-4 p-3 rounded-3">
+    <h4 class="text-start">Portal Password</h4>
+    <div class="row mb-2 ps-3 pe-3">
+        <div class="col-6 col-md-4 g-3 form-floating">
+            <input type="password" class="form-control" name="password" id="emp-password" placeholder="Password" required>
+            <label for="emp-password" class="text-center">Password</label>
+            @if ($errors->has('password'))
+            <p class="text-danger">{{ $errors->first('password') }}</p>
+            @endif
+        </div>
+        <div class="col-6 col-md-4 g-3 form-floating">
+            <input type="password" class="form-control" name="confirm_password" id="emp-confirm-password" placeholder="Confirm Password" required>
+            <label for="emp-confirm-password" class="text-center">Confirm Password</label>
+            <p id="confirm-pass-text"></p>
+        </div>
+    </div>
+</div>
             
             {{-- Passport Details section --}}
             <div class="emp-regist-category mb-4 p-3 rounded-3">
@@ -221,8 +231,8 @@
                 <div id="withAppointment" class="d-none">
                     <div class="row mb-2 ps-3 pe-3">
                         <div class="col-6 g-3 form-floating">
-                            <input type="date" class="form-control" name="date_of_appointment" id="date_of_appointment" placeholder="Date of appointment" value="{{ old('date_of_appointment', $employee ? $employee->date_of_appointment : '') }}" pattern="\d{4}-\d{2}-\d{2}">
-                            <label  class="text-center" for="date_of_appointment">Date of Appointment</label>
+                            <input type="date" class="form-control" name="date_of_appointment" id="date_of_appointment" placeholder="Date of Appointment: Passport Application" value="{{ old('date_of_appointment', $employee ? $employee->date_of_appointment : '') }}" pattern="\d{4}-\d{2}-\d{2}">
+                            <label  class="text-center" for="date_of_appointment">Date of Appointment: Passport Application</label>
                             @if ($errors->has('date_of_appointment'))
                             <p class="text-danger">{{ $errors->first('date_of_appointment') }}</p>
                             @endif

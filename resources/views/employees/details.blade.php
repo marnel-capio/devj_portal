@@ -401,8 +401,8 @@
                 <div id="withAppointment" class="">
                     <div class="row mb-2 ps-3 pe-3">
                         <div class="col-6 g-3 form-floating">
-                            <input type="date" class="form-control" name="date_of_appointment" id="date_of_appointment" placeholder="Date of appointment" value="{{ old('date_of_appointment') ?: $employee->date_of_appointment }}" pattern="\d{4}-\d{2}-\d{2}" required disabled>
-                            <label  class="text-center" for="date_of_appointment">Date of Appointment</label>
+                            <input type="date" class="form-control" name="date_of_appointment" id="date_of_appointment" placeholder="Date of Appointment" value="{{ old('date_of_appointment') ?: $employee->date_of_appointment }}" pattern="\d{4}-\d{2}-\d{2}" required disabled>
+                            <label  class="text-center" for="date_of_appointment">Date of Appointment: Passport Application</label>
                             @if ($errors->has('date_of_appointment'))
                             <p class="text-danger">{{ $errors->first('date_of_appointment') }}</p>
                             @endif
