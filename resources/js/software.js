@@ -23,6 +23,26 @@ $(document).ready(function () {
 	        "sEmptyTable": "There is no record found"
 	    }
 	});
+	
+	
+	// Create button is clicked
+	$("#create-software").on("click", function() {
+		$("#create-software-spinner").show();
+
+	});
+	
+
+	// Download button is clicked
+	$("#download-softwares").on("click", function() {
+		$("#download-softwares-spinner").show();
+		$("#download-softwares").prop("disabled", true);
+		
+		setTimeout(function(){
+			$("#download-softwares-spinner").hide();
+			$("#download-softwares").prop("disabled", false);
+		}, 3000);
+
+	});
 
 
     $(".soft-search-status-rdb-input").on("click", function(){

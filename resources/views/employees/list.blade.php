@@ -18,12 +18,12 @@
 	@if(auth()->user()->roles != 3)
 	<div class="row row-list">
 		<div class="col">
-			<a href='#' class="btn btn-primary float-end " id='send-notif'>
+			<button class="btn btn-primary float-end" id='send-notif'>
 				Send Notification
 				<div id="send-notif-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
   					<span class="sr-only"></span>
 				</div>
-			</a>
+				</button>
 		</div>
 	</div>
 	@endif

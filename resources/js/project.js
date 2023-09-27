@@ -32,6 +32,22 @@ $(document).ready( function () {
 
 	// ===================================== Project Members ==========================================
     hideShowPJHistory();
+	
+	
+	// Create button is clicked
+	$("#create-project").on("click", function() {
+		$("#create-project-spinner").show();
+
+	});
+
+	
+	
+	// Submit create project button is clicked
+	$("#project-reg-submit").on("click", function() {
+		$("#project-reg-submit-spinner").show();
+
+	});
+
     $("#show_hist").on('change', function () {
         hideShowPJHistory();
     });

@@ -37,7 +37,12 @@
 		</div>
 	@if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE'))		
 		<div class="col-8 text-end">
-			<a href="{{ route('projects.create') }}" class="btn btn-success me-1" id='send-notif'>Create</a>
+			<a href="{{ route('projects.create') }}" class="btn btn-success me-1" id='create-project'>
+				Create
+				<div id="create-project-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+  					<span class="sr-only"></span>
+				</div>
+			</a>
 		</div>
 	@endif
 	</div>

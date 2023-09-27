@@ -15,6 +15,32 @@ $(document).ready(function () {
 
 // ******************************************** Server List ********************************************/
 
+    
+	
+	
+	// Create button is clicked
+	$("#create").on("click", function() {
+		$("#create-spinner").show();
+		$("#create").prop("disabled", true);
+        
+        $(location).attr('href', "/servers/create");
+
+	});
+	
+
+	// Download button is clicked
+	$("#servers-download").on("click", function() {
+		$("#servers-download-spinner").show();
+		$("#servers-download").prop("disabled", true);
+		
+		setTimeout(function(){
+			$("#servers-download-spinner").hide();
+			$("#servers-download").prop("disabled", false);
+		}, 5000);
+
+	});
+    
+    
     var serverList = $("#server_list").DataTable({
         "stateSave": true,
         "pageLength": 25,
@@ -62,7 +88,12 @@ $(document).ready(function () {
         let id = $(this).data('id');
         let serverName = $(this).data('server_name');
 
-        if ( confirm(`Are you sure you want to delete ${serverName}?`) ) {
+        
+		$("#delete-btn-spinner-" + id).show();
+        
+		setTimeout(function(){},500);
+
+        if ( confirm(`Are you sure you want to delete ${serverName}? delete-btn-spinner-${id}`) ) {
             // Delete server
             console.log('delete server');
             $.ajax({
@@ -80,11 +111,16 @@ $(document).ready(function () {
                     // Display error
                     $(`<div class="alert alert-danger" role="alert">${data.error}</div>`).insertBefore('.container-list-table');
                 }
+                $("#delete-btn-spinner-" + id).hide();
             }).fail( function () {
                 console.log('error');
+                $("#delete-btn-spinner-" + id).hide();
             })
 
-        } 
+        } else {
+		    $("#delete-btn-spinner-" + id).hide();
+        }
+        
         e.preventDefault()
     });
 

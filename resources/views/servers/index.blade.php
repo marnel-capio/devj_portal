@@ -41,8 +41,18 @@
             <input type="text" name="searchInput" class="search-input-text form-control" id="search-input" placeholder="Search">
         </div>
         <div class=" col-4 text-end">
-            <a href="{{ route('servers.create') }}" class="btn btn-success me-1">Create</a>
-			<button type="submit" class="btn btn-primary ms-1" form="download">Download</button>
+            <a id="create" href="{{ route('servers.create') }}" class="btn btn-success me-1">
+                Create
+				<div id="create-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+  					<span class="sr-only"></span>
+				</div>
+            </a>
+			<button id="servers-download" type="submit" class="btn btn-primary ms-1" form="download">
+                Download
+				<div id="servers-download-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+  					<span class="sr-only"></span>
+				</div>
+            </button>
             <form action="{{  route('servers.download')  }}" method="GET" id="download">
                 @csrf
             </form>
@@ -74,7 +84,12 @@
                                 <td class="{{ config('constants.STATUS_CLASS.' .$server['ram_status']) }}">{{ config('constants.STATUS_NAMES.' .$server['ram_status']) }}</td>
                                 <td class="{{ config('constants.STATUS_CLASS.' .$server['cpu_status']) }}">{{ config('constants.STATUS_NAMES.' .$server['cpu_status']) }}</td>
                                 <td>{{ $server['status'] }}</td>
-                                <td class="text-center"><button class="btn btn-sm btn-danger delete_server" data-id="{{ $server['id'] }}" data-server_name="{{ $server['server_name'] }}">Delete</button></td>
+                                <td class="text-center"><button class="btn btn-sm btn-danger delete_server" data-id="{{ $server['id'] }}" data-server_name="{{ $server['server_name'] }}">
+                                    Delete
+                                    <div id="delete-btn-spinner-{{ $server['id'] }}" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                                                <span class="sr-only"></span>
+                                            </div>
+                                </button></td>
                             </tr>
                         @endforeach
                     @endif

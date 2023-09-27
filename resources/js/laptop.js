@@ -15,6 +15,24 @@ $(document).ready(function(){
 	    }
     });
 
+	// Create button is clicked
+	$("#create-server").on("click", function() {
+		$("#create-server-spinner").show();
+        window.location.replace("/laptops/create");
+	});
+
+	// Download button is clicked
+	$("#laptops-download").on("click", function() {
+		$("#laptops-download-spinner").show();
+		$("#laptops-download").prop("disabled", true);
+		
+		setTimeout(function(){
+			$("#laptops-download-spinner").hide();
+			$("#laptops-download").prop("disabled", false);
+		}, 5000);
+
+	});
+
     $(".laptop-search-availability").click(function(){
         filterLaptopList();
     })

@@ -94,8 +94,19 @@
                 <input type="text" name="searchInput" class="search-input-text form-control" id="search-input" placeholder="Search">
             </div>
             <div class="col-4 text-end">
-                <a href="{{ route('laptops.create') }}" class="btn btn-success me-1" id='send-notif'>Create</a>
-                <button type="submit" class="btn btn-primary ms-1" form="download">Download</button>
+                <a class="btn btn-success me-1" id='create-server' href="{{ route('laptops.create') }}" >
+                    Create
+                    <div id="create-server-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                        <span class="sr-only"></span>
+                    </div>
+                </a>
+                <button id="laptops-download" type="submit" class="btn btn-primary ms-1" form="download">
+                    Download
+                    <div id="laptops-download-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                        <span class="sr-only"></span>
+                    </div>
+                
+                </button>
             </div>
         </div>
     </form>

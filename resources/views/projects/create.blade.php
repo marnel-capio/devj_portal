@@ -48,7 +48,12 @@
                 </div>
             </div>
             <div class="text-center p-2">
-                <button class="btn btn-primary btn-lg mb-5" id="project-reg-submit" type="submit">Submit</button>
+                <button class="btn btn-primary btn-lg mb-5" id="project-reg-submit" type="submit">
+                    <span>Submit</span>
+                    <div id="project-reg-submit-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                        <span class="sr-only"></span>
+                    </div>
+                </button>
             </div>
         </form>
     </div>
