@@ -61,6 +61,7 @@ class EmployeesController extends Controller
         $insertData = $this->validatePassportStatusandInputs($insertData);
 
         $insertData = $this->validateAddressInputs($insertData);
+        unset($insertData['copy_permanent_address']);
 
         // $objData = (object)$insertData;
         // abort_if(!$this->validatePassportStatusandInputs($objData), 404);
@@ -70,7 +71,6 @@ class EmployeesController extends Controller
             $id = $insertData['id'];
             unset($insertData['id']);
             unset($insertData['created_by']);
-            unset($insertData['copy_permanent_address']);
 
             $additionalData = [
                 'approved_status' => config('constants.APPROVED_STATUS_PENDING'),

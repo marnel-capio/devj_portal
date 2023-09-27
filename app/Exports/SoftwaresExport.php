@@ -297,7 +297,7 @@ class SoftwaresExport implements FromView, WithEvents, WithColumnWidths, WithSty
                     $event->sheet
                         ->setSelectedCell('A1')
                         ->getPageSetup()
-                        ->setOrientation(WorksheetPageSetup::ORIENTATION_LANDSCAPE)
+                        // ->setOrientation(WorksheetPageSetup::ORIENTATION_LANDSCAPE)
                         ->setPaperSizeDefault(WorksheetPageSetup::PAPERSIZE_LEGAL);
     
                     for ($x = 0; $x < $total_type_count; $x++) {
@@ -314,21 +314,21 @@ class SoftwaresExport implements FromView, WithEvents, WithColumnWidths, WithSty
         }else{
             $setting = [
                 AfterSheet::class => function(AfterSheet $event) use($type_range, $total_type_count) {
-                        $event->sheet
-                            ->setSelectedCell('A1')
-                            ->getPageSetup()
-                            ->setOrientation(WorksheetPageSetup::ORIENTATION_LANDSCAPE)
-                            ->setPaperSizeDefault(WorksheetPageSetup::PAPERSIZE_A4);
-                            for ($x = 0; $x < $total_type_count; $x++) {
-                                if($type_range[$x] != "")
-                                {
-                                    $event->sheet->getDelegate()->mergeCells($type_range[$x]);
-                                }
+                    $event->sheet
+                        ->setSelectedCell('A1')
+                        ->getPageSetup()
+                        ->setOrientation(WorksheetPageSetup::ORIENTATION_LANDSCAPE)
+                        ->setPaperSizeDefault(WorksheetPageSetup::PAPERSIZE_A4);
+                        for ($x = 0; $x < $total_type_count; $x++) {
+                            if($type_range[$x] != "")
+                            {
+                                $event->sheet->getDelegate()->mergeCells($type_range[$x]);
                             }
+                        }
 
-                            foreach ($this->rowHeightArray as $rowNumber => $rowHeight) {
-                                $event->sheet->getRowDimension($rowNumber)->setRowHeight($rowHeight, config('constants.DEFAULT_ROW_HEIGHT_UNIT'));
-                            }                    
+                        foreach ($this->rowHeightArray as $rowNumber => $rowHeight) {
+                            $event->sheet->getRowDimension($rowNumber)->setRowHeight(-1);
+                        }                    
         
                     },
             ];
