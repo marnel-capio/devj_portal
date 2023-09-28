@@ -7,7 +7,6 @@ const TRANSFER_EMPLOYEE_LINK = '/api/transferEmployee';
 const REINSTATE_EMPLOYEE_LINK = '/api/reinstateEmployee';
 const NOTIFY_SURRENDER_OF_LAPTOPS_LINK = '/api/notifySurrender';
 const APPROVE_EMPLOYEE_LINK = '/employees/store';
-const DOWNLOAD_EMPLOYEE_LINK = '/employees/download';
 const SEND_NOTIFICATION_LINK = '/employees/sendNotification';
 const BU_LIST = {
     '1'  : 'Dev A',
@@ -147,7 +146,8 @@ $(document).ready(function () {
 	// Employee Download button is clicked
 	$("#employee-download").on("click", function() {
 		$("#employee-download-spinner").show();
-		$("#employee-download").prop("disabled", true);
+		$("#employee-download").prop("disabled", true);		
+        $("#employee-list-form").submit();
 		
 		setHeaderAlert("Requesting download current list", 2, true);
 		setTimeout(function(){

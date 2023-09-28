@@ -81,13 +81,13 @@
   					<span class="sr-only"></span>
 				</div>
 			</a>
-			<button type="submit" class="btn btn-primary ms-1" form="download" id="download-softwares">
+			<button class="btn btn-primary ms-1" id="software-download">
 				Download
-				<div id="download-softwares-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+				<div id="software-download-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
   					<span class="sr-only"></span>
 				</div>
 			</button>
-			<form action="{{  route('softwares.download')  }}" method="GET" id="download">
+			<form action="{{  route('softwares.download')  }}" method="GET" id="software-list-form">
 				@csrf
 			</form>
 		</div>

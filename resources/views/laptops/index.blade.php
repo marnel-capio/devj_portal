@@ -15,7 +15,7 @@
 
 <div class="container container-list-table mt-3 ms-4 mb-5">
 	<h3> Laptop List </h3>
-    <form action="{{  route('laptops.download')  }}" method="POST" id="download">
+    <form action="{{  route('laptops.download')  }}" method="POST" id="laptop-list-form">
         @csrf
         <div class="row row-list">
             <div class="col-lg-1 col-2">
@@ -106,9 +106,9 @@
                         <span class="sr-only"></span>
                     </div>
                 </a>
-                <button id="laptops-download" type="submit" class="btn btn-primary ms-1" form="download">
+                <button id="laptop-download" class="btn btn-primary ms-1">
                     Download
-                    <div id="laptops-download-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                    <div id="laptop-download-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
                         <span class="sr-only"></span>
                     </div>
                 

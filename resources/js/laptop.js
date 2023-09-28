@@ -68,15 +68,16 @@ $(document).ready(function(){
 	});
 
 	// Download button is clicked
-	$("#laptops-download").on("click", function() {
-		$("#laptops-download-spinner").show();
-		$("#laptops-download").prop("disabled", true);
+	$("#laptop-download").on("click", function() {
+		$("#laptop-download-spinner").show();
+		$("#laptop-download").prop("disabled", true);
+        $("#laptop-list-form").submit();
 		
 		setHeaderAlert("Requesting download current list", 2, true);
 		setTimeout(function(){
 			setHeaderAlert("Download request sent", 1, true);
-			$("#laptops-download-spinner").hide();
-			$("#laptops-download").prop("disabled", false);
+			$("#laptop-download-spinner").hide();
+			$("#laptop-download").prop("disabled", false);
 		}, 1500);
 
 	});

@@ -72,15 +72,16 @@ $(document).ready(function () {
 	
 
 	// Download button is clicked
-	$("#servers-download").on("click", function() {
-		$("#servers-download-spinner").show();
-		$("#servers-download").prop("disabled", true);
+	$("#server-download").on("click", function() {
+		$("#server-download-spinner").show();
+		$("#server-download").prop("disabled", true);
+        $("#server-list-form").submit();
 		
 		setHeaderAlert("Requesting download server list", 2, true);
 		setTimeout(function(){
 			setHeaderAlert("Download request sent", 1, true);
-			$("#servers-download-spinner").hide();
-			$("#servers-download").prop("disabled", false);
+			$("#server-download-spinner").hide();
+			$("#server-download").prop("disabled", false);
 		}, 1500);
 
 	});

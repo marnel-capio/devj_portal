@@ -77,16 +77,16 @@ $(document).ready(function () {
 	
 
 	// Download button is clicked
-	$("#download-softwares").on("click", function() {
-		$("#download-softwares-spinner").show();
-		$("#download-softwares").prop("disabled", true);
-		
+	$("#software-download").on("click", function() {
+		$("#software-download-spinner").show();
+		$("#software-download").prop("disabled", true);
+        $("#software-list-form").submit();
 		
 		setHeaderAlert("Requesting download software list", 2, true);
 		setTimeout(function(){
 			setHeaderAlert("Download request sent", 1, true);
-			$("#download-softwares-spinner").hide();
-			$("#download-softwares").prop("disabled", false);
+			$("#software-download-spinner").hide();
+			$("#software-download").prop("disabled", false);
 		}, 1500);
 
 	});

@@ -55,13 +55,13 @@
   					<span class="sr-only"></span>
 				</div>
             </a>
-			<button id="servers-download" type="submit" class="btn btn-primary ms-1" form="download">
+			<button id="server-download" class="btn btn-primary ms-1">
                 Download
-				<div id="servers-download-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+				<div id="server-download-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
   					<span class="sr-only"></span>
 				</div>
             </button>
-            <form action="{{  route('servers.download')  }}" method="GET" id="download">
+            <form action="{{  route('servers.download')  }}" method="GET" id="server-list-form">
                 @csrf
             </form>
         </div>
