@@ -27,6 +27,7 @@ class ServerController extends Controller
     }
 
     public function download () {
+        abort_if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE') && !Auth::user()->server_manage_flag, 403);
         Logs::createLog('Server', 'Downloaded Server Details for ' .date('F Y'));
 
         $fileName = 'Dev J Server Capacity Monitoring_' .date('MY') .'.xlsx';        
