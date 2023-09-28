@@ -222,7 +222,7 @@ $(document).ready(function () {
               employee_list.row.add(['<a href="' + url + '">' + employee['last_name'] + ', ' + employee['first_name'] + ' (' + employee['middle_name'] + ')</a>', employee['email'], employee['cellphone_number'], employee['current_address_city'], employee['current_address_province'], buAssignment, status]).draw(false);
           } else {
 
-              employee_list.row.add(['<a href="' + url + '">' + employee['last_name'] + ', ' + employee['first_name'] + ' (' + employee['middle_name'] + ')</a>', employee['email'], employee['cellphone_number'], employee['current_address_city'], employee['current_address_province'], buAssignment, status, employee['passport_expiration_date'],employee['date_of_appointment'],employee['no_appointment_reason']]).draw(false);
+              employee_list.row.add(['<a href="' + url + '">' + employee['last_name'] + ', ' + employee['first_name'] + ' (' + employee['middle_name'] + ')</a>', employee['email'], employee['cellphone_number'], employee['current_address_city'], employee['current_address_province'], buAssignment, status, employee['passport_expiration_date'],employee['date_of_appointment'],employee['date_of_delivery'],employee['no_appointment_reason']]).draw(false);
           }
           
         });
