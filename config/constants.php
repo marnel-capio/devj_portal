@@ -137,7 +137,7 @@ return [
     'SOFTWARE_TYPE_999_NAME' => 'Others',
 
     //software range buffers
-    'SOFTWARE_RANGE_BUFFER' => 4,
+    'SOFTWARE_RANGE_BUFFER' => 3,
     'SOFTWARE_RANGE_HEADER_BUFFER' => 1,
     'SOFTWARE_RANGE_INITIAL_VALUE' => 5,
     'SOFTWARE_TYPE_COUNTER_INCREMENT' => 1,

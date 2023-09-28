@@ -796,7 +796,6 @@ class SoftwaresController extends Controller
         }
     }
 
-
     /**
      * Get software data from softwares table
      * @return array $softwares
@@ -818,9 +817,10 @@ class SoftwaresController extends Controller
         Logs::createLog("Software", "Downloaded list of software");
         // determine file type
         if (in_array(Auth::user()->roles, [config('constants.MANAGER_ROLE_VALUE'), config('constants.ADMIN_ROLE_VALUE')])) {
-            return (new SoftwaresExport())->download('C4I DEV J Dev K SW Inventory (' . $current_date . ').xlsx');
+
+              return \Excel::download(new SoftwaresExport(), 'C4I DEV J Dev K SW Inventory (' . $current_date . ').xlsx', \Maatwebsite\Excel\Excel::XLSX);
         } else {
-            return (new SoftwaresExport('pdf'))->download('C4I DEV J Dev K SW Inventory (' . $current_date . ').pdf');
+              return \Excel::download(new SoftwaresExport(), 'C4I DEV J Dev K SW Inventory (' . $current_date . ').pdf', \Maatwebsite\Excel\Excel::MPDF);
         }
 
     }
