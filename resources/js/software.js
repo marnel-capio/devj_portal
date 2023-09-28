@@ -80,6 +80,7 @@ $(document).ready(function () {
 	$("#download-softwares").on("click", function() {
 		$("#download-softwares-spinner").show();
 		$("#download-softwares").prop("disabled", true);
+		$("#download").submit();
 		
 		
 		setHeaderAlert("Requesting download software list", 2, true);

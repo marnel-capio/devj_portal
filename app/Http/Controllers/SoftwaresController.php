@@ -796,6 +796,51 @@ class SoftwaresController extends Controller
         }
     }
 
+    /*
+    * Export Approved Software
+    */
+    public function export() {
+ // get last approved
+        $last_approved_software = Softwares::GetLastApproverDetail();
+        $detail_note = '';
+        $software = Softwares::getSoftwareForDownload();
+        $softwareData = [];
+
+        foreach ($software as $data) {
+            $softwareData[$data['type']][] = ["name" => $data['software_name'], "remarks" => $data['remarks']];
+        }
+
+        if($last_approved_software)
+        {
+            if($last_approved_software->approver){
+                $detail_note = 'Last approved by: ' . $last_approved_software->approver;
+            }
+            
+            if($last_approved_software->approve_time)
+            {
+                $current_date = date("Y-m-d", strtotime($last_approved_software->approve_time) );
+                $detail_note = $detail_note . ' as of ' . $current_date;
+            }
+        }
+
+        \Excel::create('Filename', function($excel) use ($softwareData, $detail_note)  {
+
+            $excel->sheet('SW List', function($sheet) use ($softwareData, $detail_note) {
+                // set note
+                $sheet->row(2, array(
+                     $detail_note
+                ));
+
+            });
+
+        })->export('xls');
+
+        return view('softwares/exports', [
+            'softwareList' => $softwareData,
+            'lastApproved' => $detail_note
+        ]);
+    }
+
 
     /**
      * Get software data from softwares table
@@ -818,9 +863,13 @@ class SoftwaresController extends Controller
         Logs::createLog("Software", "Downloaded list of software");
         // determine file type
         if (in_array(Auth::user()->roles, [config('constants.MANAGER_ROLE_VALUE'), config('constants.ADMIN_ROLE_VALUE')])) {
-            return (new SoftwaresExport())->download('C4I DEV J Dev K SW Inventory (' . $current_date . ').xlsx');
+
+              return \Excel::download(new SoftwaresExport(), 'C4I DEV J Dev K SW Inventory (' . $current_date . ').xlsx', \Maatwebsite\Excel\Excel::XLSX);
+
+            // return (new SoftwaresExport())->download('C4I DEV J Dev K SW Inventory (' . $current_date . ').xlsx');
         } else {
-            return (new SoftwaresExport('pdf'))->download('C4I DEV J Dev K SW Inventory (' . $current_date . ').pdf');
+              return \Excel::download(new SoftwaresExport(), 'C4I DEV J Dev K SW Inventory (' . $current_date . ').pdf', \Maatwebsite\Excel\Excel::DOMPDF);
+            // return (new SoftwaresExport('pdf'))->download('C4I DEV J Dev K SW Inventory (' . $current_date . ').pdf');
         }
 
     }

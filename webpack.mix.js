@@ -43,5 +43,9 @@ mix.js('resources/js/app.js', 'public/js')
         //
     ])
     .minify('public/css/server.css')
+    .minify('public/css/software_export.css')
+    .postCss('resources/css/software_export.css', 'public/css', [
+        //
+    ])
 
 

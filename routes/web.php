@@ -82,6 +82,7 @@ Route::middleware(['auth', 'web', 'isActive'])->group(function(){
 
     Route::prefix('/softwares')->controller(SoftwaresController::class)->group(function(){
         Route::get('/',  'index')->name('softwares');
+        Route::get('/export', 'export')->name('softwares.export');
         Route::get('/{id}/request', 'detailview')->name('softwares.request')->whereNumber('id');
         Route::post('/store', 'store')->name('softwares.store');
         Route::post('/reject', 'reject')->name('softwares.reject');
