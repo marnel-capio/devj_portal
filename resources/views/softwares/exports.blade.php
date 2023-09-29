@@ -24,9 +24,16 @@
                 $countRow = count($names);
             @endphp
             <tr>
-                <td>
-                    {{$typeCount}}. {{$type}}
-                </td>
+                @if (auth()->user()->roles != config('constants.MANAGER_ROLE_VALUE')) 
+                    <td>
+                        {{$typeCount}}. {{$type}}
+                    </td>
+                @else
+                    <td rowspan="{{$countRow}}">
+                        {{$typeCount}}. {{$type}}
+                    </td>
+                @endif
+                
 
                 @foreach ($names as $softwareDetails => $details)
                     @if ($ctrName == 1)
@@ -39,9 +46,11 @@
                         </tr>
                     @else
                         <tr>
-                            <td>
-                                &nbsp;
-                            </td>
+                            @if (auth()->user()->roles != config('constants.MANAGER_ROLE_VALUE'))
+                                <td>
+                                    &nbsp;
+                                </td>
+                            @endif
                             <td>
                                 {{$details['name']}}
                             </td>
