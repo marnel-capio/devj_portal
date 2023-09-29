@@ -149,7 +149,7 @@ label {
     text-align: left;
   }
   .dash-summary-row:hover {
-    box-shadow: inset 0 0 0 9999px rgba(0, 0, 0, 0.08);
+    box-shadow: inset 0 0 0 9999px rgba(150, 150, 150, 0.3);
   }
   
   .dash-summary-row a:link {
@@ -181,8 +181,8 @@ label {
   } */
 
   .dash-notifications {
-    /* min-height: 250px;
-    max-height: 250px; */
+    min-height: 150px;
+    max-height: 250px;
     overflow-y: scroll; /* Add the ability to scroll */
   }
 
@@ -192,17 +192,33 @@ label {
   
   /* Hide scrollbar for IE, Edge and Firefox */
   .dash-notifications {
-    -ms-overflow-style: none;  /* IE and Edge */
+    -ms-overflow-style: -ms-autohiding-scrollbar;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
+    scrollbar-color: #1746A2;
   }
-
-  .notif-entry {
+  .home-buttons {
+    min-height: 16em;
+    max-height: 16em;
+    /* margin-top:1em;
+    margin-bottom:1em; */
+    margin:1em;
+    padding: 2em;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .dash-notifications:hover {
+    -ms-overflow-style: thin;  /* IE and Edge */
+    scrollbar-width: thin;  /* Firefox */
+    scrollbar-color: #1746A2;
+  }
+  
+  /* .notif-entry {
     padding: 0.25rem;
     margin-bottom: 0.5rem;
-  }
+  } */
   .notif-entry:hover {
-    background-color: #fff;
-    border-radius: 10px;
+    /* background-color: #fff;
+    border-radius: 10px; */
+    box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.3);
   }
 
   .notif-content {

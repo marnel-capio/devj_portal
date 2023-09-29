@@ -47,5 +47,16 @@ $(document).ready(function () {
 		$(window).scrollTop(0);
 	})
 
+	const container = document.querySelector('.dash-notifications');
+	const indicator = document.querySelector('.indicator');
+	
+	container.addEventListener('scroll', () => {
+		if (container.scrollHeight - container.scrollTop === container.clientHeight) {
+			indicator.style.display = 'none';
+		} else {
+			indicator.style.display = 'block';
+		}
+	});
 
+	
 });

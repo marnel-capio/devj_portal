@@ -23,7 +23,7 @@
 						@if($user['passport_isAlertDisplayed'] && $user['approved_status'] != 4)
 							{{-- Set the Passport notification alert type --}}
 							@if($user["passport_isWarning"])
-								<div class="alert alert-danger" role="alert">
+								<div class="alert alert-danger notif-entry" role="alert">
 							@else
 								<div class="alert alert-info" role="alert">
 							@endif
@@ -43,44 +43,44 @@
 						@endif
 
 						@if(isset($employee_details)  && !empty($employee_details['reasons']))
-							<div class="alert alert-danger" role="alert">
+							<div class="alert alert-danger notif-entry" role="alert">
 								Your update in account details has been rejected. <a href="{{ route('employees.clearRejectedUpdate') }}">Clear</a> the rejected data. </br>
 								Reasons: {{$employee_details['reasons']}}.
 							</div>
 						@endif
 
 						@if(isset($softwareRejectedCount)  && !empty($softwareRejectedCount))
-							<div class="alert alert-danger" role="alert">
+							<div class="alert alert-danger notif-entry" role="alert">
 								Your software registration is rejected. Please see the details.
 							</div>
 						@endif
 
 						@if(isset($softwareUpdateRejectedCount)  && !empty($softwareUpdateRejectedCount))
-							<div class="alert alert-danger" role="alert">
+							<div class="alert alert-danger notif-entry" role="alert">
 								Your software update is rejected. Please see the details or <a href="{{ route('softwares.clearRejectedUpdate') }}">clear</a> the rejected data.
 							</div>
 						@endif
 
 						@if(isset($laptopRejectedCount)  && !empty($laptopRejectedCount))
-							<div class="alert alert-danger" role="alert">
+							<div class="alert alert-danger notif-entry" role="alert">
 								Your laptop registration is rejected. Please see the details.
 							</div>
 						@endif
 
 						@if(isset($laptopUpdateRejectedCount)  && !empty($laptopUpdateRejectedCount))
-							<div class="alert alert-danger" role="alert">
+							<div class="alert alert-danger notif-entry" role="alert">
 								Your laptop update is rejected. Please see the details or <a href="{{ route('laptops.clearRejectedUpdate') }}">clear</a> the rejected data.
 							</div>
 						@endif
 
 						@if(isset($laptopLinkRejectedCount)  && !empty($laptopLinkRejectedCount))
-							<div class="alert alert-danger" role="alert">
+							<div class="alert alert-danger notif-entry" role="alert">
 								Your laptop link registration/update is rejected. Please see the details or <a href="{{ route('laptops.clearRejectedLinkage') }}">clear</a> the rejected data.
 							</div>
 						@endif
 
 						@if(isset($projectLinkRejectedCount)  && !empty($projectLinkRejectedCount))
-							<div class="alert alert-danger" role="alert">
+							<div class="alert alert-danger notif-entry" role="alert">
 								Your project link registration/update is rejected. Please see the details or <a href="{{ route('projects.clearRejectedLinkage') }}">clear</a> the rejected data.
 							</div>
 						@endif
@@ -115,7 +115,6 @@
 							</div>
 						</div>
 						@endif
-						@if($laptopRequest != null)
 						<div class="dash-summary-row row mb-1">
 							<div class="col col-md-8 col-sm-8">
 								<a href="#div-laptop-request"><span class="dash-summary-items">Laptop Request</span></a>
@@ -124,8 +123,6 @@
 								{{$laptopRequest != null ? count($laptopRequest) : "0"}}
 							</div>
 						</div>
-						@endif
-						@if($laptopLinkRequest != null)
 						<div class="dash-summary-row row mb-1">
 							<div class="col col-md-8 col-sm-8">
 								<a href="#div-laptop-link-request"><span class="dash-summary-items">Laptop Link Request</span></a>
@@ -133,8 +130,6 @@
 							<div class="dash-summary-count col col-md-4 col-sm-4">
 								{{$laptopLinkRequest != null ? count($laptopLinkRequest) : "0"}}</div>
 						</div>
-						@endif
-						@if($softwareRequest != null)
 						<div class="dash-summary-row row mb-1">
 							<div class="col col-md-8 col-sm-8"><a href="#div-software-request">
 								<span class="dash-summary-items">Software Request</span></a>
@@ -143,8 +138,6 @@
 								{{$softwareRequest != null ?count($softwareRequest) : "0"}}
 							</div>
 						</div>
-						@endif
-						@if($projectLinkRequest != null)
 						<div class="dash-summary-row row mb-1">
 							<div class="col col-md-8 col-sm-8">
 								<a href="#div-project-link-request"><span class="dash-summary-items">Project Link Request</span></a>
@@ -153,7 +146,6 @@
 								{{$projectLinkRequest != null ? count($projectLinkRequest) : "0"}}
 							</div>
 						</div>
-						@endif
 					</div>
 				</div>
 			</div>
@@ -450,6 +442,36 @@
 				</div>
 			@endif
 		</div>
+	</div>
+	@endif
+
+	@if($laptopRequest == null && $softwareRequest == null && $laptopLinkRequest == null && $projectLinkRequest == null)
+	<div id="blank-home" class="row-req-table row group-category-home p-2 d-flex justify-content-center pb-5">
+		<div class="p-3">
+			<h1 class="text-center">Welcome to Dev J Portal</h1>
+			<h3 class="text-center">Get Started by,</h3>
+		</div>
+		<div class="row d-flex justify-content-center">
+			<div class="col col-12 col-md-8">
+				<button type="button" name="home-employee" class="btn btn-outline-primary home-buttons col-12 col-md-5">
+					<i class="bi bi-file-earmark-person fs-1"></i><br>
+					Updating your Personal Information
+				</button>
+				<button type="button" name="home-laptop" class="btn btn-outline-primary home-buttons col-12 col-md-5">
+					<i class="bi bi-laptop fs-1"></i><br>
+					Registering your Laptop
+				</button>
+				<button type="button" name="home-laptop-link" class="btn btn-outline-primary home-buttons col-12 col-md-5">
+					<i class="bi bi-person-workspace fs-1"></i><br>
+					Linking a Laptop to yourself
+				</button>
+				<button type="button" name="home-project-link" class="btn btn-outline-primary home-buttons col-12 col-md-5">
+					<i class="bi bi-kanban fs-1"></i><br>
+					Joining a Project
+				</button>
+			</div>
+		</div>
+
 	</div>
 	@endif
 </div>
