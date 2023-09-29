@@ -158,7 +158,7 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithEvent
         $status = $this->status;
         $passport_status = $this->passport_status;
 
-        $employee = Employees::whereIn('approved_status',  [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')]);
+        $employee = Employees::whereIn('approved_status',  [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])->whereNot('email', config('constants.SYSTEM_EMAIL'));
 
         if (!empty($keyword)) {
 
