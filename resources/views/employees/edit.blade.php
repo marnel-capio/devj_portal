@@ -38,8 +38,8 @@
                         <p class="text-danger">{{ $errors->first('first_name') }}</p>
                         @endif
                     </div>
-                    <div class="col-12 col-md-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="middle_name" id="middle_name" placeholder="Middle Name" value="{{ old('middle_name', $employee->middle_name) }}" required>
+                    <div class="col-12 col-md-3 g-3 form-floating">
+                        <input type="text" class="form-control" name="middle_name" id="middle_name" placeholder="Middle Name" value="{{ old('middle_name', $employee->middle_name) }}">
                         <label  class="text-center" for="middle_name">Middle Name</label>
                         @if ($errors->has('middle_name'))
                         <p class="text-danger">{{ $errors->first('middle_name') }}</p>
@@ -50,6 +50,13 @@
                         <label  class="text-center" for="last_name">Last Name</label>
                         @if ($errors->has('last_name'))
                         <p class="text-danger">{{ $errors->first('last_name') }}</p>
+                        @endif
+                    </div>
+                    <div class="col-12 col-md-1 g-3 form-floating" data-bs-toggle="tooltip" data-bs-placement="top" title="optional: Suffix (Jr, II, III, etc.)">
+                        <input type="text" class="form-control" name="name_suffix" id="name_suffix" placeholder="*Suffix" value="{{ old('name_suffix', $employee->name_suffix) }}">
+                        <label  class="text-center small" for="name_suffix"><em>*Suffix</em></label>
+                        @if ($errors->has('name_suffix'))
+                        <p class="text-danger">{{ $errors->first('name_suffix') }}</p>
                         @endif
                     </div>
                 </div>

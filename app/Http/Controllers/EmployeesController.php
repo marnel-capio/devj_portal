@@ -99,7 +99,7 @@ class EmployeesController extends Controller
 
         $mailData = [
             'link' => route('employees.request', ['id' => $id]),
-            'employeeName' => $insertData['last_name'] .', ' . $insertData['first_name'],
+            'employeeName' => $insertData['last_name'] .', ' . $insertData['first_name'] .', ' . $insertData['name_suffix'],
             'position' => config('constants.POSITION_' .$insertData['position'] .'_NAME'),
             'currentUserId' => $id,
             'module' => "Employee",
@@ -235,7 +235,7 @@ class EmployeesController extends Controller
                 //notify the employee
                 $mailData = [
                     'link' => route('employees.details', ['id' => $id]),  
-                    'updater' => Auth::user()->first_name .' ' .Auth::user()->last_name,
+                    'updater' => Auth::user()->first_name .' ' .Auth::user()->last_name .' ' .Auth::user()->name_suffix,
                     'first_name' => $originalData->first_name,
                     'currentUserId' => Auth::user()->id,
                     'module' => "Employee",
@@ -279,10 +279,10 @@ class EmployeesController extends Controller
             //notify the managers of the request
             $mailData = [
                 'link' => route('employees.request', ['id' => $id]),
-                'requestor' => Auth::user()->first_name .' ' .Auth::user()->last_name,
+                'requestor' => Auth::user()->first_name .' ' .Auth::user()->last_name .' ' .Auth::user()->name_suffix,
                 'currentUserId' => Auth::user()->id,
                 'module' => "Employee",
-                'employeeName' => $originalData->first_name .' ' .$originalData->last_name,
+                'employeeName' => $originalData->first_name .' ' .$originalData->last_name .' ' .$originalData->name_suffix,
             ];
 
             $this->sendMail(Employees::getEmailOfManagers(), $mailData, config('constants.MAIL_EMPLOYEE_UPDATE_REQUEST'));
@@ -333,7 +333,7 @@ class EmployeesController extends Controller
             abort(404);
         }
 
-        $requestor = Employees::selectRaw('concat(first_name, " ", last_name) as requestor')->where('id', $employeeDetails->updated_by)->first();
+        $requestor = Employees::selectRaw('concat(first_name, " ", last_name, " ", name_suffix) as requestor')->where('id', $employeeDetails->updated_by)->first();
 
         return view('employees.details')
         ->with([
@@ -388,7 +388,7 @@ class EmployeesController extends Controller
                             ], 
                             config('constants.MAIL_NEW_REGISTRATION_APPROVAL'));
 
-            Logs::createLog("Employee", "{$employee->first_name} {$employee->last_name}'s account  has been approved.");
+            Logs::createLog("Employee", "{$employee->first_name} {$employee->last_name} {$employee->name_suffix}'s account  has been approved.");
         
         }else{
             $ownAccount = true;
@@ -396,7 +396,7 @@ class EmployeesController extends Controller
             if($employee->id != $employee->updated_by){
                 $ownAccount = false;
                 $requestorData = Employees::where('id', $employee->updated_by)->first();
-                $requestor = !empty($requestorData) ? $requestorData->first_name .' ' .$requestorData->last_name : 'unknown';
+                $requestor = !empty($requestorData) ? $requestorData->first_name .' ' .$requestorData->last_name .' ' .$requestorData->name_suffix : 'unknown';
             }
 
             //update only
@@ -471,14 +471,14 @@ class EmployeesController extends Controller
             ];
             $this->sendMail($employee->email, $mailData, config('constants.MAIL_NEW_REGISTRATION_REJECTION'));
 
-            Logs::createLog("Employee", "Rejected the employee registration of {$employee->first_name} {$employee->last_name} because of: {$reason}.");
+            Logs::createLog("Employee", "Rejected the employee registration of {$employee->first_name} {$employee->last_name} {$employee->name_suffix} because of: {$reason}.");
         }else{
             $ownAccount = true;
             //get requestor
             if($employee->id != $employee->updated_by){
                 $ownAccount = false;
                 $requestorData = Employees::where('id', $employee->updated_by)->first();
-                $requestor = !empty($requestorData) ? $requestorData->first_name .' ' .$requestorData->last_name : 'unknown';
+                $requestor = !empty($requestorData) ? $requestorData->first_name .' ' .$requestorData->last_name  .' ' .$requestorData->name_suffix : 'unknown';
             }
 
             Employees::where('id', $employee['id'])
@@ -502,7 +502,7 @@ class EmployeesController extends Controller
             $this->sendMail($employee->email, $mailData, config('constants.MAIL_EMPLOYEE_UPDATE_REJECTION'));
         
             //logs
-            Logs::createLog("Employee", "Rejected the update details of {$employee->first_name} {$employee->last_name} because of: {$reason}");
+            Logs::createLog("Employee", "Rejected the update details of {$employee->first_name} {$employee->last_name} {$employee->name_suffix} because of: {$reason}");
         }
 
         return redirect(route('home'));
@@ -785,7 +785,6 @@ class EmployeesController extends Controller
             } 
         }
         Logs::createLog("Employee", "Send notification to the active employee to remind them to update their contact details");
-        // return redirect()->route('employees')->with(['success' => 1, "message" => "Successfully sent notifications to all active employees."]);
 
         return response()
         ->json( ['success' => true, 
