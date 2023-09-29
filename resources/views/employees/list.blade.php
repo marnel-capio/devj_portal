@@ -130,6 +130,7 @@
 		                @if(auth()->user()->roles == config('constants.MANAGER_ROLE_VALUE'))
 			                <th>Passport Valid Until</th>
 			                <th>Passport Appointment Date</th>
+			                <th>Passport Expected Delivery Date</th>
 			                <th>No Appointment Reason</th>
 		                @endif
 		            </tr>
@@ -168,6 +169,7 @@
 		                @if(auth()->user()->roles == config('constants.MANAGER_ROLE_VALUE'))
 			                <td>{{$user['passport_expiration_date']}}</td>
 			                <td>{{$user['date_of_appointment']}}</td>
+			                <td>{{$user['date_of_delivery']}}</td>
 			                <td>{{$user['no_appointment_reason']}}</td>
 		                @endif
 		            </tr>

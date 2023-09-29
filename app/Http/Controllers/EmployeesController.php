@@ -55,7 +55,7 @@ class EmployeesController extends Controller
         $request->validated();
 
         $insertData = $this->getEmployeeData($request);
-        Log::debug($insertData);
+        
         $insertData['roles'] = $this->getRoleBasedOnPosition($insertData['position']);
 
         $insertData = $this->validatePassportStatusandInputs($insertData);
