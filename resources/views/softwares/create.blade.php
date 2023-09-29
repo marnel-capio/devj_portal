@@ -11,7 +11,7 @@
             <div class="soft-regist-category p-3 mb-4 rounded-3">
                 <h4 class="text-start">Software Details</h4>
                 <div class="row mb-2 ps-5 pe-3">
-                    <div class="col-4 g-3 form-floating">
+                    <div class="col-12 col-lg-6 g-3 form-floating">
                         <input type="text" class="form-control" name="software_name" id="software_name" placeholder="Software Name" value="{{ old('software_name', $software ? $software->software_name : '') }}" required>
                         <label class="text-center" for="software_name">Software Name</label>
                         @if ($errors->has('software_name'))
@@ -20,7 +20,7 @@
                     </div>
                 </div>
                 <div class="row mb-2 ps-5 pe-3">
-                    <div class="col-4 g-3 form-floating">
+                    <div class="col-12 col-lg-6 g-3 form-floating">
                         <select name="software_type_id" id="software_type_id" class="form-select form-control">
                             <option value=""></option>
                             @foreach ($software_types as $software_type)
@@ -35,7 +35,7 @@
                             <p class="text-danger">{{ $errors->first('software_type_id') }}</p>
                         @endif
                     </div>
-                    <div class="col-4 g-3 form-floating">
+                    <div class="col-12 col-lg-6 g-3 form-floating">
                         <input 
                             {{ (old('software_type_id', $software ? $software->software_type_id : '') == config('constants.SOFTWARE_TYPE_999') ||  ($new_software_type) ) ? "" : "hidden" }} 
                             type="text" class="form-control" name="new_software_type" id="new_software_type" placeholder="Purpose" 
@@ -48,7 +48,7 @@
                     </div>
                 </div>
                 <div class="row mb-2 ps-5 pe-3">
-                    <div class="col-4 g-3 form-floating">
+                    <div class="col-12 col-lg-6 g-3 form-floating">
                         <textarea class="form-control" name="remarks" id="remarks" placeholder="Purpose" required> {{ old('remarks', $software ? $software->remarks : '') }}</textarea>
                         <label class="text-center" for="remarks">Purpose</label>
                         @if ($errors->has('remarks'))
