@@ -24,7 +24,7 @@
                 $countRow = count($names);
             @endphp
             <tr>
-                <td rowspan="{{$countRow}}">
+                <td>
                     {{$typeCount}}. {{$type}}
                 </td>
 
@@ -39,6 +39,9 @@
                         </tr>
                     @else
                         <tr>
+                            <td>
+                                &nbsp;
+                            </td>
                             <td>
                                 {{$details['name']}}
                             </td>
