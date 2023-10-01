@@ -29,7 +29,13 @@ class EmployeesController extends Controller
      */
     public function create($rejectCode = ""){
         $employee = '';
+
+        // Enter if display reject details view
         if($rejectCode){
+
+            // Abort if not accessed page by Email and Reject code input
+            abort_if(!strpos(request()->headers->get('referer'),'rejectedRegistration'), 403);
+
             $employee = Employees::where('reject_code', $rejectCode)
             ->where('approved_status', config('constants.APPROVED_STATUS_REJECTED'))
             ->where('active_status', 0)
@@ -333,7 +339,7 @@ class EmployeesController extends Controller
             abort(404);
         }
 
-        $requestor = Employees::selectRaw('concat(first_name, " ", last_name, " ", name_suffix) as requestor')->where('id', $employeeDetails->updated_by)->first();
+        $requestor = Employees::selectRaw('concat(first_name, " ", last_name) as requestor')->where('id', $employeeDetails->updated_by)->first();
 
         return view('employees.details')
         ->with([
@@ -465,7 +471,8 @@ class EmployeesController extends Controller
             $mailData = [
                 'first_name' => $employee->first_name,
                 'reasons' => $reason,
-                'link' => route('employees.create') ."/{$rejectCode}",
+                'link' => route('login.rejectedRegistration'),
+                'reject_code' => $rejectCode,
                 'currentUserId' => Auth::user()->id,
                 'module' => "Employee",
             ];

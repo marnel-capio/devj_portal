@@ -30,6 +30,7 @@ use PhpParser\Node\Expr\FuncCall;
 Route::middleware('guest')->controller(LoginController::class)->group(function(){
     Route::match(['GET', 'POST'], 'login', 'index')->name('login');
     Route::match(['GET', 'POST'], 'forgotPassword', 'forgotPassword')->name('login.forgotPassword');
+    Route::match(['GET', 'POST'], 'rejectedRegistration', 'rejectedRegistration')->name('login.rejectedRegistration');
 });
 
 Route::middleware(['guest', 'web'])->controller(EmployeesController::class)->prefix('/employees')->group(function(){

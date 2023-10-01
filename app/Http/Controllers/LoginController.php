@@ -40,6 +40,36 @@ class LoginController extends Controller
 
 
     /**
+     * Get the reject code and email address
+     *
+     * @param LoginRequest $request
+     * @return page Error if  invalid data
+     */
+    public function rejectedRegistration(LoginRequest $request){
+        if($request->isMethod('GET')){
+            return view('login.rejectedRegistration');
+        }
+        $request->validated();
+
+        // Get user details
+        $email = $request->input('email_address');
+        $reject_code = $request->input('reject_code');
+        $employee = Employees::where('email', $email)
+                                ->where('approved_status', config('constants.APPROVED_STATUS_REJECTED'))
+                                ->where('reject_code', $reject_code)
+                                ->first();
+
+        if(empty($employee)) {
+            return view('error.requestError')
+            ->with([ 'error' => "Email and Reject code does not match" ]);
+        } else {
+            return redirect(route('employees.create', ['rejectCode' => $reject_code]));
+
+        }
+    }
+
+
+    /**
      * Password reset
      *
      * @param LoginRequest $request

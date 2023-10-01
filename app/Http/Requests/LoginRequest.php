@@ -54,7 +54,16 @@ class LoginRequest extends FormRequest
     {
         $rules = [];
         if($this->isMethod('POST')){
-            $rules = ['email_address' => ['bail', 'required', 'email', 'max:80', 'min:15', new AWSEmailAddress(), 'exists:employees,email', new AccountStatus()]];
+            if(strpos($this->header('referer'), route('login.rejectedRegistration')) !== FALSE){
+                $rules = [
+                    'email_address' => ['bail', 'required', 'email', 'max:80', 'min:15', new AWSEmailAddress(), 'exists:employees,email'],
+                    'reject_code' => 'required|max:80|alpha_num',
+            ];
+            } else {
+                $rules = ['email_address' => ['bail', 'required', 'email', 'max:80', 'min:15', new AWSEmailAddress(), 'exists:employees,email', new AccountStatus()]];
+
+            }
+
             if(strpos($this->header('referer'), route('login')) !== FALSE){
                 $rules['password'] = 'required|max:80|min:8';
             }

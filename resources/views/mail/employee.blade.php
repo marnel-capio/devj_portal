@@ -30,7 +30,8 @@
     Please see the reason below:<br>
     {{ $mailData['reasons'] }}<br>
     <br>
-    Use this <a href="{{ url($mailData['link']) }}">link</a> to update your account details.
+    Visit this <a href="{{ url($mailData['link']) }}">link</a> to resubmit your account registration.<br>
+    Use your AWS email and the <b>Reject Code: {{ $mailData['reject_code'] }} </b> to access your request
 
 
 @elseif ($mailType == config('constants.MAIL_EMPLOYEE_UPDATE_REQUEST'))
