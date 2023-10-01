@@ -373,6 +373,31 @@ class SoftwaresController extends Controller
     }
 
     /**
+     * Process for deleting
+     *
+     * @param string $id
+     * @return void
+     */
+    public function delete($id)
+    {   
+        abort_if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE'), 404);
+
+            //save directly in DB in db
+
+            $updateData['updated_by'] = Auth::user()->id;
+        $updateData['approved_status'] = config('constants.APPROVED_STATUS_REJECTED');
+        $updateData['reasons'] = "Deleted by ".Auth::user()->first_name ." ". Auth::user()->last_name;
+
+        Softwares::where('id', $id)
+            ->update($updateData);
+
+        //format log
+        Logs::createLog("Software", $updateData['reasons']);
+
+        return redirect(route('softwares.update.complete'));
+    }
+
+    /**
      * Display softwares registration request or softwares update request
      *
      * @param [type] $id
