@@ -143,6 +143,7 @@ class ProjectsController extends Controller
                                                 ->from('projects_softwares')
                                                 ->where('project_id', $id);
                                     })
+                                    ->where('softwares.is_deleted',"!=",1)
                                     ->orderBy('software_name', 'asc')
                                     ->get()
                                     ->toArray();

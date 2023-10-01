@@ -382,17 +382,23 @@ class SoftwaresController extends Controller
     {   
         abort_if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE'), 404);
 
-            //save directly in DB in db
+        //save directly in DB in db
 
-            $updateData['updated_by'] = Auth::user()->id;
-        $updateData['approved_status'] = config('constants.APPROVED_STATUS_REJECTED');
-        $updateData['reasons'] = "Deleted by ".Auth::user()->first_name ." ". Auth::user()->last_name;
+        $updateData['updated_by'] = Auth::user()->id;
+        $updateData['is_deleted'] = 1;
+
+        //unlink
 
         Softwares::where('id', $id)
             ->update($updateData);
 
+        //unlink
+        ProjectSoftwares::where('software_id', $id)
+            ->update($updateData);
+
+
         //format log
-        Logs::createLog("Software", $updateData['reasons']);
+        Logs::createLog("Software", "Software with ID: {$id} has been deleted by ".Auth::user()->first_name ." ". Auth::user()->last_name);
 
         return redirect(route('softwares.update.complete'));
     }

@@ -70,7 +70,7 @@ class Softwares extends Model
                                 softwares.reject_code,
                                 softwares.approve_time
                             ')
-                        ->leftJoin('software_types', 'software_types.id',  'softwares.software_type_id');
+                        ->leftJoin('software_types', 'software_types.id',  'softwares.software_type_id')->where('softwares.is_deleted',"!=",1);
 
         if (!empty($keyword)) {
             $query=  $query->where('softwares.software_name','LIKE','%'.$keyword.'%');
@@ -96,7 +96,6 @@ class Softwares extends Model
 
         }                                                      
 
-        
         $query->orderBy('softwares.software_name', 'ASC');
         return $query->get()->toArray();
 
@@ -157,7 +156,6 @@ class Softwares extends Model
                 ->where('softwares.id', $current_id)
                 ->orderBy('softwares.software_type_id', 'ASC')
                 ->first();
-
 
         return $query;
     }
