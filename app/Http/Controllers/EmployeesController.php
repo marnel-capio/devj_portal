@@ -590,7 +590,7 @@ class EmployeesController extends Controller
      */
     private function getEmployeeData(EmployeesRequest $request){
         $data = $request->except(['_token', 'confirm_password', 'password', 'is_admin']);
-        $this->changeStringCase($data, ['email', 'password', 'other_contact_info','passport_number','issuing_authority','place_of_issue','no_appointment_reason']);
+        $this->changeStringCase($data, ['name_suffix', 'email', 'password', 'other_contact_info','passport_number','issuing_authority','place_of_issue','no_appointment_reason']);
         $data['password'] =  password_hash($request->input('password'), PASSWORD_BCRYPT);
         if(Auth::check()){
             //for data update
