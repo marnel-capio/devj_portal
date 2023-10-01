@@ -9,11 +9,11 @@
 				{{-- Contains Urgent / Latest notifications --}}
 				<div class="group-category-home dash-notification-container col col-12 col-lg-7 py-2 px-4 mb-3">
 					<div class="row mb-3">
-						<div class="col col-12  col-md-12 col-lg-7">
+						<div class="col col-12 col-lg-8">
 							<h3> Welcome, {{ auth()->user()->first_name }}</h3>
 						</div>
-						<div class="col col-12  col-md-12 col-lg-5">
-							<span> Today is {{ $date }} </span>
+						<div class="col col-12 col-lg-4">
+							<small> Today is {{ $date }} </small>
 						</div>
 					</div>
 					<!--div>
@@ -453,7 +453,7 @@
 		</div>
 		<div class="row d-flex justify-content-center">
 			<div class="col col-12 col-md-8">
-				<button type="button" name="home-employee" class="btn btn-outline-primary home-buttons col-12 col-md-5">
+				<button type="button" name="home-employee" user-id="{{ $user['id'] }}"class="btn btn-outline-primary home-buttons col-12 col-md-5">
 					<i class="bi bi-file-earmark-person fs-1"></i><br>
 					Updating your Personal Information
 				</button>

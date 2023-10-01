@@ -58,5 +58,27 @@ $(document).ready(function () {
 		}
 	});
 
+	$("button").click(function() {
+		var module_name = $(this).prop("name").replace("home-", "");
+		var user_id = $(this).attr("user-id");
+		var url;
+
+		switch(module_name) {
+			case "employee" :
+				url = `/employees/${user_id}`;
+				break;
+			case "laptop" :
+				url = "/laptops/create";
+				break;
+			case "laptop-link" :
+				url = "/laptops";
+				break;
+			case "project-link" :
+				url = "/projects";
+				break;
+		}
+
+		$(location).attr('href',url);
+	});
 	
 });
