@@ -98,7 +98,6 @@ class EmployeesRequest extends FormRequest
         if($this->isMethod('POST')){
             $rules = [
                 'first_name' => 'required|max:80|alpha_space',
-                'middle_name' => 'max:80|alpha_space',
                 'last_name' => 'required|max:80|alpha_space',
                 'birthdate' => 'required|date|regex:/^\d{4}-\d{2}-\d{2}$/|before:' . Carbon::now()->subYears(18)->format('Y-m-d'),
                 'gender' => 'required|in:0,1',
@@ -119,6 +118,10 @@ class EmployeesRequest extends FormRequest
 
             if(!empty($this->input('name_suffix'))) {
                 $rules['name_suffix'] = 'max:80|alpha_space';
+            }
+
+            if(!empty($this->input('middle_name'))) {
+                $rules['middle_name'] = 'max:80|alpha_space';
             }
 
             if ($this->input('passport_status') == config('constants.PASSPORT_STATUS_WITH_PASSPORT_VALUE')) {
