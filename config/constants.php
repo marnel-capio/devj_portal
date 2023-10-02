@@ -31,8 +31,10 @@ return [
     'POSITION_SR_ASSOC_RESEARCH_DEVELOPMENT_VALUE' => 5,
     'POSITION_SUPERVISOR_VALUE' => 6,
     'POSITION_ADVISER_VALUE' => 7,
-    'POSITION_ASSSITANT_MANAGER_VALUE' => 8,
-    'POSITION_MANAGER_VALUE' => 9,
+    'POSITION_TECHNICAL_SPECIALIST_VALUE' => 8,
+    'POSITION_APPLICATION_DEVELOPER_VALUE' => 9,
+    'POSITION_ASSSITANT_MANAGER_VALUE' => 98,
+    'POSITION_MANAGER_VALUE' => 99,
     
     'POSITION_1_NAME' => 'Junior Research and Development',
     'POSITION_2_NAME' => 'Assistant Research and Development',
@@ -41,8 +43,25 @@ return [
     'POSITION_5_NAME' => 'Senior Associate Research and Development',
     'POSITION_6_NAME' => 'Supervisor',
     'POSITION_7_NAME' => 'Adviser',
-    'POSITION_8_NAME' => 'Assistant Manager',
-    'POSITION_9_NAME' => 'Manager',
+    'POSITION_8_NAME' => 'Technical Specialist',
+    'POSITION_9_NAME' => 'Application Developer',
+    'POSITION_98_NAME' => 'Assistant Manager',
+    'POSITION_99_NAME' => 'Manager',
+
+    'POSITIONS' => [
+        1 => 'Junior Research and Development',
+        2 => 'Assistant Research and Development',
+        3 => 'Senior Assistant Research and Development',
+        4 => 'Associate Research and Development',
+        5 => 'Senior Associate Research and Development',
+        6 => 'Supervisor',
+        7 => 'Adviser',
+        8 => 'Technical Specialist',
+        9 => 'Application Developer',
+        98 => 'Assistant Manager',
+        99 => 'Manager',
+
+    ],
 
     // Employee table - passport type
     'PASSPORT_TYPE_1_NAME' => 'Ordinary',

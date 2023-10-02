@@ -71,17 +71,10 @@
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-md-6 col-12 g-3 form-floating">
                         <select name="position" id="position" class="form-select form-control">
-                            <option {{ old('position', $employee ? $employee->position : '') == config('constants.POSITION_JR_RESEARCH_DEVELOPMENT_VALUE')          ? "selected" : "" }} value="{{ config('constants.POSITION_JR_RESEARCH_DEVELOPMENT_VALUE')           }}"> {{ config('constants.POSITION_1_NAME') }}</option>
-                            <option {{ old('position', $employee ? $employee->position : '') == config('constants.POSITION_ASSISTANT_RESEARCH_DEVELOPMENT_VALUE')   ? "selected" : "" }} value="{{ config('constants.POSITION_ASSISTANT_RESEARCH_DEVELOPMENT_VALUE')    }}"> {{ config('constants.POSITION_2_NAME') }}</option>
-                            <option {{ old('position', $employee ? $employee->position : '') == config('constants.POSITION_SR_ASSISTANT_RESEARCH_DEVELOPMENT_VALUE')? "selected" : "" }} value="{{ config('constants.POSITION_SR_ASSISTANT_RESEARCH_DEVELOPMENT_VALUE') }}"> {{ config('constants.POSITION_3_NAME') }}</option>
-                            <option {{ old('position', $employee ? $employee->position : '') == config('constants.POSITION_ASSOC_RESEARCH_DEVELOPMENT_VALUE')       ? "selected" : "" }} value="{{ config('constants.POSITION_ASSOC_RESEARCH_DEVELOPMENT_VALUE')        }}"> {{ config('constants.POSITION_4_NAME') }}</option>
-                            <option {{ old('position', $employee ? $employee->position : '') == config('constants.POSITION_SR_ASSOC_RESEARCH_DEVELOPMENT_VALUE')    ? "selected" : "" }} value="{{ config('constants.POSITION_SR_ASSOC_RESEARCH_DEVELOPMENT_VALUE')     }}"> {{ config('constants.POSITION_5_NAME') }}</option>
-                            <option {{ old('position', $employee ? $employee->position : '') == config('constants.POSITION_SUPERVISOR_VALUE')                       ? "selected" : "" }} value="{{ config('constants.POSITION_SUPERVISOR_VALUE')                        }}"> {{ config('constants.POSITION_6_NAME') }}</option>
-                            <option {{ old('position', $employee ? $employee->position : '') == config('constants.POSITION_ADVISER_VALUE')                          ? "selected" : "" }} value="{{ config('constants.POSITION_ADVISER_VALUE')                           }}"> {{ config('constants.POSITION_7_NAME') }}</option>
-                            <option {{ old('position', $employee ? $employee->position : '') == config('constants.POSITION_ASSSITANT_MANAGER_VALUE')                ? "selected" : "" }} value="{{ config('constants.POSITION_ASSSITANT_MANAGER_VALUE')                 }}"> {{ config('constants.POSITION_8_NAME') }}</option>
-                            <option {{ old('position', $employee ? $employee->position : '') == config('constants.POSITION_MANAGER_VALUE')                          ? "selected" : "" }} value="{{ config('constants.POSITION_MANAGER_VALUE')                           }}"> {{ config('constants.POSITION_9_NAME') }}</option>
-
-
+                            @foreach (config('constants.POSITIONS') as $value => $name)
+                                <option {{ old('position', $employee ? $employee->position : '') == $value ? "selected" : "" }} value="{{ $value 
+                                     }}"> {{ $name }}</option>
+                            @endforeach
                         </select>
                         <label  class="text-center" for="position">Position</label>
                         @if ($errors->has('position'))

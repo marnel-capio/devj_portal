@@ -92,15 +92,10 @@
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-md-6 col-12 g-3 form-floating">
                         <select name="position" id="position" class="form-select form-control">
-                            <option {{ old('position', $employee->position) == 1 ? "selected" : "" }} value="1">{{ config('constants.POSITION_1_NAME') }}</option>
-                            <option {{ old('position', $employee->position) == 2 ? "selected" : "" }} value="2">{{ config('constants.POSITION_2_NAME') }}</option>
-                            <option {{ old('position', $employee->position) == 3 ? "selected" : "" }} value="3">{{ config('constants.POSITION_3_NAME') }}</option>
-                            <option {{ old('position', $employee->position) == 4 ? "selected" : "" }} value="4">{{ config('constants.POSITION_4_NAME') }}</option>
-                            <option {{ old('position', $employee->position) == 5 ? "selected" : "" }} value="5">{{ config('constants.POSITION_5_NAME') }}</option>
-                            <option {{ old('position', $employee->position) == 6 ? "selected" : "" }} value="6">{{ config('constants.POSITION_6_NAME') }}</option>
-                            <option {{ old('position', $employee->position) == 7 ? "selected" : "" }} value="7">{{ config('constants.POSITION_7_NAME') }}</option>
-                            <option {{ old('position', $employee->position) == 8 ? "selected" : "" }} value="8">{{ config('constants.POSITION_8_NAME') }}</option>
-                            <option {{ old('position', $employee->position) == 9 ? "selected" : "" }} value="9">{{ config('constants.POSITION_9_NAME') }}</option>
+                            @foreach (config('constants.POSITIONS') as $value => $name)
+                                <option {{ old('position', $employee ? $employee->position : '') == $value ? "selected" : "" }} value="{{ $value 
+                                     }}"> {{ $name }}</option>
+                            @endforeach
                         </select>
                         <label  class="text-center" for="position">Position</label>
                         @if ($errors->has('position'))
