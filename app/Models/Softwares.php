@@ -140,6 +140,7 @@ class Softwares extends Model
                         softwares.remarks,
                         softwares.reasons,
                         softwares.update_data,
+                        softwares.is_deleted,
                         softwares.create_time,
                         softwares.update_time,
                         softwares.reject_code,
