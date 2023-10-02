@@ -5,7 +5,7 @@
 <div class="container ps-3 pe-3 pt-5">
     <h3>Software Registration</h3>
     <div class="pt-4">
-        <form action="{{ route('softwares.regist') }}" method="POST">
+        <form action="{{ route('softwares.regist') }}" method="POST" id="software-reg-form">
             @csrf
             <input type="text" name="id" value="{{ isset($software->id) ? $software->id : '' }}" hidden >
             <div class="soft-regist-category p-3 mb-4 rounded-3">

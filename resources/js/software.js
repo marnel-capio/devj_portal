@@ -189,6 +189,7 @@ $(document).ready(function () {
 	});
 
 	$("#soft-reg-submit").click(function(){
+		$("#software-reg-form").submit();
 		$('#soft-reg-submit').prop('disabled', true);
 		$("#soft-reg-submit-spinner").show();
 	});
