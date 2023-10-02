@@ -17,8 +17,8 @@
                         <p class="text-danger">{{ $errors->first('first_name') }}</p>
                         @endif
                     </div>
-                    <div class="col-12 col-md-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="middle_name" id="middle_name" placeholder="Middle Name" value="{{ old('middle_name', $employee ? $employee->middle_name : '') }}" required>
+                    <div class="col-12 col-md-3 g-3 form-floating">
+                        <input type="text" class="form-control" name="middle_name" id="middle_name" placeholder="Middle Name" value="{{ old('middle_name', $employee ? $employee->middle_name : '') }}">
                         <label  class="text-center" for="middle_name">Middle Name</label>
                         @if ($errors->has('middle_name'))
                         <p class="text-danger">{{ $errors->first('middle_name') }}</p>
@@ -31,6 +31,13 @@
                         <p class="text-danger">{{ $errors->first('last_name') }}</p>
                         @endif
                     </div>
+                    <div class="col-12 col-md-1 g-3 form-floating" data-bs-toggle="tooltip" data-bs-placement="top" title="optional: Suffix (Jr, II, III, etc.)">
+                        <input type="text" class="form-control" name="name_suffix" id="name_suffix" placeholder="*Suffix" value="{{ old('name_suffix', $employee ? $employee->name_suffix : '') }}">
+                        <label  class="text-center small" for="name_suffix"><em>*Suffix</em></label>
+                        @if ($errors->has('name_suffix'))
+                        <p class="text-danger">{{ $errors->first('name_suffix') }}</p>
+                        @endif
+                    </div>
                 </div>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-12 col-sm-5 g-3 form-floating">
@@ -40,7 +47,7 @@
                         <p class="text-danger">{{ $errors->first('birthdate') }}</p>
                         @endif
                     </div>
-                    <div class="col-12 col-sm-7 col-8 g-3 text-start">
+                    <div class="col-12 col-sm-4 col-8 g-3 text-start">
                         <div class="input-box-radio">
                             <div class="d-inline">
                                 Gender:&nbsp&nbsp
@@ -114,7 +121,7 @@
 
         <div class="col-12 col-md-4 g-3 form-floating"
             data-bs-toggle="tooltip" data-bs-placement="top"
-            title="Input secondary phone number or email">
+            title="(optional) Input secondary phone number or email">
             <input type="text" class="form-control" name="other_contact_info" id="other_contact" placeholder="Other Contact Info" value="{{ old('other_contact_info', $employee ? $employee->other_contact_info : '') }}">
             <label for="other_contact" class="text-center">Other Contact Info (optional)</label>
             @if ($errors->has('other_contact_info'))

@@ -30,7 +30,7 @@ class Employees extends Authenticatable
      * @return void
      */
     static function getEmployeeRequest() {
-    	$employee = Employees::select('id','first_name','last_name','email','position','approved_status','reasons')
+    	$employee = Employees::select('id','first_name','last_name', 'name_suffix', 'email','position','approved_status','reasons')
                     ->where(function($query) {
                         $query->where('active_status', 0)
                             ->whereIN('approved_status', [1,3]);
@@ -62,7 +62,7 @@ class Employees extends Authenticatable
      * @return void
      */
     static function getEmployeeNameListForLaptopDropdown($laptopId){
-        return self::selectRaw('id, CONCAT(last_name, ", ", first_name) AS employee_name')
+        return self::selectRaw('id, CONCAT(last_name, ", ", first_name, " ", name_suffix) AS employee_name')
                     ->where('active_status', 1)
                     ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
                     ->whereNotIn('id', function($query) use ($laptopId){
@@ -84,7 +84,7 @@ class Employees extends Authenticatable
      */
     static function getEmployeeLaptopHistory(){
         return self::selectRaw('
-                            CONCAT(employees.last_name, ", ", employees.first_name) AS employee_name,
+                            CONCAT(employees.last_name, ", ", employees.first_name, " ", employees.name_suffix) AS employee_name,
                             CASE WHEN employees_laptops.brought_home_flag THEN "Y" ELSE "N" END AS brought_home_flag,
                             laptops.peza_form_number,
                             laptops.peza_permit_number,
