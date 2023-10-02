@@ -834,10 +834,18 @@ class EmployeesController extends Controller
      * @return string
      */
     private function getFullName($employee, $withMiddleName = false) {
-        if($withMiddleName) {
-            return $employee->first_name .' ' . (!empty($employee->middle_name) ? " " . $employee->middle_name : "") .' ' . $employee->last_name . (!empty($employee->name_suffix) ? " " . $employee->name_suffix : "");
+        if(is_array($employee)) {
+            if($withMiddleName) {
+                return $employee['first_name'] .' ' . (!empty($employee['middle_name']) ? " " . $employee['middle_name'] : "") .' ' . $employee['last_name'] . (!empty($employee['name_suffix']) ? " " . $employee['name_suffix'] : "");
+            } else {
+                return $employee['first_name'] .' ' . $employee['last_name'] . (!empty($employee['name_suffix']) ? " " . $employee['name_suffix'] : "");
+            }
         } else {
-            return $employee->first_name .' ' . $employee->last_name . (!empty($employee->name_suffix) ? " " . $employee->name_suffix : "");
+            if($withMiddleName) {
+                return $employee->first_name .' ' . (!empty($employee->middle_name) ? " " . $employee->middle_name : "") .' ' . $employee->last_name . (!empty($employee->name_suffix) ? " " . $employee->name_suffix : "");
+            } else {
+                return $employee->first_name .' ' . $employee->last_name . (!empty($employee->name_suffix) ? " " . $employee->name_suffix : "");
+            }
         }
     }
 
