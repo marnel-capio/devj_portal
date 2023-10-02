@@ -99,7 +99,7 @@ class EmployeesController extends Controller
 
         $mailData = [
             'link' => route('employees.request', ['id' => $id]),
-            'employeeName' => $insertData['last_name'] .', ' . $insertData['first_name'] .', ' . $insertData['name_suffix'],
+            'employeeName' => $this->getFullName($insertData, false),
             'position' => config('constants.POSITION_' .$insertData['position'] .'_NAME'),
             'currentUserId' => $id,
             'module' => "Employee",
@@ -235,7 +235,7 @@ class EmployeesController extends Controller
                 //notify the employee
                 $mailData = [
                     'link' => route('employees.details', ['id' => $id]),  
-                    'updater' => Auth::user()->first_name .' ' .Auth::user()->last_name .' ' .Auth::user()->name_suffix,
+                    'updater' => $this->getFullName(Auth::user(), false),
                     'first_name' => $originalData->first_name,
                     'currentUserId' => Auth::user()->id,
                     'module' => "Employee",
@@ -279,10 +279,10 @@ class EmployeesController extends Controller
             //notify the managers of the request
             $mailData = [
                 'link' => route('employees.request', ['id' => $id]),
-                'requestor' => Auth::user()->first_name .' ' .Auth::user()->last_name .' ' .Auth::user()->name_suffix,
+                'requestor' => $this->getFullName(Auth::user(), false),
                 'currentUserId' => Auth::user()->id,
                 'module' => "Employee",
-                'employeeName' => $originalData->first_name .' ' .$originalData->last_name .' ' .$originalData->name_suffix,
+                'employeeName' => $this->getFullName($originalData, false),
             ];
 
             $this->sendMail(Employees::getEmailOfManagers(), $mailData, config('constants.MAIL_EMPLOYEE_UPDATE_REQUEST'));
@@ -333,7 +333,8 @@ class EmployeesController extends Controller
             abort(404);
         }
 
-        $requestor = Employees::selectRaw('concat(first_name, " ", last_name, " ", name_suffix) as requestor')->where('id', $employeeDetails->updated_by)->first();
+
+        $requestor = Employees::selectRaw('first_name, last_name, name_suffix')->where('id', $employeeDetails->updated_by)->first();
 
         return view('employees.details')
         ->with([
@@ -343,7 +344,7 @@ class EmployeesController extends Controller
             'detailNote' => $detailNote,
             'showRejectCodeModal' => 1,
             'employee' => $employeeDetails,
-            'requestor' => $requestor
+            'requestor' => $this->getFullName($requestor, false),
         ]);
     }
 
@@ -388,7 +389,7 @@ class EmployeesController extends Controller
                             ], 
                             config('constants.MAIL_NEW_REGISTRATION_APPROVAL'));
 
-            Logs::createLog("Employee", "{$employee->first_name} {$employee->last_name} {$employee->name_suffix}'s account  has been approved.");
+            Logs::createLog("Employee", "{$this->getFullName($employee, false)}'s account  has been approved.");
         
         }else{
             $ownAccount = true;
@@ -396,7 +397,7 @@ class EmployeesController extends Controller
             if($employee->id != $employee->updated_by){
                 $ownAccount = false;
                 $requestorData = Employees::where('id', $employee->updated_by)->first();
-                $requestor = !empty($requestorData) ? $requestorData->first_name .' ' .$requestorData->last_name .' ' .$requestorData->name_suffix : 'unknown';
+                $requestor = !empty($requestorData) ? $this->getFullName($requestorData, false) : 'unknown';
             }
 
             //update only
@@ -471,14 +472,14 @@ class EmployeesController extends Controller
             ];
             $this->sendMail($employee->email, $mailData, config('constants.MAIL_NEW_REGISTRATION_REJECTION'));
 
-            Logs::createLog("Employee", "Rejected the employee registration of {$employee->first_name} {$employee->last_name} {$employee->name_suffix} because of: {$reason}.");
+            Logs::createLog("Employee", "Rejected the employee registration of {$this->getFullName($employee, false)} because of: {$reason}.");
         }else{
             $ownAccount = true;
             //get requestor
             if($employee->id != $employee->updated_by){
                 $ownAccount = false;
                 $requestorData = Employees::where('id', $employee->updated_by)->first();
-                $requestor = !empty($requestorData) ? $requestorData->first_name .' ' .$requestorData->last_name  .' ' .$requestorData->name_suffix : 'unknown';
+                $requestor = !empty($requestorData) ? $this->getFullName($requestorData, false) : 'unknown';
             }
 
             Employees::where('id', $employee['id'])
@@ -502,7 +503,7 @@ class EmployeesController extends Controller
             $this->sendMail($employee->email, $mailData, config('constants.MAIL_EMPLOYEE_UPDATE_REJECTION'));
         
             //logs
-            Logs::createLog("Employee", "Rejected the update details of {$employee->first_name} {$employee->last_name} {$employee->name_suffix} because of: {$reason}");
+            Logs::createLog("Employee", "Rejected the update details of {$this->getFullName($employee, false)} because of: {$reason}");
         }
 
         return redirect(route('home'));
@@ -823,6 +824,20 @@ class EmployeesController extends Controller
     public static function getPassportStatus($employee) {
         return Employees::getPassportStatus($employee);
 
+    }
+
+    
+    /**
+     * Get the full name of employee
+     *
+     * @param [type] $employee
+     * @return string
+     */
+    private function getFullName($employee, $withMiddleName = false) {
+        if($withMiddleName)
+            return $employee->first_name .' ' . (!empty($employee->middle_name) ? " " . $employee->middle_name : "") .' ' . $employee->last_name . (!empty($employee->name_suffix) ? " " . $employee->name_suffix : "");
+        else
+            return $employee->first_name .' ' . $employee->last_name . (!empty($employee->name_suffix) ? " " . $employee->name_suffix : "");
     }
 
 }
