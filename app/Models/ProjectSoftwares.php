@@ -66,6 +66,7 @@ class ProjectSoftwares extends Model
                 ')
                 ->from('projects_softwares AS ps')
                 ->leftJoin('softwares AS s', 's.id', 'ps.software_id')
+                ->where('s.is_deleted',"!=",1)
                 ->leftJoin('software_types AS st', 'st.id', 's.software_type_id')
                 ->where('ps.project_id', $id)
                 ->orderBy('s.software_name', 'asc')

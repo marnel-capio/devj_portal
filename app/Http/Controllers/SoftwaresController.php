@@ -189,6 +189,11 @@ class SoftwaresController extends Controller
 
         abort_if(empty($softwareDetails), 404); //software does not exist
 
+        // Check if software is deleted
+        if($softwareDetails->is_deleted == 1) {
+            return view('error.requestError')->with([ 'error' => "This software is deleted" ]);
+        }
+
         //check if new software type should be displayed
         if($softwareDetails->type_approved_status != config('constants.APPROVED_STATUS_APPROVED'))
         {
@@ -370,6 +375,37 @@ class SoftwaresController extends Controller
         }
 
         return redirect(route('softwares.details', ['id' => $id]));
+    }
+
+    /**
+     * Process for deleting
+     *
+     * @param string $id
+     * @return void
+     */
+    public function delete($id)
+    {   
+        abort_if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE'), 404);
+
+        //save directly in DB in db
+
+        $updateData['updated_by'] = Auth::user()->id;
+        $updateData['is_deleted'] = 1;
+
+        //unlink
+
+        Softwares::where('id', $id)
+            ->update($updateData);
+
+        //unlink
+        ProjectSoftwares::where('software_id', $id)
+            ->update($updateData);
+
+
+        //format log
+        Logs::createLog("Software", "Software with ID: {$id} has been deleted by ".Auth::user()->first_name ." ". Auth::user()->last_name);
+
+        return redirect(route('softwares.update.complete'));
     }
 
     /**

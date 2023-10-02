@@ -25,6 +25,9 @@
             @if ($allowedToEdit)
             <a href="{{ route('softwares.edit', ['id' => $software->id]) }}" class="btn btn-primary  me-1" type="button">Edit</a>
             @endif
+            @if ($userInfo->roles == config('constants.MANAGER_ROLE_VALUE') && $software->approved_status != config('constants.APPROVED_STATUS_REJECTED'))
+            <a href="{{ route('softwares.delete', ['id' => $software->id]) }}" class="btn btn-danger  me-1" type="button">Delete</a>
+            @endif
         </div>
         
     </div>

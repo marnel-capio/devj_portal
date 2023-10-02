@@ -83,6 +83,7 @@ Route::middleware(['auth', 'web', 'isActive'])->group(function(){
     Route::prefix('/softwares')->controller(SoftwaresController::class)->group(function(){
         Route::get('/',  'index')->name('softwares');
         Route::get('/{id}/request', 'detailview')->name('softwares.request')->whereNumber('id');
+        Route::get('/{id}/delete', 'delete')->name('softwares.delete')->whereNumber('id');
         Route::post('/store', 'store')->name('softwares.store');
         Route::post('/reject', 'reject')->name('softwares.reject');
         Route::post('/update', 'update')->name('softwares.update');
