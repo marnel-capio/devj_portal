@@ -125,21 +125,7 @@ $(document).ready( function () {
                 }
 
 			}else{
-                // Reset form
-				$("#link_employee_form").trigger('reset');
-                // Remove error messages
-                $("#link_employee_form").find("[name]").each( function () {
-                    if ($('#link_employee_form #link_' + $(this).attr('name') + '_error').length > 0 ) {
-                        $('#link_employee_form #link_' + $(this).attr('name') + '_error').empty();
-                    }
-                });
-
-
-				$("#member_list > option[value=" + postData.employee_id + "]").remove();
-				$("#le_success_msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;' + data.message + '.').addClass("text-success mb-2 text-start");
-
-				// Update the Project Members' table
-				updateProjectMemberTable(data, postData.employee_id, postData.employee_role);
+                location.reload();
 			}
 
 		}).fail(function (ddata, exception) {

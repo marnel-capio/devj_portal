@@ -228,7 +228,7 @@ class ApiController extends Controller
             ];
 
             $this->sendMailForEmployeeUpdate(Employees::getEmailOfManagers(), $mailData, config('constants.MAIL_EMPLOYEE_PROJECT_LINK_REQUEST'));
-            $message = 'Request for linkage has been sent.';
+            $message = 'Request for linkage has been sent';
             $logMessage = "{$requestor} requests to link {$project->name} project to {$employee->full_name}.";
             
             if(Auth::user()->id != $employee->id)
@@ -442,7 +442,7 @@ class ApiController extends Controller
 
             $this->sendMailForLaptop($recipients, $mailData, config('constants.MAIL_LAPTOP_DETAIL_UPDATE_REQUEST'));
 
-            session(['l_alert'=> 'Request for Laptop Detail Update has been sent.']);
+            session(['l_alert'=> 'Request for Laptop Detail Update has been sent']);
         }
         return response()->json([
             'success' => true,
@@ -529,7 +529,7 @@ class ApiController extends Controller
 
             $this->sendMailForLaptop($recipients, $mailData, config('constants.MAIL_LAPTOP_LINKAGE_UPDATE_BY_NON_MANAGER_REQUEST'));
 
-            session(['ul_alert'=> 'Request for Laptop Linkage Update has been sent.']);
+            session(['ul_alert'=> 'Request for Laptop Linkage Update has been sent']);
         }
         
 
@@ -607,7 +607,7 @@ class ApiController extends Controller
 
             $this->sendMailForLaptop($recipients, $mailData, config('constants.MAIL_LAPTOP_NEW_LINKAGE_BY_NON_MANAGER_REQUEST'));
 
-            session(['ul_alert'=> 'Request for Laptop Linkage has been sent.']);
+            session(['ul_alert'=> 'Request for Laptop Linkage has been sent']);
         }
 
         return response()->json([
@@ -942,7 +942,7 @@ class ApiController extends Controller
 
             Mail::to(Employees::getEmailOfManagers())->send(new Project($mailData, config('constants.MAIL_PROJECT_EMPLOYEE_LINKAGE_REQUEST')));
 
-            $message = 'Request for linkage has been sent.';
+            $message = 'Request for linkage has been sent';
             // if(Auth::user()->id != $employee->id)
             // {
             //     $logMessage = "{$requestor} requests to link {$project->name} project to {$employee->full_name}.";
@@ -954,6 +954,7 @@ class ApiController extends Controller
         
         Logs::createLog("Project", $logMessage);
 
+        session(['pj_alert'=> 'Request for Project Linkage has been sent']);
 
         return response()->json(['success' => true, 
                                     'message' => $message, 
@@ -1012,7 +1013,7 @@ class ApiController extends Controller
                 Mail::to($employee->email)->send(new Project($mailData, config('constants.MAIL_PROJECT_EMPLOYEE_LINKAGE_UPDATE_BY_MANAGER')));
             }
 
-            $message = 'Employee has been successfully linked.';
+            $message = 'Employee has been successfully linked';
         }else{
             //if an employee edits his own data and is not the manager
             $tojson = [];
@@ -1040,7 +1041,7 @@ class ApiController extends Controller
 
             Mail::to(Employees::getEmailOfManagers())->send(new Project($mailData, config('constants.MAIL_PROJECT_EMPLOYEE_LINKAGE_UPDATE_REQUEST')));
 
-            $message = 'Request for linkage has been sent.';
+            $message = 'Request for linkage update has been sent';
         }
         
         Logs::createLog("Project", "Updated the linkage data of {$employee->first_name} {$employee->last_name} to {$project->name}");
