@@ -143,9 +143,6 @@ class ProjectsController extends Controller
                 ->where('ep.project_id', $id)
                 ->where('e.id', Auth::user()->id)
                 ->whereIn('ep.approved_status', [config('constants.APPROVED_STATUS_PENDING'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
-                ->orderBy('ep.update_time', 'asc')
-                ->orderBy('e.last_name', 'asc')
-                ->orderBy('e.first_name', 'asc')
                 ->get()
                 ->toArray();
         }
@@ -166,12 +163,17 @@ class ProjectsController extends Controller
                                     ->get()
                                     ->toArray();
 
+        if(Auth::user()->roles == config('constants.ENGINEER_ROLE_VALUE') && (count($employeeLinkageRequests) < 1)) {
+            $showAddBtn = true;
+        } else {
+            $showAddBtn = false;
+        }
 
         return view('projects.details', [
             'projectData' => $projectData,
             'isManager' => Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE'),
             'detailNote' => '', 
-            'showAddBtn' => true,   //fix later
+            'showAddBtn' => $showAddBtn,
             'projectMembers' => $projectMembers,
             'employeeDropdown' => $employeeDropdown,
             'employeeLinkageRequests' => $employeeLinkageRequests,

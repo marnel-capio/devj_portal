@@ -66,7 +66,7 @@
                     <label for="show_hist" class="form-check-label user-select-none">Show previous members</label>
                 </div>
             </div>
-            @if ($showAddBtn)
+            @if($showAddBtn)
             <button class="btn btn-primary" data-bs-target="#link_employee_modal" data-bs-toggle="modal">Add</button>
             <div class="modal modal fade" tabindex='-1' id="link_employee_modal">
                 <div class="modal-dialog modal-dialog-centered">
