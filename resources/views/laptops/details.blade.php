@@ -437,7 +437,7 @@
     </div>
     <div class="group-category mb-4 p-3 rounded-3">
         <div class="d-flex justify-content-start">
-            <h4 class="text-start">Link Requests</h4><span class="text-primary">&nbsp;&nbsp; {{ empty($linkageData) ? '※For new linkage' : '※For linkage udpate'   }}</span>
+            <h4 class="text-start">Link Requests</h4><span class="text-primary">&nbsp;&nbsp; {{ empty($linkageData) ? '※For new linkage' : '※For linkage update'   }}</span>
         </div>
 
         <div class="ms-3 table-avoid-overflow">
