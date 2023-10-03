@@ -8,6 +8,7 @@ const REINSTATE_EMPLOYEE_LINK = '/api/reinstateEmployee';
 const NOTIFY_SURRENDER_OF_LAPTOPS_LINK = '/api/notifySurrender';
 const APPROVE_EMPLOYEE_LINK = '/employees/store';
 const SEND_NOTIFICATION_LINK = '/employees/sendNotification';
+const EMPLOYEE_DOWNLOAD_LINK = '/employees/download'
 const BU_LIST = {
     '1'  : 'Dev A',
     '2'  : 'Dev B',
@@ -145,16 +146,58 @@ $(document).ready(function () {
 
 	// Employee Download button is clicked
 	$("#employee-download").on("click", function() {
-		$("#employee-download-spinner").show();
-		$("#employee-download").prop("disabled", true);		
-        $("#employee-list-form").submit();
-		
+        
 		setHeaderAlert("Requesting download current list", 2, true);
-		setTimeout(function(){
-			setHeaderAlert("Download request sent", 1, true);
+		$("#employee-download-spinner").show();
+		$("#employee-download").prop("disabled", true);
+
+
+		var postData = {
+			_token: $("#employee-list-form > input[name=_token]").val(),
+            searchFilter: $('#employee-list-form > input[name="searchFilter"]:checked').val(),
+            searchInput: $('input[name="searchInput"]').val(),
+		};
+
+		$.ajax({
+			type: "POST",
+			url: EMPLOYEE_DOWNLOAD_LINK,
+			data: postData,
+			encode: true,
+		}).done(function(){
+			$("#employee-list-form").submit();
+            setHeaderAlert("Download request sent", 1, true);
+			setTimeout(function(){
+				setHeaderAlert("Download request sent", 1, true);
+				$("#employee-download-spinner").hide();
+				$("#employee-download").prop("disabled", false);
+			}, 3000);
+		}).fail(function (data, exception) {
+			var msg = '';
+			if (data.status === 0) {
+				msg = 'Not connected.\n Verify Network.';
+			} else if (data.status == 404) {
+				msg = '404 Requested page not found.';
+			} else if (data.status == 500) {
+				msg = '500 Internal Server Error.';
+			} else if (exception === 'parsererror') {
+				msg = 'Requested JSON parse failed.';
+			} else if (exception === 'timeout') {
+				msg = 'Time out error.';
+			} else if (exception === 'abort') {
+				msg = 'Ajax request aborted.';
+			} else {
+				msg = 'Uncaught Error.\n' + data.responseText;
+			}
+			console.log('error: ' + msg);
+			
+			setHeaderAlert('Error: ' + msg + ' Refreshing the page.', 0, true);
 			$("#employee-download-spinner").hide();
 			$("#employee-download").prop("disabled", false);
-		}, 1500);
+			setTimeout(function(){
+				location.reload(true);
+			}, 5000);
+
+		});
 
 	});
 

@@ -100,19 +100,19 @@
                 <input type="text" name="searchInput" class="search-input-text form-control" id="search-input" placeholder="Search">
             </div>
             <div class="col-4 text-end">
-                <a class="btn btn-success me-1" id='create-server' href="{{ route('laptops.create') }}" >
+                <a class="btn btn-success me-1" id='create-laptop' href="#" >
                     Create
-                    <div id="create-server-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                    <div id="create-laptop-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
                         <span class="sr-only"></span>
                     </div>
                 </a>
-                <button id="laptop-download" class="btn btn-primary ms-1">
+                <a type="button "id="laptop-download" class="btn btn-primary ms-1">
                     Download
                     <div id="laptop-download-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
                         <span class="sr-only"></span>
                     </div>
                 
-                </button>
+                </a>
             </div>
         </div>
     </form>

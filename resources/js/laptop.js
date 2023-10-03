@@ -3,6 +3,9 @@ const UPDATE_LINK = '/api/laptops/update';
 const UPDATE_LINKAGE_LINK = '/api/laptops/updateLinkage';
 const REGISTER_LINKAGE_LINK = '/api/laptops/registLinkage';
 
+const LAPTOP_CREATE_LINK = '/laptops/create'
+const LAPTOP_DOWNLOAD_LINK = '/laptops/download'
+
 $(document).ready(function(){
 
     //laptop list
@@ -62,23 +65,102 @@ $(document).ready(function(){
 
 
 	// Create button is clicked
-	$("#create-server").on("click", function() {
-		$("#create-server-spinner").show();
-        window.location.replace("/laptops/create");
+	$("#create-laptop").on("click", function() {
+        $("#create-laptop-spinner").show();
+
+		$.ajax({
+            type:"get",
+            url: LAPTOP_CREATE_LINK,
+		}).done(function(){
+			$("#create-laptop-spinner").hide();
+			window.location.href = LAPTOP_CREATE_LINK;
+		}).fail(function (data, exception) {
+			var msg = '';
+			if (data.status === 0) {
+				msg = 'Not connected.\n Verify Network.';
+			} else if (data.status == 404) {
+				msg = '404 Requested page not found.';
+			} else if (data.status == 500) {
+				msg = '500 Internal Server Error.';
+			} else if (exception === 'parsererror') {
+				msg = 'Requested JSON parse failed.';
+			} else if (exception === 'timeout') {
+				msg = 'Time out error.';
+			} else if (exception === 'abort') {
+				msg = 'Ajax request aborted.';
+			} else {
+				msg = 'Uncaught Error.\n' + data.responseText;
+			}
+			console.log('error: ' + msg);
+
+			
+			setHeaderAlert('Error: ' + msg + ' Refreshing the page.', 0, true);
+			$("#create-laptop-spinner").hide();
+			$("#create-laptop").prop("disabled", false);
+			setTimeout(function(){
+				location.reload(true);
+			}, 5000);
+
+		});
 	});
 
 	// Download button is clicked
 	$("#laptop-download").on("click", function() {
+        
+		setHeaderAlert("Requesting download current list", 2, true);
 		$("#laptop-download-spinner").show();
 		$("#laptop-download").prop("disabled", true);
-        $("#laptop-list-form").submit();
-		
-		setHeaderAlert("Requesting download current list", 2, true);
-		setTimeout(function(){
-			setHeaderAlert("Download request sent", 1, true);
+
+
+		var postData = {
+			_token: $("#laptop-list-form > input[name=_token]").val(),
+            laptopAvailability: $('input[name="laptopAvailability"]:checked').val(),
+            laptopStatus: $('input[name="laptopStatus"]:checked').val(),
+            searchFilter: $('input[name="searchFilter"]:checked').val(),
+            searchInput: $('input[name="searchInput"]').val(),
+		};
+
+		$.ajax({
+			type: "POST",
+			url: LAPTOP_DOWNLOAD_LINK,
+			data: postData,
+			encode: true,
+		}).done(function(){
+            $("#laptop-list-form").submit();
+            setHeaderAlert("Download request sent", 1, true);
+			setTimeout(function(){
+				setHeaderAlert("Download request sent", 1, true);
+				$("#laptop-download-spinner").hide();
+				$("#laptop-download").prop("disabled", false);
+			}, 3000);
+		}).fail(function (data, exception) {
+			var msg = '';
+			if (data.status === 0) {
+				msg = 'Not connected.\n Verify Network.';
+			} else if (data.status == 404) {
+				msg = '404 Requested page not found.';
+			} else if (data.status == 500) {
+				msg = '500 Internal Server Error.';
+			} else if (exception === 'parsererror') {
+				msg = 'Requested JSON parse failed.';
+			} else if (exception === 'timeout') {
+				msg = 'Time out error.';
+			} else if (exception === 'abort') {
+				msg = 'Ajax request aborted.';
+			} else {
+				msg = 'Uncaught Error.\n' + data.responseText;
+			}
+			console.log('error: ' + msg);
+			
+			setHeaderAlert('Error: ' + msg + ' Refreshing the page.', 0, true);
 			$("#laptop-download-spinner").hide();
 			$("#laptop-download").prop("disabled", false);
-		}, 1500);
+			setTimeout(function(){
+				location.reload(true);
+			}, 5000);
+
+		});
+
 
 	});
 

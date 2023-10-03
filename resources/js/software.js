@@ -10,6 +10,9 @@ const SOFTWARE_TYPE_UTIL = "System Utilities";
 const SOFTWARE_TYPE_PROJECT_SPECIFIC = "Project Specific Softwares";
 const SOFTWARE_TYPE_DRIVERS = "Phone Drivers";
 
+const SOFTWARE_CREATE_LINK = '/softwares/create'
+const SOFTWARE_REGIST_LINK = '/softwares/regist'
+const SOFTWARE_DOWNLOAD_LINK = '/softwares/download'
 const LINK_PROJECT_LINK = '/api/softwarelinkProject'
 
 
@@ -72,22 +75,93 @@ $(document).ready(function () {
 	// Create button is clicked
 	$("#create-software").on("click", function() {
 		$("#create-software-spinner").show();
+		$.ajax({
+            type:"get",
+            url: SOFTWARE_CREATE_LINK,
+		}).done(function(){
+			$("#create-software-spinner").hide();
+			window.location.href = SOFTWARE_CREATE_LINK;
+		}).fail(function (data, exception) {
+			var msg = '';
+			if (data.status === 0) {
+				msg = 'Not connected.\n Verify Network.';
+			} else if (data.status == 404) {
+				msg = '404 Requested page not found.';
+			} else if (data.status == 500) {
+				msg = '500 Internal Server Error.';
+			} else if (exception === 'parsererror') {
+				msg = 'Requested JSON parse failed.';
+			} else if (exception === 'timeout') {
+				msg = 'Time out error.';
+			} else if (exception === 'abort') {
+				msg = 'Ajax request aborted.';
+			} else {
+				msg = 'Uncaught Error.\n' + data.responseText;
+			}
+			console.log('error: ' + msg);
 
+			
+			setHeaderAlert('Error: ' + msg + ' Refreshing the page.', 0, true);
+			$("#create-software-spinner").hide();
+			$("#create-software").prop("disabled", false);
+			setTimeout(function(){
+				location.reload(true);
+			}, 5000);
+
+		});
 	});
 	
 
 	// Download button is clicked
 	$("#software-download").on("click", function() {
+		setHeaderAlert("Requesting download software list", 2, true);
 		$("#software-download-spinner").show();
 		$("#software-download").prop("disabled", true);
-        $("#software-list-form").submit();
-		
-		setHeaderAlert("Requesting download software list", 2, true);
-		setTimeout(function(){
-			setHeaderAlert("Download request sent", 1, true);
+
+
+		var postData = {
+			_token: $("#software-list-form > input[name=_token]").val()
+		};
+		$.ajax({
+			type: "GET",
+			url: SOFTWARE_DOWNLOAD_LINK,
+			data: postData,
+			dataType: "json",
+			encode: true,
+		}).done(function(){
+			setTimeout(function(){
+				setHeaderAlert("Download request sent", 1, true);
+				$("#software-download-spinner").hide();
+				$("#software-download").prop("disabled", false);
+				location.reload(true);
+			}, 1500);
+		}).fail(function (data, exception) {
+			var msg = '';
+			if (data.status === 0) {
+				msg = 'Not connected.\n Verify Network.';
+			} else if (data.status == 404) {
+				msg = '404 Requested page not found.';
+			} else if (data.status == 500) {
+				msg = '500 Internal Server Error.';
+			} else if (exception === 'parsererror') {
+				msg = 'Requested JSON parse failed.';
+			} else if (exception === 'timeout') {
+				msg = 'Time out error.';
+			} else if (exception === 'abort') {
+				msg = 'Ajax request aborted.';
+			} else {
+				msg = 'Uncaught Error.\n' + data.responseText;
+			}
+			console.log('error: ' + msg);
+			
+			setHeaderAlert('Error: ' + msg + ' Refreshing the page.', 0, true);
 			$("#software-download-spinner").hide();
 			$("#software-download").prop("disabled", false);
-		}, 1500);
+			setTimeout(function(){
+				location.reload(true);
+			}, 5000);
+
+		});
 
 	});
 
