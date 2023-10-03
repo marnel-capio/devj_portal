@@ -705,16 +705,29 @@
                 </div>
                 <div class="modal-body">
                     <div class="p-2">
-                        <div id="ll-success-msg"></div>
+                        <div id="ll-success-msg">
+                            @if (count($laptopList) < 1)
+                            <div class="text-danger text-start">
+                                <i class="bi bi-info-circle-fill"></i>
+                                Please check if your laptop already exists and is still linked to another employee. If not, please create details for your laptop.
+                            </div>
+                            @endif
+                        </div>
                         <form action="#" id="linkLaptopForm">
                             @csrf
                             <input type="text" hidden name="ll_employee_id" value="{{ $employee->id }}">
                             <div class="row mb-2">
                                 <div class="col-6 g-3 form-floating">
-                                    <select name="laptop_id" id="laptopList" class="form-select" required>
-                                        @foreach ($laptopList as $laptop)
-                                            <option value="{{ $laptop['id'] }}">{{ $laptop['tag_number'] }}</option>
-                                        @endforeach
+                                    @if (count($laptopList) < 1)
+                                        <select name="laptop_id" id="laptopList" class="form-select" required>
+                                            <option value="" disabled>No Available laptop</option>
+                                    @else
+                                        <select name="laptop_id" id="laptopList" class="form-select" required>
+                                            @foreach ($laptopList as $laptop)
+                                                <option value="{{ $laptop['id'] }}">{{ $laptop['tag_number'] }}</option>
+                                            @endforeach
+                                    @endif
+                                        
                                     </select>
                                     <label for="laptopList" class="text-center">Tag Number</label>
                                     <span id="error-laptop-id"></span>
