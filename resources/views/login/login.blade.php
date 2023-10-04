@@ -6,7 +6,7 @@
             <form action="{{ route('login') }}" method="POST" id="login">
                 @csrf
                 <div class="row mb-2 ps-2 pe-2">
-                    <label for="email_address" class="col-form-label fw-bold">Username:</label>
+                    <label for="email_address" class="col-form-label fw-bold">Email:</label>
                     <div class="">
                         <input type="text" class="form-control bg-info bg-opacity-10 border border-primary " id="email_address" name="email_address" value="{{ old('email_address') }}" required>
                         @if ($errors->has('email_address'))
