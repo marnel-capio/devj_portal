@@ -837,6 +837,13 @@ $(document).ready(function () {
 		$("#employee-reg-submit-spinner").show();
 	});
 
+	$("#emp-reg-back").click(function(e){
+		e.preventDefault();
+		window.location.href = window.location.origin+"/login";
+	});
+
+	
+
 	//end for employee bu transfer/reinstate
 
     /**
