@@ -115,24 +115,12 @@ class ProjectsController extends Controller
         //get employee linkage requests
         $employeeLinkageRequests = [];
         if (Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')) {
-            $employeeLinkageRequests = EmployeesProjects::selectRaw('
-                    ep.*,
-                    CONCAT(DATE_FORMAT(ep.start_date, "%Y-%m-%d"), " - ", CASE WHEN ep.end_date IS NULL THEN "" ELSE DATE_FORMAT(ep.end_date, "%Y-%m-%d") END) AS membership_date,
-                    CONCAT(e.first_name, " ", e.last_name) AS data_name,
-                    CONCAT(e.last_name, ", ", e.first_name) AS table_name
-                ')
-                ->from('employees_projects as ep')
-                ->leftJoin('employees as e', 'e.id', 'ep.employee_id')
-                ->where('ep.project_id', $id)
-                ->whereIn('ep.approved_status', [config('constants.APPROVED_STATUS_PENDING'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
-                ->orderBy('ep.update_time', 'asc')
-                ->orderBy('e.last_name', 'asc')
-                ->orderBy('e.first_name', 'asc')
-                ->get()
+            $employeeLinkageRequests = EmployeesProjects::employeeLinkageRequests($id)
                 ->toArray();
         } else {
             // Get requests of logged in employee
-            $employeeLinkageRequests = EmployeesProjects::employeeLinkageRequests($id, Auth::user()->id)
+            $employeeLinkageRequests = EmployeesProjects::employeeLinkageRequests($id)
+                ->where('employee_id', Auth::user()->id)
                 ->toArray();
         }
 
@@ -160,6 +148,18 @@ class ProjectsController extends Controller
             }
         } else {
             $showAddBtn = true;
+        }
+
+        // Check if member have no request to current project
+        foreach ($projectMembers as $key => $member) {
+            $projectMembers[$key]['haveNoRequest'] = true;
+
+            foreach($employeeLinkageRequests as $member_req){
+                if(($member['employee_id'] == $member_req['employee_id'])) {
+                    $projectMembers[$key]['haveNoRequest'] = false;
+                    break;
+                }
+            }
         }
 
         return view('projects.details', [

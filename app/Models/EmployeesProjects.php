@@ -85,7 +85,7 @@ class EmployeesProjects extends Model
     static function getProjectMembersById ($id) {
         return self::selectRaw('
                     ep.*,
-                    CONCAT(DATE_FORMAT(ep.start_date, "%Y/%m/%d"), " - ", CASE WHEN ep.end_date IS NULL THEN "" ELSE DATE_FORMAT(ep.end_date, "%Y/%m/%d") END) AS membership_date,
+                    CONCAT(DATE_FORMAT(ep.start_date, "%Y/%m/%d"), " - ", CASE WHEN ep.end_date IS NULL THEN "\'\'" ELSE DATE_FORMAT(ep.end_date, "%Y/%m/%d") END) AS membership_date,
                     CONCAT(e.last_name, ", ", e.first_name) AS member_name,
                     CONCAT(e.first_name, " ", e.last_name) AS member_name_update,
                     CASE WHEN ep.end_date IS NULL THEN 1 ELSE CASE WHEN  DATE_FORMAT(ep.end_date, "%Y-%m-%d") > CURDATE() THEN 1 ELSE 0 END END AS isActive
@@ -107,7 +107,7 @@ class EmployeesProjects extends Model
     static function getActiveProjectMembersById ($id) {
         return self::selectRaw('
                     ep.*,
-                    CONCAT(DATE_FORMAT(ep.start_date, "%Y/%m/%d"), " - ", CASE WHEN ep.end_date IS NULL THEN "" ELSE DATE_FORMAT(ep.end_date, "%Y/%m/%d") END) AS membership_date,
+                    CONCAT(DATE_FORMAT(ep.start_date, "%Y/%m/%d"), " - ", CASE WHEN ep.end_date IS NULL THEN "\'\'" ELSE DATE_FORMAT(ep.end_date, "%Y/%m/%d") END) AS membership_date,
                     CONCAT(e.last_name, ", ", e.first_name) AS member_name,
                     CONCAT(e.first_name, " ", e.last_name) AS member_name_update,
                     CASE WHEN ep.end_date IS NULL THEN 1 ELSE CASE WHEN  DATE_FORMAT(ep.end_date, "%Y-%m-%d") > CURDATE() THEN 1 ELSE 0 END END AS isActive
@@ -121,18 +121,20 @@ class EmployeesProjects extends Model
     }
 
     
-    static function employeeLinkageRequests ($project_id, $employee_id) {
+    static function employeeLinkageRequests ($project_id) {
         return self::selectRaw('
                     ep.*,
-                    CONCAT(DATE_FORMAT(ep.start_date, "%Y-%m-%d"), " - ", CASE WHEN ep.end_date IS NULL THEN "" ELSE DATE_FORMAT(ep.end_date, "%Y-%m-%d") END) AS membership_date,
+                    CONCAT(DATE_FORMAT(ep.start_date, "%Y-%m-%d"), " - ", CASE WHEN ep.end_date IS NULL THEN "\'\'" ELSE DATE_FORMAT(ep.end_date, "%Y-%m-%d") END) AS membership_date,
                     CONCAT(e.first_name, " ", e.last_name) AS data_name,
                     CONCAT(e.last_name, ", ", e.first_name) AS table_name
                 ')
                 ->from('employees_projects as ep')
                 ->leftJoin('employees as e', 'e.id', 'ep.employee_id')
                 ->where('ep.project_id', $project_id)
-                ->where('e.id', $employee_id)
                 ->whereIn('ep.approved_status', [config('constants.APPROVED_STATUS_PENDING'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+                ->orderBy('ep.update_time', 'asc')
+                ->orderBy('e.last_name', 'asc')
+                ->orderBy('e.first_name', 'asc')
                 ->get();
     }
 

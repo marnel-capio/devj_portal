@@ -443,7 +443,7 @@ $(document).ready( function () {
 		$("#update_employee_linkage_form input[name=project_end]").val(linkageData.end_date);
 		$("#update_employee_linkage_form select").val(linkageData.project_role_type);
 
-		if (linkageData.onsite_flag) {
+		if (linkageData.onsite_flag == 1) {
 			$("#update_employee_linkage_form  input[name=onsite]").prop('checked', true);
 		}
 
