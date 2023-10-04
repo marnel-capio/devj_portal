@@ -238,6 +238,7 @@ $(document).ready( function () {
 
 	// Update linkage submission
 	$("#update_pj_submit_btn").click( function (e) {
+		$("#update_pj_submit_btn").prop("disabled", true);
 		$("#link_update_spinner").show();
 
 		var postData = {
@@ -265,7 +266,6 @@ $(document).ready( function () {
 			dataType: "json",
 			encode: true,
 		}).done(function(data){
-			$("#link_update_spinner").hide();
 
 			// display error
 			if(!data.success){
@@ -284,19 +284,7 @@ $(document).ready( function () {
 				}
 
 			}else{
-				// Reset form
-				$("#update_employee_linkage_form").trigger('reset');
-				// Remove error messages
-				$("#update_employee_linkage_form").find("[name]").each( function () {
-					if ($('#link_employee_form #link_' + $(this).attr('name') + '_error').length > 0 ) {
-						$('#link_employee_form #link_' + $(this).attr('name') + '_error').empty();
-					}
-				});
-
-				$("#ue_success_msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;' + data.message + '.').addClass("text-success mb-2 text-start");
-
-				// Update the Project Members' table
-				updateProjectMemberTable(data, postData.employee_id, postData.employee_role);
+				location.reload();
 			}
 
 		}).fail(function (ddata, exception) {
@@ -317,6 +305,9 @@ $(document).ready( function () {
 				msg = 'Uncaught Error.\n' + ddata.responseText;
 			}
 			console.log('error: ' + msg);
+		}).always(function() {
+			$("#update_pj_submit_btn").prop("disabled", false);
+			$("#link_update_spinner").hide();
 		});
 
 		e.preventDefault();

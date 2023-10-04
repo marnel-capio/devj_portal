@@ -182,7 +182,11 @@
                                 <td>{{ $member['membership_date'] }}</td>
                                 <td class="text-center">
                                     {{-- Check if update button should be displayed --}}
-                                    @if ($member['isActive'] and ((auth()->user()->roles == config('constants.MANAGER_ROLE_VALUE')) or (auth()->user()->roles == config('constants.ADMIN_ROLE_VALUE')) or auth()->user()->id == $member['employee_id']))
+                                    @php 
+                                        $isMngr_or_Admin = (auth()->user()->roles == config('constants.ENGINEER_ROLE_VALUE') ? 0 : 1);
+                                        $isEngr_active_and_noPending = ((auth()->user()->id == $member['employee_id']) && ($member['isActive']) && (count($employeeLinkageRequests) == 0)) ? 1 : 0; 
+                                    @endphp
+                                    @if ($isMngr_or_Admin or $isEngr_active_and_noPending)
                                         <button class="btn btn-link btn-sm text-success employee_linkage_update_btn" 
                                             data-bs-target="#update_employee_linkage_modal" 
                                             data-bs-toggle="modal" 

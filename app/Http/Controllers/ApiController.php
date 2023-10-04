@@ -1045,6 +1045,7 @@ class ApiController extends Controller
         }
         
         Logs::createLog("Project", "Updated the linkage data of {$employee->first_name} {$employee->last_name} to {$project->name}");
+        session(['pj_alert'=> $message]);
 
         return response()->json(['success' => true, 
                                     'message' => $message, 

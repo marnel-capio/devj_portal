@@ -132,18 +132,7 @@ class ProjectsController extends Controller
                 ->toArray();
         } else {
             // Get requests of logged in employee
-            $employeeLinkageRequests = EmployeesProjects::selectRaw('
-                    ep.*,
-                    CONCAT(DATE_FORMAT(ep.start_date, "%Y-%m-%d"), " - ", CASE WHEN ep.end_date IS NULL THEN "" ELSE DATE_FORMAT(ep.end_date, "%Y-%m-%d") END) AS membership_date,
-                    CONCAT(e.first_name, " ", e.last_name) AS data_name,
-                    CONCAT(e.last_name, ", ", e.first_name) AS table_name
-                ')
-                ->from('employees_projects as ep')
-                ->leftJoin('employees as e', 'e.id', 'ep.employee_id')
-                ->where('ep.project_id', $id)
-                ->where('e.id', Auth::user()->id)
-                ->whereIn('ep.approved_status', [config('constants.APPROVED_STATUS_PENDING'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
-                ->get()
+            $employeeLinkageRequests = EmployeesProjects::employeeLinkageRequests($id, Auth::user()->id)
                 ->toArray();
         }
 
@@ -162,11 +151,15 @@ class ProjectsController extends Controller
                                     ->orderBy('software_name', 'asc')
                                     ->get()
                                     ->toArray();
+        $showAddBtn = false;
 
-        if(Auth::user()->roles == config('constants.ENGINEER_ROLE_VALUE') && (count($employeeLinkageRequests) < 1)) {
-            $showAddBtn = true;
+        if( Auth::user()->roles == config('constants.ENGINEER_ROLE_VALUE')) { 
+            if (count($employeeLinkageRequests) < 1 && 
+                EmployeesProjects::getActiveProjectMembersById($id)->where('isActive', 1)->where('employee_id', Auth::user()->id)->count() == 0) {
+                $showAddBtn = true;
+            }
         } else {
-            $showAddBtn = false;
+            $showAddBtn = true;
         }
 
         return view('projects.details', [
