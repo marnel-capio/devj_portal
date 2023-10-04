@@ -40,8 +40,9 @@ class Project extends Mailable
      */
     public function build()
     {
+        $subject = env('APP_ENV') != 'production' ? "【" . strtoupper(env('APP_ENV')) . "】".constant("self::MAIL_{$this->mailType}") : constant("self::MAIL_{$this->mailType}");
         return $this
-            ->subject(constant("self::MAIL_{$this->mailType}"))
+            ->subject($subject)
             ->view('mail.project', ['mailData' => $this->mailData, 'mailType' => $this->mailType]);
     }
 }

@@ -148,6 +148,23 @@ class ProjectsController extends Controller
                                     ->get()
                                     ->toArray();
 
+        $isAllowedToAddRemoveSoftware = false;
+        $allowedEmployee = EmployeesProjects::where('project_id', $id)
+                ->where('employee_id', Auth::user()->id)
+                ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'),config('constants.APPROVED_STATUS_PENDING'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+                ->where(function($query){
+                $query->whereNull('end_date')
+                    ->orWhere('end_date', '0000-00-00 00:00:00')
+                    ->orWhere('end_date', ">", date('Y-m-d') . " 23:59:59");
+                })
+                ->get()
+                ->toArray();
+
+
+        if (Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE') || count($allowedEmployee) > 0) {
+            $isAllowedToAddRemoveSoftware = true;
+        }
+
 
         return view('projects.details', [
             'projectData' => $projectData,
@@ -159,8 +176,7 @@ class ProjectsController extends Controller
             'employeeLinkageRequests' => $employeeLinkageRequests,
             'linkedSoftwares' => $linkedSoftwares,
             'softwareDropdown' => $softwareDropdown,
-
-
+            'isAllowedToAddRemoveSoftware' => $isAllowedToAddRemoveSoftware,
         ]);
     }
 
