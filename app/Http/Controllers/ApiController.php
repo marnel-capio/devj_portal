@@ -1081,7 +1081,7 @@ class ApiController extends Controller
         $softwareData = Softwares::where('id', $insertData['software_id'])->first();
 
         Logs::createLog('Project',"Linked the {$softwareData->software_name} to {$projectData->name}" );
-
+        session(['ps_alert'=> $message]);
         return response()->json(['success' => true, 
                                     'message' => $message, 
                                     'update' => ProjectSoftwares::getLinkedSoftwareByProject($insertData['project_id']),

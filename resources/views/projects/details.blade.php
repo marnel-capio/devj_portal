@@ -441,13 +441,9 @@
             </div>
         </div>
         <div class="ms-3">
-            @if(!empty(session('ul_alert')))
+            @if(!empty(session('ps_alert')))
                 <div class="alert alert-success mt-2" role="alert">
-                    {{session()->pull('ul_alert')}}
-                </div>
-            @elseif(!empty(session('ll_alert')))
-                <div class="alert alert-success mt-2" role="alert">
-                    {{session()->pull('ll_alert')}}
+                    {{session()->pull('ps_alert')}}
                 </div>
             @endif
             <table class="table table-bordered border-secondary mt-3 tbl-th-centered" id="linked_softwares_tbl">

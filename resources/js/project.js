@@ -360,42 +360,7 @@ $(document).ready( function () {
                 }
 
 			}else{
-                // Reset form
-				$("#link_software_form").trigger('reset');
-                // Remove error messages
-                $("#link_software_form").find("[name]").each( function () {
-                    if ($('#link_software_form #link_' + $(this).attr('name') + '_error').length > 0 ) {
-                        $('#link_software_form #link_' + $(this).attr('name') + '_error').empty();
-                    }
-                });
-
-
-				$("#software_list > option[value=" + postData.software_id + "]").remove();
-				$("#ls_success_msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;' + data.message + '.').addClass("text-success mb-2 text-start");
-
-				// Update projects table
-				s_table.clear().draw();
-				let url, newRow;
-				data.update.forEach(function(softwareData){
-					url = window.location.origin + '/softwares/' + softwareData.software_id;
-					newRow = [
-						'<a href="' + url + '" class="text-decoration-none">' + softwareData.software_name + '</a>',
-						softwareData.software_type,
-						softwareData.linkageRemarks,	// currently from softwares table
-					];
-
-					if (data.isManager) {
-						// Add action column
-						newRow.push('<button class="btn btn-link btn-sm text-danger software_linkage_remove_btn" form="remove_software_form" data-linkid="' + softwareData.id + '" data-softwarename="' + softwareData.software_name + '">Remove</button>');
-					}
-					
-					s_table.row.add(newRow).draw(false);
-				});
-
-				$("#linked_softwares_tbl > tbody > tr").each(function () {
-					// Fix text alignment of remove button
-					$(this).find(':last-child').addClass('text-center');
-				});
+                location.reload();
 			}
 
 		}).fail(function(){
