@@ -71,6 +71,19 @@ $(document).ready(function () {
 		}
 		
 	}
+
+	// Software deletiom
+	$("#software-delete").on('click', function (e) {
+		e.preventDefault();
+		if (confirm('Are sure you want to delete?')) {
+			var id = $("#software_id").val();
+			window.location.href = window.location.origin+"/softwares/"+id+"/delete";
+		} else {
+			// Cancel form submission
+			return false;
+		}
+
+	});
 	
 	// Create button is clicked
 	$("#create-software").on("click", function() {
@@ -171,7 +184,7 @@ $(document).ready(function () {
     });
 
     $(".soft-search-type-rdb-input").on("change", function(){
-		console.log("entered");
+		// console.log("entered");
         filterSoftwareList();
     });
 
@@ -236,7 +249,7 @@ $(document).ready(function () {
 				});
 			}
 		}).fail(function(){
-			console.log('error');
+			// console.log('error');
 		});	  
     }
 
@@ -323,32 +336,11 @@ $(document).ready(function () {
 					$("#error-lp-proj-reason").html(projectResonError[0]).addClass('text-danger text-start');
 				}
 			}else{
-				$("#linkProjectForm").trigger('reset');
-				$("#projectList > option[value=" + postData.project_id + "]").remove();
-				$("#lp-success-msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;' + data.message + '.').addClass("text-success mb-2 text-start");
-
-				//update projects table
-				softprojectTable.clear().draw();
-				data.update.forEach(function(project){
-					let url = window.location.origin + '/devj_portal/projects/' + project.project_id;
-					sDate = new Date(project.start_date);
-					spanStart = sDate.getFullYear() + '/' + sDate.getMonth() + '/' + sDate.getDate() + ' - ';
-					spanEnd = '';
-					if(project.end_date != '' && project.end_date != null){
-						eDate = new Date(project.end_date);
-						spanEnd = eDate.getFullYear() + '/' + eDate.getMonth() + '/' + eDate.getDate();
-					}
-					softprojectTable.row.add([
-						'<a href="' + url + '" class="text-decoration-none">' + project.name + '</a>',
-						spanStart + spanEnd,
-						project.project_status
-					])
-					.draw(false);
-				});
+				location.reload();
 			}
 			$('#lp-submit-btn').prop('disabled', false);
 		}).fail(function(){
-			console.log('error');
+			//console.log('error');
 		});
 		
 		e.preventDefault();

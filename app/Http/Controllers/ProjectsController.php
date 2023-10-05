@@ -130,6 +130,10 @@ class ProjectsController extends Controller
                 ->orderBy('e.first_name', 'asc')
                 ->get()
                 ->toArray();
+        } else {
+            // Get requests of logged in employee
+            $employeeLinkageRequests = EmployeesProjects::employeeLinkageRequests($id, Auth::user()->id)
+                ->toArray();
         }
 
         //getLinkedSoftwares
@@ -147,13 +151,22 @@ class ProjectsController extends Controller
                                     ->orderBy('software_name', 'asc')
                                     ->get()
                                     ->toArray();
+        $showAddBtn = false;
 
+        if( Auth::user()->roles == config('constants.ENGINEER_ROLE_VALUE')) { 
+            if (count($employeeLinkageRequests) < 1 && 
+                EmployeesProjects::getActiveProjectMembersById($id)->where('isActive', 1)->where('employee_id', Auth::user()->id)->count() == 0) {
+                $showAddBtn = true;
+            }
+        } else {
+            $showAddBtn = true;
+        }
 
         return view('projects.details', [
             'projectData' => $projectData,
             'isManager' => Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE'),
             'detailNote' => '', 
-            'showAddBtn' => true,   //fix later
+            'showAddBtn' => $showAddBtn,
             'projectMembers' => $projectMembers,
             'employeeDropdown' => $employeeDropdown,
             'employeeLinkageRequests' => $employeeLinkageRequests,

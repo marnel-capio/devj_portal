@@ -97,7 +97,10 @@ Route::middleware(['auth', 'web', 'isActive'])->group(function(){
         })->name('softwares.regist.complete');
         Route::get('/update/complete', function(){
             return view('softwares.complete');
-        })->name('softwares.update.complete');        
+        })->name('softwares.update.complete'); 
+        Route::get('/delete/complete', function(){
+            return view('softwares.delete');
+        })->name('softwares.delete.complete');        
         Route::get('/clearRejectedUpdate', 'clearRejectedUpdate')->name('softwares.clearRejectedUpdate');
     });
 

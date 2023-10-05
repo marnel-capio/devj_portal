@@ -66,7 +66,7 @@
                     <label for="show_hist" class="form-check-label user-select-none">Show previous members</label>
                 </div>
             </div>
-            @if ($showAddBtn)
+            @if($showAddBtn)
             <button class="btn btn-primary" data-bs-target="#link_employee_modal" data-bs-toggle="modal">Add</button>
             <div class="modal modal fade" tabindex='-1' id="link_employee_modal">
                 <div class="modal-dialog modal-dialog-centered">
@@ -85,15 +85,21 @@
                                     <input type="text" name="employee_role" value="{{ Auth::user()->roles }}" hidden>
                                     <div class="row mb-2">
                                         <div class="col-12 g-3 form-floating">
-                                        @if (in_array(Auth::user()->roles, [config('constants.ADMIN_ROLE_VALUE'), config('constants.MANAGER_ROLE_VALUE')]))
-                                            <select name="employee_id" class="form-select" id="member_list" required>
-                                                <option value=""></option>
-                                        @else
-                                            <select name="employee_id" class="form-select" id="member_list" readonly>
-                                        @endif
+                                            @if (count($employeeDropdown) < 1)
+                                                <select name="employee_id" class="form-select" id="member_list" required>
+                                                    <option value="" disabled>No available employee</option>
+                                            @else
+                                                @if (in_array(Auth::user()->roles, [config('constants.ADMIN_ROLE_VALUE'), config('constants.MANAGER_ROLE_VALUE')]))
+                                                    <select name="employee_id" class="form-select" id="member_list" required>
+                                                        <option value=""></option>
+                                                @else
+                                                    <select name="employee_id" class="form-select" id="member_list" readonly>
+                                                @endif
+
                                                 @foreach ( $employeeDropdown as $employee )
                                                     <option value="{{ $employee['id'] }}">{{ $employee['employee_name'] }}</option>
                                                 @endforeach
+                                            @endif
                                             </select>
                                             <label for="member_list" class="text-center">Employee Name</label>
                                             <span id="link_employee_id_error"></span>
@@ -182,7 +188,11 @@
                                 <td>{{ $member['membership_date'] }}</td>
                                 <td class="text-center">
                                     {{-- Check if update button should be displayed --}}
-                                    @if ($member['isActive'] and ((auth()->user()->roles == config('constants.MANAGER_ROLE_VALUE')) or (auth()->user()->roles == config('constants.ADMIN_ROLE_VALUE')) or auth()->user()->id == $member['employee_id']))
+                                    @php 
+                                        $isMngr_or_Admin = (auth()->user()->roles == config('constants.ENGINEER_ROLE_VALUE') ? 0 : 1);
+                                        $isEngr_active_and_noPending = ((auth()->user()->id == $member['employee_id']) && ($member['isActive']) && (count($employeeLinkageRequests) == 0)) ? 1 : 0; 
+                                    @endphp
+                                    @if ($isMngr_or_Admin or $isEngr_active_and_noPending)
                                         <button class="btn btn-link btn-sm text-success employee_linkage_update_btn" 
                                             data-bs-target="#update_employee_linkage_modal" 
                                             data-bs-toggle="modal" 
@@ -403,10 +413,15 @@
                                     <input type="text" name="project_id" value="{{ $projectData->id }}" hidden>
                                     <div class="row mb-2">
                                         <div class="col-12 g-3 form-floating">
-                                            <select name="software_id" class="form-select" id="software_list">
-                                                @foreach ( $softwareDropdown as $software )
-                                                    <option value="{{ $software['id'] }}">{{ $software['software_name'] }}</option>
-                                                @endforeach
+                                            @if (count($softwareDropdown) < 1)
+                                                <select name="software_id" class="form-select" id="software_list" required>
+                                                    <option value="" disabled>No available software</option>
+                                            @else
+                                                <select name="software_id" class="form-select" id="software_list" required>
+                                                    @foreach ( $softwareDropdown as $software )
+                                                        <option value="{{ $software['id'] }}">{{ $software['software_name'] }}</option>
+                                                    @endforeach
+                                            @endif
                                             </select>
                                             <label for="software_list" class="text-center">Software Name</label>
                                             <span id="link_software_id_error"></span>
@@ -437,13 +452,9 @@
             </div>
         </div>
         <div class="ms-3">
-            @if(!empty(session('ul_alert')))
+            @if(!empty(session('ps_alert')))
                 <div class="alert alert-success mt-2" role="alert">
-                    {{session()->pull('ul_alert')}}
-                </div>
-            @elseif(!empty(session('ll_alert')))
-                <div class="alert alert-success mt-2" role="alert">
-                    {{session()->pull('ll_alert')}}
+                    {{session()->pull('ps_alert')}}
                 </div>
             @endif
             <table class="table table-bordered border-secondary mt-3 tbl-th-centered" id="linked_softwares_tbl">
