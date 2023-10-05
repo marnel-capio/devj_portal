@@ -310,17 +310,31 @@
                 </div>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-12 col-lg-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="permanent_address_city" id="perm-add-town" placeholder="Town" required value="{{ old('permanent_address_city', $employee->permanent_address_city) }}">
-                        <label for="perm-add-town" class="text-center">Town/City</label>
-                        @if ($errors->has('permanent_address_city'))
-                        <p class="text-danger">{{ $errors->first('permanent_address_city') }}</p>
+                        <select name="permanent_address_province" id="perm-add-prov" class="form-select form-control">
+                            <option></option>
+                            @foreach ($provinces as $value => $province)
+                                <option 
+                                    {{ old('permanent_address_province', $employee ? $employee->permanent_address_province : '') == $value ? "selected" : "" }} 
+                                    value="{{ $province['name']}}"
+                                    data-provincecode="{{ $province['code'] }}"> 
+                                    {{ $province['name'] }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <input type="text" class="form-control" name="permanent_address_province" id="perm-add-prov" placeholder="Province" required value="{{ old('permanent_address_province', $employee->permanent_address_province) }}">
+                        <label for="perm-add-prov" class="text-center">Province</label>
+                        @if ($errors->has('permanent_address_province'))
+                        <p class="text-danger">{{ $errors->first('permanent_address_province') }}</p>
                         @endif
                     </div>
                     <div class="col-12 col-lg-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="permanent_address_province" id="perm-add-prov" placeholder="Province" required value="{{ old('permanent_address_province', $employee->permanent_address_province) }}">
-                        <label for="perm-add-prov" class="text-center">Province/Region</label>
-                        @if ($errors->has('permanent_address_province'))
-                        <p class="text-danger">{{ $errors->first('permanent_address_province') }}</p>
+                        <select name="permanent_address_city" id="perm-add-city" class="form-select form-control" disabled>
+                            <option>No Province Selected</option>
+                        </select>
+                        <input type="text" class="form-control" name="permanent_address_city" id="perm-add-city" placeholder="City" required value="{{ old('permanent_address_city', $employee->permanent_address_city) }}">
+                        <label for="perm-add-city" class="text-center">City</label>
+                        @if ($errors->has('permanent_address_city'))
+                        <p class="text-danger">{{ $errors->first('permanent_address_city') }}</p>
                         @endif
                     </div>
                     <div class="col-12 col-lg-4 g-3 form-floating">
@@ -352,17 +366,29 @@
                 </div>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-12 col-lg-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="current_address_city" id="cur-add-town" placeholder="Town" required value="{{ old('current_address_city', $employee->current_address_city) }}">
-                        <label for="cur-add-town" class="text-center">Town/City</label>
-                        @if ($errors->has('current_address_city'))
-                        <p class="text-danger">{{ $errors->first('current_address_city') }}</p>
+                        <select name="current_address_province" id="cur-add-prov" class="form-select form-control">
+                            <option></option>
+                            @foreach ($provinces as $value => $province)
+                                <option 
+                                    {{ old('current_address_province', '') == $value ? "selected" : "" }} 
+                                    value="{{ $province['name']}}"
+                                    data-provincecode="{{ $province['code'] }}"> 
+                                    {{ $province['name'] }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <label for="cur-add-prov" class="text-center">Province</label>
+                        @if ($errors->has('current_address_province'))
+                        <p class="text-danger">{{ $errors->first('current_address_province') }}</p>
                         @endif
                     </div>
                     <div class="col-12 col-lg-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="current_address_province" id="cur-add-prov" placeholder="Province" required value="{{ old('current_address_province', $employee->current_address_province) }}">
-                        <label for="cur-add-prov" class="text-center">Province/Region</label>
-                        @if ($errors->has('current_address_province'))
-                        <p class="text-danger">{{ $errors->first('current_address_province') }}</p>
+                        <select name="current_address_city" id="cur-add-city" class="form-select form-control" disabled>
+                            <option>No Province Selected</option>
+                        </select>
+                        <label for="cur-add-city" class="text-center">City</label>
+                        @if ($errors->has('current_address_city'))
+                        <p class="text-danger">{{ $errors->first('current_address_city') }}</p>
                         @endif
                     </div>
                     <div class="col-12 col-lg-4 g-3 form-floating">

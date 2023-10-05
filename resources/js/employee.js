@@ -30,6 +30,8 @@ const BU_LIST = {
     '18'  : 'C4I',
 };
 
+const PH_ADDRESSES_API = 'https://psgc.gitlab.io/api/';
+
 $(document).ready(function () {
 
 	var employee_list = $("#employee-list").DataTable({
@@ -320,25 +322,28 @@ $(document).ready(function () {
 	$("#copy-permanent-address").click(function(){
 		var isSame = $("#copy-permanent-address").prop('checked');
 		
+		$(`#cur-add-city`).empty()
+						  .append($("#perm-add-city").html());
+
 		$("#cur-add-strt").val($("#perm-add-strt").val());
-		$("#cur-add-town").val($("#perm-add-town").val());
+		$("#cur-add-city").val($("#perm-add-city").val());
 		$("#cur-add-prov").val($("#perm-add-prov").val());
 		$("#cur-add-postal").val($("#perm-add-postal").val());
 		
 		$("#cur-add-strt").prop("readonly", isSame);
-		$("#cur-add-town").prop("readonly", isSame);
+		$("#cur-add-city").prop("readonly", isSame);
 		$("#cur-add-prov").prop("readonly", isSame);
 		$("#cur-add-postal").prop("readonly", isSame);
 		
 		if(isSame)
 		{
 			$("#cur-add-strt").addClass("is-disabled");
-			$("#cur-add-town").addClass("is-disabled");
+			$("#cur-add-city").addClass("is-disabled");
 			$("#cur-add-prov").addClass("is-disabled");
 			$("#cur-add-postal").addClass("is-disabled");
 		} else {
 			$("#cur-add-strt").removeClass("is-disabled");
-			$("#cur-add-town").removeClass("is-disabled");
+			$("#cur-add-city").removeClass("is-disabled");
 			$("#cur-add-prov").removeClass("is-disabled");
 			$("#cur-add-postal").removeClass("is-disabled");
 		}
@@ -346,15 +351,64 @@ $(document).ready(function () {
 	});
 
 
-	$("input[name *= 'permanent_address'").change(function(){
+	$("input[name *= 'permanent_address'").change(() => {
 		var isSame = $("#copy-permanent-address").prop('checked');
 		if(isSame) {
 			$("#cur-add-strt").val($("#perm-add-strt").val());
-			$("#cur-add-town").val($("#perm-add-town").val());
+			$("#cur-add-city").val($("#perm-add-city").val());
 			$("#cur-add-prov").val($("#perm-add-prov").val());
 			$("#cur-add-postal").val($("#perm-add-postal").val());
 		}
-	})
+	});
+
+	$("select[id *= '-add-prov'").on('change', (function() {
+		var id_prefix = $(this).attr("id");
+		id_prefix = id_prefix.replace('-add-prov','');
+		alert(`#${id_prefix}-add-prov`);
+		if ($(`#${id_prefix}-add-prov > option:selected`).val() != "") {
+			let provinceCode = $(`#${id_prefix}-add-prov > option:selected`).data('provincecode');
+			alert("Province code: " + provinceCode);
+			
+		$.ajax({
+			type: "GET",
+			url: PH_ADDRESSES_API + `/provinces/${provinceCode}/cities-municipalities/`,
+			dataType: 'json',
+
+		}).done(function(data){
+			$(`#${id_prefix}-add-city`).empty();
+			$(`#${id_prefix}-add-city`).prop('disabled', false);
+			console.table(data);
+			data.forEach(city => {
+				$(`#${id_prefix}-add-city`).append(`<option value="${city.name}">${city.name}</option>`);
+			});
+
+		}).fail(function(){
+			var msg = '';
+			if (data.status === 0) {
+				msg = 'Not connected.\n Verify Network.';
+			} else if (data.status == 404) {
+				msg = 'Requested page not found. [404]';
+			} else if (data.status == 500) {
+				msg = 'Internal Server Error [500].';
+			} else if (exception === 'parsererror') {
+				msg = 'Requested JSON parse failed.';
+			} else if (exception === 'timeout') {
+				msg = 'Time out error.';
+			} else if (exception === 'abort') {
+				msg = 'Ajax request aborted.';
+			} else {
+				msg = 'Uncaught Error.\n' + data.responseText;
+			}
+			console.log('error: ' + msg);
+
+			$(`#${id_prefix}-add-city`).empty()
+			.append('<option>No Province Selected</option>');
+			$(`#${id_prefix}-add-city`).prop('disabled', true);
+		});
+
+		}
+	}))
+
 
 	//end for employee registration
 

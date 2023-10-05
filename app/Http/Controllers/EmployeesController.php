@@ -14,6 +14,7 @@ use App\Models\Projects;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Http;
 use App\Mail\updateContactDetailsMail;
 use App\Exports\EmployeesExport;
 use Illuminate\Support\Facades\Log;
@@ -42,7 +43,10 @@ class EmployeesController extends Controller
             $employee = Employees::getPassportStatus($employee);
         }
 
-        return view('employees.regist')->with(['employee' => $employee]);
+        return view('employees.regist')->with([
+            'employee' => $employee,
+            'provinces' => $this->getProvinces(),
+        ]);
     }
 
     /**
@@ -189,7 +193,9 @@ class EmployeesController extends Controller
 
         return view('employees.edit')->with([
                                         'employee' => $employee,
-                                        'isManager' => Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')
+                                        'isManager' => Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE'),
+                                        'provinces' => $this->getProvinces(),
+
                                     ]);
 
     }
@@ -848,5 +854,101 @@ class EmployeesController extends Controller
             }
         }
     }
+
+    
+    
+    
+    /**
+     * Get the List of Regions
+     *
+     * @param [int] $region_code
+     * @return json
+     */
+    private function getRegions() {
+        $region_code = null;
+        if($region_code == null) {
+            $regions = Http::get('https://psgc.gitlab.io/api/regions/');
+        } else {
+            $regions = Http::get("https://psgc.gitlab.io/api/regions/$region_code");
+
+        }
+        $json = json_decode($regions, true);
+
+        return $json;
+    }
+    
+    /**
+     * Get the List of Provinces
+     *
+     * @param [int] $province
+     * @return json
+     */
+    private function getProvinces($province_code = null) {
+        if($province_code == null) {
+            $provinces = Http::get('https://psgc.gitlab.io/api/provinces/');
+        } else {
+            $provinces = Http::get("https://psgc.gitlab.io/api/provinces/$province_code");
+
+        }
+        $json = json_decode($provinces, true);
+
+        return $this->sortArray($json, 'name');
+    }
+    
+    /**
+     * Get the List of Cities based on Region code
+     *
+     * @param [int] $region_code
+     * @return json
+     */
+    private function getCities() {
+        if($region_code == null) {
+            $city = Http::get("https://psgc.gitlab.io/api/cities-municipalities");
+        }
+        else {
+            $city = Http::get("https://psgc.gitlab.io/api/regions/$region_code/cities-municipalities");
+        }
+            $json = json_decode($city, true);
+
+        return $json;
+    }
+    
+    /**
+     * Get the List of Barangays based on City code
+     *
+     * @param [int] $city_code
+     * @return json
+     */
+    private function getBarangays($city_code = null) {
+        if($city_code == null) {
+            $barangay = Http::get("https://psgc.gitlab.io/api/barangays");
+        } else {
+            $barangay = Http::get("https://psgc.gitlab.io/api/cities-municipalities/$city_code/barangays");
+        }
+
+        $barangay = Http::get("https://psgc.gitlab.io/api/cities-municipalities/$city_code");
+        $json = json_decode($barangay, true);
+
+        return $json;
+    }
+
+    /**
+     * Sort any given array by given key. 
+     *
+     * @param [array] $array
+     * @param [string] $key DEFAULT 'name'
+     * @return array
+     */
+    private function sortArray($array, $key = 'name') {
+        $collection = collect($array);
+        
+        $sorted = $collection->sortBy($key);
+        
+        $sorted->values()->all();
+
+        return $sorted;
+    }
+
+
 
 }
