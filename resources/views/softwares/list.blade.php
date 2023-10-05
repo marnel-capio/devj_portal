@@ -75,7 +75,7 @@
 			<input type="text" name="softSearchInput" class=" form-control" id="soft-search-input" placeholder="Search">
 		</div>
 		<div class="col-8 text-end">
-			<a href="{{ route('softwares.create') }}" class="btn btn-success me-1" id='create-software'>
+			<a href="#" class="btn btn-success me-1" id='create-software'>
 				Create
 				<div id="create-software-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
   					<span class="sr-only"></span>
@@ -87,7 +87,7 @@
   					<span class="sr-only"></span>
 				</div>
 			</button>
-			<form action="{{  route('softwares.download')  }}" method="GET" id="software-list-form">
+			<form method="GET" id="software-list-form">
 				@csrf
 			</form>
 		</div>

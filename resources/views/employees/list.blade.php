@@ -106,12 +106,12 @@
 			</div>
 
 			<div class="col">
-				<button class="btn btn-primary float-end download-btn" id="employee-download">
+				<a class="btn btn-primary float-end download-btn" id="employee-download">
 					Download
 					<div id="employee-download-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
 						<span class="sr-only"></span>
 					</div>
-				</button>
+				</a>
 			</div>
 		</div>
 	</form>
