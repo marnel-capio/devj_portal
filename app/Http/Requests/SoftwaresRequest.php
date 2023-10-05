@@ -96,7 +96,7 @@ class SoftwaresRequest extends FormRequest
                     $rules['software_name'] = ['required',
                                                'max:80',
                                                 function($attribute, $value, $fail) use ($rejectCode){
-                                                    $detail = Softwares::where('software_name', $value)->get()->toArray();
+                                                    $detail = Softwares::where('software_name', $value)->where('is_deleted',"!=",1)->get()->toArray();
                                                     if(!empty($detail) && $detail[0]['reject_code'] != $rejectCode){
                                                         $fail("The software is already registered.");
                                                     }
@@ -106,7 +106,7 @@ class SoftwaresRequest extends FormRequest
                     $rules['software_name'] = ['required',
                                                'max:80',
                                                 function($attribute, $value, $fail){
-                                                    $duplicatesoftware = Softwares::where('software_name', $value)->get()->toArray();
+                                                    $duplicatesoftware = Softwares::where('software_name', $value)->where('is_deleted',"!=",1)->get()->toArray();
                                                     if(!empty($duplicatesoftware)){
                                                         $fail("The software is already registered.");
                                                     }
@@ -125,7 +125,7 @@ class SoftwaresRequest extends FormRequest
                         $rules['software_name'] = ['required',
                         'max:80',
                         function($attribute, $value, $fail) use ($software_id){
-                            $detail = Softwares::where('software_name', $value)->get()->toArray();
+                            $detail = Softwares::where('software_name', $value)->where('is_deleted',"!=",1)->get()->toArray();
                             if(!empty($detail) && $detail[0]['id'] != $software_id){
                                 $fail("The software is already registered.");
                             }

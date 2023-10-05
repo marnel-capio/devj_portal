@@ -131,7 +131,7 @@ $(document).ready(function () {
 			} else {
 				msg = 'Uncaught Error.\n' + data.responseText;
 			}
-			console.log('error: ' + msg);
+			// console.log('error: ' + msg);
 			setHeaderAlert(msg + ". Consider refreshing the page", 0, true);
 
 		}).always(function() {
@@ -365,7 +365,7 @@ $(document).ready(function () {
 			}
 
 		}).fail(function(){
-			console.log('error');
+			// console.log('error');
 		});
 
 		e.preventDefault();
@@ -458,7 +458,7 @@ $(document).ready(function () {
 			} else {
 				msg = 'Uncaught Error.\n' + data.responseText;
 			}
-			console.log('error: ' + msg);
+			// console.log('error: ' + msg);
 		});
 		
 		e.preventDefault();
@@ -515,7 +515,7 @@ $(document).ready(function () {
 		$("#ll-link-spinner").hide();
 		$('#ll-submit-btn').prop('disabled', false);
 		}).fail(function(){
-			console.log('error');
+			// console.log('error');
 		});
 		
 		e.preventDefault();
@@ -738,7 +738,7 @@ $(document).ready(function () {
 				$("#alert-div").append('<div id="reinstate_alert" class="alert alert-danger" role="alert"><span class="ms-2">' + data.message + '</span></div>');
 			}
 		}).fail(function(){
-			console.log('error');
+			// console.log('error');
 		})
 	});
 

@@ -144,7 +144,7 @@ $(document).ready( function () {
 			} else {
 				msg = 'Uncaught Error.\n' + ddata.responseText;
 			}
-			console.log('error: ' + msg);
+			// console.log('error: ' + msg);
 		});
 
         e.preventDefault();
@@ -303,7 +303,7 @@ $(document).ready( function () {
 			} else {
 				msg = 'Uncaught Error.\n' + ddata.responseText;
 			}
-			console.log('error: ' + msg);
+			// console.log('error: ' + msg);
 		}).always(function() {
 			$("#update_pj_submit_btn").prop("disabled", false);
 			$("#link_update_spinner").hide();
@@ -364,7 +364,7 @@ $(document).ready( function () {
 			}
 
 		}).fail(function(){
-			console.log('error');
+			// console.log('error');
 		});
 
         e.preventDefault();
@@ -478,7 +478,7 @@ $(document).ready( function () {
 				});
 			}
 		}).fail(function(){
-			console.log('error');
+			// console.log('error');
 		});	  
     }
 	

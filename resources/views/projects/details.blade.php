@@ -85,15 +85,21 @@
                                     <input type="text" name="employee_role" value="{{ Auth::user()->roles }}" hidden>
                                     <div class="row mb-2">
                                         <div class="col-12 g-3 form-floating">
-                                        @if (in_array(Auth::user()->roles, [config('constants.ADMIN_ROLE_VALUE'), config('constants.MANAGER_ROLE_VALUE')]))
-                                            <select name="employee_id" class="form-select" id="member_list" required>
-                                                <option value=""></option>
-                                        @else
-                                            <select name="employee_id" class="form-select" id="member_list" readonly>
-                                        @endif
+                                            @if (count($employeeDropdown) < 1)
+                                                <select name="employee_id" class="form-select" id="member_list" required>
+                                                    <option value="" disabled>No available employee</option>
+                                            @else
+                                                @if (in_array(Auth::user()->roles, [config('constants.ADMIN_ROLE_VALUE'), config('constants.MANAGER_ROLE_VALUE')]))
+                                                    <select name="employee_id" class="form-select" id="member_list" required>
+                                                        <option value=""></option>
+                                                @else
+                                                    <select name="employee_id" class="form-select" id="member_list" readonly>
+                                                @endif
+
                                                 @foreach ( $employeeDropdown as $employee )
                                                     <option value="{{ $employee['id'] }}">{{ $employee['employee_name'] }}</option>
                                                 @endforeach
+                                            @endif
                                             </select>
                                             <label for="member_list" class="text-center">Employee Name</label>
                                             <span id="link_employee_id_error"></span>
@@ -407,10 +413,15 @@
                                     <input type="text" name="project_id" value="{{ $projectData->id }}" hidden>
                                     <div class="row mb-2">
                                         <div class="col-12 g-3 form-floating">
-                                            <select name="software_id" class="form-select" id="software_list">
-                                                @foreach ( $softwareDropdown as $software )
-                                                    <option value="{{ $software['id'] }}">{{ $software['software_name'] }}</option>
-                                                @endforeach
+                                            @if (count($softwareDropdown) < 1)
+                                                <select name="software_id" class="form-select" id="software_list" required>
+                                                    <option value="" disabled>No available software</option>
+                                            @else
+                                                <select name="software_id" class="form-select" id="software_list" required>
+                                                    @foreach ( $softwareDropdown as $software )
+                                                        <option value="{{ $software['id'] }}">{{ $software['software_name'] }}</option>
+                                                    @endforeach
+                                            @endif
                                             </select>
                                             <label for="software_list" class="text-center">Software Name</label>
                                             <span id="link_software_id_error"></span>

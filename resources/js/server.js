@@ -141,7 +141,7 @@ $(document).ready(function () {
 
         if ( confirm(`Are you sure you want to delete ${serverName}? delete-btn-spinner-${id}`) ) {
             // Delete server
-            console.log('delete server');
+            // console.log('delete server');
             $.ajax({
                 type: "GET",
                 url: SERVER_DELETEION_API_LINK,
@@ -150,7 +150,7 @@ $(document).ready(function () {
                 },
                 dataType: 'json',
             }).done(function (data) {
-                console.log('done');
+                // console.log('done');
                 if (data.success) {
                     location.reload();
                 } else {
@@ -159,7 +159,7 @@ $(document).ready(function () {
                 }
                 $("#delete-btn-spinner-" + id).hide();
             }).fail( function () {
-                console.log('error');
+                // console.log('error');
                 $("#delete-btn-spinner-" + id).hide();
             })
 

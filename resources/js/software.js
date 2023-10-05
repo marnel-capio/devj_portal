@@ -68,6 +68,19 @@ $(document).ready(function () {
 		}
 		
 	}
+
+	// Software deletiom
+	$("#software-delete").on('click', function (e) {
+		e.preventDefault();
+		if (confirm('Are sure you want to delete?')) {
+			var id = $("#software_id").val();
+			window.location.href = window.location.origin+"/softwares/"+id+"/delete";
+		} else {
+			// Cancel form submission
+			return false;
+		}
+
+	});
 	
 	// Create button is clicked
 	$("#create-software").on("click", function() {
@@ -97,7 +110,7 @@ $(document).ready(function () {
     });
 
     $(".soft-search-type-rdb-input").on("change", function(){
-		console.log("entered");
+		// console.log("entered");
         filterSoftwareList();
     });
 
@@ -162,7 +175,7 @@ $(document).ready(function () {
 				});
 			}
 		}).fail(function(){
-			console.log('error');
+			// console.log('error');
 		});	  
     }
 
@@ -253,7 +266,7 @@ $(document).ready(function () {
 			}
 			$('#lp-submit-btn').prop('disabled', false);
 		}).fail(function(){
-			console.log('error');
+			//console.log('error');
 		});
 		
 		e.preventDefault();
