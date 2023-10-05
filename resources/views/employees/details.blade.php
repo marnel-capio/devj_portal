@@ -520,6 +520,11 @@
             <h4 class="text-start">Projects</h4>
             <button class="btn btn-primary" data-bs-target="#linkProjectModal" data-bs-toggle="modal">Add</button>
         </div>
+        @if(!empty(session('ep_alert')))
+            <div class="alert alert-success mt-2" role="alert">
+                    {{session()->pull('ep_alert')}}
+            </div>
+        @endif
         <table class="table table-bordered border-secondary mt-3" id="project-tbl">
             <thead class="bg-primary text-white fw-bold">
                 <tr>
@@ -548,6 +553,11 @@
                 <button class="btn btn-primary" data-bs-target="#linkLaptopModal" data-bs-toggle="modal">Add</button>
             @endif
         </div>
+        @if(!empty(session('el_alert')))
+            <div class="alert alert-success mt-2" role="alert">
+                    {{session()->pull('el_alert')}}
+            </div>
+        @endif
         <table class="table table-bordered border-secondary mt-3" id="laptop-tbl">
             <thead class="bg-primary text-white fw-bold">
                 <tr>
@@ -638,10 +648,15 @@
                             <input type="text" hidden name="lp_employee_id" value="{{ $employee->id }}">
                             <div class="row mb-2">
                                 <div class="col-12 g-3 form-floating">
-                                    <select name="project_id" class="form-select" id="projectList" required>
-                                        @foreach ( $projectList as $project )
-                                            <option data-mindate="{{ date('Y-m-d', strtotime($project['start_date']))  }}" data-maxdate="{{ !empty($project['end_date']) ? date('Y-m-d', strtotime($project['end_date'])) : ""  }}" value="{{ $project['id'] }}">{{ $project['name'] }}</option>
-                                        @endforeach
+                                    @if (count($projectList) < 1)
+                                        <select name="project_id" class="form-select" id="projectList" required>
+                                            <option value="" disabled>No available project</option>
+                                    @else
+                                        <select name="project_id" class="form-select" id="projectList" required>
+                                            @foreach ( $projectList as $project )
+                                                <option data-mindate="{{ date('Y-m-d', strtotime($project['start_date']))  }}" data-maxdate="{{ !empty($project['end_date']) ? date('Y-m-d', strtotime($project['end_date'])) : ""  }}" value="{{ $project['id'] }}">{{ $project['name'] }}</option>
+                                            @endforeach
+                                    @endif
                                     </select>
                                     <label for="projectList" class="text-center">Project Name</label>
                                     <span id="error-lp-proj-name"></span>
@@ -663,7 +678,7 @@
                                 <div class="col-6 g-3 form-floating">
                                     <select name="project_role" id="projectRoleList" class="form-select" required>
                                         @foreach (config('constants.PROJECT_ROLES') as $val => $text )
-                                        <option value="{{ $val }}">{{ $text }}</option>
+                                            <option value="{{ $val }}">{{ $text }}</option>
                                         @endforeach
                                     </select>
                                     <label for="projectRoleList" class="text-center">Role</label>
@@ -706,12 +721,6 @@
                 <div class="modal-body">
                     <div class="p-2">
                         <div id="ll-success-msg">
-                            @if (count($laptopList) < 1)
-                            <div class="text-danger text-start">
-                                <i class="bi bi-info-circle-fill"></i>
-                                Please check if your laptop already exists and is still linked to another employee. If not, please create details for your laptop.
-                            </div>
-                            @endif
                         </div>
                         <form action="#" id="linkLaptopForm">
                             @csrf
@@ -720,7 +729,7 @@
                                 <div class="col-6 g-3 form-floating">
                                     @if (count($laptopList) < 1)
                                         <select name="laptop_id" id="laptopList" class="form-select" required>
-                                            <option value="" disabled>No Available laptop</option>
+                                            <option value="" disabled>No available laptop</option>
                                     @else
                                         <select name="laptop_id" id="laptopList" class="form-select" required>
                                             @foreach ($laptopList as $laptop)

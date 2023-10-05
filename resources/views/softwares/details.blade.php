@@ -158,6 +158,11 @@
             <h4 class="text-start">Projects</h4>
             <button class="btn btn-primary" data-bs-target="#linkProjectModal" data-bs-toggle="modal">Add</button>
         </div>
+        @if(!empty(session('sp_alert')))
+            <div class="alert alert-success mt-2" role="alert">
+                    {{session()->pull('sp_alert')}}
+            </div>
+        @endif
         <table class="table table-bordered border-secondary mt-3" id="project-tbl">
             <thead class="bg-primary text-white fw-bold">
                 <tr>

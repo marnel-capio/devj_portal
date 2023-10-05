@@ -110,7 +110,7 @@ class ApiController extends Controller
             $this->sendMailForEmployeeUpdate(Employees::getEmailOfManagers(), $mailData, config('constants.MAIL_EMPLOYEE_LAPTOP_LINK_REQUEST'));
             $message = 'Your request has been sent';
         }
-
+        session(['el_alert'=> $message]);
         Logs::createLog("Employee", "Link {$employee->first_name} {$employee->last_name} to {$laptop->tag_number} laptop");
 
         return response()->json(['success' => true, 
@@ -147,7 +147,7 @@ class ApiController extends Controller
 
         $message = 'Software added successfully';
         ProjectSoftwares::create($insertData);
-
+        session(['sp_alert'=> $message]);
         //check logined employee role
         Logs::createLog("Software", "Link {$software->software_name} to {$project->name}");
         return response()->json(['success' => true, 
@@ -240,7 +240,7 @@ class ApiController extends Controller
         }
         
         Logs::createLog("Employee", $logMessage);
-
+        session(['ep_alert'=> $message]);
         return response()->json(['success' => true, 
                                     'message' => $message, 
                                     'update' => EmployeesProjects::getProjectsByEmployee($data['employee_id'])]
@@ -954,7 +954,7 @@ class ApiController extends Controller
         
         Logs::createLog("Project", $logMessage);
 
-        session(['pj_alert'=> 'Request for Project Linkage has been sent']);
+        session(['pj_alert'=> $message]);
 
         return response()->json(['success' => true, 
                                     'message' => $message, 
@@ -1013,7 +1013,7 @@ class ApiController extends Controller
                 Mail::to($employee->email)->send(new Project($mailData, config('constants.MAIL_PROJECT_EMPLOYEE_LINKAGE_UPDATE_BY_MANAGER')));
             }
 
-            $message = 'Employee has been successfully linked';
+            $message = 'Employee has been successfully updated';
         }else{
             //if an employee edits his own data and is not the manager
             $tojson = [];
