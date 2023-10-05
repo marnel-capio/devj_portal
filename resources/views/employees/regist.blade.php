@@ -126,19 +126,22 @@
 
 {{-- Password --}}
 <div class="emp-regist-category mb-4 p-3 rounded-3">
-    <h4 class="text-start">Portal Password</h4>
-    <div class="row mb-2 ps-3 pe-3">
-        <div class="col-6 col-md-4 g-3 form-floating">
-            <input type="password" class="form-control" name="password" id="emp-password" placeholder="Password" required>
-            <label for="emp-password" class="text-center">Password</label>
-            @if ($errors->has('password'))
-            <p class="text-danger">{{ $errors->first('password') }}</p>
-            @endif
-        </div>
-        <div class="col-6 col-md-4 g-3 form-floating">
-            <input type="password" class="form-control" name="confirm_password" id="emp-confirm-password" placeholder="Confirm Password" required>
-            <label for="emp-confirm-password" class="text-center">Confirm Password</label>
-            <p id="confirm-pass-text"></p>
+    <div class="col col-12 col-md-8">
+        <h4 class="text-start">Portal Password</h4>
+        <div class="row mb-2 ps-3 pe-3">
+            <div class="col-12 col-md-6 g-3 form-floating">
+                <input type="password" class="form-control" name="password" id="emp-password" placeholder="Password" required>
+                <label for="emp-password" class="text-center">Password</label>
+                @if ($errors->has('password'))
+                <p class="text-danger">{{ $errors->first('password') }}</p>
+                @endif
+                <small class="form-text text-secondary"><em>Minimum of 8 characters</em></small>
+            </div>
+            <div class="col-12 col-md-6 g-3 form-floating">
+                <input type="password" class="form-control" name="confirm_password" id="emp-confirm-password" placeholder="Confirm Password" required>
+                <label for="emp-confirm-password" class="text-center">Confirm Password</label>
+                <p id="confirm-pass-text"></p>
+            </div>
         </div>
     </div>
 </div>

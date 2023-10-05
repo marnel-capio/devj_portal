@@ -145,6 +145,7 @@
                             <div class="row mb-3">
                                 <div class="col-5 text-end">
                                     <label for="cp-new-pw" class="form-label">Enter New Password</label>
+                                    <small class="form-text text-secondary"><em>Minimum of 8 characters</em></small>
                                 </div>
                                 <div class="col-7">
                                     <input name="cp_new_pw" type="password" class="form-control" id="cp-new-pw" required>
