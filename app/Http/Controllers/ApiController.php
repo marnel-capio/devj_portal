@@ -1105,7 +1105,7 @@ class ApiController extends Controller
             //return an error
             return response()->json([
                 'success' => false,
-                'error' => 'Error! Server does not exists.',
+                'error' => 'Error! Server does not exist.',
             ]);
         }
 

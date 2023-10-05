@@ -684,7 +684,7 @@ class SoftwaresController extends Controller
         $software = Softwares::where('id', $id)->first();
         
         if(empty($software)){
-            return 'Software does not exists.';
+            return 'Software does not exist.';
         }
 
         //check if software needs to be approved

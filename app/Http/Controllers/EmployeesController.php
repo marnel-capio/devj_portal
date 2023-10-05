@@ -540,7 +540,7 @@ class EmployeesController extends Controller
         $employee = Employees::where('id', $id)->first();
         
         if(empty($employee)){
-            return 'Employee does not exists.';
+            return 'Employee does not exist.';
         }
 
         //check if employee needs to be approved

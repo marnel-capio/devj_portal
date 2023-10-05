@@ -788,9 +788,9 @@ class LaptopsController extends Controller
 
         if(empty($detail)){
             if($type == self::LAPTOP_LINK_REQUEST){
-                return 'Laptop linkage does not exists.';
+                return 'Laptop linkage does not exist.';
             }else{
-                return 'Laptop does not exists.';
+                return 'Laptop does not exist.';
             }
         }
 
