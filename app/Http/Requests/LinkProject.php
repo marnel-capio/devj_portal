@@ -44,7 +44,8 @@ class LinkProject extends FormRequest
             'project_id' => 'project',
             'project_start' => 'start date',
             'project_end' => 'end date',
-            'software_id' => 'software_name',
+            'software_id' => 'software name',
+            'employee_id' => 'employee',
         ];
     }
 
