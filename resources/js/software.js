@@ -136,12 +136,12 @@ $(document).ready(function () {
 			_token: $("#software-list-form > input[name=_token]").val()
 		};
 		$.ajax({
-			type: "GET",
+			type: "POST",
 			url: SOFTWARE_DOWNLOAD_LINK,
 			data: postData,
-			dataType: "json",
 			encode: true,
 		}).done(function(){
+			$("#software-download-form").submit();
 			setTimeout(function(){
 				setHeaderAlert("Download request sent", 1, true);
 				$("#software-download-spinner").hide();
