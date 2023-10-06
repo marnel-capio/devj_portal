@@ -326,8 +326,9 @@ class LaptopsController extends Controller
         $requestor = Employees::selectRaw('first_name, last_name, name_suffix')
                                 ->where('id', $laptopDetails->updated_by)
                                 ->first();
+                                
         // Format name to FN LN <SUFFIX> 
-        $requestor = Employees::getFullName($requestor);
+        $requestor = $requestor != null ? Employees::getFullName($requestor) : "";
 
         if($laptopDetails->approved_status == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')){
             $updateData = json_decode($laptopDetails->update_data, true);
