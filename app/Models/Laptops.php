@@ -101,6 +101,7 @@ class Laptops extends Model
                             ,el.surrender_flag
                             ,el.update_time as last_update
                             ,CONCAT(e.last_name, ", ", e.first_name) as owner
+                            ,e.name_suffix owner_suffix
                             ,CASE  WHEN l.status = 1 THEN "Active" ELSE "Inactive" END AS status')
                         ->from('laptops AS l')
                         ->leftJoin('employees_laptops AS el', function ($join) use ($forScreen) {

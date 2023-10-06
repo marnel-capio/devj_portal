@@ -61,7 +61,7 @@
   					<span class="sr-only"></span>
 				</div>
             </button>
-            <form action="{{  route('servers.download')  }}" method="GET" id="server-list-form">
+            <form action="{{  route('servers.download')  }}" method="POST" id="server-list-form">
                 @csrf
             </form>
         </div>

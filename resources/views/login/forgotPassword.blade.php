@@ -13,15 +13,15 @@
                         @endif
                     </div>
                     <div class="col-md-3 text-start">
-                        <button type="submit" class="btn btn-primary">
-                            Submit
-                        </button>
+                        <div class="d-grid g-2">
+                            <button class="btn btn-primary" type="submit"> Submit </button>
+                        </div>
                     </div>
                     @if (Session::has('successMsg'))
                         <span class="text-success">{{ Session::get('successMsg') }}</span>
                     @endif
                 </div>
-                <div class="col-12 text-center">
+                <div class="col-12 text-center mt-2">
                     <a class="small" href="{{ route('login') }}" style="text-decoration:none">Go back to login page</a>
                 </div>
             </form>

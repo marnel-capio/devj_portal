@@ -238,6 +238,12 @@ class LaptopsController extends Controller
         $employeeDropdown = [];
         if(in_array(Auth::user()->roles, [config('constants.ADMIN_ROLE_VALUE'), config('constants.MANAGER_ROLE_VALUE')])){
             $employeeDropdown = Employees::getEmployeeNameListForLaptopDropdown($id);
+            
+            foreach($employeeDropdown as $key => $employee) {
+                // overriding 'employee_name' column from Employees::getEmployeeNameListForLaptopDropdown. 
+                // TODO: Need to fix later. Completely verify if no other references to this model->function then remove employee_name from that function.
+                $employeeDropdown[$key]['employee_name'] = Employees::getFullName($employee);
+            }
         }else{
             //check if employee has pending request
             $currentUserRequest = EmployeesLaptops::where('approved_status', config('constants.APPROVED_STATUS_PENDING'))
@@ -248,7 +254,7 @@ class LaptopsController extends Controller
             if(empty($currentUserRequest)){
                 $employeeDropdown = [[
                     'id' => Auth::user()->id,
-                    'employee_name' => Auth::user()->last_name .", " .Auth::user()->first_name,
+                    'employee_name' => Employees::getFullName_lastNameFirst(Auth::user()),
                 ]];
             }else{
                 $showLinkBtn = false;
@@ -262,6 +268,7 @@ class LaptopsController extends Controller
         }else{
             //get linkage update requests
             $linkageRequest = EmployeesLaptops::getLinkRequestByLaptop($id, config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE'));
+            $linkageData->employee_name = Employees::getFullName($linkageData);
 
             //apply update to data
             foreach($linkageRequest as $idx => &$data){
@@ -275,13 +282,27 @@ class LaptopsController extends Controller
                 }
             }
         }
+            
+        foreach($linkageRequest as $key => $employee) {
+            // overriding 'employee_name' column from Employees::getLinkRequestByLaptop. 
+            // TODO: Need to fix later. Completely verify if no other references to this model->function then remove employee_name from that function.
+            $linkageRequest[$key]['employee_name'] = Employees::getFullName($employee);
+        }
+
+        $history = EmployeesLaptops::getLaptopHistory($id);
+            
+        foreach($history as $key => $employee) {
+            // overriding 'employee_name' column from Employees::getLaptopHistory. 
+            // TODO: Need to fix later. Completely verify if no other references to this model->function then remove employee_name from that function.
+            $history[$key]['employee_name'] = Employees::getFullName($employee);
+        }
 
         return view('laptops.details')->with(['detail' => $laptopDetails,
                                             'detailOnly' => true,
                                             'detailNote' => $this->getDetailNote($laptopDetails),
                                             'linkageData' => $linkageData,
                                             'linkageRequest' => $linkageRequest,
-                                            'history' => EmployeesLaptops::getLaptopHistory($id),
+                                            'history' => $history,
                                             'employeeDropdown' => $employeeDropdown,
                                             'showLinkBtn' => $showLinkBtn,
                                         ]);
@@ -302,9 +323,12 @@ class LaptopsController extends Controller
         abort_if(empty($laptopDetails), 404);
         $detailNote = $this->getDetailNote($laptopDetails);
 
-        $requestor = Employees::selectRaw('concat(first_name, " ", last_name) as requestor')
-        ->where('id', $laptopDetails->updated_by)
-        ->first();
+        $requestor = Employees::selectRaw('first_name, last_name, name_suffix')
+                                ->where('id', $laptopDetails->updated_by)
+                                ->first();
+                                
+        // Format name to FN LN <SUFFIX> 
+        $requestor = $requestor != null ? Employees::getFullName($requestor) : "";
 
         if($laptopDetails->approved_status == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')){
             $updateData = json_decode($laptopDetails->update_data, true);
@@ -557,8 +581,8 @@ class LaptopsController extends Controller
                 'firstName' => $recipient->first_name,
                 'currentUserId' => Auth::user()->id,
                 'module' => "Laptop",
-                'requestor' => !empty($requestor) ? $requestor->first_name .' ' .$requestor->last_name : 'unknown',
-                'assignee' => $recipient->first_name .' ' .$recipient->last_name,
+                'requestor' => !empty($requestor) ? Employees::getFullName_lastNameFirst($requestor): 'unknown',
+                'assignee' => Employees::getFullName($recipient),
                 'tagNumber' => $laptopData->tag_number,
             ];
 
@@ -590,8 +614,8 @@ class LaptopsController extends Controller
                 'firstName' => $recipient->first_name,
                 'currentUserId' => Auth::user()->id,
                 'module' => "Laptop",
-                'requestor' => !empty($requestor) ? $requestor->first_name .' ' .$requestor->last_name : 'unknown',
-                'assignee' => $recipient->first_name .' ' .$recipient->last_name,
+                'requestor' => !empty($requestor) ? Employees::getFullName_lastNameFirst($requestor): 'unknown',
+                'assignee' => Employees::getFullName($recipient),
                 'tagNumber' => $laptopData->tag_number,
             ];
 
@@ -695,8 +719,8 @@ class LaptopsController extends Controller
                 'firstName' => $recipient->first_name,
                 'currentUserId' => Auth::user()->id,
                 'module' => "Laptop",
-                'requestor' => !empty($requestor) ? $requestor->first_name .' ' .$requestor->last_name : 'unknown',
-                'assignee' => $recipient->first_name .' ' .$recipient->last_name,
+                'requestor' => !empty($requestor) ? Employees::getFullName_lastNameFirst($requestor): 'unknown',
+                'assignee' => Employees::getFullName($recipient),
                 'tagNumber' => $laptopData->tag_number,
             ];
 
@@ -724,8 +748,8 @@ class LaptopsController extends Controller
                 'firstName' => $recipient->first_name,
                 'currentUserId' => Auth::user()->id,
                 'module' => "Laptop",
-                'requestor' => !empty($requestor) ? $requestor->first_name .' ' .$requestor->last_name : 'unknown',
-                'assignee' => $recipient->first_name .' ' .$recipient->last_name,
+                'requestor' => !empty($requestor) ? Employees::getFullName_lastNameFirst($requestor): 'unknown',
+                'assignee' => Employees::getFullName($recipient),
                 'tagNumber' => $laptopData->tag_number,
             ];
 
@@ -788,9 +812,9 @@ class LaptopsController extends Controller
 
         if(empty($detail)){
             if($type == self::LAPTOP_LINK_REQUEST){
-                return 'Laptop linkage does not exists.';
+                return 'Laptop linkage does not exist.';
             }else{
-                return 'Laptop does not exists.';
+                return 'Laptop does not exist.';
             }
         }
 

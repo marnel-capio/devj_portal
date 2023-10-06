@@ -28,7 +28,7 @@ class LoginRequest extends FormRequest
     public function messages()
     {
         return [
-            'email_address.exists' => "The :attribute does not exists.",
+            'email_address.exists' => "The :attribute does not exist.",
         ];
     }
 
