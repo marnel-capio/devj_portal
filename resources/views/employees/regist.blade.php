@@ -17,9 +17,9 @@
                         <p class="text-danger">{{ $errors->first('first_name') }}</p>
                         @endif
                     </div>
-                    <div class="col-12 col-md-3 g-3 form-floating">
+                    <div class="col-12 col-md-3 g-3 form-floating" data-bs-toggle="tooltip" data-bs-placement="top" title="optional">
                         <input type="text" class="form-control" name="middle_name" id="middle_name" placeholder="Middle Name" value="{{ old('middle_name', $employee ? $employee->middle_name : '') }}">
-                        <label  class="text-center" for="middle_name">Middle Name</label>
+                        <label  class="text-center" for="middle_name"><em>Middle Name</em></label>
                         @if ($errors->has('middle_name'))
                         <p class="text-danger">{{ $errors->first('middle_name') }}</p>
                         @endif
@@ -33,7 +33,7 @@
                     </div>
                     <div class="col-12 col-md-1 g-3 form-floating" data-bs-toggle="tooltip" data-bs-placement="top" title="optional: Suffix (Jr, II, III, etc.)">
                         <input type="text" class="form-control" name="name_suffix" id="name_suffix" placeholder="*Suffix" value="{{ old('name_suffix', $employee ? $employee->name_suffix : '') }}">
-                        <label  class="text-center small" for="name_suffix"><em>*Suffix</em></label>
+                        <label  class="text-center small" for="name_suffix"><em>Suffix</em></label>
                         @if ($errors->has('name_suffix'))
                         <p class="text-danger">{{ $errors->first('name_suffix') }}</p>
                         @endif
@@ -126,19 +126,22 @@
 
 {{-- Password --}}
 <div class="emp-regist-category mb-4 p-3 rounded-3">
-    <h4 class="text-start">Portal Password</h4>
-    <div class="row mb-2 ps-3 pe-3">
-        <div class="col-6 col-md-4 g-3 form-floating">
-            <input type="password" class="form-control" name="password" id="emp-password" placeholder="Password" required>
-            <label for="emp-password" class="text-center">Password</label>
-            @if ($errors->has('password'))
-            <p class="text-danger">{{ $errors->first('password') }}</p>
-            @endif
-        </div>
-        <div class="col-6 col-md-4 g-3 form-floating">
-            <input type="password" class="form-control" name="confirm_password" id="emp-confirm-password" placeholder="Confirm Password" required>
-            <label for="emp-confirm-password" class="text-center">Confirm Password</label>
-            <p id="confirm-pass-text"></p>
+    <div class="col col-12 col-md-8">
+        <h4 class="text-start">Portal Password</h4>
+        <div class="row mb-2 ps-3 pe-3">
+            <div class="col-12 col-md-6 g-3 form-floating">
+                <input type="password" class="form-control" name="password" id="emp-password" placeholder="Password" required>
+                <label for="emp-password" class="text-center">Password</label>
+                @if ($errors->has('password'))
+                <p class="text-danger">{{ $errors->first('password') }}</p>
+                @endif
+                <small class="form-text text-secondary"><em>Minimum of 8 characters</em></small>
+            </div>
+            <div class="col-12 col-md-6 g-3 form-floating">
+                <input type="password" class="form-control" name="confirm_password" id="emp-confirm-password" placeholder="Confirm Password" required>
+                <label for="emp-confirm-password" class="text-center">Confirm Password</label>
+                <p id="confirm-pass-text"></p>
+            </div>
         </div>
     </div>
 </div>
@@ -213,9 +216,9 @@
                             <p class="text-danger">{{ $errors->first('passport_expiration_date') }}</p>
                             @endif
                         </div>
-                        <div class="col-12 col-md-4 g-3 form-floating">
+                        <div class="col-12 col-md-4 g-3 form-floating" data-bs-toggle="tooltip" data-bs-placement="top" title="optional: Place of issue is usually found at the back cover of the passport">
                             <input type="text" class="form-control" name="place_of_issue" id="place_of_issue" placeholder="Issuing Authority" value="{{ old('place_of_issue', $employee ? $employee->place_of_issue : '') }}">
-                            <label for="place_of_issue" class="text-center">Place of Issue</label>
+                            <label for="place_of_issue" class="text-center">Place of Issue <em>(optional)</em></label>
                             @if ($errors->has('place_of_issue'))
                             <p class="text-danger">{{ $errors->first('place_of_issue') }}</p>
                             @endif
@@ -348,6 +351,9 @@
                 </div>
             </div>
             <div class="text-center p-2">
+                <button class="btn btn-primary btn-lg mb-5 btn-prevent-multiple-submit" id="emp-reg-back" type="submit">
+                    <span>Back</span>
+                </button>
                 <button class="btn btn-primary btn-lg mb-5 btn-prevent-multiple-submit" id="emp-reg-submit" type="submit">
                     <span>Register</span>
                     <div id="employee-reg-submit-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">

@@ -301,6 +301,21 @@ class SoftwaresController extends Controller
         $updateData = $this->processNewSoftwareType($updateData);
         //then unset "new_software_type"
         unset($updateData['new_software_type']);
+        $updatedDetails = "";
+        foreach($updateData as $key => $value){
+            if($value != $originalData[$key] && !in_array($key, ['updated_by'])){
+                if ($key == 'software_type_id') {
+                    $newSoftware = SoftwareTypes::where('id',$value )->first();
+                    $oldSoftware = SoftwareTypes::where('id',$originalData[$key] )->first();
+                    $value = $newSoftware->type_name;
+                    $originalData[$key] = $oldSoftware->type_name;
+                }
+                $field = str_replace("_", " ", $key);
+                $field = str_replace("id", "", $key);
+                $updatedDetails .= "{$field}: {$originalData[$key]} -> {$value},";
+            }
+        }
+        $updatedDetails = rtrim($updatedDetails,",");
 
         //check logined employee role
         if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
@@ -312,13 +327,7 @@ class SoftwaresController extends Controller
                 ->update($updateData);
 
             //format log
-            $log = "Software updated by manager: ";
-            foreach($updateData as $key => $value){
-                if($value != $originalData[$key] && !in_array($key, ['updated_by'])){
-                    $log .= "{$key}: {$originalData[$key]} > {$value}, ";
-                }
-            }
-            $log = rtrim($log, ", ");
+            $log = "Software updated by manager: ".str_replace(",", ", ", $updatedDetails);
 
             Logs::createLog("Software", $log);
 
@@ -349,11 +358,12 @@ class SoftwaresController extends Controller
                 'requestor' => Auth::user()->first_name .' ' .Auth::user()->last_name,
                 'currentUserId' => Auth::user()->id,
                 'module' => "Software",
+                'updatedDetails' =>  explode(",", $updatedDetails),
             ];
 
             $this->sendMail(Employees::getEmailOfManagers(), $mailData, config('constants.MAIL_SOFTWARE_UPDATE_REQUEST'));
  
-            Logs::createLog("Software", "Editted the software detail of {$id} Update_data: " .json_encode($json, true));
+            Logs::createLog("Software", "Editted the software detail of {$id} Update_data: " .str_replace(",", ", ", $updatedDetails));
             return redirect(route('softwares.update.complete'));
         }
         
@@ -405,7 +415,7 @@ class SoftwaresController extends Controller
         //format log
         Logs::createLog("Software", "Software with ID: {$id} has been deleted by ".Auth::user()->first_name ." ". Auth::user()->last_name);
 
-        return redirect(route('softwares.update.complete'));
+        return redirect(route('softwares.delete.complete'));
     }
 
     /**
@@ -573,7 +583,7 @@ class SoftwaresController extends Controller
 
         }
 
-        return redirect(route('home'));
+        return redirect(route('softwares.regist.complete'));
     }
 
     /**
@@ -684,7 +694,7 @@ class SoftwaresController extends Controller
         $software = Softwares::where('id', $id)->first();
         
         if(empty($software)){
-            return 'Software does not exists.';
+            return 'Software does not exist.';
         }
 
         //check if software needs to be approved

@@ -62,8 +62,9 @@ class Employees extends Authenticatable
      * @return void
      */
     static function getEmployeeNameListForLaptopDropdown($laptopId){
-        return self::selectRaw('id, CONCAT(last_name, ", ", first_name, " ", name_suffix) AS employee_name')
+        return self::selectRaw('id, CONCAT(last_name, ", ", first_name, " ") AS employee_name, last_name, first_name, name_suffix')
                     ->where('active_status', 1)
+                    ->where('email',"!=", config('constants.SYSTEM_EMAIL'))
                     ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
                     ->whereNotIn('id', function($query) use ($laptopId){
                         $query->select('employee_id')
@@ -84,7 +85,8 @@ class Employees extends Authenticatable
      */
     static function getEmployeeLaptopHistory(){
         return self::selectRaw('
-                            CONCAT(employees.last_name, ", ", employees.first_name, " ", employees.name_suffix) AS employee_name,
+                            CONCAT(employees.last_name, ", ", employees.first_name) AS employee_name,
+                            employees.name_suffix name_suffix,
                             CASE WHEN employees_laptops.brought_home_flag THEN "Y" ELSE "N" END AS brought_home_flag,
                             laptops.peza_form_number,
                             laptops.peza_permit_number,
@@ -313,6 +315,52 @@ class Employees extends Authenticatable
         
 
         return $passport_message;
+    }
+
+    
+    
+    /**
+     * Get the full name of employee
+     *
+     * @param [type] $employee
+     * @return string
+     */
+    static function getFullName($employee, $isWithMiddleName = false) {
+        if(is_array($employee)) {
+            if($isWithMiddleName) {
+                return $employee['first_name'] .' ' . (!empty($employee['middle_name']) ? " " . $employee['middle_name'] : "") .' ' . $employee['last_name'] . (!empty($employee['name_suffix']) ? " " . $employee['name_suffix'] : "");
+            } else {
+                return $employee['first_name'] .' ' . $employee['last_name'] . (!empty($employee['name_suffix']) ? " " . $employee['name_suffix'] : "");
+            }
+        } else {
+            if($isWithMiddleName) {
+                return $employee->first_name .' ' . (!empty($employee->middle_name) ? " " . $employee->middle_name : "") .' ' . $employee->last_name . (!empty($employee->name_suffix) ? " " . $employee->name_suffix : "");
+            } else {
+                return $employee->first_name .' ' . $employee->last_name . (!empty($employee->name_suffix) ? " " . $employee->name_suffix : "");
+            }
+        }
+    }
+    
+    /**
+     * Get the full name of employee
+     *
+     * @param [type] $employee
+     * @return string
+     */
+    static function getFullName_lastNameFirst($employee, $isWithMiddleName = false) {
+        if(is_array($employee)) {
+            if($isWithMiddleName) {
+                return $employee['last_name'] . ', ' . $employee['first_name'] .' ' . (!empty($employee['middle_name']) ? " " . $employee['middle_name'] : "") . (!empty($employee['name_suffix']) ? " " . $employee['name_suffix'] : "");
+            } else {
+                return $employee['last_name'] . ', ' . $employee['first_name'] . (!empty($employee['name_suffix']) ? " " . $employee['name_suffix'] : "");
+            }
+        } else {
+            if($isWithMiddleName) {
+                return $employee->last_name . ', ' . $employee->first_name . (!empty($employee->middle_name) ? " " . $employee->middle_name : "") . (!empty($employee->name_suffix) ? " " . $employee->name_suffix : "");
+            } else {
+                return $employee->last_name . ', ' . $employee->first_name . (!empty($employee->name_suffix) ? " " . $employee->name_suffix : "");
+            }
+        }
     }
 
     

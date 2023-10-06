@@ -26,7 +26,8 @@
             <a href="{{ route('softwares.edit', ['id' => $software->id]) }}" class="btn btn-primary  me-1" type="button">Edit</a>
             @endif
             @if ($userInfo->roles == config('constants.MANAGER_ROLE_VALUE') && $software->approved_status != config('constants.APPROVED_STATUS_REJECTED'))
-            <a href="{{ route('softwares.delete', ['id' => $software->id]) }}" class="btn btn-danger  me-1" type="button">Delete</a>
+                <a href="{{ route('softwares.delete', ['id' => $software->id]) }}" class="btn btn-danger  me-1" id="software-delete" type="button">Delete</a>
+                <input type="text" name="software_id" id="software_id" hidden value="{{ $software->id }}">
             @endif
         </div>
         
@@ -158,6 +159,11 @@
             <h4 class="text-start">Projects</h4>
             <button class="btn btn-primary" data-bs-target="#linkProjectModal" data-bs-toggle="modal">Add</button>
         </div>
+        @if(!empty(session('sp_alert')))
+            <div class="alert alert-success mt-2" role="alert">
+                    {{session()->pull('sp_alert')}}
+            </div>
+        @endif
         <table class="table table-bordered border-secondary mt-3" id="project-tbl">
             <thead class="bg-primary text-white fw-bold">
                 <tr>
@@ -241,10 +247,15 @@
                             <input type="text" hidden name="lp_software_id" value="{{ $software->id }}">
                             <div class="row mb-2 ps-3 pe-3">
                                 <div class="col-12 g-3 form-floating">
-                                    <select name="project_id" class="form-select" id="projectList" required>
-                                        @foreach ( $projectList as $project )
-                                            <option value="{{ $project['id'] }}">{{ $project['name'] }}</option>
-                                        @endforeach
+                                    @if (count($projectList) < 1)
+                                        <select name="project_id" class="form-select" id="projectList" required>
+                                            <option value="" disabled>No available software</option>
+                                    @else
+                                        <select name="project_id" class="form-select" id="projectList" required>
+                                            @foreach ( $projectList as $project )
+                                                <option value="{{ $project['id'] }}">{{ $project['name'] }}</option>
+                                            @endforeach
+                                    @endif
                                     </select>
                                     <label for="projectList" class="text-center">Project Name</label>
                                     <p id="error-lp-proj-name"></p>

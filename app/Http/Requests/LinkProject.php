@@ -44,7 +44,8 @@ class LinkProject extends FormRequest
             'project_id' => 'project',
             'project_start' => 'start date',
             'project_end' => 'end date',
-            'software_id' => 'software_name',
+            'software_id' => 'software name',
+            'employee_id' => 'employee',
         ];
     }
 
@@ -189,6 +190,10 @@ class LinkProject extends FormRequest
                 'project_id' => ['required', 'exists:projects,id', function($attribute, $value, $fail) use ($softwareId) {
                     if(ProjectSoftwares::checkIfSoftwareExists($value, $softwareId)){
                         $fail('Selected Project name is already linked.');
+                    }
+
+                    if (!EmployeesProjects::checkIfUserAllowedToAddRemoveSoftware($this->input('project_id'))) {
+                        $fail('The user does not have the right to link software to the project. A user must be a member of the project before they can link software.');
                     }
                 }],
                 'remarks' => 'max:1024',

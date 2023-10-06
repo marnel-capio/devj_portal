@@ -87,6 +87,9 @@
   					<span class="sr-only"></span>
 				</div>
 			</button>
+			<form action='{!! url("/softwares/download"); !!}' method="POST" id="software-download-form">
+		        @csrf
+		    </form>
 			<form method="GET" id="software-list-form">
 				@csrf
 			</form>

@@ -142,7 +142,7 @@
 						$user = app\Http\Controllers\EmployeesController::getPassportStatus($user);
 					@endphp
 		            <tr>
-		                <td><a href='{!! url("/employees/$id"); !!}'>{{$user['last_name']}}, {{$user['first_name']}} ({{$user['middle_name']}})</a></td>
+		                <td><a href='{!! url("/employees/$id"); !!}'>{{$user['last_name']}}, {{$user['first_name']}} {{$user['name_suffix']}} {{ !empty($user['middle_name']) ? "(".$user['middle_name'].")" : ''}}</a></td>
 		                <td>{{$user['email']}}</td>
 		                <td>{{$user['cellphone_number']}}</td>
 		                <td>{{$user['current_address_city']}}</td>

@@ -26,6 +26,10 @@ You can update the registration <a href="{{ url($mailData['link']) }}">here</a>.
 
 @elseif ($mailType == config('constants.MAIL_LAPTOP_DETAIL_UPDATE_REQUEST'))
 There is a new request for laptop detail update approval.  <br>
+Updated Details:<br>
+    @foreach ($mailData['updatedDetails'] as $key => $data)
+        &nbsp;&nbsp;&nbsp;{{$data}}<br>
+    @endforeach
 Check the request <a href="{{ url($mailData['link']) }}">here</a>.
 
 @elseif ($mailType == config('constants.MAIL_LAPTOP_DETAIL_UPDATE_APPROVAL'))
@@ -83,6 +87,11 @@ Request Summary: <br>
 &nbsp;&nbsp;Requestor: {{ $mailData['requestor'] }} <br>
 &nbsp;&nbsp;Assignee: {{ $mailData['assignee'] }} <br>
 &nbsp;&nbsp;Laptop Tag Number: {{ $mailData['tagNumber'] }} <br>
+&nbsp;&nbsp;Updated Details:<br>
+    @foreach ($mailData['updatedDetails'] as $key => $data)
+        &nbsp;&nbsp;&nbsp;{{$data}}<br>
+    @endforeach
+<br>
 <br>
 Check the request <a href="{{ url($mailData['link']) . "#link-req-tbl" }}">here</a>.
 
@@ -99,6 +108,10 @@ Check the details <a href="{{ url($mailData['link']) }}">here</a>.
 @elseif ($mailType == config('constants.MAIL_LAPTOP_LINKAGE_UPDATE_BY_MANAGER_NOTIF'))
 A manager has updated your laptop linkage data for the laptop below:<br>
 &nbsp;&nbsp;Laptop Tag Number: {{ $mailData['tagNumber'] }} <br>
+&nbsp;&nbsp;Updated Details:<br>
+    @foreach ($mailData['updatedDetails'] as $key => $data)
+        &nbsp;&nbsp;&nbsp;{{$data}}<br>
+    @endforeach
 <br>
 Check the details <a href="{{ url($mailData['link']) }}">here</a>.
 
