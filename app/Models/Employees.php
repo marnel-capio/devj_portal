@@ -64,6 +64,7 @@ class Employees extends Authenticatable
     static function getEmployeeNameListForLaptopDropdown($laptopId){
         return self::selectRaw('id, CONCAT(last_name, ", ", first_name, " ") AS employee_name, last_name, first_name, name_suffix')
                     ->where('active_status', 1)
+                    ->where('email',"!=", config('constants.SYSTEM_EMAIL'))
                     ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
                     ->whereNotIn('id', function($query) use ($laptopId){
                         $query->select('employee_id')

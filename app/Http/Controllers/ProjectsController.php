@@ -99,6 +99,8 @@ class ProjectsController extends Controller
                     })
                     ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
                     ->where('active_status', 1)
+                    ->where('active_status', 1)
+                    ->where('email',"!=", config('constants.SYSTEM_EMAIL'))
                     ->orderBy('last_name', 'asc')
                     ->orderBy('first_name', 'asc')
                     ->get()
