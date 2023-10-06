@@ -142,7 +142,9 @@
                             <td>{{ $laptop['laptop_cpu'] }}</td>
                             <td>{{ $laptop['laptop_clock_speed'] }}</td>
                             <td>{{ $laptop['laptop_ram'] }}</td>
-                            <td>{{ !empty($laptop['owner']) ? $laptop['owner'] : '' }}</td>
+                            <td>{{ !empty($laptop['owner']) ? 
+                                $laptop['owner'] . (!empty($laptop['owner_suffix']) ? " " . $laptop['owner_suffix'] : '') 
+                                : '' }}</td>
                             <td>{{ $laptop['status'] }}</td>
                         </tr>
                         @endforeach

@@ -64,6 +64,9 @@ class EmployeesLaptops extends Model
 									employees_laptops.approved_status,
 									employees_laptops.remarks,
 									CONCAT(employees.last_name, ", ", employees.first_name) AS employee_name,
+									employees.first_name AS first_name,
+									employees.last_name AS last_name,
+									employees.name_suffix AS name_suffix,
                                     employees_laptops.create_time AS borrow_date
 		                        ')
 		                        ->where('laptop_id', $laptopId)
@@ -86,6 +89,9 @@ class EmployeesLaptops extends Model
                                 employees_laptops.id,
                                 employees_laptops.surrender_flag,
                                 CONCAT(employees.last_name, ", ", employees.first_name) AS employee_name,
+                                employees.first_name AS first_name,
+                                employees.last_name AS last_name,
+                                employees.name_suffix AS name_suffix,
                                 CASE WHEN employees_laptops.vpn_flag THEN "Y" ELSE "N" END AS vpn_flag,
                                 CASE WHEN employees_laptops.brought_home_flag THEN "Y" ELSE "N" END AS brought_home_flag,
                                 CASE WHEN isnull(employees_laptops.remarks) THEN "" ELSE employees_laptops.remarks END AS remarks,
@@ -157,6 +163,9 @@ class EmployeesLaptops extends Model
         $query =  self::selectRaw('
                                 employees.id as employee_id,
                                 concat(employees.last_name, ", ", employees.first_name) as employee_name,
+                                employees.first_name AS first_name,
+                                employees.last_name AS last_name,
+                                employees.name_suffix AS name_suffix,
                                 laptops.id as laptop_id,
                                 laptops.tag_number,
                                 laptops.laptop_make,

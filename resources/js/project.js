@@ -106,7 +106,6 @@ $(document).ready( function () {
 			encode: true,
 		}).done(function(data){
             $("#link_create_spinner").hide();
-            console.log(data)
 
 			// display error
 			if(!data.success){
@@ -125,21 +124,7 @@ $(document).ready( function () {
                 }
 
 			}else{
-                // Reset form
-				$("#link_employee_form").trigger('reset');
-                // Remove error messages
-                $("#link_employee_form").find("[name]").each( function () {
-                    if ($('#link_employee_form #link_' + $(this).attr('name') + '_error').length > 0 ) {
-                        $('#link_employee_form #link_' + $(this).attr('name') + '_error').empty();
-                    }
-                });
-
-
-				$("#member_list > option[value=" + postData.employee_id + "]").remove();
-				$("#le_success_msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;' + data.message + '.').addClass("text-success mb-2 text-start");
-
-				// Update the Project Members' table
-				updateProjectMemberTable(data, postData.employee_id, postData.employee_role);
+                location.reload();
 			}
 
 		}).fail(function (ddata, exception) {
@@ -159,7 +144,7 @@ $(document).ready( function () {
 			} else {
 				msg = 'Uncaught Error.\n' + ddata.responseText;
 			}
-			console.log('error: ' + msg);
+			// console.log('error: ' + msg);
 		});
 
         e.preventDefault();
@@ -252,6 +237,7 @@ $(document).ready( function () {
 
 	// Update linkage submission
 	$("#update_pj_submit_btn").click( function (e) {
+		$("#update_pj_submit_btn").prop("disabled", true);
 		$("#link_update_spinner").show();
 
 		var postData = {
@@ -279,7 +265,6 @@ $(document).ready( function () {
 			dataType: "json",
 			encode: true,
 		}).done(function(data){
-			$("#link_update_spinner").hide();
 
 			// display error
 			if(!data.success){
@@ -298,19 +283,7 @@ $(document).ready( function () {
 				}
 
 			}else{
-				// Reset form
-				$("#update_employee_linkage_form").trigger('reset');
-				// Remove error messages
-				$("#update_employee_linkage_form").find("[name]").each( function () {
-					if ($('#link_employee_form #link_' + $(this).attr('name') + '_error').length > 0 ) {
-						$('#link_employee_form #link_' + $(this).attr('name') + '_error').empty();
-					}
-				});
-
-				$("#ue_success_msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;' + data.message + '.').addClass("text-success mb-2 text-start");
-
-				// Update the Project Members' table
-				updateProjectMemberTable(data, postData.employee_id, postData.employee_role);
+				location.reload();
 			}
 
 		}).fail(function (ddata, exception) {
@@ -330,7 +303,10 @@ $(document).ready( function () {
 			} else {
 				msg = 'Uncaught Error.\n' + ddata.responseText;
 			}
-			console.log('error: ' + msg);
+			// console.log('error: ' + msg);
+		}).always(function() {
+			$("#update_pj_submit_btn").prop("disabled", false);
+			$("#link_update_spinner").hide();
 		});
 
 		e.preventDefault();
@@ -384,46 +360,11 @@ $(document).ready( function () {
                 }
 
 			}else{
-                // Reset form
-				$("#link_software_form").trigger('reset');
-                // Remove error messages
-                $("#link_software_form").find("[name]").each( function () {
-                    if ($('#link_software_form #link_' + $(this).attr('name') + '_error').length > 0 ) {
-                        $('#link_software_form #link_' + $(this).attr('name') + '_error').empty();
-                    }
-                });
-
-
-				$("#software_list > option[value=" + postData.software_id + "]").remove();
-				$("#ls_success_msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;' + data.message + '.').addClass("text-success mb-2 text-start");
-
-				// Update projects table
-				s_table.clear().draw();
-				let url, newRow;
-				data.update.forEach(function(softwareData){
-					url = window.location.origin + '/softwares/' + softwareData.software_id;
-					newRow = [
-						'<a href="' + url + '" class="text-decoration-none">' + softwareData.software_name + '</a>',
-						softwareData.software_type,
-						softwareData.linkageRemarks,	// currently from softwares table
-					];
-
-					if (data.isManager) {
-						// Add action column
-						newRow.push('<button class="btn btn-link btn-sm text-danger software_linkage_remove_btn" form="remove_software_form" data-linkid="' + softwareData.id + '" data-softwarename="' + softwareData.software_name + '">Remove</button>');
-					}
-					
-					s_table.row.add(newRow).draw(false);
-				});
-
-				$("#linked_softwares_tbl > tbody > tr").each(function () {
-					// Fix text alignment of remove button
-					$(this).find(':last-child').addClass('text-center');
-				});
+                location.reload();
 			}
 
 		}).fail(function(){
-			console.log('error');
+			// console.log('error');
 		});
 
         e.preventDefault();
@@ -466,7 +407,7 @@ $(document).ready( function () {
 		$("#update_employee_linkage_form input[name=project_end]").val(linkageData.end_date);
 		$("#update_employee_linkage_form select").val(linkageData.project_role_type);
 
-		if (linkageData.onsite_flag) {
+		if (linkageData.onsite_flag == 1) {
 			$("#update_employee_linkage_form  input[name=onsite]").prop('checked', true);
 		}
 
@@ -537,7 +478,7 @@ $(document).ready( function () {
 				});
 			}
 		}).fail(function(){
-			console.log('error');
+			// console.log('error');
 		});	  
     }
 	

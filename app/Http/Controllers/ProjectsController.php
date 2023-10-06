@@ -70,13 +70,20 @@ class ProjectsController extends Controller
 
         abort_if(empty($projectData), 404);
         $projectMembers = EmployeesProjects::getProjectMembersById($id);
+
+        foreach($projectMembers as $key => $employee) {
+            $projectMembers[$key]['member_name_update'] = Employees::getFullName($employee);
+            $projectMembers[$key]['member_name'] = Employees::getFullName_lastNameFirst($employee);
+        }
         
         //get data for employee dropdown in Link Employee modal
         $employeeDropdown = [];
         if (in_array(Auth::user()->roles, [config('constants.ADMIN_ROLE_VALUE'), config('constants.MANAGER_ROLE_VALUE')])) {
             $employeeDropdown = Employees::selectRaw('
                         id,
-                        CONCAT(last_name, ", ", first_name) AS employee_name
+                        last_name,
+                        first_name,
+                        name_suffix
                     ')
                     ->whereNotIn('id', function($query) use ($id){
                         $query->select('employee_id')
@@ -96,6 +103,10 @@ class ProjectsController extends Controller
                     ->orderBy('first_name', 'asc')
                     ->get()
                     ->toArray();
+
+                    foreach($employeeDropdown as $key => $employee) {
+                        $employeeDropdown[$key]['employee_name'] = Employees::getFullName_lastNameFirst($employee);
+                    }
         } else {
             //check if current user is already a member of the project
             $employeeProjectData = EmployeesProjects::where('employee_id', Auth::user()->id)
@@ -107,7 +118,7 @@ class ProjectsController extends Controller
             if ( empty($employeeProjectData) ) {
                 $employeeDropdown = [[
                     'id' => Auth::user()->id,
-                    'employee_name' => Auth::user()->last_name .", " .Auth::user()->first_name,
+                    'employee_name' => Employees::getFullName_lastNameFirst(Auth::user()),
                 ]];
             }
         }
@@ -115,21 +126,20 @@ class ProjectsController extends Controller
         //get employee linkage requests
         $employeeLinkageRequests = [];
         if (Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')) {
-            $employeeLinkageRequests = EmployeesProjects::selectRaw('
-                    ep.*,
-                    CONCAT(DATE_FORMAT(ep.start_date, "%Y-%m-%d"), " - ", CASE WHEN ep.end_date IS NULL THEN "" ELSE DATE_FORMAT(ep.end_date, "%Y-%m-%d") END) AS membership_date,
-                    CONCAT(e.first_name, " ", e.last_name) AS data_name,
-                    CONCAT(e.last_name, ", ", e.first_name) AS table_name
-                ')
-                ->from('employees_projects as ep')
-                ->leftJoin('employees as e', 'e.id', 'ep.employee_id')
-                ->where('ep.project_id', $id)
-                ->whereIn('ep.approved_status', [config('constants.APPROVED_STATUS_PENDING'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
-                ->orderBy('ep.update_time', 'asc')
-                ->orderBy('e.last_name', 'asc')
-                ->orderBy('e.first_name', 'asc')
-                ->get()
+            $employeeLinkageRequests = EmployeesProjects::employeeLinkageRequests($id)
                 ->toArray();
+        } else {
+            // Get requests of logged in employee
+            $employeeLinkageRequests = EmployeesProjects::employeeLinkageRequests($id)
+                ->where('employee_id', Auth::user()->id)
+                ->toArray();
+        }
+
+        
+
+        foreach($employeeLinkageRequests as $key => $employee) {
+            $employeeLinkageRequests[$key]['data_name'] = Employees::getFullName($employee);
+            $employeeLinkageRequests[$key]['table_name'] = Employees::getFullName_lastNameFirst($employee);
         }
 
         //getLinkedSoftwares
@@ -147,13 +157,34 @@ class ProjectsController extends Controller
                                     ->orderBy('software_name', 'asc')
                                     ->get()
                                     ->toArray();
+        $showAddBtn = false;
 
+        if( Auth::user()->roles == config('constants.ENGINEER_ROLE_VALUE')) { 
+            if (count($employeeLinkageRequests) < 1 && 
+                EmployeesProjects::getActiveProjectMembersById($id)->where('isActive', 1)->where('employee_id', Auth::user()->id)->count() == 0) {
+                $showAddBtn = true;
+            }
+        } else {
+            $showAddBtn = true;
+        }
+
+        // Check if member have no request to current project
+        foreach ($projectMembers as $key => $member) {
+            $projectMembers[$key]['haveNoRequest'] = true;
+
+            foreach($employeeLinkageRequests as $member_req){
+                if(($member['employee_id'] == $member_req['employee_id'])) {
+                    $projectMembers[$key]['haveNoRequest'] = false;
+                    break;
+                }
+            }
+        }
 
         return view('projects.details', [
             'projectData' => $projectData,
             'isManager' => Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE'),
             'detailNote' => '', 
-            'showAddBtn' => true,   //fix later
+            'showAddBtn' => $showAddBtn,
             'projectMembers' => $projectMembers,
             'employeeDropdown' => $employeeDropdown,
             'employeeLinkageRequests' => $employeeLinkageRequests,
@@ -270,7 +301,7 @@ class ProjectsController extends Controller
                     ]);
 
             // 5.1.2 Create log
-            Logs::createLog("Project", "Updated the linkage data of $recipient->first_name $recipient->last_name to $projectData->name.");
+            Logs::createLog("Project", "Updated the linkage data of ". Employees::getFullName($recipient) ." to $projectData->name.");
 
             // 5.1.3 Mail the account to be linked
             $mailData = [
@@ -278,8 +309,8 @@ class ProjectsController extends Controller
                 'firstName' => $recipient->first_name,
                 'currentUserId' => Auth::user()->id,
                 'module' => "Project",
-                'requestor' => !empty($requestor) ? $requestor->first_name .' ' .$requestor->last_name : 'unknown',
-                'assignee' => $recipient->first_name .' ' .$recipient->last_name,
+                'requestor' => !empty($requestor) ? Employees::getFullName($requestor) : 'unknown',
+                'assignee' => Employees::getFullName($requestor),
                 'project_name' => $projectData->name,
             ];
             Mail::to($recipient->email)->send(new MailProjects($mailData, config('constants.MAIL_PROJECT_DETAIL_UPDATE_APPROVAL')));
@@ -302,7 +333,7 @@ class ProjectsController extends Controller
 
             // 5.2.2 Create logs
             // Branches going here: Requested by admin/engineer approved by manager.
-            Logs::createLog("Project", "Linked $recipient->first_name $recipient->last_name to $projectData->name.");
+            Logs::createLog("Project", "Linked ". Employees::getFullName($recipient) ." to $projectData->name.");
 
             // 5.2.3 Send mail to requestor
             $mailData = [
@@ -310,8 +341,8 @@ class ProjectsController extends Controller
                 'firstName' => $recipient->first_name,
                 'currentUserId' => Auth::user()->id,
                 'module' => "Project",
-                'requestor' => !empty($requestor) ? $requestor->first_name .' ' .$requestor->last_name : 'unknown',
-                'assignee' => $recipient->first_name .' ' .$recipient->last_name,
+                'requestor' => !empty($requestor) ? Employees::getFullName($requestor) : 'unknown',
+                'assignee' => Employees::getFullName($requestor),
                 'project_name' => $projectData->name,
             ];
 
@@ -365,15 +396,15 @@ class ProjectsController extends Controller
                         'reasons' => null,
                     ]);
 
-            Logs::createLog("Project", "Approved the linkage of $recipient->first_name $recipient->last_name to $projectData->name.");
+            Logs::createLog("Project", "Approved the linkage of ". Employees::getFullName($recipient) ." to $projectData->name.");
 
             $mailData = [
                 'link' => route('projects.details', ['id' => $projectLinkDetails->project_id]),
                 'firstName' => $recipient->first_name,
                 'currentUserId' => Auth::user()->id,
                 'module' => "Project",
-                'requestor' => !empty($requestor) ? $requestor->first_name .' ' .$requestor->last_name : 'unknown',
-                'assignee' => $recipient->first_name .' ' .$recipient->last_name,
+                'requestor' => !empty($requestor) ? Employees::getFullName($requestor) : 'unknown',
+                'assignee' => Employees::getFullName($requestor),
                 'project_name' => $projectData->name,
             ];
             Mail::to($recipient->email)->send(new MailProjects($mailData, config('constants.MAIL_PROJECT_DETAIL_UPDATE_APPROVAL')));
@@ -397,7 +428,7 @@ class ProjectsController extends Controller
                     ->update($update);
 
             // Create logs
-            Logs::createLog("Project", "Approved the linkage update of $recipient->first_name $recipient->last_name to $projectData->name.");
+            Logs::createLog("Project", "Approved the linkage update of ". Employees::getFullName($recipient) ." to $projectData->name.");
 
             // Send mail to requestor
             $mailData = [
@@ -405,8 +436,8 @@ class ProjectsController extends Controller
                 'firstName' => $recipient->first_name,
                 'currentUserId' => Auth::user()->id,
                 'module' => "Project",
-                'requestor' => !empty($requestor) ? $requestor->first_name .' ' .$requestor->last_name : 'unknown',
-                'assignee' => $recipient->first_name .' ' .$recipient->last_name,
+                'requestor' => !empty($requestor) ? Employees::getFullName($requestor) : 'unknown',
+                'assignee' => Employees::getFullName($requestor),
                 'project_name' => $projectData->name,
             ];
 
@@ -456,7 +487,7 @@ class ProjectsController extends Controller
                         'prev_updated_by' => $projectLinkDetails->updated_by,
                     ]);
 
-            Logs::createLog("Project", "Rejected the linkage of $recipient->first_name $recipient->last_name to $projectData->name.");
+            Logs::createLog("Project", "Rejected the linkage of ". Employees::getFullName($recipient) ." to $projectData->name.");
 
             $mailData = [
                 'link' => route('projects.details', ['id' => $projectLinkDetails->project_id]),
@@ -464,8 +495,8 @@ class ProjectsController extends Controller
                 'firstName' => $recipient->first_name,
                 'currentUserId' => Auth::user()->id,
                 'module' => "Project",
-                'requestor' => !empty($requestor) ? $requestor->first_name .' ' .$requestor->last_name : 'unknown',
-                'assignee' => $recipient->first_name .' ' .$recipient->last_name,
+                'requestor' => !empty($requestor) ? Employees::getFullName($requestor) : 'unknown',
+                'assignee' => Employees::getFullName($requestor),
                 'project_name' => $projectData->name,
             ];
 
@@ -488,7 +519,7 @@ class ProjectsController extends Controller
                     ->update($update);
 
             // Create logs
-            Logs::createLog("Project", "Rejected the linkage update of $recipient->first_name $recipient->last_name to $projectData->name.");
+            Logs::createLog("Project", "Rejected the linkage update of ". Employees::getFullName($recipient) ." to $projectData->name.");
 
             // Send mail to requestor
             $mailData = [
@@ -497,8 +528,8 @@ class ProjectsController extends Controller
                 'firstName' => $recipient->first_name,
                 'currentUserId' => Auth::user()->id,
                 'module' => "Project",
-                'requestor' => !empty($requestor) ? $requestor->first_name .' ' .$requestor->last_name : 'unknown',
-                'assignee' => $recipient->first_name .' ' .$recipient->last_name,
+                'requestor' => !empty($requestor) ? Employees::getFullName($requestor) : 'unknown',
+                'assignee' => Employees::getFullName($requestor),
                 'project_name' => $projectData->name,
             ];
 
