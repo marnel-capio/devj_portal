@@ -268,6 +268,7 @@ class LaptopsController extends Controller
         }else{
             //get linkage update requests
             $linkageRequest = EmployeesLaptops::getLinkRequestByLaptop($id, config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE'));
+            $linkageData->employee_name = Employees::getFullName($linkageData);
 
             //apply update to data
             foreach($linkageRequest as $idx => &$data){
@@ -281,13 +282,27 @@ class LaptopsController extends Controller
                 }
             }
         }
+            
+        foreach($linkageRequest as $key => $employee) {
+            // overriding 'employee_name' column from Employees::getLinkRequestByLaptop. 
+            // TODO: Need to fix later. Completely verify if no other references to this model->function then remove employee_name from that function.
+            $linkageRequest[$key]['employee_name'] = Employees::getFullName($employee);
+        }
+
+        $history = EmployeesLaptops::getLaptopHistory($id);
+            
+        foreach($history as $key => $employee) {
+            // overriding 'employee_name' column from Employees::getLaptopHistory. 
+            // TODO: Need to fix later. Completely verify if no other references to this model->function then remove employee_name from that function.
+            $history[$key]['employee_name'] = Employees::getFullName($employee);
+        }
 
         return view('laptops.details')->with(['detail' => $laptopDetails,
                                             'detailOnly' => true,
                                             'detailNote' => $this->getDetailNote($laptopDetails),
                                             'linkageData' => $linkageData,
                                             'linkageRequest' => $linkageRequest,
-                                            'history' => EmployeesLaptops::getLaptopHistory($id),
+                                            'history' => $history,
                                             'employeeDropdown' => $employeeDropdown,
                                             'showLinkBtn' => $showLinkBtn,
                                         ]);
