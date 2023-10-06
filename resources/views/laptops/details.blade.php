@@ -345,7 +345,7 @@
                                                 <select name="assignee" class="form-select" id="assigneeList" readonly>
                                             @endif
                                                     @foreach ( $employeeDropdown as $employee )
-                                                        <option value="{{ $employee['id'] }}">{{ $employee['employee_name'] }}</option>
+                                                        <option value="{{ $employee['id'] }}">{{ $employee['employee_name'] }} {{ $employee['name_suffix'] }}</option>
                                                     @endforeach
                                                 </select>
                                                 <label for="assigneeList" class="text-center">Assignee</label>
