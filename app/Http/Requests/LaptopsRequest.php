@@ -42,8 +42,9 @@ class LaptopsRequest extends FormRequest
     {
         return [
             'tag_number.unique' => "The tag number is already registered.",
+            'peza_form_number.unique' => "The PEZA form number is already registered.",
+            'peza_permit_number.unique' => "The PEZA permit number is already registered.",
             'remarks.max' => "The remarks must not be greater than 1024 characters.",
-            'tag_number.unique' => "The tag number is already registered.",
             'linkage[remarks].max' => "The remarks must not be greater than 1024 characters.",
         ];
     }
@@ -87,6 +88,8 @@ class LaptopsRequest extends FormRequest
         if(strpos($this->header('referer'), route('laptops.create')) !== FALSE){
 
             $rules['tag_number'] = 'required|unique:laptops,tag_number';
+            $rules['peza_form_number'] = 'required|unique:laptops,peza_form_number';
+            $rules['peza_permit_number'] = 'required|unique:laptops,peza_permit_number';
 
             if(!empty($this->input('id'))){
                 $referer = $this->header('referer');
@@ -96,6 +99,22 @@ class LaptopsRequest extends FormRequest
                         $detail = Laptops::where('tag_number', $value)->get()->toArray();
                         if(!empty($detail) && $detail[0]['reject_code'] != $rejectCode){
                             $fail("The tag number is already registered.");
+                        }
+                    }
+                ];
+                $rules['peza_form_number'] = ['required', 
+                    function($attribute, $value, $fail) use ($rejectCode){
+                        $detail = Laptops::where('peza_form_number', $value)->get()->toArray();
+                        if(!empty($detail) && $detail[0]['reject_code'] != $rejectCode){
+                            $fail("The PEZA form number is already registered.");
+                        }
+                    }
+                ];
+                $rules['peza_permit_number'] = ['required', 
+                    function($attribute, $value, $fail) use ($rejectCode){
+                        $detail = Laptops::where('peza_permit_number', $value)->get()->toArray();
+                        if(!empty($detail) && $detail[0]['reject_code'] != $rejectCode){
+                            $fail("The PEZA permit number is already registered.");
                         }
                     }
                 ];
