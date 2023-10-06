@@ -405,7 +405,7 @@ class SoftwaresController extends Controller
         //format log
         Logs::createLog("Software", "Software with ID: {$id} has been deleted by ".Auth::user()->first_name ." ". Auth::user()->last_name);
 
-        return redirect(route('softwares.update.complete'));
+        return redirect(route('softwares.delete.complete'));
     }
 
     /**
@@ -684,7 +684,7 @@ class SoftwaresController extends Controller
         $software = Softwares::where('id', $id)->first();
         
         if(empty($software)){
-            return 'Software does not exists.';
+            return 'Software does not exist.';
         }
 
         //check if software needs to be approved

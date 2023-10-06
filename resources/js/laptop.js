@@ -210,7 +210,7 @@ $(document).ready(function(){
                 });
             }
         }).fail(function(){
-            console.log('error');
+            // console.log('error');
         });
     }
 
@@ -258,7 +258,7 @@ $(document).ready(function(){
             }
 
         }).fail(function(){
-            console.log('error');
+            // console.log('error');
         })
 
 
@@ -310,7 +310,7 @@ $(document).ready(function(){
             }
 
         }).fail(function(){
-            console.log('error');
+            // console.log('error');
         })
 
 
@@ -350,7 +350,7 @@ $(document).ready(function(){
             }
 
         }).fail(function(){
-            console.log('error');
+            // console.log('error');
         })
 
 
@@ -435,7 +435,6 @@ $(document).ready(function(){
     }
 
     $("#lapreg_form").submit(function () {
-        console.log('submission');
         if($("#link_to_self").length && $("#link_to_self").is(":checked")){
             $("#link_to_self_hidden").prop("disabled", true);
         }

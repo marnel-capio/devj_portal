@@ -132,7 +132,7 @@ $(document).ready(function () {
 			} else {
 				msg = 'Uncaught Error.\n' + data.responseText;
 			}
-			console.log('error: ' + msg);
+			// console.log('error: ' + msg);
 			setHeaderAlert(msg + ". Consider refreshing the page", 0, true);
 
 		}).always(function() {
@@ -408,7 +408,7 @@ $(document).ready(function () {
 			}
 
 		}).fail(function(){
-			console.log('error');
+			// console.log('error');
 		});
 
 		e.preventDefault();
@@ -481,34 +481,7 @@ $(document).ready(function () {
 					$("#error-lp-remarks").html(remarksError[0]).addClass('text-danger text-start');
 				}
 			}else{
-				$("#linkProjectForm").trigger('reset');
-				$("#error-lp-proj-name").empty();
-				$("#error-lp-proj-role").empty();
-				$("#error-lp-proj-start").empty();
-				$("#error-lp-proj-end").empty();
-				$("#error-lp-remarks").empty();
-				$("#projectList > option[value=" + postData.project_id + "]").remove();
-				$("#lp-success-msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;' + data.message + '.').addClass("text-success mb-2 text-start");
-
-				//update projects table
-				projectTable.clear().draw();
-				data.update.forEach(function(project){
-					let url = window.location.origin + '/projects/' + project.project_id;
-					// console.log(project);
-					sDate = new Date(project.start_date);
-					spanStart = sDate.getFullYear() + '/' + sDate.getMonth() + '/' + sDate.getDate() + ' - ';
-					spanEnd = '';
-					if(project.end_date != '' && project.end_date != null){
-						eDate = new Date(project.end_date);
-						spanEnd = eDate.getFullYear() + '/' + eDate.getMonth() + '/' + eDate.getDate();
-					}
-					projectTable.row.add([
-						'<a href="' + url + '" class="text-decoration-none">' + project.name + '</a>',
-						spanStart + spanEnd,
-						project.project_status
-					])
-					.draw(false);
-				});
+				location.reload();
 			}
 			$('#lp-submit-btn').prop('disabled', false);
 		}).fail(function (data, exception) {
@@ -528,7 +501,7 @@ $(document).ready(function () {
 			} else {
 				msg = 'Uncaught Error.\n' + data.responseText;
 			}
-			console.log('error: ' + msg);
+			// console.log('error: ' + msg);
 		});
 		
 		e.preventDefault();
@@ -580,31 +553,12 @@ $(document).ready(function () {
 					$("#error-ll-remarks").html(laptopRemarksError[0]).addClass('text-danger text-start');
 				}
 			}else{
-				$("#linkLaptopForm").trigger('reset');
-				$("#error-laptop-id").empty();
-				$("#error-ll-remarks").empty();
-				$("#laptopList > option[value=" + postData.laptop_id + "]").remove();
-				$("#ll-success-msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;' + data.message + '.').addClass("text-success mb-2 text-start");
-
-				//update laptops table
-				laptopTable.clear().draw();
-				data.update.forEach(function(laptop){
-					let url = window.location.origin + '/laptops/' + laptop.id;
-					laptopTable.row.add([
-						'<a href="' + url + '" class="text-decoration-none">' + laptop.tag_number + '</a>',
-						laptop.brought_home,
-						laptop.laptop_make,
-						laptop.laptop_model,
-						laptop.use_vpn,
-						laptop.remarks
-					])
-					.draw(false);
-				});
+				location.reload();
 			}
 		$("#ll-link-spinner").hide();
 		$('#ll-submit-btn').prop('disabled', false);
 		}).fail(function(){
-			console.log('error');
+			// console.log('error');
 		});
 		
 		e.preventDefault();
@@ -827,7 +781,7 @@ $(document).ready(function () {
 				$("#alert-div").append('<div id="reinstate_alert" class="alert alert-danger" role="alert"><span class="ms-2">' + data.message + '</span></div>');
 			}
 		}).fail(function(){
-			console.log('error');
+			// console.log('error');
 		})
 	});
 
@@ -836,6 +790,13 @@ $(document).ready(function () {
 	$("#emp-reg-submit").click(function(e){
 		$("#employee-reg-submit-spinner").show();
 	});
+
+	$("#emp-reg-back").click(function(e){
+		e.preventDefault();
+		window.location.href = window.location.origin+"/login";
+	});
+
+	
 
 	//end for employee bu transfer/reinstate
 

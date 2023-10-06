@@ -351,6 +351,9 @@
                 </div>
             </div>
             <div class="text-center p-2">
+                <button class="btn btn-primary btn-lg mb-5 btn-prevent-multiple-submit" id="emp-reg-back" type="submit">
+                    <span>Back</span>
+                </button>
                 <button class="btn btn-primary btn-lg mb-5 btn-prevent-multiple-submit" id="emp-reg-submit" type="submit">
                     <span>Register</span>
                     <div id="employee-reg-submit-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
