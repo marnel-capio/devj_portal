@@ -91,7 +91,7 @@ Route::middleware(['auth', 'web', 'isActive'])->group(function(){
         Route::get('/{id}/edit', 'edit')->name('softwares.edit')->whereNumber('id');
         Route::post('/regist', 'regist')->name('softwares.regist');
         Route::get('/create/{rejectCode?}', 'create')->name('softwares.create');
-        Route::get('/download',  'download')->name('softwares.download');
+        Route::post('/download',  'download')->name('softwares.download');
         Route::get('/regist/complete', function(){
             return view('softwares.complete');
         })->name('softwares.regist.complete');
@@ -123,7 +123,7 @@ Route::middleware(['auth', 'web', 'isActive'])->group(function(){
     Route::prefix('/servers')->controller(ServerController::class)->group(function(){
 
         Route::get('/', 'index')->name('servers.index');
-        Route::get('/download', 'download')->name('servers.download');
+        Route::post('/download', 'download')->name('servers.download');
         Route::get('/create', 'create')->name('servers.create');
         Route::post('/regist', 'regist')->name('servers.regist');
         Route::get('/{id}', 'details')->name('servers.details')->whereNumber('id');
