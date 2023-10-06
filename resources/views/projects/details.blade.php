@@ -188,11 +188,12 @@
                                 <td>{{ $member['membership_date'] }}</td>
                                 <td class="text-center">
                                     {{-- Check if update button should be displayed --}}
-                                    @php 
+                                    @php
                                         $isMngr_or_Admin = (auth()->user()->roles == config('constants.ENGINEER_ROLE_VALUE') ? 0 : 1);
-                                        $isEngr_active_and_noPending = ((auth()->user()->id == $member['employee_id']) && ($member['isActive']) && (count($employeeLinkageRequests) == 0)) ? 1 : 0; 
+                                        $isEngr_active = (auth()->user()->id == $member['employee_id']) && ($member['isActive']);
+                                        $noPendingRequests = (count($employeeLinkageRequests) == 0) ? 1 : 0; 
                                     @endphp
-                                    @if ($isMngr_or_Admin or $isEngr_active_and_noPending)
+                                    @if (($isMngr_or_Admin and $member['haveNoRequest'] and $member['isActive']) or ($isEngr_active and $noPendingRequests))
                                         <button class="btn btn-link btn-sm text-success employee_linkage_update_btn" 
                                             data-bs-target="#update_employee_linkage_modal" 
                                             data-bs-toggle="modal" 
@@ -205,7 +206,8 @@
                                                 "project_role_type":"{{ $member['project_role_type'] }}",
                                                 "remarks":"{{ $member['remarks'] }}"
                                             }'
-                                        >Update</button>
+                                        >Update
+                                    </button>
                                     @endif
                                 </td>
                                 <td>{{ $member['isActive'] ? 1 : 0 }}</td>
@@ -313,16 +315,55 @@
                 <tbody>
                     @if ($employeeLinkageRequests)
                         @foreach ($employeeLinkageRequests as $member)
+                        <?php
+                            $updateData = json_decode($member['update_data'], true);
+                            $updateData['membership_date'] = "";
+                            $memberstart = substr($member['membership_date'], 0,10);
+                            $memberend = substr($member['membership_date'], 13,22);
+                            $isStartChanged = ((array_key_exists('start_date', $updateData) && $updateData['start_date'] != $memberstart) ? true : false);
+                            $isEndChanged = ((array_key_exists('end_date', $updateData) && $updateData['end_date'] != $memberend) ? true : false);
+
+                            if (($isStartChanged) && ($isEndChanged)) {
+                                $updateData['membership_date'] = $updateData['start_date'] . " - " . $updateData['end_date'];
+                            } else if (($isStartChanged)) {
+                                $updateData['membership_date'] = $updateData['start_date'] . " - $memberend";
+                            } else if (($isEndChanged)) {
+                                $updateData['membership_date'] = "$memberstart - " . $updateData['end_date'];
+                            }
+                        ?>
                             <tr>
-                                {{-- update para sa linkage update --}}
+                                {{-- Employee Linkage Update table --}}
                                 <td>
                                     <a href="{{ route('employees.details', ['id' => $member['employee_id']]) }}">
                                         {{ $member['table_name'] }}
                                     </a>
                                 </td>
-                                <td>{{ config('constants.PROJECT_ROLES.' .$member['project_role_type']) }}</td>
-                                <td>{{ $member['onsite_flag'] ? 'Yes' : 'No' }}</td>
-                                <td>{{ $member['membership_date'] }}</td>
+                                <td>
+                                    <div  class="d-flex justify-content-evenly">
+                                        <span> {{ config('constants.PROJECT_ROLES.' .$member['project_role_type']) }} </span> 
+                                        @if(array_key_exists('project_role_type', $updateData))
+                                            <span> <i class="bi bi-arrow-right"></i> </span>
+                                            <span>{{ config('constants.PROJECT_ROLES.' . $updateData['project_role_type']) }}</span>
+                                        @endif    
+                                    </div>    
+                                <td>
+                                    <div  class="d-flex justify-content-evenly">
+                                    <span>{{ $member['onsite_flag'] ? 'Yes' : 'No' }} </span> 
+                                    @if(array_key_exists('onsite_flag', $updateData))
+                                        <span> <i class="bi bi-arrow-right"></i> </span>
+                                        <span>{{ $updateData['onsite_flag'] ? 'Yes' : 'No' }}</span>
+                                    @endif    
+                                    </div>
+                                </td>
+                                <td>
+                                    <div  class="d-flex justify-content-evenly">
+                                        <span> {{ $member['membership_date'] }} </span> 
+                                        @if(!empty($updateData['membership_date'])) 
+                                        <span> <i class="bi bi-arrow-right"></i> </span>
+                                        <span>{{ $updateData['membership_date'] }}</span>
+                                        @endif
+                                    </div>
+                                </td>
                                 
                                 @if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE') )
                                     <td>
