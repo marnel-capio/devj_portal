@@ -38,9 +38,9 @@
                         <p class="text-danger">{{ $errors->first('first_name') }}</p>
                         @endif
                     </div>
-                    <div class="col-12 col-md-3 g-3 form-floating">
+                    <div class="col-12 col-md-3 g-3 form-floating"  data-bs-toggle="tooltip" data-bs-placement="top" title="optional">
                         <input type="text" class="form-control" name="middle_name" id="middle_name" placeholder="Middle Name" value="{{ old('middle_name', $employee->middle_name) }}">
-                        <label  class="text-center" for="middle_name">Middle Name</label>
+                        <label  class="text-center" for="middle_name"><em>Middle Name</em></label>
                         @if ($errors->has('middle_name'))
                         <p class="text-danger">{{ $errors->first('middle_name') }}</p>
                         @endif
@@ -54,7 +54,7 @@
                     </div>
                     <div class="col-12 col-md-1 g-3 form-floating" data-bs-toggle="tooltip" data-bs-placement="top" title="optional: Suffix (Jr, II, III, etc.)">
                         <input type="text" class="form-control" name="name_suffix" id="name_suffix" placeholder="*Suffix" value="{{ old('name_suffix', $employee->name_suffix) }}">
-                        <label  class="text-center small" for="name_suffix"><em>*Suffix</em></label>
+                        <label  class="text-center small" for="name_suffix"><em>Suffix</em></label>
                         @if ($errors->has('name_suffix'))
                         <p class="text-danger">{{ $errors->first('name_suffix') }}</p>
                         @endif
@@ -156,9 +156,11 @@
                         <p class="text-danger">{{ $errors->first('cellphone_number') }}</p>
                         @endif
                     </div>
-                    <div class="col-12 col-md-4 g-3 form-floating">
+                    <div class="col-12 col-md-4 g-3 form-floating"
+                        data-bs-toggle="tooltip" data-bs-placement="top"
+                        title="(optional) Input secondary phone number or email">
                         <input type="text" class="form-control" name="other_contact_info" id="other_contact" placeholder="Other Contact Number" value="{{ old('other_contact_info', $employee->other_contact_info) }}">
-                        <label for="other_contact" class="text-center">Other Contact Info (optional)</label>
+                        <label for="other_contact" class="text-center">Other Contact Info  <em>(optional)</em></label>
                         @if ($errors->has('other_contact_info'))
                         <p class="text-danger">{{ $errors->first('other_contact_info') }}</p>
                         @endif
@@ -238,9 +240,9 @@
                             @endif
                         </div>
                         
-                        <div class="col-12 col-md-4 g-3 form-floating">
+                        <div class="col-12 col-md-4 g-3 form-floating"  data-bs-toggle="tooltip" data-bs-placement="top" title="optional: Place of issue is usually found at the back cover of the passport">
                             <input type="text" class="form-control" name="place_of_issue" id="place_of_issue" placeholder="Place of Issue"  value="{{ old('place_of_issue', $employee->place_of_issue) }}">
-                            <label for="place_of_issue" class="text-center">Place of Issue</label>
+                            <label for="place_of_issue" class="text-center">Place of Issue <em>(optional)</em></label>
                             @if ($errors->has('place_of_issue'))
                             <p class="text-danger">{{ $errors->first('place_of_issue') }}</p>
                             @endif
