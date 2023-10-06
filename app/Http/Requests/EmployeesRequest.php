@@ -130,7 +130,7 @@ class EmployeesRequest extends FormRequest
                     'passport_number' => 'required|max:80',
                     'issuing_authority' => 'required|max:80',
                     'passport_type' => 'required|in:1,2,3',
-                    'place_of_issue' => 'required|max:80',
+                    'place_of_issue' => 'max:80',
                     'date_of_issue' => 'required|date|regex:/^\d{4}-\d{2}-\d{2}$/|before_or_equal:today',
                     'passport_expiration_date' => 'required|date|regex:/^\d{4}-\d{2}-\d{2}$/|after:today',
                 ]);

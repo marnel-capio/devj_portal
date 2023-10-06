@@ -17,9 +17,9 @@
                         <p class="text-danger">{{ $errors->first('first_name') }}</p>
                         @endif
                     </div>
-                    <div class="col-12 col-md-3 g-3 form-floating">
+                    <div class="col-12 col-md-3 g-3 form-floating" data-bs-toggle="tooltip" data-bs-placement="top" title="optional">
                         <input type="text" class="form-control" name="middle_name" id="middle_name" placeholder="Middle Name" value="{{ old('middle_name', $employee ? $employee->middle_name : '') }}">
-                        <label  class="text-center" for="middle_name">Middle Name</label>
+                        <label  class="text-center" for="middle_name"><em>Middle Name</em></label>
                         @if ($errors->has('middle_name'))
                         <p class="text-danger">{{ $errors->first('middle_name') }}</p>
                         @endif
@@ -33,7 +33,7 @@
                     </div>
                     <div class="col-12 col-md-1 g-3 form-floating" data-bs-toggle="tooltip" data-bs-placement="top" title="optional: Suffix (Jr, II, III, etc.)">
                         <input type="text" class="form-control" name="name_suffix" id="name_suffix" placeholder="*Suffix" value="{{ old('name_suffix', $employee ? $employee->name_suffix : '') }}">
-                        <label  class="text-center small" for="name_suffix"><em>*Suffix</em></label>
+                        <label  class="text-center small" for="name_suffix"><em>Suffix</em></label>
                         @if ($errors->has('name_suffix'))
                         <p class="text-danger">{{ $errors->first('name_suffix') }}</p>
                         @endif
@@ -216,9 +216,9 @@
                             <p class="text-danger">{{ $errors->first('passport_expiration_date') }}</p>
                             @endif
                         </div>
-                        <div class="col-12 col-md-4 g-3 form-floating">
+                        <div class="col-12 col-md-4 g-3 form-floating" data-bs-toggle="tooltip" data-bs-placement="top" title="optional: Place of issue is usually found at the back cover of the passport">
                             <input type="text" class="form-control" name="place_of_issue" id="place_of_issue" placeholder="Issuing Authority" value="{{ old('place_of_issue', $employee ? $employee->place_of_issue : '') }}">
-                            <label for="place_of_issue" class="text-center">Place of Issue</label>
+                            <label for="place_of_issue" class="text-center">Place of Issue <em>(optional)</em></label>
                             @if ($errors->has('place_of_issue'))
                             <p class="text-danger">{{ $errors->first('place_of_issue') }}</p>
                             @endif
