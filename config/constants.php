@@ -102,6 +102,37 @@ return [
                         ],
     ],
 
+    // Identifies when the notification will start to display
+    // 1. As Information notification
+    'PASSPORT_STATUS_1_INFO_START' => [
+        'unit' => 'months',
+        'value' => 6,
+    ],
+    'PASSPORT_STATUS_2_INFO_START' => ($info_2_and_4 = [
+        'unit' => 'months',
+        'value' => 3,
+    ]),
+    'PASSPORT_STATUS_3_INFO_START' => [
+        'unit' => 'n/a',
+        'value' => 0,
+    ],
+    'PASSPORT_STATUS_4_INFO_START' => $info_2_and_4,
+
+    // 2. As Warning notification
+    'PASSPORT_STATUS_1_WARNING_START' => [
+        'unit' => 'months',
+        'value' => 3,
+    ],
+    'PASSPORT_STATUS_2_WARNING_START' => ($warning_2_and_4 = [
+        'unit' => 'days',
+        'value' => 7,
+    ]),
+    'PASSPORT_STATUS_3_WARNING_START' => [
+        'unit' => 'always',
+        'value' => 0,
+    ],
+    'PASSPORT_STATUS_4_WARNING_START' => $warning_2_and_4,
+
     //Employee - BU List - for BU transfer - Dev J is excluded
     'BU_LIST' => [
         1  => 'Dev A',

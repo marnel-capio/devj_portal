@@ -150,7 +150,7 @@ class Employees extends Authenticatable
      * Get the passport duration based on existing passport data
      *
      * @param [type] $employee
-     * @return string
+     * @return array
      */
     static function getPassportDuration($employee) {
         
@@ -205,46 +205,44 @@ class Employees extends Authenticatable
             $employee["passport_duration_string"] = "today";
         }
         
-        // Determine the time difference for duration
-        
+        // Determine the time difference for duration        
         $duration->years = Carbon::now()->diffInYears($exp_date);
         $duration->months = Carbon::now()->diffInMonths($exp_date);
         $duration_days = Carbon::now()->diffInDays($exp_date);
 
-        if($duration_days <= 30) {
-            // IF (Appointment or Delivery), set as Not Warning if 7 days onwards 
-            if(( $employee->passport_status == config('constants.PASSPORT_STATUS_WITH_APPOINTMENT_VALUE') || 
-                 $employee->passport_status == config('constants.PASSPORT_STATUS_WAITING_FOR_DELIVERY_VALUE')) && 
-            $duration_days > 6) { 
+        // IF (with Passport)
+        if($employee->passport_status == config('constants.PASSPORT_STATUS_WITH_PASSPORT_VALUE'))
+        {
+            // When to display the notification
+            $employee["passport_isAlertDisplayed"] = ($duration->months >= config('constants.PASSPORT_STATUS_1_INFO_START')["value"] && !$employee["is_date_passed"]) ? false : true;
+            if(!$employee["is_date_passed"] && $duration->months >= config('constants.PASSPORT_STATUS_1_WARNING_START')["value"]) {
                 $employee["passport_isWarning"] = false;
-            }
-
-        } else if($duration->months <= 12) {
-            // IF (Appointment or Delivery), set as Not Warning
-            if( $employee->passport_status == config('constants.PASSPORT_STATUS_WITH_APPOINTMENT_VALUE') || 
-                 $employee->passport_status == config('constants.PASSPORT_STATUS_WAITING_FOR_DELIVERY_VALUE')) { 
-
-                $employee["passport_isWarning"] = false;
-            }
-
-            // If duration is >= 3 months from now, do not display alert
-            $employee["passport_isAlertDisplayed"] = ($duration->months > 2 && !$employee["is_date_passed"]) ? false : true;
-
-        } else{
-            $employee["passport_isAlertDisplayed"] = false;
-
-            if($duration->years != 1) {
-                $employee["passport_isWarning"] = false;
+            } else {
+                $employee["passport_isWarning"] = true;
             }
         }
 
-        
-        // If date is already passed, automatically set Warning
-        if($employee["is_date_passed"]) {
+        // IF (Appointment or Delivery)
+        if(($employee->passport_status == config('constants.PASSPORT_STATUS_WITH_APPOINTMENT_VALUE') || 
+            $employee->passport_status == config('constants.PASSPORT_STATUS_WAITING_FOR_DELIVERY_VALUE')))
+        {
+            // When to display the notification
+            $employee["passport_isAlertDisplayed"] = ($duration->months >= config('constants.PASSPORT_STATUS_2_INFO_START')["value"] && !$employee["is_date_passed"]) ? false : true;
+            if(!$employee["is_date_passed"] && $duration_days >= config('constants.PASSPORT_STATUS_2_WARNING_START')["value"]) { 
+                $employee["passport_isWarning"] = false;
+            } else {
+                $employee["passport_isWarning"] = true;
+            }
+        }
+
+        // IF (no passport/appointment/delivery)
+        if($employee->passport_status == config('constants.PASSPORT_STATUS_WITHOUT_PASSPORT_VALUE'))
+        {
+            $employee["passport_isAlertDisplayed"] = true;
             $employee["passport_isWarning"] = true;
         }
 
-        // check if user is devj-portal do not display passport warning
+        // If user is devj-portal do not display passport warning
         if ($employee['email'] == config('constants.SYSTEM_EMAIL')) {
             $employee["passport_isAlertDisplayed"] = false;
         }
