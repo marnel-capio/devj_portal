@@ -71,6 +71,12 @@ return [
     'PASSPORT_TYPE_ORDINARY_VALUE' => 1,
     'PASSPORT_TYPE_OFFICIAL_VALUE' => 2,
     'PASSPORT_TYPE_DIPLOMATIC_VALUE' => 3,
+    
+    'PASSPORT_TYPE' => [
+        1 => 'Ordinary',
+        2 => 'Official',
+        3 => 'Diplomatic',
+    ],
 
     // Employee table - passport status
     'PASSPORT_STATUS_1_NAME' => 'With Passport',
