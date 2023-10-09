@@ -191,6 +191,10 @@ class LinkProject extends FormRequest
                     if(ProjectSoftwares::checkIfSoftwareExists($value, $softwareId)){
                         $fail('Selected Project name is already linked.');
                     }
+
+                    if (!EmployeesProjects::checkIfUserAllowedToAddRemoveSoftware($this->input('project_id'))) {
+                        $fail('The user does not have the right to link software to the project. A user must be a member of the project before they can link software.');
+                    }
                 }],
                 'remarks' => 'max:1024',
             ];

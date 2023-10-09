@@ -437,7 +437,9 @@
             <div>
                 <h4 class="text-start d-inline-block">Linked Softwares</h4>
             </div>
-            <button class="btn btn-primary" data-bs-target="#link_software_modal" data-bs-toggle="modal">Add</button>
+            @if ($isAllowedToAddRemoveSoftware)
+                <button class="btn btn-primary" data-bs-target="#link_software_modal" data-bs-toggle="modal">Add</button>
+            @endif
             <div class="modal modal fade" tabindex='-1' id="link_software_modal">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
@@ -504,9 +506,7 @@
                         <th>Name</th>
                         <th>Type</th>
                         <th>Remarks</th>
-                        @if (auth()->user()->roles == config('constants.MANAGER_ROLE_VALUE'))
                         <th id="ls_remove_btn">Action</th>
-                        @endif
                     </tr>
                 </thead>
                 <tbody class="align-middle">
@@ -516,16 +516,16 @@
                                 <td><a href="{{ route('softwares.details', ['id' => $software['software_id']]) }}">{{ $software['software_name'] }}</a></td>
                                 <td>{{ $software['software_type'] }}</td>
                                 <td>{{ $software['linkageRemarks'] }}</td>
-                                @if (auth()->user()->roles == config('constants.MANAGER_ROLE_VALUE'))
                                 <td class="text-center">
+                                    @if ($isAllowedToAddRemoveSoftware)
                                     <button class="btn btn-link btn-sm text-danger software_linkage_remove_btn" form="remove_software_form" data-linkid="{{ $software['id'] }}" data-softwarename="{{ $software['software_name'] }}">
                                         <span>Remove</span>
                                         <div id="remove_software_spinner_{{ $software['id'] }}" class="spinner-border text-danger spinner-border-sm" role="status" style="display: none">
                                             <span class="sr-only"></span>
                                         </div>
                                     </button>
+                                    @endif
                                 </td>
-                                @endif
                             </tr>
                         @endforeach
                     @endif

@@ -181,4 +181,32 @@ class EmployeesProjects extends Model
         return $query->get()->toArray();
     }
 
+    /**
+     * Retrieve projects of an employee
+     *
+     * @param [type] $id
+     * @return void
+     */
+    static function checkIfUserAllowedToAddRemoveSoftware($projectId){
+        $isAllowedToAddRemoveSoftware = false;
+        $allowedEmployee = EmployeesProjects::where('project_id',  $projectId)
+                ->where('employee_id', Auth::user()->id)
+                ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'),config('constants.APPROVED_STATUS_PENDING'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+                ->where(function($query){
+                $query->whereNull('end_date')
+                    ->orWhere('end_date', '0000-00-00 00:00:00')
+                    ->orWhere('end_date', ">", date('Y-m-d') . " 23:59:59");
+                })
+                ->get()
+                ->toArray();
+
+
+        if (Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE') || count($allowedEmployee) > 0) {
+            $isAllowedToAddRemoveSoftware = true;
+        }
+        
+        return $isAllowedToAddRemoveSoftware;
+                    
+    }
+
 }

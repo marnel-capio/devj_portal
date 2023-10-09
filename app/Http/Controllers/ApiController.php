@@ -404,13 +404,22 @@ class ApiController extends Controller
                 $dbReadyData[$key] = $val;
             }
         }
+        $updatedData = "";
+        foreach($dbReadyData as $key => $val){
+            if ($originalData[$key] != $val) {
+                if ($key == "status") {
+                    $val = $val == 0? "inactive" : "active";
+                    $originalData[$key] = $originalData[$key] == 0? "inactive" : "active";
+                }
+                $field = str_replace("_", " ", $key);
+                $updatedData .= "{$field}: {$originalData[$key]} -> {$val},";
+            }
+        }
+        $updatedData = rtrim($updatedData,",");
         if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
             //format log
-            $log = 'Laptop Update: ';
-            foreach($dbReadyData as $key => $val){
-                $log .= "{$key}: {$originalData[$key]} > {$val}, ";
-            }
-            $log = rtrim($log, ", ");
+            $log = 'Laptop Update: '.str_replace(",", ", ", $updatedData);
+            
 
             //update data in DB
             $dbReadyData['updated_by'] = Auth::user()->id;
@@ -429,7 +438,7 @@ class ApiController extends Controller
                         'update_data' => json_encode($dbReadyData, true),
                         'updated_by' => Auth::user()->id
                     ]);
-            Logs::createLog('Laptop', 'Laptop Update: ' .json_encode($dbReadyData));
+            Logs::createLog('Laptop', 'Laptop Update: ' .str_replace(",", ", ", $updatedData));
 
             //send mail
             $recipients = Employees::getEmailOfManagers();
@@ -438,6 +447,7 @@ class ApiController extends Controller
                 'link' => "/laptops/{$id}/request",
                 'currentUserId' => Auth::user()->id,
                 'module' => "Laptop",
+                'updatedDetails' => explode(",", $updatedData),
             ];
 
             $this->sendMailForLaptop($recipients, $mailData, config('constants.MAIL_LAPTOP_DETAIL_UPDATE_REQUEST'));
@@ -471,15 +481,22 @@ class ApiController extends Controller
 
         $laptopData = Laptops::where('id', $originalData->laptop_id)->first();
         $employeeData = Employees::where('id', $originalData->employee_id)->first();
-
+        $updatedData = "";
+        foreach($dbReadyData as $key => $val){
+            if($originalData[$key] != $val){
+                if (in_array($key, ["brought_home_flag","vpn_flag","surrender_flag"])) {
+                    $val = $val == 0? "unset" : "set";
+                    $originalData[$key] = $originalData[$key] == 0? "unset" : "set";
+                }
+                $field = str_replace("_", " ", $key);
+                $updatedData .= "{$field}: {$originalData[$key]} -> {$val},";
+            }
+        }
+        $updatedData = rtrim($updatedData,",");
         if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
 
             //format log
-            $log = 'Laptop Linkage Update: ';
-            foreach($dbReadyData as $key => $val){
-                $log .= "{$key}: {$originalData[$key]} > {$val}, ";
-            }
-            $log = rtrim($log, ", ");
+            $log = 'Laptop Linkage Update: ' . str_replace(",", ", ", $updatedData);
 
             //update data in DB
             $dbReadyData['updated_by'] = Auth::user()->id;
@@ -500,6 +517,7 @@ class ApiController extends Controller
                     'currentUserId' => Auth::user()->id,
                     'module' => "Laptop",
                     'tagNumber' => $laptopData->tag_number,
+                    'updatedDetails' => explode(",", $updatedData),
                 ];
     
                 $this->sendMailForLaptop($recipient['email'], $mailData, config('constants.MAIL_LAPTOP_LINKAGE_UPDATE_BY_MANAGER_NOTIF'));
@@ -513,7 +531,7 @@ class ApiController extends Controller
                         'update_data' => json_encode($dbReadyData, true),
                         'updated_by' => Auth::user()->id
                     ]);
-            Logs::createLog('Laptop', 'Latop Linkage Update: ' .json_encode($dbReadyData));
+            Logs::createLog('Laptop', 'Latop Linkage Update: ' . str_replace(",", ", ", $updatedData));
 
             //send mail
             $recipients = Employees::getEmailOfManagers();
@@ -525,6 +543,7 @@ class ApiController extends Controller
                 'tagNumber' => $laptopData->tag_number,
                 'requestor' => Auth::user()->first_name .' ' .Auth::user()->last_name,
                 'assignee' => $employeeData->first_name .' ' .$employeeData->last_name,
+                'updatedDetails' => explode(",", $updatedData),
             ];
 
             $this->sendMailForLaptop($recipients, $mailData, config('constants.MAIL_LAPTOP_LINKAGE_UPDATE_BY_NON_MANAGER_REQUEST'));
@@ -990,7 +1009,23 @@ class ApiController extends Controller
         $employee = Employees::where('id', $originalData['employee_id'])->first();
         $project = Projects::where('id', $originalData['project_id'])->first();
 
-        $message = '';       
+        $message = '';     
+        $updatedData = "";
+        foreach ($updateData as $key => $val) {
+            if ($originalData->$key !== $val) {
+                $tojson[$key] = $val;
+                if (in_array($key, ["onsite_flag"])) {
+                    $val = $val == 0 ? "unset" : "set";
+                    $originalData[$key] = $originalData[$key] == 0? "unset" : "set";
+                } else if ($key == 'project_role_type') {
+                    $val = config('constants.PROJECT_ROLES')[$val];
+                    $originalData[$key] = config('constants.PROJECT_ROLES')[$originalData[$key]];
+                }
+                $field = str_replace("_", " ", $key);
+                $updatedData .= "{$field}: {$originalData[$key]} -> {$val},";
+            }
+        }  
+        $updatedData = rtrim($updatedData,",");
         //check logined employee role
         if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
             //save directly in DB in db
@@ -1008,6 +1043,7 @@ class ApiController extends Controller
                     'project_name' => $project->name,
                     'currentUserId' => Auth::user()->id,
                     'module' => "Employee",
+                    'updatedDetails' => explode(",", $updatedData),
                 ];
 
                 Mail::to($employee->email)->send(new Project($mailData, config('constants.MAIL_PROJECT_EMPLOYEE_LINKAGE_UPDATE_BY_MANAGER')));
@@ -1037,6 +1073,7 @@ class ApiController extends Controller
                 'member' => $employee->first_name .' ' .$employee->last_name,
                 'currentUserId' => Auth::user()->id,
                 'module' => "Employee",
+                'updatedDetails' => explode(",", $updatedData),
             ];
 
             Mail::to(Employees::getEmailOfManagers())->send(new Project($mailData, config('constants.MAIL_PROJECT_EMPLOYEE_LINKAGE_UPDATE_REQUEST')));
@@ -1044,7 +1081,7 @@ class ApiController extends Controller
             $message = 'Request for linkage update has been sent';
         }
         
-        Logs::createLog("Project", "Updated the linkage data of {$employee->first_name} {$employee->last_name} to {$project->name}");
+        Logs::createLog("Project", "Updated the linkage data of {$employee->first_name} {$employee->last_name} to {$project->name}.\n Updated Details:".str_replace(",", ", ", $updatedData));
         session(['pj_alert'=> $message]);
 
         return response()->json(['success' => true, 

@@ -17,7 +17,6 @@ class HomeController extends Controller
     /**
      * Displays home page
      *
-     * @return void
      */
     public function index(){
     	$employee_request = [];

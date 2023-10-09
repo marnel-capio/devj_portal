@@ -101,7 +101,7 @@ class EmployeesRequest extends FormRequest
                 'last_name' => 'required|max:80|alpha_space',
                 'birthdate' => 'required|date|regex:/^\d{4}-\d{2}-\d{2}$/|before:' . Carbon::now()->subYears(18)->format('Y-m-d'),
                 'gender' => 'required|in:0,1',
-                'position' => 'required|in:1,2,3,4,5,6,7,8,9',
+                // 'position' => 'required|in:1,2,3,4,5,6,7,8,9',
                 'email' => ['required', 'email', 'max:80', 'min:15', new AWSEmailAddress()],
                 'cellphone_number' => 'required|numeric|digits:10',
                 'current_address_street' => 'required|max:80',
@@ -112,37 +112,78 @@ class EmployeesRequest extends FormRequest
                 'permanent_address_city' => 'required|max:80',
                 'permanent_address_province' => 'required|max:80',
                 'permanent_address_postalcode' =>'required|numeric|gte:0|lt:100000000000',
-                'passport_status' => 'required|in:1,2,3,4',
+                // 'passport_status' => 'required|in:1,2,3,4',
 
             ];
 
+            // Required based on `Positions` from config file
+            {
+                $positions = "";  $i = 1;
+                foreach(config('constants.POSITIONS') as $k => $position) {
+                    $positions .= $k . (($i != count(config('constants.POSITIONS'))) ? "," : "");
+                    $i++;
+                }
+                $rules["position"] = 'required|in:' . $positions;
+            }
+
+            // Required based on `Passport status` from config file
+            {
+                $passport_status = "";  $i = 1;
+                foreach(config('constants.PASSPORT_STATUS_LIST') as $status) {
+                    $passport_status .= $status["val"] . ($i != count(config('constants.PASSPORT_STATUS_LIST')) ? "," : "");
+                    $i++;
+                }
+                $rules["passport_status"] = 'required|in:' . $passport_status;
+            }
+
+            // If suffix field is not empty
             if(!empty($this->input('name_suffix'))) {
                 $rules['name_suffix'] = 'max:80|alpha_space';
             }
 
+            // If suffix field is not empty
             if(!empty($this->input('middle_name'))) {
                 $rules['middle_name'] = 'max:80|alpha_space';
             }
 
-            if ($this->input('passport_status') == config('constants.PASSPORT_STATUS_WITH_PASSPORT_VALUE')) {
-                // Required if with valid passport
-                $rules = array_merge($rules, [
-                    'passport_number' => 'required|max:80',
-                    'issuing_authority' => 'required|max:80',
-                    'passport_type' => 'required|in:1,2,3',
-                    'place_of_issue' => 'max:80',
-                    'date_of_issue' => 'required|date|regex:/^\d{4}-\d{2}-\d{2}$/|before_or_equal:today',
-                    'passport_expiration_date' => 'required|date|regex:/^\d{4}-\d{2}-\d{2}$/|after:today',
-                ]);
-            } else if ($this->input('passport_status') == config('constants.PASSPORT_STATUS_WITH_APPOINTMENT_VALUE')){
-                // Required field if no valid passport
-                $rules['date_of_appointment'] = 'required|date|regex:/^\d{4}-\d{2}-\d{2}$/|after_or_equal:today';
-            }
-            else if($this->input('passport_status') == config('constants.PASSPORT_STATUS_WITHOUT_PASSPORT_VALUE')) {
-                $rules['no_appointment_reason'] = 'required|max:1024';
-            }
-            else if($this->input('passport_status') == config('constants.PASSPORT_STATUS_WAITING_FOR_DELIVERY_VALUE')) {
-                $rules['date_of_delivery'] = 'required|date|regex:/^\d{4}-\d{2}-\d{2}$/|after_or_equal:today';
+            switch($this->input('passport_status')) {
+                case config('constants.PASSPORT_STATUS_WITH_PASSPORT_VALUE'): {
+                    $rules = array_merge($rules, [
+                        'passport_number' => 'required|max:80',
+                        'issuing_authority' => 'required|max:80',
+                        // 'passport_type' => 'required|in:1,2,3',
+                        'place_of_issue' => 'max:80',
+                        'date_of_issue' => 'required|date|regex:/^\d{4}-\d{2}-\d{2}$/|before_or_equal:today',
+                        'passport_expiration_date' => 'required|date|regex:/^\d{4}-\d{2}-\d{2}$/|after:today',
+                    ]);
+                
+                    $passport_types = "";  $i = 1;
+                    foreach(config('constants.PASSPORT_TYPE') as $k => $passport_type) {
+                        $passport_types .= $k . (($i != count(config('constants.PASSPORT_TYPE'))) ? "," : "");
+                        $i++;
+                    }
+                    $rules["passport_type"] = 'required|in:' . $passport_types;
+                    break;
+                }
+
+                case config('constants.PASSPORT_STATUS_WITH_APPOINTMENT_VALUE'): {
+                    $rules['date_of_appointment'] = 'required|date|regex:/^\d{4}-\d{2}-\d{2}$/|after_or_equal:today';
+                    break;
+                }
+                    
+                case config('constants.PASSPORT_STATUS_WAITING_FOR_DELIVERY_VALUE'): {
+                    $rules['date_of_delivery'] = 'required|date|regex:/^\d{4}-\d{2}-\d{2}$/|after_or_equal:today';
+                    break;
+
+                }
+                
+                case config('constants.PASSPORT_STATUS_WITHOUT_PASSPORT_VALUE'): {
+                    $rules['no_appointment_reason'] = 'required|max:1024';
+                    break;
+                }
+
+                default:
+                    break;
             }
 
             if(strpos($this->header('referer'), route('employees.create')) !== FALSE){

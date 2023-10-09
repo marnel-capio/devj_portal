@@ -40,6 +40,10 @@
     Request Summary: <br>
     &nbsp;&nbsp;Requestor: {{ $mailData['requestor'] }} <br>
     &nbsp;&nbsp;Employee name: {{ $mailData['employeeName'] }} <br>
+    &nbsp;&nbsp;Updated Details:<br>
+    @foreach ($mailData['updatedDetails'] as $key => $data)
+        &nbsp;&nbsp;&nbsp;{{$data}}<br>
+    @endforeach
     <br>
     Check the request <a href="{{ url($mailData['link']) }}">here</a>.
 
@@ -67,6 +71,10 @@
 @elseif ($mailType == config('constants.MAIL_EMPLOYEE_UPDATE_BY_MANAGER'))
 
     Your details in Dev J Portal has been updated by {{ $mailData['updater'] }}.<br>
+    Updated Details:<br>
+    @foreach ($mailData['updatedDetails'] as $key => $data)
+       &nbsp;&nbsp;{{$data}}<br>
+    @endforeach
     Check the details <a href="{{ url($mailData['link']) }}">here</a>.
     
 

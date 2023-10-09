@@ -22,6 +22,10 @@ You can update the registration <a href="{{ url($mailData['link']) }}">here</a>.
 
 @elseif ($mailType == config('constants.MAIL_SOFTWARE_UPDATE_REQUEST'))
 There has been a request for software detail update approval. <br>
+Updated Details:<br>
+    @foreach ($mailData['updatedDetails'] as $key => $data)
+        &nbsp;&nbsp;&nbsp;{{$data}}<br>
+    @endforeach
 Check the request <a href="{{ url($mailData['link']) }}">here</a>.
 
 @elseif ($mailType == config('constants.MAIL_SOFTWARE_UPDATE_APPROVAL'))

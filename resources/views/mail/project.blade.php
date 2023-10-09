@@ -33,6 +33,10 @@ Check the request <a href="{{ url($mailData['link']) }}">here</a>.
 
 A manager has updated your project linkage data for the project below:<br>
 &nbsp;&nbsp;Project name: {{ $mailData['project_name'] }}<br>
+&nbsp;&nbsp;Updated Details:<br>
+    @foreach ($mailData['updatedDetails'] as $key => $data)
+        &nbsp;&nbsp;&nbsp;{{$data}}<br>
+    @endforeach
 <br>
 Check the details <a href="{{ url($mailData['link']) }}">here</a>.
 
@@ -47,6 +51,10 @@ Request summary:<br>
 &nbsp;&nbsp;Project name: {{ $mailData['project_name'] }}<br>
 &nbsp;&nbsp;Requestor: {{ $mailData['requestor'] }}<br>
 &nbsp;&nbsp;Member: {{ $mailData['member'] }}<br>
+&nbsp;&nbsp;Updated Details:<br>
+    @foreach ($mailData['updatedDetails'] as $key => $data)
+        &nbsp;&nbsp;&nbsp;{{$data}}<br>
+    @endforeach
 <br>
 Check the request <a href="{{ url($mailData['link']) }}">here</a>.
 

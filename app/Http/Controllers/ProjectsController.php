@@ -99,6 +99,8 @@ class ProjectsController extends Controller
                     })
                     ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
                     ->where('active_status', 1)
+                    ->where('active_status', 1)
+                    ->where('email',"!=", config('constants.SYSTEM_EMAIL'))
                     ->orderBy('last_name', 'asc')
                     ->orderBy('first_name', 'asc')
                     ->get()
@@ -158,7 +160,6 @@ class ProjectsController extends Controller
                                     ->get()
                                     ->toArray();
         $showAddBtn = false;
-
         if( Auth::user()->roles == config('constants.ENGINEER_ROLE_VALUE')) { 
             if (count($employeeLinkageRequests) < 1 && 
                 EmployeesProjects::getActiveProjectMembersById($id)->where('isActive', 1)->where('employee_id', Auth::user()->id)->count() == 0) {
@@ -180,6 +181,7 @@ class ProjectsController extends Controller
             }
         }
 
+
         return view('projects.details', [
             'projectData' => $projectData,
             'isManager' => Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE'),
@@ -190,8 +192,7 @@ class ProjectsController extends Controller
             'employeeLinkageRequests' => $employeeLinkageRequests,
             'linkedSoftwares' => $linkedSoftwares,
             'softwareDropdown' => $softwareDropdown,
-
-
+            'isAllowedToAddRemoveSoftware' => EmployeesProjects::checkIfUserAllowedToAddRemoveSoftware($id),
         ]);
     }
 

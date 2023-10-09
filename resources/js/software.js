@@ -290,6 +290,7 @@ $(document).ready(function () {
 	$("#soft-approve-request").click(function(){
 		$('#soft-approve-request').prop('disabled', true);
 		$("#soft-approve-request-spinner").show();
+		$("#soft-approve-request-form").submit();
 	});
 
 	// Show Spinner for: Submit the Software Reject

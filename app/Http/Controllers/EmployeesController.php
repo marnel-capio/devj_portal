@@ -224,6 +224,35 @@ class EmployeesController extends Controller
         unset($updateData['password']);
         unset($updateData['copy_permanent_address']);
 
+        $updatedDetails = "";
+        foreach($updateData as $key => $value){
+            if($value != $originalData[$key] && !in_array($key, ['updated_by', 'password','roles'])){
+                if ($key == "position") {
+                    $value = config('constants.POSITIONS')[$value];
+                    $originalData[$key] = config('constants.POSITIONS')[$originalData[$key]];
+                } elseif ($key == "gender") {
+                    $value = $value == 0? "Female" : "Male";
+                    $originalData[$key] = $originalData[$key] == 0? "Female" : "Male";
+                } elseif ($key == "bu_transfer_assignment") {
+                    $value = config('constants.BU_LIST')[$value];
+                    $originalData[$key] = config('constants.BU_LIST')[$originalData[$key]];
+                } elseif ($key == "passport_status") {
+                    $value = config("constants.PASSPORT_STATUS_{$value}_NAME");
+                    $originalData[$key] = config("constants.PASSPORT_STATUS_{$originalData[$key]}_NAME");
+                } elseif ($key == "server_manage_flag") {
+                    $value = $value == 0? "unset" : "set";
+                    $originalData[$key] = $originalData[$key] == 0? "unset" : "set";
+                }
+                $field = str_replace("_", " ", $key);
+                $updatedDetails .= "{$field}: {$originalData[$key]} -> {$value},";
+            }
+        }
+        if (isset($originalData['roles']) && isset ($updateData['roles']) && $originalData['roles'] != $updateData['roles'] && ($updateData['roles'] == config('constants.ADMIN_ROLE_VALUE') || $originalData['roles'] == config('constants.ADMIN_ROLE_VALUE'))) {
+            $origData = $originalData['roles'] != config('constants.ADMIN_ROLE_VALUE') ? "unset" : "set";
+            $updatedData = $updateData['roles'] != config('constants.ADMIN_ROLE_VALUE') ? "unset" : "set";
+            $updatedDetails .= "admin flag: {$origData} -> {$updatedData},";
+        }
+        $updatedDetails = rtrim($updatedDetails,",");
         //check logined employee role
         if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
             //save directly in DB in db
@@ -238,6 +267,7 @@ class EmployeesController extends Controller
                     'updater' => $this->getFullName(Auth::user(), false),
                     'first_name' => $originalData->first_name,
                     'currentUserId' => Auth::user()->id,
+                    'updatedDetails' => explode(",", $updatedDetails),
                     'module' => "Employee",
                 ];
 
@@ -245,15 +275,7 @@ class EmployeesController extends Controller
             }
 
             //format log
-            $log = "Employee updated by manager: ";
-            foreach($updateData as $key => $value){
-                if($value != $originalData[$key] && !in_array($key, ['updated_by', 'password'])){
-                    $log .= "{$key}: {$originalData[$key]} > {$value}, ";
-                }
-            }
-            $log = rtrim($log, ", ");
-
-            Logs::createLog("Employee", $log);
+            Logs::createLog("Employee", "Employee updated by manager: " . str_replace(",", ", ", $updatedDetails));
 
             if(Auth::user()->id == $id){
                 return redirect(route('employees.details', ['id' => $id]))->with(['success' => 1, "message" => "Details are updated successfully."]);
@@ -262,7 +284,6 @@ class EmployeesController extends Controller
             }
 
         }else{
-            //if an admin or an engineer edits the employee details
             $json = [];
             foreach($updateData as $key => $value){
                 if($value != $originalData[$key] && !in_array($key, ['updated_by', 'password'])){
@@ -283,11 +304,12 @@ class EmployeesController extends Controller
                 'currentUserId' => Auth::user()->id,
                 'module' => "Employee",
                 'employeeName' => $this->getFullName($originalData, false),
+                'updatedDetails' => explode(",", $updatedDetails),
             ];
 
             $this->sendMail(Employees::getEmailOfManagers(), $mailData, config('constants.MAIL_EMPLOYEE_UPDATE_REQUEST'));
- 
-            Logs::createLog("Employee", "{$originalData->email}: Employee Details Update: " .json_encode($json, true));
+            
+            Logs::createLog("Employee", "{$originalData->email}: Employee Details Update: " .str_replace(",", ", ", $updatedDetails));
             return redirect(route('employees.update.complete'));
         }
     }

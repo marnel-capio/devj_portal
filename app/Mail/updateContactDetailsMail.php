@@ -28,8 +28,9 @@ class updateContactDetailsMail extends Mailable
      */
     public function build()
     {
+        $subject = env('APP_ENV') != 'production' ? "【" . strtoupper(env('APP_ENV')) . "】".'【DEV J PORTAL】 Update Your Employee Details' : '【DEV J PORTAL】 Update Your Employee Details';
         return $this
-                ->subject('【DEV J PORTAL】 Update Your Employee Details')
+            ->subject($subject)
                 ->view('mail.updateContactDetailsNotification', ['mailData' => $this->mailData]);
     }
 }
