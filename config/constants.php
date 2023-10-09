@@ -1,6 +1,7 @@
 <?php
 
 return [
+    "DEPARTMENT" => "Dev J",
     //Employees table - roles
     'ADMIN_ROLE_VALUE' => 1,
     'MANAGER_ROLE_VALUE' => 2,
@@ -152,13 +153,14 @@ return [
         9  => 'Dev I',
         10  => 'Dev K',
         11  => 'Dev L',
-        12  => 'Dev M',
-        13  => 'Dev N',
-        14  => 'Dev 2',
-        15  => 'Dev 3',
-        16  => 'Dev 5',
-        17  => 'Dev 6',
-        18  => 'C4I',
+        12  => 'Dev J',
+        13  => 'Dev M',
+        14  => 'Dev N',
+        15  => 'Dev 2',
+        16  => 'Dev 3',
+        17  => 'Dev 5',
+        18  => 'Dev 6',
+        19  => 'C4I',
     ],
 
     //Employee Mail Type

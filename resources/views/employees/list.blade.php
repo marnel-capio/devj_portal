@@ -147,7 +147,7 @@
 		                <td>{{$user['cellphone_number']}}</td>
 		                <td>{{$user['current_address_city']}}</td>
 		                <td>{{$user['current_address_province']}}</td>
-						<td>{{ $user['bu_transfer_flag'] ? config('constants.BU_LIST.' . $user['bu_transfer_assignment']) : "DEV J" }}</td>
+						<td>{{ $user['bu_transfer_flag'] == 1 ? config('constants.BU_LIST.' . $user['bu_transfer_assignment']) : config('constants.DEPARTMENT') }}</td>
 		                <td>
 		                	@if($user['active_status'] == 0)
 		                		@if($user['approved_status'] == 1 || $user['approved_status'] == 2 || $user['approved_status'] == 4)

@@ -84,7 +84,9 @@
                                                 <div class="g-3 form-floating">
                                                     <select name="bu_transfer_assignment" id="bu_transfer_assignment" class="form-select form-control" required>
                                                         @foreach (config('constants.BU_LIST') as $val => $name) 
-                                                            <option value="{{ $val }}">{{ $name }}</option>
+                                                            @if (config('constants.DEPARTMENT') != $name)
+                                                                <option value="{{ $val }}">{{ $name }}</option>
+                                                            @endif
                                                         @endforeach
                                                     </select>
                                                     <label  class="text-center" for="bu_transfer_assignment">Department</label>
