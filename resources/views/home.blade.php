@@ -115,7 +115,6 @@
 							</div>
 						</div>
 						@endif
-						@if($laptopRequest != null)
 						<div class="dash-summary-row row mb-1">
 							<div class="col col-md-8 col-sm-8">
 								<a href="#div-laptop-request"><span class="dash-summary-items">Laptop Request</span></a>
@@ -124,8 +123,6 @@
 								{{$laptopRequest != null ? count($laptopRequest) : "0"}}
 							</div>
 						</div>
-						@endif
-						@if($laptopLinkRequest != null)
 						<div class="dash-summary-row row mb-1">
 							<div class="col col-md-8 col-sm-8">
 								<a href="#div-laptop-link-request"><span class="dash-summary-items">Laptop Link Request</span></a>
@@ -133,8 +130,6 @@
 							<div class="dash-summary-count col col-md-4 col-sm-4">
 								{{$laptopLinkRequest != null ? count($laptopLinkRequest) : "0"}}</div>
 						</div>
-						@endif
-						@if($softwareRequest != null)
 						<div class="dash-summary-row row mb-1">
 							<div class="col col-md-8 col-sm-8"><a href="#div-software-request">
 								<span class="dash-summary-items">Software Request</span></a>
@@ -143,8 +138,6 @@
 								{{$softwareRequest != null ?count($softwareRequest) : "0"}}
 							</div>
 						</div>
-						@endif
-						@if($projectLinkRequest != null)
 						<div class="dash-summary-row row mb-1">
 							<div class="col col-md-8 col-sm-8">
 								<a href="#div-project-link-request"><span class="dash-summary-items">Project Link Request</span></a>
@@ -153,7 +146,6 @@
 								{{$projectLinkRequest != null ? count($projectLinkRequest) : "0"}}
 							</div>
 						</div>
-						@endif
 					</div>
 				</div>
 			</div>
