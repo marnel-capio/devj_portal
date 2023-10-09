@@ -126,23 +126,58 @@
 
 {{-- Password --}}
 <div class="emp-regist-category mb-4 p-3 rounded-3">
-    <div class="col col-12 col-md-8">
+    <div class="col col-12 col-md-8"  style="width: 100%">
         <h4 class="text-start">Portal Password</h4>
         <div class="row mb-2 ps-3 pe-3">
-            <div class="col-12 col-md-6 g-3 form-floating">
+            
+            <div class="col-12 col-md-4 g-3 form-floating">
                 <input type="password" class="form-control" name="password" id="emp-password" placeholder="Password" required>
                 <label for="emp-password" class="text-center">Password</label>
                 @if ($errors->has('password'))
                 <p class="text-danger">{{ $errors->first('password') }}</p>
                 @endif
-                <small class="form-text text-secondary"><em>Minimum of 8 characters</em></small>
+               
             </div>
-            <div class="col-12 col-md-6 g-3 form-floating">
+            <div class="col-12 col-md-4 g-3 form-floating">
                 <input type="password" class="form-control" name="confirm_password" id="emp-confirm-password" placeholder="Confirm Password" required>
                 <label for="emp-confirm-password" class="text-center">Confirm Password</label>
                 <p id="confirm-pass-text"></p>
             </div>
+
+            <div class="col-12 col-md-4 g-3 form-floating" style="text-align: left">
+                <small class="pass-cond pass-cond-upper">
+                    <i class="bi bi-exclamation-circle-fill err-pass-upper"></i>
+                    <i class="bi bi-check-circle-fill correct-pass-upper"></i>&nbsp;
+                    <em>The password must contain at least 1 upper case letter.</em>
+                </small><br>
+                 <small class="pass-cond pass-cond-lower">
+                    <i class="bi bi-exclamation-circle-fill err-pass-lower"></i>
+                    <i class="bi bi-check-circle-fill correct-pass-lower"></i>&nbsp;
+                    <em>The password must contain at least 1 lower case letter.</em>
+                </small><br>
+                 <small class="pass-cond pass-cond-number">
+                    <i class="bi bi-exclamation-circle-fill err-pass-number"></i>
+                    <i class="bi bi-check-circle-fill correct-pass-number"></i>&nbsp;
+                    <em>The password must contain at least 1 number.</em>
+                </small><br>
+                 <small class="pass-cond pass-cond-char">
+                    <i class="bi bi-exclamation-circle-fill err-pass-char"></i>
+                    <i class="bi bi-check-circle-fill correct-pass-char"></i>&nbsp;
+                    <em>The password must contain at least 1 of the following special characters: !@#$%&*_.</em>
+                </small><br>
+                 <small class="pass-cond pass-cond-min">
+                    <i class="bi bi-exclamation-circle-fill err-pass-min"></i>
+                    <i class="bi bi-check-circle-fill correct-pass-min"></i>&nbsp;
+                    <em>Minimum of 8 characters</em>
+                </small><br>
+                 <small class="pass-cond pass-cond-match">
+                    <i class="bi bi-exclamation-circle-fill err-pass-match"></i>
+                    <i class="bi bi-check-circle-fill correct-pass-match"></i>&nbsp;
+                    <em>Password and Confirm password must match.</em>
+                </small>
+            </div>
         </div>
+
     </div>
 </div>
             

@@ -28,7 +28,7 @@ class passwordResetMail extends Mailable
      */
     public function build()
     {
-        $subject = env('APP_ENV') != 'production' ? "【" . strtoupper(env('APP_ENV')) . "】".'【DEV J PORTAL】Dev J Portal Account Information') : '【DEV J PORTAL】Dev J Portal Account Information';
+        $subject = env('APP_ENV') != 'production' ? "【" . strtoupper(env('APP_ENV')) . "】".'【DEV J PORTAL】Dev J Portal Account Information' : '【DEV J PORTAL】Dev J Portal Account Information';
         return $this
             ->subject($subject)
                 ->view('mail.passwordReset', ['mailData' => $this->mailData]);

@@ -289,13 +289,66 @@ $(document).ready(function () {
 
 	//password check
 	$("#emp-confirm-password, #emp-password").keyup(function(){
+		var upperCase= new RegExp('[A-Z]');
+		var lowerCase= new RegExp('[a-z]');
+		var numbers = new RegExp('[0-9]');
+		var specialChars = new RegExp('[!@#$%&*_.]');
+
+		// match
 		if($('#emp-confirm-password').val() != $("#emp-password").val()){
-			$("#confirm-pass-text").html("Password does not match.").addClass('text-danger text-start');
-			$("#emp-reg-submit").prop('disabled', true);
+			$(".err-pass-match").css("display", "inline");
+			$(".correct-pass-match").css("display", "none");
 		}else{
-			$("#confirm-pass-text").html("");
-			checkRequiredFields();
+			$(".correct-pass-match").css("display", "inline");
+			$(".err-pass-match").css("display", "none");
 		}
+
+		//minimum
+		if ($("#emp-password").val().length < 8) {
+			$(".err-pass-min").css("display", "inline");
+			$(".correct-pass-min").css("display", "none");
+		} else {
+			$(".correct-pass-min").css("display", "inline");
+			$(".err-pass-min").css("display", "none");
+		}
+
+		//lower
+		if ($("#emp-password").val().match(lowerCase)) {
+			$(".correct-pass-lower").css("display", "inline");
+			$(".err-pass-lower").css("display", "none");
+		} else {
+			$(".err-pass-lower").css("display", "inline");
+			$(".correct-pass-lower").css("display", "none");
+		}
+
+		//upper
+		if ($("#emp-password").val().match(upperCase)) {
+			$(".correct-pass-upper").css("display", "inline");
+			$(".err-pass-upper").css("display", "none");
+		} else {
+			$(".err-pass-upper").css("display", "inline");
+			$(".correct-pass-upper").css("display", "none");
+		}
+
+		//upper
+		if ($("#emp-password").val().match(specialChars)) {
+			$(".correct-pass-char").css("display", "inline");
+			$(".err-pass-char").css("display", "none");
+		} else {
+			$(".err-pass-char").css("display", "inline");
+			$(".correct-pass-char").css("display", "none");
+		}
+
+		//number
+		if ($("#emp-password").val().match(numbers)) {
+			$(".correct-pass-number").css("display", "inline");
+			$(".err-pass-number").css("display", "none");
+		} else {
+			$(".err-pass-number").css("display", "inline");
+			$(".correct-pass-number").css("display", "none");
+		}
+
+		checkRequiredFields();
 	});
 
 	function checkRequiredFields(){
@@ -362,11 +415,63 @@ $(document).ready(function () {
 
 	//change password
 	$("#cp-confirm-pw, #cp-new-pw").keyup(function(){
-		if($('#cp-confirm-pw').val() != $("#cp-new-pw").val()){
-			$("#confirm-pass-text").html("Password does not match.").addClass('text-danger text-start');
-			$("#ecp-submit-btn").prop('disabled', true);
+		var upperCase= new RegExp('[A-Z]');
+		var lowerCase= new RegExp('[a-z]');
+		var numbers = new RegExp('[0-9]');
+		var specialChars = new RegExp('[!@#$%&*_.]');
+
+		// match
+		if($('#cp-new-pw').val() != $("#cp-confirm-pw").val()){
+			$(".err-pass-match").css("display", "inline");
+			$(".correct-pass-match").css("display", "none");
 		}else{
-			$("#confirm-pass-text").html("");
+			$(".correct-pass-match").css("display", "inline");
+			$(".err-pass-match").css("display", "none");
+		}
+
+		//minimum
+		if ($("#cp-new-pw").val().length < 8) {
+			$(".err-pass-min").css("display", "inline");
+			$(".correct-pass-min").css("display", "none");
+		} else {
+			$(".correct-pass-min").css("display", "inline");
+			$(".err-pass-min").css("display", "none");
+		}
+
+		//lower
+		if ($("#cp-new-pw").val().match(lowerCase)) {
+			$(".correct-pass-lower").css("display", "inline");
+			$(".err-pass-lower").css("display", "none");
+		} else {
+			$(".err-pass-lower").css("display", "inline");
+			$(".correct-pass-lower").css("display", "none");
+		}
+
+		//upper
+		if ($("#cp-new-pw").val().match(upperCase)) {
+			$(".correct-pass-upper").css("display", "inline");
+			$(".err-pass-upper").css("display", "none");
+		} else {
+			$(".err-pass-upper").css("display", "inline");
+			$(".correct-pass-upper").css("display", "none");
+		}
+
+		//char
+		if ($("#cp-new-pw").val().match(specialChars)) {
+			$(".correct-pass-char").css("display", "inline");
+			$(".err-pass-char").css("display", "none");
+		} else {
+			$(".err-pass-char").css("display", "inline");
+			$(".correct-pass-char").css("display", "none");
+		}
+
+		//number
+		if ($("#cp-new-pw").val().match(numbers)) {
+			$(".correct-pass-number").css("display", "inline");
+			$(".err-pass-number").css("display", "none");
+		} else {
+			$(".err-pass-number").css("display", "inline");
+			$(".correct-pass-number").css("display", "none");
 		}
 	});
 

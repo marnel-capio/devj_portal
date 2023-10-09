@@ -36,3 +36,13 @@ table#project-tbl  > thead > tr > th{
 .alert-success {
 	text-align: left;
 }
+
+.bi-exclamation-circle-fill{
+    color: red;
+    display: none;
+}
+
+.bi-check-circle-fill{
+    color: green;
+    display: none;
+}
