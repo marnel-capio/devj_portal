@@ -242,6 +242,9 @@ class EmployeesController extends Controller
                 } elseif ($key == "server_manage_flag") {
                     $value = $value == 0? "unset" : "set";
                     $originalData[$key] = $originalData[$key] == 0? "unset" : "set";
+                } elseif ($key == "passport_type") {
+                    $value = config("constants.PASSPORT_TYPE_{$value}_NAME");
+                    $originalData[$key] = config("constants.PASSPORT_TYPE_{$originalData[$key]}_NAME");
                 }
                 $field = str_replace("_", " ", $key);
                 $updatedDetails .= "{$field}: {$originalData[$key]} -> {$value},";

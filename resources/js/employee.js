@@ -8,7 +8,8 @@ const REINSTATE_EMPLOYEE_LINK = '/api/reinstateEmployee';
 const NOTIFY_SURRENDER_OF_LAPTOPS_LINK = '/api/notifySurrender';
 const APPROVE_EMPLOYEE_LINK = '/employees/store';
 const SEND_NOTIFICATION_LINK = '/employees/sendNotification';
-const EMPLOYEE_DOWNLOAD_LINK = '/employees/download'
+const EMPLOYEE_DOWNLOAD_LINK = '/employees/download';
+const GET_CITY = '/api/getCities';
 const BU_LIST = {
     '1'  : 'Dev A',
     '2'  : 'Dev B',
@@ -41,6 +42,46 @@ $(document).ready(function () {
 	    }
 	});
 
+	function getCity(addressType="permanent",province,city=null,isSameAddress=false) {
+		if (province != null && province != "") {
+			$.ajax({
+	            type: "GET",
+	            url: GET_CITY,
+	            data: {
+	                province: province,
+	            },
+	            dataType: "json",
+	            encode: true
+	        }).done(function(data){
+	        		if (addressType == "permanent") {
+	        			$('#perm-add-town').empty();
+				    	$('#perm-add-town').append(`<option value=""></option>`);
+	        		}
+	        		if (addressType == "current" || isSameAddress) {
+	        			$('#cur-add-town').empty();
+				    	$('#cur-add-town').append(`<option value=""></option>`);
+	        		}
+	        		
+	        	$.each(data.cities, function (i, item) {
+	        		var selected = "";
+	        		if (city != null && item == city) {
+	        			selected = "selected";		
+	        		}
+	        		if (addressType == "permanent") {
+	        			 $('#perm-add-town').append('<option value="'+i+'" '+selected+'>'+item+'</option>');
+	        		} 
+	        		if (addressType == "current" || isSameAddress) {
+	        			 $('#cur-add-town').append('<option value="'+i+'" '+selected+'>'+item+'</option>');
+	        		}
+				   
+				});
+	        }).fail(function(){
+	            // console.log('error');
+	        });
+		}
+	}
+	getCity("permanent",$("#perm-prov").val(),$("#perm-city").val());
+	getCity("current",$("#cur-prov").val(),$("#cur-city").val());
     /**
      * Set header alert 
 	 * message   : message string
@@ -378,10 +419,11 @@ $(document).ready(function () {
 		$("#cur-add-prov").val($("#perm-add-prov").val());
 		$("#cur-add-postal").val($("#perm-add-postal").val());
 		
-		$("#cur-add-strt").prop("readonly", isSame);
-		$("#cur-add-town").prop("readonly", isSame);
-		$("#cur-add-prov").prop("readonly", isSame);
-		$("#cur-add-postal").prop("readonly", isSame);
+		$("#cur-add-strt").prop("disabled", isSame);
+		$("#cur-add-town").prop("disabled", isSame);
+		$("#cur-add-prov").prop("disabled", isSame);
+		$("#cur-add-postal").prop("disabled", isSame);
+		getCity("current",$("#perm-add-prov").val(),$("#perm-add-town").val());
 		
 		if(isSame)
 		{
@@ -390,6 +432,7 @@ $(document).ready(function () {
 			$("#cur-add-prov").addClass("is-disabled");
 			$("#cur-add-postal").addClass("is-disabled");
 		} else {
+
 			$("#cur-add-strt").removeClass("is-disabled");
 			$("#cur-add-town").removeClass("is-disabled");
 			$("#cur-add-prov").removeClass("is-disabled");
@@ -399,7 +442,7 @@ $(document).ready(function () {
 	});
 
 
-	$("input[name *= 'permanent_address'").change(function(){
+	$(".permanent-address").change(function(){
 		var isSame = $("#copy-permanent-address").prop('checked');
 		if(isSame) {
 			$("#cur-add-strt").val($("#perm-add-strt").val());
@@ -894,6 +937,34 @@ $(document).ready(function () {
 	
 	$("#emp-reg-submit").click(function(e){
 		$("#employee-reg-submit-spinner").show();
+    	var isSame = $("#copy-permanent-address").prop('checked');
+		if (isSame) {
+			$("#cur-add-strt").prop("disabled", false);
+			$("#cur-add-town").prop("disabled", false);
+			$("#cur-add-prov").prop("disabled", false);
+			$("#cur-add-postal").prop("disabled", false);
+			$("#cur-add-strt").prop("readonly", true);
+			$("#cur-add-town").prop("readonly", true);
+			$("#cur-add-prov").prop("readonly", true);
+			$("#cur-add-postal").prop("readonly", true);
+		}
+		
+		$("#reg-form").submit();
+	});
+
+	$("#emp-update-submit").click(function(e){
+
+    	var isSame = $("#copy-permanent-address").prop('checked');
+		if (isSame) {
+			$("#cur-add-strt").prop("disabled", false);
+			$("#cur-add-town").prop("disabled", false);
+			$("#cur-add-prov").prop("disabled", false);
+			$("#cur-add-postal").prop("disabled", false);
+			$("#cur-add-strt").prop("readonly", true);
+			$("#cur-add-town").prop("readonly", true);
+			$("#cur-add-prov").prop("readonly", true);
+			$("#cur-add-postal").prop("readonly", true);
+		}
 	});
 
 	$("#emp-reg-back").click(function(e){
@@ -943,4 +1014,12 @@ $(document).ready(function () {
 
     }
 
+    $("#perm-add-prov").on("change",function() {
+    	var isSame = $("#copy-permanent-address").prop('checked');
+    	getCity("permanent",$(this).val(),null,isSame);
+    });
+
+    $("#cur-add-prov").on("change",function() {
+    	getCity("current",$(this).val());
+    });
 });

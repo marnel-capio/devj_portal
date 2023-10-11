@@ -1164,4 +1164,20 @@ class ApiController extends Controller
             'success' => true,
         ]);
     }
+
+
+    /**
+     * Get Cities from selected province
+     *
+     * @param Request $requests
+     * @return void
+     */
+    public function getCities(Request $request){
+        $province = $request->get('province');
+
+        return response()->json([
+            'success' => true,
+            'cities' => config("provinces_cities.PROVINCES_CITIES")[$province]
+        ]);
+    }
 }
