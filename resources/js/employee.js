@@ -349,11 +349,13 @@ $(document).ready(function () {
 		var lowerCase= new RegExp('[a-z]');
 		var numbers = new RegExp('[0-9]');
 		var specialChars = new RegExp('[!@#$%&*_.]');
-
+	
+		let isPasswordValid = true;
 		// match
 		if($('#emp-confirm-password').val() != $("#emp-password").val()){
 			$(".err-pass-match").css("display", "inline");
 			$(".correct-pass-match").css("display", "none");
+			isPasswordValid = false;
 		}else{
 			$(".correct-pass-match").css("display", "inline");
 			$(".err-pass-match").css("display", "none");
@@ -363,6 +365,7 @@ $(document).ready(function () {
 		if ($("#emp-password").val().length < 8) {
 			$(".err-pass-min").css("display", "inline");
 			$(".correct-pass-min").css("display", "none");
+			isPasswordValid = false;
 		} else {
 			$(".correct-pass-min").css("display", "inline");
 			$(".err-pass-min").css("display", "none");
@@ -375,6 +378,7 @@ $(document).ready(function () {
 		} else {
 			$(".err-pass-lower").css("display", "inline");
 			$(".correct-pass-lower").css("display", "none");
+			isPasswordValid = false;
 		}
 
 		//upper
@@ -384,15 +388,17 @@ $(document).ready(function () {
 		} else {
 			$(".err-pass-upper").css("display", "inline");
 			$(".correct-pass-upper").css("display", "none");
+			isPasswordValid = false;
 		}
 
-		//upper
+		// Special chars
 		if ($("#emp-password").val().match(specialChars)) {
 			$(".correct-pass-char").css("display", "inline");
 			$(".err-pass-char").css("display", "none");
 		} else {
 			$(".err-pass-char").css("display", "inline");
 			$(".correct-pass-char").css("display", "none");
+			isPasswordValid = false;
 		}
 
 		//number
@@ -402,19 +408,31 @@ $(document).ready(function () {
 		} else {
 			$(".err-pass-number").css("display", "inline");
 			$(".correct-pass-number").css("display", "none");
+			isPasswordValid = false;
 		}
 
-		checkRequiredFields();
+		checkRequiredFields(isPasswordValid);
 	}
 
-	function checkRequiredFields(){
+	
+    /**
+     * Test if all fields with property: 'required' are not empty.
+	 * Edit: Test if entries are valid
+     * @param boolean entriesValid = DEFAULT true
+	 * 
+     * @return void
+     */
+	function checkRequiredFields(entriesValid = true){
 		var empty = false;
 		$(":input[required]").each(function(){
 			if($(this).val() == ''){
 				empty = true;
 			}
 		})
-		if(empty){
+
+		// If required inputs are empty OR if entries are not valid
+		// entriesValid is utilized on: checkPasswordComplexity()
+		if(empty || entriesValid === false){
 			$("#emp-reg-submit").prop('disabled', true);
 		}else{
 			$("#emp-reg-submit").prop('disabled', false);
@@ -426,26 +444,25 @@ $(document).ready(function () {
 		$('.btn-prevent-multiple-submit').prop('disabled', true);
 	});
 
-	$("#copy-permanent-address").click(function(){
+	
+	function isSame_PermanentAndCurrentAddress () {
 		var isSame = $("#copy-permanent-address").prop('checked');
-		
-		$("#cur-add-strt").val($("#perm-add-strt").val());
-		$("#cur-add-town").val($("#perm-add-town").val());
-		$("#cur-add-prov").val($("#perm-add-prov").val());
-		$("#cur-add-postal").val($("#perm-add-postal").val());
 		
 		$("#cur-add-strt").prop("disabled", isSame);
 		$("#cur-add-town").prop("disabled", isSame);
 		$("#cur-add-prov").prop("disabled", isSame);
 		$("#cur-add-postal").prop("disabled", isSame);
-		getCity("current",$("#perm-add-prov").val(),$("#perm-add-town").val());
-		
 		if(isSame)
 		{
 			$("#cur-add-strt").addClass("is-disabled");
 			$("#cur-add-town").addClass("is-disabled");
 			$("#cur-add-prov").addClass("is-disabled");
 			$("#cur-add-postal").addClass("is-disabled");
+		
+			$("#cur-add-strt").val($("#perm-add-strt").val());
+			$("#cur-add-town").val($("#perm-add-town").val());
+			$("#cur-add-prov").val($("#perm-add-prov").val());
+			$("#cur-add-postal").val($("#perm-add-postal").val());
 		} else {
 
 			$("#cur-add-strt").removeClass("is-disabled");
@@ -453,6 +470,16 @@ $(document).ready(function () {
 			$("#cur-add-prov").removeClass("is-disabled");
 			$("#cur-add-postal").removeClass("is-disabled");
 		}
+		
+	}
+
+	
+	isSame_PermanentAndCurrentAddress();
+
+	$("#copy-permanent-address").click(function(){
+		
+		isSame_PermanentAndCurrentAddress();
+		getCity("current",$("#perm-add-prov").val(),$("#perm-add-town").val());
 		checkRequiredFields();
 	});
 
@@ -956,7 +983,7 @@ $(document).ready(function () {
 		$("#emp-reg-submit").prop('disabled', true);
 		$("#emp-reg-back").prop('disabled', true);
 		$(".text-danger").hide();
-		var isSame = $("#copy-permanent-address").prop('checked');
+		let isSame = $("#copy-permanent-address").prop('checked');
 		if (isSame) {
 			$("#cur-add-strt").prop("disabled", false);
 			$("#cur-add-town").prop("disabled", false);

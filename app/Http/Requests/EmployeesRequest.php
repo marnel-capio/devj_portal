@@ -187,7 +187,8 @@ class EmployeesRequest extends FormRequest
             }
 
             if(strpos($this->header('referer'), route('employees.create')) !== FALSE){
-                $rules['password'] = ['required', 'min:8', 'max:16', new Password()];
+                $rules['password'] = ['required', 'min:8', 'max:16', new Password(), 'required_with:confirm_password'];
+                $rules['confirm_password'] = ['required', 'min:8', 'max:16'];
                 $referer = $this->header('referer');
                 $rejectCode = substr($referer, strripos($referer, '/') + 1);
                 if(!empty($this->input('id'))){

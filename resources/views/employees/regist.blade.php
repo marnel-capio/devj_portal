@@ -128,21 +128,25 @@
         <h4 class="text-start">Portal Password</h4>
         <div class="row mb-2 ps-3 pe-3">
             
-            <div class="col-12 col-md-4 g-3 form-floating">
-                <input type="password" class="form-control" name="password" id="emp-password" placeholder="Password" required>
-                <label for="emp-password" class="text-center">Password</label>
-                @if ($errors->has('password'))
-                <p class="text-danger">{{ $errors->first('password') }}</p>
-                @endif
+            <div class="col-12 col-lg-6 col-xl-5 g-3 form-floating">
+                <div class="col-12 g-3 mb-3 form-floating">
+                    <input type="password" class="form-control" name="password" id="emp-password" placeholder="Password" required>
+                    <label for="emp-password" class="text-center">Password</label>
+                    @if ($errors->has('password'))
+                    <p class="text-danger">{{ $errors->first('password') }}</p>
+                    @endif
+                </div>
+                
+                <div class="col-12 g-3 form-floating">
+                    <input type="password" class="form-control" name="confirm_password" id="emp-confirm-password" placeholder="Confirm Password" required>
+                    <label for="emp-confirm-password" class="text-center">Confirm Password</label>
+                    <p id="confirm-pass-text"></p>
+                </div>
                
             </div>
-            <div class="col-12 col-md-4 g-3 form-floating">
-                <input type="password" class="form-control" name="confirm_password" id="emp-confirm-password" placeholder="Confirm Password" required>
-                <label for="emp-confirm-password" class="text-center">Confirm Password</label>
-                <p id="confirm-pass-text"></p>
-            </div>
+            <div class="col-0 col-lg-1"></div>
 
-            <div class="col-12 col-md-4 g-3 form-floating" style="text-align: left">
+            <div class="col-12 col-lg-5 col-xl-6 g-3 form-floating" style="text-align: left">
                 <small class="pass-cond pass-cond-upper">
                     <i class="bi bi-exclamation-circle-fill err-pass-upper"></i>
                     <i class="bi bi-check-circle-fill correct-pass-upper"></i>&nbsp;
@@ -362,7 +366,7 @@
             <div class="emp-regist-category mb-4 p-3 rounded-3">
                 <div class="d-flex justify-content-between">
                     <h4 class="text-start">Current Address</h4>    
-                    <input type="checkbox" class="btn btn-check btn-primary btn-sm" name="copy_permanent_address" id="copy-permanent-address">
+                    <input type="checkbox" class="btn btn-check btn-primary btn-sm" name="copy_permanent_address" id="copy-permanent-address" {{ !empty(old('copy_permanent_address')) && old('copy_permanent_address') == "on" ? "checked" : "" }} >
                     <label class="btn btn-outline-primary" for="copy-permanent-address"><i>same as Permanent</i></label>
                 </div>
                 <div class="row mb-2 ps-3 pe-3">
