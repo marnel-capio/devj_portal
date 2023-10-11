@@ -986,6 +986,8 @@ $(document).ready(function () {
 			$("#cur-add-prov").prop("readonly", true);
 			$("#cur-add-postal").prop("readonly", true);
 		}
+		
+		$("#emp-update-form").submit();
 	});
 
 	$("#emp-reg-back").click(function(e){
