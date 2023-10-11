@@ -17,7 +17,7 @@
                         <p class="text-danger">{{ $errors->first('first_name') }}</p>
                         @endif
                     </div>
-                    <div class="col-12 col-md-3 g-3 form-floating"  data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<em>optional</em>: Middle name">
+                    <div class="col-12 col-md-3 g-3 form-floating" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top" data-bs-html="true" title="<em>optional</em>" data-bs-content="Middle name">
                         <input type="text" class="form-control" name="middle_name" id="middle_name" placeholder="Middle Name" value="{{ old('middle_name', $employee ? $employee->middle_name : '') }}">
                         <label  class="text-center" for="middle_name"><em>Middle Name</em></label>
                         @if ($errors->has('middle_name'))
@@ -31,7 +31,7 @@
                         <p class="text-danger">{{ $errors->first('last_name') }}</p>
                         @endif
                     </div>
-                    <div class="col-12 col-md-1 g-3 form-floating" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<em>optional</em>: Suffix (Jr, II, III, etc.)">
+                    <div class="col-12 col-md-1 g-3 form-floating" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top" data-bs-html="true" title="<em>optional</em>" data-bs-content="Suffix (Jr, II, III, etc.)">
                         <input type="text" class="form-control" name="name_suffix" id="name_suffix" placeholder="*Suffix" value="{{ old('name_suffix', $employee ? $employee->name_suffix : '') }}">
                         <label  class="text-center small" for="name_suffix"><em>Suffix</em></label>
                         @if ($errors->has('name_suffix'))
@@ -89,8 +89,7 @@
     <h4 class="text-start">Contact Details</h4>
     <div class="row mb-2 ps-3 pe-3">
         <div class="col-12 col-md-4 g-3 form-floating"
-            data-bs-toggle="tooltip" data-bs-placement="top"
-            title="Please enter AWS Email Address only">
+            data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="right" data-bs-html="true" title="Please enter AWS Email only" data-bs-content="<em>example</em>@awsys-i.com">
             <input type="text" class="form-control" name="email" id="email" placeholder="Email" required value="{{ old('email', $employee ? $employee->email : '') }}">
             <label for="email" class="text-center">AWS Email Address</label>
             @if ($errors->has('email'))
@@ -113,10 +112,9 @@
         </div>
 
         <div class="col-12 col-md-4 g-3 form-floating"
-            data-bs-toggle="tooltip" data-bs-placement="right"
-            data-bs-html="true" title="<em>optional</em>: Input secondary phone number or email">
+            data-bs-toggle="popover" data-bs-placement="right" data-bs-trigger="focus" data-bs-html="true" title="<em>optional</em>" data-bs-content="Input secondary phone number or email">
             <input type="text" class="form-control" name="other_contact_info" id="other_contact" placeholder="Other Contact Info" value="{{ old('other_contact_info', $employee ? $employee->other_contact_info : '') }}">
-            <label for="other_contact" class="text-center">Other Contact Info (optional)</label>
+            <label for="other_contact" class="text-center">Other Contact Info</label>
             @if ($errors->has('other_contact_info'))
             <p class="text-danger">{{ $errors->first('other_contact_info') }}</p>
             @endif

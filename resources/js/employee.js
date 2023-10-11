@@ -328,8 +328,23 @@ $(document).ready(function () {
 	});
 
 
-	//password check
-	$("#emp-confirm-password, #emp-password").keyup(function(){
+	// Password check : 1. on Key up
+	$("#emp-confirm-password, #emp-password").keyup(() => {
+		checkPasswordComplexity();
+	});
+
+	// Password check : 2. on change
+	$("#emp-confirm-password, #emp-password").change(() => {
+		checkPasswordComplexity();
+	});
+
+	
+    /**
+     * Test for password complexity 
+	 * 
+     * @return void
+     */
+	function checkPasswordComplexity(){
 		var upperCase= new RegExp('[A-Z]');
 		var lowerCase= new RegExp('[a-z]');
 		var numbers = new RegExp('[0-9]');
@@ -390,7 +405,7 @@ $(document).ready(function () {
 		}
 
 		checkRequiredFields();
-	});
+	}
 
 	function checkRequiredFields(){
 		var empty = false;
@@ -450,6 +465,7 @@ $(document).ready(function () {
 			$("#cur-add-prov").val($("#perm-add-prov").val());
 			$("#cur-add-postal").val($("#perm-add-postal").val());
 		}
+		checkRequiredFields();
 	})
 
 	//end for employee registration
@@ -937,7 +953,10 @@ $(document).ready(function () {
 	
 	$("#emp-reg-submit").click(function(e){
 		$("#employee-reg-submit-spinner").show();
-    	var isSame = $("#copy-permanent-address").prop('checked');
+		$("#emp-reg-submit").prop('disabled', true);
+		$("#emp-reg-back").prop('disabled', true);
+		$(".text-danger").hide();
+		var isSame = $("#copy-permanent-address").prop('checked');
 		if (isSame) {
 			$("#cur-add-strt").prop("disabled", false);
 			$("#cur-add-town").prop("disabled", false);
@@ -953,6 +972,8 @@ $(document).ready(function () {
 	});
 
 	$("#emp-update-submit").click(function(e){
+		$("#emp-update-submit").prop('disabled', true);
+		$(".text-danger").hide();
 
     	var isSame = $("#copy-permanent-address").prop('checked');
 		if (isSame) {
@@ -969,7 +990,12 @@ $(document).ready(function () {
 
 	$("#emp-reg-back").click(function(e){
 		e.preventDefault();
-		window.location.href = window.location.origin+"/login";
+
+		const response = confirm("Are you sure you want to return to Log-in page?\nYour changes will be lost.");
+
+		if (response) {
+			window.location.href = window.location.origin + "/login";
+		}
 	});
 
 	
