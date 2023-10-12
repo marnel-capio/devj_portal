@@ -38,3 +38,9 @@ Route::middleware('auth:sanctum')->controller(ApiController::class)->group(funct
     Route::get('/projects/search', 'getProjectByFilter')->name('api.filterProject');
     Route::get('/servers/delete', 'deleteServer');
 });
+
+// Route::get('/getCities', "ApiController@getCities");
+
+Route::controller(ApiController::class)->group(function () {
+    Route::get('/getCities', 'getCities');
+});

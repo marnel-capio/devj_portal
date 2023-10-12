@@ -175,27 +175,11 @@
 						<td>{{$user['last_name']}}, {{$user['first_name']}}</td>
 						<td>{{$user['email']}}</td>
 						<td>
-						@if ($user['position']      ==  config('constants.POSITION_JR_RESEARCH_DEVELOPMENT_VALUE')) 
-							{{config('constants.POSITION_1_NAME')}}
-						@elseif ($user['position']  ==  config('constants.POSITION_ASSISTANT_RESEARCH_DEVELOPMENT_VALUE')) 
-							{{config('constants.POSITION_2_NAME')}}
-						@elseif ($user['position']  ==  config('constants.POSITION_SR_ASSISTANT_RESEARCH_DEVELOPMENT_VALUE')) 
-							{{config('constants.POSITION_3_NAME')}}
-						@elseif ($user['position']  ==  config('constants.POSITION_ASSOC_RESEARCH_DEVELOPMENT_VALUE')) 
-							{{config('constants.POSITION_4_NAME')}}
-						@elseif ($user['position']  ==  config('constants.POSITION_SR_ASSOC_RESEARCH_DEVELOPMENT_VALUE')) 
-							{{config('constants.POSITION_5_NAME')}}
-						@elseif ($user['position']  ==  config('constants.POSITION_SUPERVISOR_VALUE')) 
-							{{config('constants.POSITION_6_NAME')}}
-						@elseif ($user['position']  ==  config('constants.POSITION_ADVISER_VALUE')) 
-							{{config('constants.POSITION_7_NAME')}}
-						@elseif ($user['position']  ==  config('constants.POSITION_ASSSITANT_MANAGER_VALUE')) 
-							{{config('constants.POSITION_8_NAME')}}
-						@elseif ($user['position']  ==  config('constants.POSITION_MANAGER_VALUE')) 
-							{{config('constants.POSITION_9_NAME')}}
-						@else
-							-
-						@endif
+							@foreach (config('constants.POSITIONS') as $value => $name)
+								@if ($user['position'] == $value) 
+									{{ $name }}
+								@endif
+                            @endforeach
 						</td>
 		                <td>
 		                	@if ($user['approved_status'] == config('constants.APPROVED_STATUS_REJECTED')) 

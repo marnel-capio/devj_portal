@@ -4,7 +4,7 @@
 <div class="container text-center ps-3 pe-3 pt-5">
     <h3 class="text-start">Account Registration</h3>
     <div class="pt-4">
-        <form action="{{ route('employees.regist') }}" method="POST">
+        <form action="{{ route('employees.regist') }}" id="reg-form" method="POST">
             @csrf
             <input type="text" name="id" value="{{ isset($employee->id) ? $employee->id : '' }}" hidden >
             <div class="emp-regist-category p-3 mb-4 rounded-3">
@@ -17,7 +17,7 @@
                         <p class="text-danger">{{ $errors->first('first_name') }}</p>
                         @endif
                     </div>
-                    <div class="col-12 col-md-3 g-3 form-floating"  data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<em>optional</em>: Middle name">
+                    <div class="col-12 col-md-3 g-3 form-floating" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top" data-bs-html="true" title="<em>optional</em>" data-bs-content="Middle name">
                         <input type="text" class="form-control" name="middle_name" id="middle_name" placeholder="Middle Name" value="{{ old('middle_name', $employee ? $employee->middle_name : '') }}">
                         <label  class="text-center" for="middle_name"><em>Middle Name</em></label>
                         @if ($errors->has('middle_name'))
@@ -31,7 +31,7 @@
                         <p class="text-danger">{{ $errors->first('last_name') }}</p>
                         @endif
                     </div>
-                    <div class="col-12 col-md-1 g-3 form-floating" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="<em>optional</em>: Suffix (Jr, II, III, etc.)">
+                    <div class="col-12 col-md-1 g-3 form-floating" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top" data-bs-html="true" title="<em>optional</em>" data-bs-content="Suffix (Jr, II, III, etc.)">
                         <input type="text" class="form-control" name="name_suffix" id="name_suffix" placeholder="*Suffix" value="{{ old('name_suffix', $employee ? $employee->name_suffix : '') }}">
                         <label  class="text-center small" for="name_suffix"><em>Suffix</em></label>
                         @if ($errors->has('name_suffix'))
@@ -89,8 +89,7 @@
     <h4 class="text-start">Contact Details</h4>
     <div class="row mb-2 ps-3 pe-3">
         <div class="col-12 col-md-4 g-3 form-floating"
-            data-bs-toggle="tooltip" data-bs-placement="top"
-            title="Please enter AWS Email Address only">
+            data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="right" data-bs-html="true" title="Please enter AWS Email only" data-bs-content="<em>example</em>@awsys-i.com">
             <input type="text" class="form-control" name="email" id="email" placeholder="Email" required value="{{ old('email', $employee ? $employee->email : '') }}">
             <label for="email" class="text-center">AWS Email Address</label>
             @if ($errors->has('email'))
@@ -113,10 +112,9 @@
         </div>
 
         <div class="col-12 col-md-4 g-3 form-floating"
-            data-bs-toggle="tooltip" data-bs-placement="right"
-            data-bs-html="true" title="<em>optional</em>: Input secondary phone number or email">
+            data-bs-toggle="popover" data-bs-placement="right" data-bs-trigger="focus" data-bs-html="true" title="<em>optional</em>" data-bs-content="Input secondary phone number or email">
             <input type="text" class="form-control" name="other_contact_info" id="other_contact" placeholder="Other Contact Info" value="{{ old('other_contact_info', $employee ? $employee->other_contact_info : '') }}">
-            <label for="other_contact" class="text-center">Other Contact Info (optional)</label>
+            <label for="other_contact" class="text-center">Other Contact Info</label>
             @if ($errors->has('other_contact_info'))
             <p class="text-danger">{{ $errors->first('other_contact_info') }}</p>
             @endif
@@ -130,21 +128,28 @@
         <h4 class="text-start">Portal Password</h4>
         <div class="row mb-2 ps-3 pe-3">
             
-            <div class="col-12 col-md-4 g-3 form-floating">
-                <input type="password" class="form-control" name="password" id="emp-password" placeholder="Password" required>
-                <label for="emp-password" class="text-center">Password</label>
-                @if ($errors->has('password'))
-                <p class="text-danger">{{ $errors->first('password') }}</p>
-                @endif
+            <div class="col-12 col-lg-6 col-xl-5 g-3 form-floating">
+                <div class="col-12 g-3 mb-3 form-floating">
+                    <input type="password" class="form-control" name="password" id="emp-password" placeholder="Password" required>
+                    <label for="emp-password" class="text-center">Password</label>
+                    @if ($errors->has('password'))
+                    <p class="text-danger">{{ $errors->first('password') }}</p>
+                    @endif
+                </div>
+                
+                <div class="col-12 g-3 form-floating">
+                    <input type="password" class="form-control" name="confirm_password" id="emp-confirm-password" placeholder="Confirm Password" required>
+                    <label for="emp-confirm-password" class="text-center">Confirm Password</label>
+                    <p id="confirm-pass-text"></p>
+                    @if ($errors->has('confirm_password'))
+                    <p class="text-danger">{{ $errors->first('confirm_password') }}</p>
+                    @endif
+                </div>
                
             </div>
-            <div class="col-12 col-md-4 g-3 form-floating">
-                <input type="password" class="form-control" name="confirm_password" id="emp-confirm-password" placeholder="Confirm Password" required>
-                <label for="emp-confirm-password" class="text-center">Confirm Password</label>
-                <p id="confirm-pass-text"></p>
-            </div>
+            <div class="col-0 col-lg-1"></div>
 
-            <div class="col-12 col-md-4 g-3 form-floating" style="text-align: left">
+            <div class="col-12 col-lg-5 col-xl-6 g-3 form-floating" style="text-align: left">
                 <small class="pass-cond pass-cond-upper">
                     <i class="bi bi-exclamation-circle-fill err-pass-upper"></i>
                     <i class="bi bi-check-circle-fill correct-pass-upper"></i>&nbsp;
@@ -313,7 +318,7 @@
                 <h4 class="text-start">Permanent Address</h4>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-12 g-3 form-floating">
-                        <input type="text" class="form-control" name="permanent_address_street" id="perm-add-strt" placeholder="Street" required value="{{ old('permanent_address_street', $employee ? $employee->permanent_address_street : '') }}">
+                        <input type="text" class="form-control permanent-address" name="permanent_address_street" id="perm-add-strt" placeholder="Street" required value="{{ old('permanent_address_street', $employee ? $employee->permanent_address_street : '') }}">
                         <label for="perm-add-strt" class="text-center">Street</label>
                         @if ($errors->has('permanent_address_street'))
                         <p class="text-danger">{{ $errors->first('permanent_address_street') }}</p>
@@ -322,21 +327,36 @@
                 </div>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-12 col-lg-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="permanent_address_city" id="perm-add-town" placeholder="Town" required value="{{ old('permanent_address_city', $employee ? $employee->permanent_address_city : '') }}">
-                        <label for="perm-add-town" class="text-center">Town/City</label>
-                        @if ($errors->has('permanent_address_city'))
-                        <p class="text-danger">{{ $errors->first('permanent_address_city') }}</p>
-                        @endif
-                    </div>
-                    <div class="col-12 col-lg-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="permanent_address_province" id="perm-add-prov" placeholder="Province" required value="{{ old('permanent_address_province', $employee ? $employee->permanent_address_province : '') }}">
+                        <select class="form-control selectpicker permanent-address" name="permanent_address_province" id="perm-add-prov" placeholder="Province" required>
+                            <option value="" ></option>
+                            @foreach (config('provinces_cities.PROVINCES_CITIES') as $province => $city)
+
+                            <option {{ old('permanent_address_province', $employee ? $employee->permanent_address_province : '') == $province ? "selected" : "" }} value="{{$province}}" >{{$province}}</option>
+                            @endforeach
+                        </select>
+
+                        <input type="hidden" disabled class="form-control" id="perm-prov"  value="{{ old('permanent_address_province', $employee ? $employee->permanent_address_province : '') }}">
+
                         <label for="perm-add-prov" class="text-center">Province/Region</label>
                         @if ($errors->has('permanent_address_province'))
                         <p class="text-danger">{{ $errors->first('permanent_address_province') }}</p>
                         @endif
                     </div>
                     <div class="col-12 col-lg-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="permanent_address_postalcode" id="perm-add-postal" placeholder="Postal Code" required value="{{ old('permanent_address_postalcode', $employee ? $employee->permanent_address_postalcode : '') }}">
+                        <select class="form-control selectpicker permanent-address" name="permanent_address_city" id="perm-add-town" placeholder="City" required>
+                        </select>
+
+                        <input type="hidden" disabled id="perm-city" value="{{ old('permanent_address_city', $employee ? $employee->permanent_address_city : '') }}">
+
+
+                        <label for="perm-add-town" class="text-center">Town/City</label>
+
+                        @if ($errors->has('permanent_address_city'))
+                        <p class="text-danger">{{ $errors->first('permanent_address_city') }}</p>
+                        @endif
+                    </div>
+                    <div class="col-12 col-lg-4 g-3 form-floating">
+                        <input type="text" class="form-control permanent-address" name="permanent_address_postalcode" id="perm-add-postal" placeholder="Postal Code" required value="{{ old('permanent_address_postalcode', $employee ? $employee->permanent_address_postalcode : '') }}">
                         <label for="perm-add-postal" class="text-center">Postal Code</label>
                         @if ($errors->has('permanent_address_postalcode'))
                         <p class="text-danger">{{ $errors->first('permanent_address_postalcode') }}</p>
@@ -349,7 +369,7 @@
             <div class="emp-regist-category mb-4 p-3 rounded-3">
                 <div class="d-flex justify-content-between">
                     <h4 class="text-start">Current Address</h4>    
-                    <input type="checkbox" class="btn btn-check btn-primary btn-sm" name="copy_permanent_address" id="copy-permanent-address">
+                    <input type="checkbox" class="btn btn-check btn-primary btn-sm" name="copy_permanent_address" id="copy-permanent-address" {{ !empty(old('copy_permanent_address')) && old('copy_permanent_address') == "on" ? "checked" : "" }} >
                     <label class="btn btn-outline-primary" for="copy-permanent-address"><i>same as Permanent</i></label>
                 </div>
                 <div class="row mb-2 ps-3 pe-3">
@@ -363,17 +383,31 @@
                 </div>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-12 col-lg-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="current_address_city" id="cur-add-town" placeholder="Town" required value="{{ old('current_address_city', $employee ? $employee->current_address_city : '') }}">
-                        <label for="cur-add-town" class="text-center">Town/City</label>
-                        @if ($errors->has('current_address_city'))
-                        <p class="text-danger">{{ $errors->first('current_address_city') }}</p>
+                        <select class="form-control selectpicker" name="current_address_province" id="cur-add-prov" placeholder="Province" required>
+                            <option value="" ></option>
+                            @foreach (config('provinces_cities.PROVINCES_CITIES') as $province => $city)
+
+                            <option {{ old('current_address_province', $employee ? $employee->current_address_province : '') == $province ? "selected" : "" }} value="{{$province}}" >{{$province}}</option>
+                            @endforeach
+                        </select>
+
+                        <input type="hidden" disabled class="form-control" id="cur-prov"  value="{{ old('current_address_province', $employee ? $employee->current_address_province : '') }}">
+
+                        <label for="cur-add-town" class="text-center">Province/Region</label>
+                        @if ($errors->has('current_address_province'))
+                        <p class="text-danger">{{ $errors->first('current_address_province') }}</p>
                         @endif
                     </div>
                     <div class="col-12 col-lg-4 g-3 form-floating">
-                        <input type="text" class="form-control" name="current_address_province" id="cur-add-prov" placeholder="Province" required value="{{ old('current_address_province', $employee ? $employee->current_address_province : '') }}">
-                        <label for="cur-add-prov" class="text-center">Province/Region</label>
-                        @if ($errors->has('current_address_province'))
-                        <p class="text-danger">{{ $errors->first('current_address_province') }}</p>
+
+                        <select class="form-control selectpicker" name="current_address_city" id="cur-add-town" placeholder="City" required>
+                        </select>
+
+                        <input type="hidden" disabled id="cur-city" value="{{ old('current_address_city', $employee ? $employee->current_address_city : '') }}">
+
+                        <label for="cur-add-prov" class="text-center">Town/City</label>
+                        @if ($errors->has('current_address_city'))
+                        <p class="text-danger">{{ $errors->first('current_address_city') }}</p>
                         @endif
                     </div>
                     <div class="col-12 col-lg-4 g-3 form-floating">

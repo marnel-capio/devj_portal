@@ -8,7 +8,8 @@ const REINSTATE_EMPLOYEE_LINK = '/api/reinstateEmployee';
 const NOTIFY_SURRENDER_OF_LAPTOPS_LINK = '/api/notifySurrender';
 const APPROVE_EMPLOYEE_LINK = '/employees/store';
 const SEND_NOTIFICATION_LINK = '/employees/sendNotification';
-const EMPLOYEE_DOWNLOAD_LINK = '/employees/download'
+const EMPLOYEE_DOWNLOAD_LINK = '/employees/download';
+const GET_CITY = '/api/getCities';
 const BU_LIST = {
     '1'  : 'Dev A',
     '2'  : 'Dev B',
@@ -41,6 +42,46 @@ $(document).ready(function () {
 	    }
 	});
 
+	function getCity(addressType="permanent",province,city=null,isSameAddress=false) {
+		if (province != null && province != "") {
+			$.ajax({
+	            type: "GET",
+	            url: GET_CITY,
+	            data: {
+	                province: province,
+	            },
+	            dataType: "json",
+	            encode: true
+	        }).done(function(data){
+	        		if (addressType == "permanent") {
+	        			$('#perm-add-town').empty();
+				    	$('#perm-add-town').append(`<option value=""></option>`);
+	        		}
+	        		if (addressType == "current" || isSameAddress) {
+	        			$('#cur-add-town').empty();
+				    	$('#cur-add-town').append(`<option value=""></option>`);
+	        		}
+	        		
+	        	$.each(data.cities, function (i, item) {
+	        		var selected = "";
+	        		if (city != null && item == city) {
+	        			selected = "selected";		
+	        		}
+	        		if (addressType == "permanent") {
+	        			 $('#perm-add-town').append('<option value="'+i+'" '+selected+'>'+item+'</option>');
+	        		} 
+	        		if (addressType == "current" || isSameAddress) {
+	        			 $('#cur-add-town').append('<option value="'+i+'" '+selected+'>'+item+'</option>');
+	        		}
+				   
+				});
+	        }).fail(function(){
+	            // console.log('error');
+	        });
+		}
+	}
+	getCity("permanent",$("#perm-prov").val(),$("#perm-city").val());
+	getCity("current",$("#cur-prov").val(),$("#cur-city").val());
     /**
      * Set header alert 
 	 * message   : message string
@@ -53,45 +94,51 @@ $(document).ready(function () {
      * @return void
      */
 
-    function setHeaderAlert(message, alertType = 2, displayed = true) {
+    function setHeaderAlert(message, alertType = 2, displayed = true, custom = "default") {
+		let header_identifier;
+		if(custom === "default") {
+			header_identifier = "#header-alert";
+		} else {
+			header_identifier = custom;
+		}
 		if(!displayed) {
-			$("#header-alert").addClass("d-none");
+			$(header_identifier).addClass("d-none");
 
 			return;
 		}
 
-		$("#header-alert").removeClass("d-none");
-		$("#header-alert").removeClass("alert-info");
-		$("#header-alert").removeClass("alert-success");
-		$("#header-alert").removeClass("alert-danger");
+		$(header_identifier).removeClass("d-none");
+		$(header_identifier).removeClass("alert-info");
+		$(header_identifier).removeClass("alert-success");
+		$(header_identifier).removeClass("alert-danger");
 
 		let fadeout = true;
 
 		switch(alertType) {
 			case 1:
-				$("#header-alert").addClass("alert-success");
+				$(header_identifier).addClass("alert-success");
 				fadeout = true;
 				break;
 			case 0:
-				$("#header-alert").addClass("alert-danger");
+				$(header_identifier).addClass("alert-danger");
 				fadeout = true;
 				break;
 
 			default:
-				$("#header-alert").addClass("alert-info");
+				$(header_identifier).addClass("alert-info");
 				fadeout = false;
 				break;
 
 		}
 
 
-		$("#header-alert").html(`<div id='header-alert-content'>${message}</div>`);
+		$(header_identifier).html(`<div id='header-alert-content'>${message}</div>`);
 
 		if(fadeout) {
 			setTimeout(function(){
-				$("#header-alert-content").fadeOut("slow", function() {
-					$("#header-alert").removeClass("d-block");
-					$("#header-alert").addClass("d-none");
+				$(header_identifier + " > #header-alert-content").fadeOut("slow", function() {
+					$(header_identifier).removeClass("d-block");
+					$(header_identifier).addClass("d-none");
 				});
 			}, 5000);
 		}
@@ -277,129 +324,215 @@ $(document).ready(function () {
 	//start for employee registration
 
 	//disable submit button if not all required fields have value
-	checkRequiredFields();
-
-	
 
 
-	$(":input[required]").change(function(){
+
+	$("#reg-form > :input").change(function(){
 		checkRequiredFields();
 	});
 
 
-	//password check
-	$("#emp-confirm-password, #emp-password").keyup(function(){
+	// Password check : 1. on Key up
+	$("#emp-confirm-password, #emp-password").keyup(() => {
+		checkRequiredFields();
+	});
+
+	// Password check : 2. on change
+	$("#emp-confirm-password, #emp-password").change(() => {
+		checkRequiredFields();
+	});
+
+	
+    /**
+     * Test for password complexity 
+	 * @param purpose = register			DEFAULT		\\ if purpose is for employee register
+	 * @param purpose = change_password					\\ if purpose is for change password
+     * @return boolean
+     */
+	function checkPasswordComplexity(purpose = "register"){
 		var upperCase= new RegExp('[A-Z]');
 		var lowerCase= new RegExp('[a-z]');
 		var numbers = new RegExp('[0-9]');
 		var specialChars = new RegExp('[!@#$%&*_.]');
+		switch(purpose) {
+			case "change_password" :
+				password_value = $("#cp-new-pw").val();
+				confirm_password_value = $('#cp-confirm-pw').val();
+				break;
 
-		// match
-		if($('#emp-confirm-password').val() != $("#emp-password").val()){
-			$(".err-pass-match").css("display", "inline");
-			$(".correct-pass-match").css("display", "none");
-		}else{
-			$(".correct-pass-match").css("display", "inline");
-			$(".err-pass-match").css("display", "none");
+			case "register" :
+			default:
+				password_value = $("#emp-password").val();
+				confirm_password_value = $('#emp-confirm-password').val();
+				break;
+				
 		}
+	
+		let  isPasswordValid = true;
+		if(password_value != "") {
+			// Match
+			if(confirm_password_value != password_value){
+				$(".err-pass-match").css("display", "inline");
+				$(".correct-pass-match").css("display", "none");
+				isPasswordValid = false;
+			}else{
+				$(".correct-pass-match").css("display", "inline");
+				$(".err-pass-match").css("display", "none");
+			}
 
-		//minimum
-		if ($("#emp-password").val().length < 8) {
-			$(".err-pass-min").css("display", "inline");
-			$(".correct-pass-min").css("display", "none");
+			// Minimum
+			if (password_value.length < 8) {
+				$(".err-pass-min").css("display", "inline");
+				$(".correct-pass-min").css("display", "none");
+				isPasswordValid = false;
+			} else {
+				$(".correct-pass-min").css("display", "inline");
+				$(".err-pass-min").css("display", "none");
+			}
+
+			// Lower
+			if (password_value.match(lowerCase)) {
+				$(".correct-pass-lower").css("display", "inline");
+				$(".err-pass-lower").css("display", "none");
+			} else {
+				$(".err-pass-lower").css("display", "inline");
+				$(".correct-pass-lower").css("display", "none");
+				isPasswordValid = false;
+			}
+
+			// Upper
+			if (password_value.match(upperCase)) {
+				$(".correct-pass-upper").css("display", "inline");
+				$(".err-pass-upper").css("display", "none");
+			} else {
+				$(".err-pass-upper").css("display", "inline");
+				$(".correct-pass-upper").css("display", "none");
+				isPasswordValid = false;
+			}
+
+			// Special chars
+			if (password_value.match(specialChars)) {
+				$(".correct-pass-char").css("display", "inline");
+				$(".err-pass-char").css("display", "none");
+			} else {
+				$(".err-pass-char").css("display", "inline");
+				$(".correct-pass-char").css("display", "none");
+				isPasswordValid = false;
+			}
+
+			// Number
+			if (password_value.match(numbers)) {
+				$(".correct-pass-number").css("display", "inline");
+				$(".err-pass-number").css("display", "none");
+			} else {
+				$(".err-pass-number").css("display", "inline");
+				$(".correct-pass-number").css("display", "none");
+				isPasswordValid = false;
+			}
 		} else {
-			$(".correct-pass-min").css("display", "inline");
-			$(".err-pass-min").css("display", "none");
+			clearPasswordComplexityStatus();
+			isPasswordValid = false;
 		}
 
-		//lower
-		if ($("#emp-password").val().match(lowerCase)) {
-			$(".correct-pass-lower").css("display", "inline");
-			$(".err-pass-lower").css("display", "none");
-		} else {
-			$(".err-pass-lower").css("display", "inline");
-			$(".correct-pass-lower").css("display", "none");
-		}
+		return isPasswordValid;
+	}
 
-		//upper
-		if ($("#emp-password").val().match(upperCase)) {
-			$(".correct-pass-upper").css("display", "inline");
-			$(".err-pass-upper").css("display", "none");
-		} else {
-			$(".err-pass-upper").css("display", "inline");
-			$(".correct-pass-upper").css("display", "none");
-		}
+    /**
+     * Clears all notification of password complexity status
+	 * 
+     * @return void
+     */
+	function clearPasswordComplexityStatus () {
+		
+		$(".correct-pass-match").css("display", "none");
+		$(".err-pass-match").css("display", "none");
+		$(".err-pass-min").css("display", "none");
+		$(".correct-pass-min").css("display", "none");
+		$(".err-pass-lower").css("display", "none");
+		$(".correct-pass-lower").css("display", "none");
+		$(".err-pass-upper").css("display", "none");
+		$(".correct-pass-upper").css("display", "none");
+		$(".err-pass-char").css("display", "none");
+		$(".correct-pass-char").css("display", "none");
+		$(".err-pass-number").css("display", "none");
+		$(".correct-pass-number").css("display", "none");
+	}
 
-		//upper
-		if ($("#emp-password").val().match(specialChars)) {
-			$(".correct-pass-char").css("display", "inline");
-			$(".err-pass-char").css("display", "none");
-		} else {
-			$(".err-pass-char").css("display", "inline");
-			$(".correct-pass-char").css("display", "none");
-		}
-
-		//number
-		if ($("#emp-password").val().match(numbers)) {
-			$(".correct-pass-number").css("display", "inline");
-			$(".err-pass-number").css("display", "none");
-		} else {
-			$(".err-pass-number").css("display", "inline");
-			$(".correct-pass-number").css("display", "none");
-		}
-
+	currUrl = window.location.href;
+	if(currUrl.includes('employees/create')) {
 		checkRequiredFields();
-	});
-
+	}
+    /**
+     * Test if all fields with property: 'required' are not empty.
+	 * Edit: Test if entries are valid
+     * @param boolean entriesValid = DEFAULT true
+	 * 
+     * @return void
+     */
 	function checkRequiredFields(){
+		let entriesValid = checkPasswordComplexity();
+
 		var empty = false;
 		$(":input[required]").each(function(){
 			if($(this).val() == ''){
 				empty = true;
 			}
 		})
-		if(empty){
+
+		// If required inputs are empty OR if entries are not valid
+		// entriesValid is utilized on: checkPasswordComplexity()
+		if(empty || entriesValid === false){
 			$("#emp-reg-submit").prop('disabled', true);
 		}else{
 			$("#emp-reg-submit").prop('disabled', false);
 		}
 	}
 
-	$('.btn-prevent-multiple-submit').on('submit', function($e){
+	$('.btn-prevent-multiple-submit').on('submit', function(){
 		e.preventDefault()
 		$('.btn-prevent-multiple-submit').prop('disabled', true);
 	});
 
-	$("#copy-permanent-address").click(function(){
+	
+	function isSame_PermanentAndCurrentAddress () {
 		var isSame = $("#copy-permanent-address").prop('checked');
 		
-		$("#cur-add-strt").val($("#perm-add-strt").val());
-		$("#cur-add-town").val($("#perm-add-town").val());
-		$("#cur-add-prov").val($("#perm-add-prov").val());
-		$("#cur-add-postal").val($("#perm-add-postal").val());
-		
-		$("#cur-add-strt").prop("readonly", isSame);
-		$("#cur-add-town").prop("readonly", isSame);
-		$("#cur-add-prov").prop("readonly", isSame);
-		$("#cur-add-postal").prop("readonly", isSame);
-		
+		$("#cur-add-strt").prop("disabled", isSame);
+		$("#cur-add-town").prop("disabled", isSame);
+		$("#cur-add-prov").prop("disabled", isSame);
+		$("#cur-add-postal").prop("disabled", isSame);
 		if(isSame)
 		{
 			$("#cur-add-strt").addClass("is-disabled");
 			$("#cur-add-town").addClass("is-disabled");
 			$("#cur-add-prov").addClass("is-disabled");
 			$("#cur-add-postal").addClass("is-disabled");
+		
+			$("#cur-add-strt").val($("#perm-add-strt").val());
+			$("#cur-add-town").val($("#perm-add-town").val());
+			$("#cur-add-prov").val($("#perm-add-prov").val());
+			$("#cur-add-postal").val($("#perm-add-postal").val());
 		} else {
+
 			$("#cur-add-strt").removeClass("is-disabled");
 			$("#cur-add-town").removeClass("is-disabled");
 			$("#cur-add-prov").removeClass("is-disabled");
 			$("#cur-add-postal").removeClass("is-disabled");
 		}
-		checkRequiredFields();
+		
+	}
+
+	
+	isSame_PermanentAndCurrentAddress();
+
+	$("#copy-permanent-address").click(function(){
+		
+		isSame_PermanentAndCurrentAddress();
+		getCity("current",$("#perm-add-prov").val(),$("#perm-add-town").val());
 	});
 
 
-	$("input[name *= 'permanent_address'").change(function(){
+	$(".permanent-address").change(function(){
 		var isSame = $("#copy-permanent-address").prop('checked');
 		if(isSame) {
 			$("#cur-add-strt").val($("#perm-add-strt").val());
@@ -407,113 +540,95 @@ $(document).ready(function () {
 			$("#cur-add-prov").val($("#perm-add-prov").val());
 			$("#cur-add-postal").val($("#perm-add-postal").val());
 		}
+		checkRequiredFields();
+	})
+
+	$(".permanent-address").keyup(function(){
+		var isSame = $("#copy-permanent-address").prop('checked');
+		if(isSame) {
+			$("#cur-add-strt").val($("#perm-add-strt").val());
+			$("#cur-add-town").val($("#perm-add-town").val());
+			$("#cur-add-prov").val($("#perm-add-prov").val());
+			$("#cur-add-postal").val($("#perm-add-postal").val());
+		}
+		checkRequiredFields();
 	})
 
 	//end for employee registration
 
 	//start for employee details/request
 
-	//change password
+	// Change password
 	$("#cp-confirm-pw, #cp-new-pw").keyup(function(){
-		var upperCase= new RegExp('[A-Z]');
-		var lowerCase= new RegExp('[a-z]');
-		var numbers = new RegExp('[0-9]');
-		var specialChars = new RegExp('[!@#$%&*_.]');
+		checkPasswordComplexity("change_password");
+	});
 
-		// match
-		if($('#cp-new-pw').val() != $("#cp-confirm-pw").val()){
-			$(".err-pass-match").css("display", "inline");
-			$(".correct-pass-match").css("display", "none");
-		}else{
-			$(".correct-pass-match").css("display", "inline");
-			$(".err-pass-match").css("display", "none");
-		}
-
-		//minimum
-		if ($("#cp-new-pw").val().length < 8) {
-			$(".err-pass-min").css("display", "inline");
-			$(".correct-pass-min").css("display", "none");
-		} else {
-			$(".correct-pass-min").css("display", "inline");
-			$(".err-pass-min").css("display", "none");
-		}
-
-		//lower
-		if ($("#cp-new-pw").val().match(lowerCase)) {
-			$(".correct-pass-lower").css("display", "inline");
-			$(".err-pass-lower").css("display", "none");
-		} else {
-			$(".err-pass-lower").css("display", "inline");
-			$(".correct-pass-lower").css("display", "none");
-		}
-
-		//upper
-		if ($("#cp-new-pw").val().match(upperCase)) {
-			$(".correct-pass-upper").css("display", "inline");
-			$(".err-pass-upper").css("display", "none");
-		} else {
-			$(".err-pass-upper").css("display", "inline");
-			$(".correct-pass-upper").css("display", "none");
-		}
-
-		//char
-		if ($("#cp-new-pw").val().match(specialChars)) {
-			$(".correct-pass-char").css("display", "inline");
-			$(".err-pass-char").css("display", "none");
-		} else {
-			$(".err-pass-char").css("display", "inline");
-			$(".correct-pass-char").css("display", "none");
-		}
-
-		//number
-		if ($("#cp-new-pw").val().match(numbers)) {
-			$(".correct-pass-number").css("display", "inline");
-			$(".err-pass-number").css("display", "none");
-		} else {
-			$(".err-pass-number").css("display", "inline");
-			$(".correct-pass-number").css("display", "none");
-		}
+	$("#cp-confirm-pw, #cp-new-pw").change(function(){
+		checkPasswordComplexity("change_password");
 	});
 
 	$('#cp-submit-btn').click(function(e){
+		$("#cp-success-msg").empty();
+		$("#current-pass-error").empty();
+		$("#new-pass-error").empty();
+		$("#confirm-pass-text").empty();
+		$("#change_password_spinner").show();
+
 		var postData = {
 			_token: $("#changePasswordForm > input[name=_token]").val(),
 			current_password: $("#cp-current-pw").val(),
 			new_password: $("#cp-new-pw").val(),
+			confirm_password: $("#cp-confirm-pw").val(),
 			id: $("#changePasswordForm > input[name=cp_id]").val(),
 		};
 		
 		$.ajax({
 			type: "POST",
-			url: CHANGE_PASSWORD_LINK,	//update later
+			url: CHANGE_PASSWORD_LINK,
 			data: postData,
 			dataType: "json",
 			encode: true,
 		}).done(function(data){
 	
 			if(!data.success){
-				$("#cp-success-msg").empty();
-				$("#current-pass-error").empty();
-				$("#new-pass-error").empty();
 				//display error
 				var currentPasswordErrors = data.data.current_password;
 				if(currentPasswordErrors && currentPasswordErrors.length > 0 ){
-					$("#current-pass-error").html(currentPasswordErrors[0]).addClass('text-danger text-start');
+					$("#current-pass-error").addClass('text-danger text-start');
+					currentPasswordErrors.forEach((value) => {
+						$("#current-pass-error").append(value + "<br>");
+					});
 				}
 
 				var newPasswordErrors = data.data.new_password;
 				if(newPasswordErrors && newPasswordErrors.length > 0 ){
-					$("#new-pass-error").html(newPasswordErrors[0]).addClass('text-danger text-start');
+					$("#new-pass-error").addClass('text-danger text-start');
+					newPasswordErrors.forEach((value) => {
+						$("#new-pass-error").append(value + "<br>");
+					});
+				}
+				
+				var confirmPasswordErrors = data.data.confirm_password;
+				if(confirmPasswordErrors && confirmPasswordErrors.length > 0 ){
+					$("#confirm-pass-text").addClass('text-danger text-start');
+					confirmPasswordErrors.forEach((value) => {
+						$("#confirm-pass-text").append(value + "<br>");
+					});
 				}
 			}else{
 				$("#changePasswordForm").trigger('reset');
 				$("#current-pass-error").empty();
 				$("#new-pass-error").empty();
-				$("#cp-success-msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;You have successfully changed your account password.').addClass("text-success mb-4 text-start");
+				
+				setHeaderAlert("You have successfully changed your account password!", 1, true, "#changePasswordModal_HeaderAlert");
+				clearPasswordComplexityStatus();
 			}
 
 		}).fail(function(){
 			// console.log('error');
+		}).always(() => {
+			$("#change_password_spinner").hide();
+
 		});
 
 		e.preventDefault();
@@ -894,11 +1009,51 @@ $(document).ready(function () {
 	
 	$("#emp-reg-submit").click(function(e){
 		$("#employee-reg-submit-spinner").show();
+		$("#emp-reg-submit").prop('disabled', true);
+		$("#emp-reg-back").prop('disabled', true);
+		$(".text-danger").hide();
+		let isSame = $("#copy-permanent-address").prop('checked');
+		if (isSame) {
+			$("#cur-add-strt").prop("disabled", false);
+			$("#cur-add-town").prop("disabled", false);
+			$("#cur-add-prov").prop("disabled", false);
+			$("#cur-add-postal").prop("disabled", false);
+			$("#cur-add-strt").prop("readonly", true);
+			$("#cur-add-town").prop("readonly", true);
+			$("#cur-add-prov").prop("readonly", true);
+			$("#cur-add-postal").prop("readonly", true);
+		}
+		
+		$("#reg-form").submit();
+	});
+
+	$("#emp-update-submit").click(function(e){
+		$("#emp-update-submit").prop('disabled', true);
+		$(".text-danger").hide();
+
+    	var isSame = $("#copy-permanent-address").prop('checked');
+		if (isSame) {
+			$("#cur-add-strt").prop("disabled", false);
+			$("#cur-add-town").prop("disabled", false);
+			$("#cur-add-prov").prop("disabled", false);
+			$("#cur-add-postal").prop("disabled", false);
+			$("#cur-add-strt").prop("readonly", true);
+			$("#cur-add-town").prop("readonly", true);
+			$("#cur-add-prov").prop("readonly", true);
+			$("#cur-add-postal").prop("readonly", true);
+		}
+		
+		$("#emp-update-form").submit();
 	});
 
 	$("#emp-reg-back").click(function(e){
 		e.preventDefault();
-		window.location.href = window.location.origin+"/login";
+
+		const response = confirm("Are you sure you want to return to Log-in page?\nYour changes will be lost.");
+
+		if (response) {
+			window.location.href = window.location.origin + "/login";
+		}
 	});
 
 	
@@ -943,4 +1098,12 @@ $(document).ready(function () {
 
     }
 
+    $("#perm-add-prov").on("change",function() {
+    	var isSame = $("#copy-permanent-address").prop('checked');
+    	getCity("permanent",$(this).val(),null,isSame);
+    });
+
+    $("#cur-add-prov").on("change",function() {
+    	getCity("current",$(this).val());
+    });
 });

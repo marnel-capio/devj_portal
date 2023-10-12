@@ -132,10 +132,14 @@
                     <div class="p-2">
                         <div id="cp-success-msg">
                         </div>
+                        
+                        <div class="alert d-none" role="alert" id="changePasswordModal_HeaderAlert">
+                            <div id="header-alert-content">&nbsp;.</div>
+                        </div>
                         <form action="#" id="changePasswordForm">
                             @csrf
                             <input type="text" hidden name="cp_id" value="{{ $employee->id }}">
-                            <div class="row mb-3">
+                            <div class="row mb-3 mt-3">
                                 <div class="col-5 text-end">
                                     <label for="cp-current-pw" class="form-label">Enter Current Password</label>
                                 </div>
@@ -199,7 +203,12 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button class="btn btn-primary" type="submit" id="cp-submit-btn">Submit</button>
+                    <button class="btn btn-primary" type="submit" id="cp-submit-btn">
+                        Submit
+                        <div id="change_password_spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                            <span class="sr-only"></span>
+                        </div>
+                    </button>
                 </div>
             </div>
         </div>
