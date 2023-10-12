@@ -178,8 +178,6 @@
 							@foreach (config('constants.POSITIONS') as $value => $name)
 								@if ($user['position'] == $value) 
 									{{ $name }}
-								@else
-									-
 								@endif
                             @endforeach
 						</td>
