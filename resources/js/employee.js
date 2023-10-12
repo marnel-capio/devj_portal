@@ -94,45 +94,51 @@ $(document).ready(function () {
      * @return void
      */
 
-    function setHeaderAlert(message, alertType = 2, displayed = true) {
+    function setHeaderAlert(message, alertType = 2, displayed = true, custom = "default") {
+		let header_identifier;
+		if(custom === "default") {
+			header_identifier = "#header-alert";
+		} else {
+			header_identifier = custom;
+		}
 		if(!displayed) {
-			$("#header-alert").addClass("d-none");
+			$(header_identifier).addClass("d-none");
 
 			return;
 		}
 
-		$("#header-alert").removeClass("d-none");
-		$("#header-alert").removeClass("alert-info");
-		$("#header-alert").removeClass("alert-success");
-		$("#header-alert").removeClass("alert-danger");
+		$(header_identifier).removeClass("d-none");
+		$(header_identifier).removeClass("alert-info");
+		$(header_identifier).removeClass("alert-success");
+		$(header_identifier).removeClass("alert-danger");
 
 		let fadeout = true;
 
 		switch(alertType) {
 			case 1:
-				$("#header-alert").addClass("alert-success");
+				$(header_identifier).addClass("alert-success");
 				fadeout = true;
 				break;
 			case 0:
-				$("#header-alert").addClass("alert-danger");
+				$(header_identifier).addClass("alert-danger");
 				fadeout = true;
 				break;
 
 			default:
-				$("#header-alert").addClass("alert-info");
+				$(header_identifier).addClass("alert-info");
 				fadeout = false;
 				break;
 
 		}
 
 
-		$("#header-alert").html(`<div id='header-alert-content'>${message}</div>`);
+		$(header_identifier).html(`<div id='header-alert-content'>${message}</div>`);
 
 		if(fadeout) {
 			setTimeout(function(){
-				$("#header-alert-content").fadeOut("slow", function() {
-					$("#header-alert").removeClass("d-block");
-					$("#header-alert").addClass("d-none");
+				$(header_identifier + " > #header-alert-content").fadeOut("slow", function() {
+					$(header_identifier).removeClass("d-block");
+					$(header_identifier).addClass("d-none");
 				});
 			}, 5000);
 		}
@@ -321,19 +327,19 @@ $(document).ready(function () {
 
 
 
-	$("#reg-form > :input[required]").change(function(){
+	$("#reg-form > :input").change(function(){
 		checkRequiredFields();
 	});
 
 
 	// Password check : 1. on Key up
 	$("#emp-confirm-password, #emp-password").keyup(() => {
-		checkPasswordComplexity();
+		checkRequiredFields();
 	});
 
 	// Password check : 2. on change
 	$("#emp-confirm-password, #emp-password").change(() => {
-		checkPasswordComplexity();
+		checkRequiredFields();
 	});
 
 	
@@ -566,6 +572,8 @@ $(document).ready(function () {
 		$("#current-pass-error").empty();
 		$("#new-pass-error").empty();
 		$("#confirm-pass-text").empty();
+		$("#change_password_spinner").show();
+
 		var postData = {
 			_token: $("#changePasswordForm > input[name=_token]").val(),
 			current_password: $("#cp-current-pw").val(),
@@ -611,20 +619,17 @@ $(document).ready(function () {
 				$("#changePasswordForm").trigger('reset');
 				$("#current-pass-error").empty();
 				$("#new-pass-error").empty();
-				$("#cp-success-msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;You have successfully changed your account password.').addClass("text-success mb-4 text-start");
 				
+				setHeaderAlert("You have successfully changed your account password!", 1, true);
+				setHeaderAlert("You have successfully changed your account password!", 1, true, "#changePasswordModal_HeaderAlert");
 				clearPasswordComplexityStatus();
-				setTimeout(() => {
-					$("#cp-success-msg").fadeOut("slow", function() {
-						$("#cp-success-msg").empty();
-					});
-				}, 3000);
-				
-				$("#cp-success-msg").css("display", "inline");
 			}
 
 		}).fail(function(){
 			// console.log('error');
+		}).always(() => {
+			$("#change_password_spinner").hide();
+
 		});
 
 		e.preventDefault();
