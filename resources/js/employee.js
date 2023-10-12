@@ -620,7 +620,6 @@ $(document).ready(function () {
 				$("#current-pass-error").empty();
 				$("#new-pass-error").empty();
 				
-				setHeaderAlert("You have successfully changed your account password!", 1, true);
 				setHeaderAlert("You have successfully changed your account password!", 1, true, "#changePasswordModal_HeaderAlert");
 				clearPasswordComplexityStatus();
 			}

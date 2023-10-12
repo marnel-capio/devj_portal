@@ -13,11 +13,6 @@
 	</div>
 @endif
 
-{{-- Notif for Alert Banner --}}
-<div class="alert d-none" role="alert" id="header-alert">
-	<div id="header-alert-content">&nbsp;.</div>
-</div>
-
 <div class="container text-center ps-md-3 pe-md-3 pt-5">
     <div class="d-flex justify-content-between mb-2">
         <div class="row">
