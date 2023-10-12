@@ -334,12 +334,12 @@ $(document).ready(function () {
 
 	// Password check : 1. on Key up
 	$("#emp-confirm-password, #emp-password").keyup(() => {
-		checkRequiredFields();
+		checkRequiredFields(true);
 	});
 
 	// Password check : 2. on change
 	$("#emp-confirm-password, #emp-password").change(() => {
-		checkRequiredFields();
+		checkRequiredFields(true);
 	});
 
 	
@@ -460,7 +460,7 @@ $(document).ready(function () {
 
 	currUrl = window.location.href;
 	if(currUrl.includes('employees/create')) {
-		checkRequiredFields();
+		checkRequiredFields(true);
 	}
     /**
      * Test if all fields with property: 'required' are not empty.
@@ -469,8 +469,12 @@ $(document).ready(function () {
 	 * 
      * @return void
      */
-	function checkRequiredFields(){
-		let entriesValid = checkPasswordComplexity();
+	function checkRequiredFields(checkPassword = false){
+		var entriesValid = true;
+		if (checkPassword) {
+			entriesValid = checkPasswordComplexity();
+		}
+		
 
 		var empty = false;
 		$(":input[required]").each(function(){
