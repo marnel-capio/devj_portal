@@ -34,6 +34,17 @@ class ChangePassword extends FormRequest
             'data' => $validator->errors()
         ]));
     }
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'confirm_password.in' => "The password and confirm password don't match.",
+        ];
+    }
 
     /**
      * Get the validation rules that apply to the request.
@@ -50,7 +61,8 @@ class ChangePassword extends FormRequest
                 }
             }
          ],
-            'new_password' => ['required', 'min:8', 'max:16', new Password()],
+            'new_password' => ['required', 'min:8', 'max:16', new Password(), 'required_with:confirm_password'],
+            'confirm_password' => ['required', 'min:8', 'max:16', 'in:'.$this->input('new_password')],
         ];
     }
 }

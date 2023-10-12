@@ -318,12 +318,10 @@ $(document).ready(function () {
 	//start for employee registration
 
 	//disable submit button if not all required fields have value
-	checkRequiredFields();
-
-	
 
 
-	$(":input[required]").change(function(){
+
+	$("#reg-form > :input[required]").change(function(){
 		checkRequiredFields();
 	});
 
@@ -341,80 +339,123 @@ $(document).ready(function () {
 	
     /**
      * Test for password complexity 
-	 * 
-     * @return void
+	 * @param purpose = register			DEFAULT		\\ if purpose is for employee register
+	 * @param purpose = change_password					\\ if purpose is for change password
+     * @return boolean
      */
-	function checkPasswordComplexity(){
+	function checkPasswordComplexity(purpose = "register"){
 		var upperCase= new RegExp('[A-Z]');
 		var lowerCase= new RegExp('[a-z]');
 		var numbers = new RegExp('[0-9]');
 		var specialChars = new RegExp('[!@#$%&*_.]');
+		switch(purpose) {
+			case "change_password" :
+				password_value = $("#cp-new-pw").val();
+				confirm_password_value = $('#cp-confirm-pw').val();
+				break;
+
+			case "register" :
+			default:
+				password_value = $("#emp-password").val();
+				confirm_password_value = $('#emp-confirm-password').val();
+				break;
+				
+		}
 	
-		let isPasswordValid = true;
-		// match
-		if($('#emp-confirm-password').val() != $("#emp-password").val()){
-			$(".err-pass-match").css("display", "inline");
-			$(".correct-pass-match").css("display", "none");
-			isPasswordValid = false;
-		}else{
-			$(".correct-pass-match").css("display", "inline");
-			$(".err-pass-match").css("display", "none");
-		}
+		let  isPasswordValid = true;
+		if(password_value != "") {
+			// Match
+			if(confirm_password_value != password_value){
+				$(".err-pass-match").css("display", "inline");
+				$(".correct-pass-match").css("display", "none");
+				isPasswordValid = false;
+			}else{
+				$(".correct-pass-match").css("display", "inline");
+				$(".err-pass-match").css("display", "none");
+			}
 
-		//minimum
-		if ($("#emp-password").val().length < 8) {
-			$(".err-pass-min").css("display", "inline");
-			$(".correct-pass-min").css("display", "none");
-			isPasswordValid = false;
+			// Minimum
+			if (password_value.length < 8) {
+				$(".err-pass-min").css("display", "inline");
+				$(".correct-pass-min").css("display", "none");
+				isPasswordValid = false;
+			} else {
+				$(".correct-pass-min").css("display", "inline");
+				$(".err-pass-min").css("display", "none");
+			}
+
+			// Lower
+			if (password_value.match(lowerCase)) {
+				$(".correct-pass-lower").css("display", "inline");
+				$(".err-pass-lower").css("display", "none");
+			} else {
+				$(".err-pass-lower").css("display", "inline");
+				$(".correct-pass-lower").css("display", "none");
+				isPasswordValid = false;
+			}
+
+			// Upper
+			if (password_value.match(upperCase)) {
+				$(".correct-pass-upper").css("display", "inline");
+				$(".err-pass-upper").css("display", "none");
+			} else {
+				$(".err-pass-upper").css("display", "inline");
+				$(".correct-pass-upper").css("display", "none");
+				isPasswordValid = false;
+			}
+
+			// Special chars
+			if (password_value.match(specialChars)) {
+				$(".correct-pass-char").css("display", "inline");
+				$(".err-pass-char").css("display", "none");
+			} else {
+				$(".err-pass-char").css("display", "inline");
+				$(".correct-pass-char").css("display", "none");
+				isPasswordValid = false;
+			}
+
+			// Number
+			if (password_value.match(numbers)) {
+				$(".correct-pass-number").css("display", "inline");
+				$(".err-pass-number").css("display", "none");
+			} else {
+				$(".err-pass-number").css("display", "inline");
+				$(".correct-pass-number").css("display", "none");
+				isPasswordValid = false;
+			}
 		} else {
-			$(".correct-pass-min").css("display", "inline");
-			$(".err-pass-min").css("display", "none");
-		}
-
-		//lower
-		if ($("#emp-password").val().match(lowerCase)) {
-			$(".correct-pass-lower").css("display", "inline");
-			$(".err-pass-lower").css("display", "none");
-		} else {
-			$(".err-pass-lower").css("display", "inline");
-			$(".correct-pass-lower").css("display", "none");
+			clearPasswordComplexityStatus();
 			isPasswordValid = false;
 		}
 
-		//upper
-		if ($("#emp-password").val().match(upperCase)) {
-			$(".correct-pass-upper").css("display", "inline");
-			$(".err-pass-upper").css("display", "none");
-		} else {
-			$(".err-pass-upper").css("display", "inline");
-			$(".correct-pass-upper").css("display", "none");
-			isPasswordValid = false;
-		}
-
-		// Special chars
-		if ($("#emp-password").val().match(specialChars)) {
-			$(".correct-pass-char").css("display", "inline");
-			$(".err-pass-char").css("display", "none");
-		} else {
-			$(".err-pass-char").css("display", "inline");
-			$(".correct-pass-char").css("display", "none");
-			isPasswordValid = false;
-		}
-
-		//number
-		if ($("#emp-password").val().match(numbers)) {
-			$(".correct-pass-number").css("display", "inline");
-			$(".err-pass-number").css("display", "none");
-		} else {
-			$(".err-pass-number").css("display", "inline");
-			$(".correct-pass-number").css("display", "none");
-			isPasswordValid = false;
-		}
-
-		checkRequiredFields(isPasswordValid);
+		return isPasswordValid;
 	}
 
-	
+    /**
+     * Clears all notification of password complexity status
+	 * 
+     * @return void
+     */
+	function clearPasswordComplexityStatus () {
+		
+		$(".correct-pass-match").css("display", "none");
+		$(".err-pass-match").css("display", "none");
+		$(".err-pass-min").css("display", "none");
+		$(".correct-pass-min").css("display", "none");
+		$(".err-pass-lower").css("display", "none");
+		$(".correct-pass-lower").css("display", "none");
+		$(".err-pass-upper").css("display", "none");
+		$(".correct-pass-upper").css("display", "none");
+		$(".err-pass-char").css("display", "none");
+		$(".correct-pass-char").css("display", "none");
+		$(".err-pass-number").css("display", "none");
+		$(".correct-pass-number").css("display", "none");
+	}
+
+	currUrl = window.location.href;
+	if(currUrl.includes('employees/create')) {
+		checkRequiredFields();
+	}
     /**
      * Test if all fields with property: 'required' are not empty.
 	 * Edit: Test if entries are valid
@@ -422,7 +463,9 @@ $(document).ready(function () {
 	 * 
      * @return void
      */
-	function checkRequiredFields(entriesValid = true){
+	function checkRequiredFields(){
+		let entriesValid = checkPasswordComplexity();
+
 		var empty = false;
 		$(":input[required]").each(function(){
 			if($(this).val() == ''){
@@ -439,7 +482,7 @@ $(document).ready(function () {
 		}
 	}
 
-	$('.btn-prevent-multiple-submit').on('submit', function($e){
+	$('.btn-prevent-multiple-submit').on('submit', function(){
 		e.preventDefault()
 		$('.btn-prevent-multiple-submit').prop('disabled', true);
 	});
@@ -480,7 +523,6 @@ $(document).ready(function () {
 		
 		isSame_PermanentAndCurrentAddress();
 		getCity("current",$("#perm-add-prov").val(),$("#perm-add-town").val());
-		checkRequiredFields();
 	});
 
 
@@ -495,107 +537,90 @@ $(document).ready(function () {
 		checkRequiredFields();
 	})
 
+	$(".permanent-address").keyup(function(){
+		var isSame = $("#copy-permanent-address").prop('checked');
+		if(isSame) {
+			$("#cur-add-strt").val($("#perm-add-strt").val());
+			$("#cur-add-town").val($("#perm-add-town").val());
+			$("#cur-add-prov").val($("#perm-add-prov").val());
+			$("#cur-add-postal").val($("#perm-add-postal").val());
+		}
+		checkRequiredFields();
+	})
+
 	//end for employee registration
 
 	//start for employee details/request
 
-	//change password
+	// Change password
 	$("#cp-confirm-pw, #cp-new-pw").keyup(function(){
-		var upperCase= new RegExp('[A-Z]');
-		var lowerCase= new RegExp('[a-z]');
-		var numbers = new RegExp('[0-9]');
-		var specialChars = new RegExp('[!@#$%&*_.]');
+		checkPasswordComplexity("change_password");
+	});
 
-		// match
-		if($('#cp-new-pw').val() != $("#cp-confirm-pw").val()){
-			$(".err-pass-match").css("display", "inline");
-			$(".correct-pass-match").css("display", "none");
-		}else{
-			$(".correct-pass-match").css("display", "inline");
-			$(".err-pass-match").css("display", "none");
-		}
-
-		//minimum
-		if ($("#cp-new-pw").val().length < 8) {
-			$(".err-pass-min").css("display", "inline");
-			$(".correct-pass-min").css("display", "none");
-		} else {
-			$(".correct-pass-min").css("display", "inline");
-			$(".err-pass-min").css("display", "none");
-		}
-
-		//lower
-		if ($("#cp-new-pw").val().match(lowerCase)) {
-			$(".correct-pass-lower").css("display", "inline");
-			$(".err-pass-lower").css("display", "none");
-		} else {
-			$(".err-pass-lower").css("display", "inline");
-			$(".correct-pass-lower").css("display", "none");
-		}
-
-		//upper
-		if ($("#cp-new-pw").val().match(upperCase)) {
-			$(".correct-pass-upper").css("display", "inline");
-			$(".err-pass-upper").css("display", "none");
-		} else {
-			$(".err-pass-upper").css("display", "inline");
-			$(".correct-pass-upper").css("display", "none");
-		}
-
-		//char
-		if ($("#cp-new-pw").val().match(specialChars)) {
-			$(".correct-pass-char").css("display", "inline");
-			$(".err-pass-char").css("display", "none");
-		} else {
-			$(".err-pass-char").css("display", "inline");
-			$(".correct-pass-char").css("display", "none");
-		}
-
-		//number
-		if ($("#cp-new-pw").val().match(numbers)) {
-			$(".correct-pass-number").css("display", "inline");
-			$(".err-pass-number").css("display", "none");
-		} else {
-			$(".err-pass-number").css("display", "inline");
-			$(".correct-pass-number").css("display", "none");
-		}
+	$("#cp-confirm-pw, #cp-new-pw").change(function(){
+		checkPasswordComplexity("change_password");
 	});
 
 	$('#cp-submit-btn').click(function(e){
+		$("#cp-success-msg").empty();
+		$("#current-pass-error").empty();
+		$("#new-pass-error").empty();
+		$("#confirm-pass-text").empty();
 		var postData = {
 			_token: $("#changePasswordForm > input[name=_token]").val(),
 			current_password: $("#cp-current-pw").val(),
 			new_password: $("#cp-new-pw").val(),
+			confirm_password: $("#cp-confirm-pw").val(),
 			id: $("#changePasswordForm > input[name=cp_id]").val(),
 		};
 		
 		$.ajax({
 			type: "POST",
-			url: CHANGE_PASSWORD_LINK,	//update later
+			url: CHANGE_PASSWORD_LINK,
 			data: postData,
 			dataType: "json",
 			encode: true,
 		}).done(function(data){
 	
 			if(!data.success){
-				$("#cp-success-msg").empty();
-				$("#current-pass-error").empty();
-				$("#new-pass-error").empty();
 				//display error
 				var currentPasswordErrors = data.data.current_password;
 				if(currentPasswordErrors && currentPasswordErrors.length > 0 ){
-					$("#current-pass-error").html(currentPasswordErrors[0]).addClass('text-danger text-start');
+					$("#current-pass-error").addClass('text-danger text-start');
+					currentPasswordErrors.forEach((value) => {
+						$("#current-pass-error").append(value + "<br>");
+					});
 				}
 
 				var newPasswordErrors = data.data.new_password;
 				if(newPasswordErrors && newPasswordErrors.length > 0 ){
-					$("#new-pass-error").html(newPasswordErrors[0]).addClass('text-danger text-start');
+					$("#new-pass-error").addClass('text-danger text-start');
+					newPasswordErrors.forEach((value) => {
+						$("#new-pass-error").append(value + "<br>");
+					});
+				}
+				
+				var confirmPasswordErrors = data.data.confirm_password;
+				if(confirmPasswordErrors && confirmPasswordErrors.length > 0 ){
+					$("#confirm-pass-text").addClass('text-danger text-start');
+					confirmPasswordErrors.forEach((value) => {
+						$("#confirm-pass-text").append(value + "<br>");
+					});
 				}
 			}else{
 				$("#changePasswordForm").trigger('reset');
 				$("#current-pass-error").empty();
 				$("#new-pass-error").empty();
 				$("#cp-success-msg").html('<i class="bi bi-check-circle-fill"></i>&nbsp;You have successfully changed your account password.').addClass("text-success mb-4 text-start");
+				
+				clearPasswordComplexityStatus();
+				setTimeout(() => {
+					$("#cp-success-msg").fadeOut("slow", function() {
+						$("#cp-success-msg").empty();
+					});
+				}, 3000);
+				
+				$("#cp-success-msg").css("display", "inline");
 			}
 
 		}).fail(function(){

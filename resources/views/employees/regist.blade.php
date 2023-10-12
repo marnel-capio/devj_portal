@@ -141,6 +141,9 @@
                     <input type="password" class="form-control" name="confirm_password" id="emp-confirm-password" placeholder="Confirm Password" required>
                     <label for="emp-confirm-password" class="text-center">Confirm Password</label>
                     <p id="confirm-pass-text"></p>
+                    @if ($errors->has('confirm_password'))
+                    <p class="text-danger">{{ $errors->first('confirm_password') }}</p>
+                    @endif
                 </div>
                
             </div>

@@ -62,6 +62,8 @@ class EmployeesRequest extends FormRequest
     public function messages()
     {
         return [
+            'confirm_password.in' => "The password and confirm password don't match.",
+
             'birthdate.regex' => "The birth date must be a valid date.",
             'birthdate.date' => "The birth date must be a valid date.",
             'birthdate.before' => "The age must be at least 18 years old.",
@@ -188,7 +190,7 @@ class EmployeesRequest extends FormRequest
 
             if(strpos($this->header('referer'), route('employees.create')) !== FALSE){
                 $rules['password'] = ['required', 'min:8', 'max:16', new Password(), 'required_with:confirm_password'];
-                $rules['confirm_password'] = ['required', 'min:8', 'max:16'];
+                $rules['confirm_password'] = ['required', 'min:8', 'max:16', 'in:'.$this->input('password')];
                 $referer = $this->header('referer');
                 $rejectCode = substr($referer, strripos($referer, '/') + 1);
                 if(!empty($this->input('id'))){
