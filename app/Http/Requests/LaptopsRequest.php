@@ -74,11 +74,11 @@ class LaptopsRequest extends FormRequest
     public function rules()
     {   
         $rules = [
-            'peza_form_number' => 'required',
-            'peza_permit_number' => 'required',
-            'laptop_make' => 'required',
-            'laptop_model' => 'required',
-            'laptop_cpu' => 'required',
+            'peza_form_number' => 'max:80',
+            'peza_permit_number' => 'max:80',
+            'laptop_make' => 'max:80|required',
+            'laptop_model' => 'max:80|required',
+            'laptop_cpu' => 'max:80|required',
             'laptop_clock_speed' => 'required|numeric|min:0|max:99.99',
             'laptop_ram' => 'required|integer|min:0|max:255',
             'remarks' => 'max:1024',
