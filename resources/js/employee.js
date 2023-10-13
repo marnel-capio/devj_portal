@@ -971,8 +971,7 @@ $(document).ready(function () {
 
 
 	
-	$("#emp-reg-submit").click(function(e){
-		$('#reg-form').validation();
+	$("#reg-form").submit(function(e){
 
 		$("#employee-reg-submit-spinner").show();
 		$("#emp-reg-submit").prop('disabled', true);
@@ -991,7 +990,6 @@ $(document).ready(function () {
 		}
 		//check
 
-		$("#reg-form").submit();
 	});
 
 	$("#emp-update-submit").click(function(e){

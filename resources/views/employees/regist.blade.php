@@ -70,7 +70,7 @@
                 </div>
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-md-6 col-12 g-3 form-floating">
-                        <select name="position" id="position" class="form-select form-control">
+                        <select name="position" id="position" class="form-select form-control" required>
                             <option></option>
                             @foreach (config('constants.POSITIONS') as $value => $name)
                                 <option {{ old('position', $employee ? $employee->position : '') == $value ? "selected" : "" }} value="{{ $value 
@@ -421,7 +421,7 @@
                 </div>
             </div>
             <div class="text-center p-2">
-                <button class="btn btn-primary btn-lg mb-5 btn-prevent-multiple-submit" id="emp-reg-back" type="submit">
+                <button class="btn btn-primary btn-lg mb-5 btn-prevent-multiple-submit" id="emp-reg-back">
                     <span>Back</span>
                 </button>
                 <button class="btn btn-primary btn-lg mb-5 btn-prevent-multiple-submit" id="emp-reg-submit" type="submit">
