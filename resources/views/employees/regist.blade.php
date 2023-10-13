@@ -71,6 +71,7 @@
                 <div class="row mb-2 ps-3 pe-3">
                     <div class="col-md-6 col-12 g-3 form-floating">
                         <select name="position" id="position" class="form-select form-control">
+                            <option></option>
                             @foreach (config('constants.POSITIONS') as $value => $name)
                                 <option {{ old('position', $employee ? $employee->position : '') == $value ? "selected" : "" }} value="{{ $value 
                                      }}"> {{ $name }}</option>
@@ -225,7 +226,7 @@
                         </div>
                         <div class="col-12 col-md-4 g-3 form-floating">
                             <select name="passport_type" id="passport_type" class="form-select form-control">
-                                <option value="">Select passport type</option>
+                                <option></option>
                                 <option {{ old('passport_type', $employee ? $employee->passport_type : '') == config('constants.PASSPORT_TYPE_ORDINARY_VALUE')      ? "selected" : "" }} value="{{ config('constants.PASSPORT_TYPE_ORDINARY_VALUE')   }} ">{{ config('constants.PASSPORT_TYPE_1_NAME') }}</option>
                                 <option {{ old('passport_type', $employee ? $employee->passport_type : '') == config('constants.PASSPORT_TYPE_OFFICIAL_VALUE')      ? "selected" : "" }} value="{{ config('constants.PASSPORT_TYPE_OFFICIAL_VALUE')   }} ">{{ config('constants.PASSPORT_TYPE_2_NAME') }}</option>
                                 <option {{ old('passport_type', $employee ? $employee->passport_type : '') == config('constants.PASSPORT_TYPE_DIPLOMATIC_VALUE')    ? "selected" : "" }} value="{{ config('constants.PASSPORT_TYPE_DIPLOMATIC_VALUE') }} ">{{ config('constants.PASSPORT_TYPE_3_NAME') }}</option>

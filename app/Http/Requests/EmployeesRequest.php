@@ -6,6 +6,7 @@ use App\Models\Employees;
 use App\Rules\AWSEmailAddress;
 use App\Rules\Password;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
@@ -68,7 +69,10 @@ class EmployeesRequest extends FormRequest
             'birthdate.date' => "The birth date must be a valid date.",
             'birthdate.before' => "The age must be at least 18 years old.",
 
-            'current_address_postalcode.lt' => "The postal code exceeds max digits",
+            'permanent_address_province.in' => "The selected province is not valid",
+            'current_address_province.in' => "The selected province is not valid",
+
+            'current_address_postalcode.lt' => "The postal code exceeds max digits", 
             'permanent_address_postalcode.lt' => "The postal code exceeds max digits",
             
             // --- Passport --- //
@@ -103,47 +107,46 @@ class EmployeesRequest extends FormRequest
                 'last_name' => 'required|max:80|alpha_space',
                 'birthdate' => 'required|date|regex:/^\d{4}-\d{2}-\d{2}$/|before:' . Carbon::now()->subYears(18)->format('Y-m-d'),
                 'gender' => 'required|in:0,1',
-                // 'position' => 'required|in:1,2,3,4,5,6,7,8,9',
                 'email' => ['required', 'email', 'max:80', 'min:15', new AWSEmailAddress()],
                 'cellphone_number' => 'required|numeric|digits:10',
                 'current_address_street' => 'required|max:80',
-                'current_address_city' => 'required|max:80',
-                'current_address_province' => 'required|max:80',
                 'current_address_postalcode' =>'required|numeric|gte:0|lt:100000000000',
                 'permanent_address_street' => 'required|max:80',
-                'permanent_address_city' => 'required|max:80',
-                'permanent_address_province' => 'required|max:80',
                 'permanent_address_postalcode' =>'required|numeric|gte:0|lt:100000000000',
-                // 'passport_status' => 'required|in:1,2,3,4',
-
             ];
 
+            $selected_permanentProvince = $this->input('permanent_address_province');
+            $selected_currentProvince = $this->input('current_address_province');
+
+            // Validate if selected province exists in config file
+            $rules['permanent_address_province'] = ['required', 'max:80', Rule::in(array_keys(config("provinces_cities.PROVINCES_CITIES")))];
+            $rules['current_address_province'] = ['required', 'max:80', Rule::in(array_keys(config("provinces_cities.PROVINCES_CITIES")))];
+
+            // If province exists in config file, validate if city is in selected province
+            $rules['permanent_address_city'] = ['required', 'max:80', 
+                                                (array_key_exists($selected_permanentProvince, (config("provinces_cities.PROVINCES_CITIES"))) ? 
+                                                Rule::in(config("provinces_cities.PROVINCES_CITIES")[$selected_permanentProvince]) :
+                                                 "in:'null'")];
+
+            $rules['current_address_city'] = ['required', 'max:80', 
+                                                (array_key_exists($selected_currentProvince, (config("provinces_cities.PROVINCES_CITIES"))) ? 
+                                                Rule::in(config("provinces_cities.PROVINCES_CITIES")[$selected_currentProvince]) :
+                                                 "in:'null'")];
+
+
             // Required based on `Positions` from config file
-            {
-                $positions = "";  $i = 1;
-                foreach(config('constants.POSITIONS') as $k => $position) {
-                    $positions .= $k . (($i != count(config('constants.POSITIONS'))) ? "," : "");
-                    $i++;
-                }
-                $rules["position"] = 'required|in:' . $positions;
-            }
+            $rules["position"] = ['required', Rule::in(config('constants.POSITIONS'))];
 
             // Required based on `Passport status` from config file
-            {
-                $passport_status = "";  $i = 1;
-                foreach(config('constants.PASSPORT_STATUS_LIST') as $status) {
-                    $passport_status .= $status["val"] . ($i != count(config('constants.PASSPORT_STATUS_LIST')) ? "," : "");
-                    $i++;
-                }
-                $rules["passport_status"] = 'required|in:' . $passport_status;
-            }
+            $rules["passport_status"] = ['required', Rule::in(array_keys(config('constants.PASSPORT_STATUS_LIST')))];
+            
 
             // If suffix field is not empty
             if(!empty($this->input('name_suffix'))) {
                 $rules['name_suffix'] = 'max:80|alpha_space';
             }
 
-            // If suffix field is not empty
+            // If middle_name field is not empty
             if(!empty($this->input('middle_name'))) {
                 $rules['middle_name'] = 'max:80|alpha_space';
             }
@@ -159,12 +162,7 @@ class EmployeesRequest extends FormRequest
                         'passport_expiration_date' => 'required|date|regex:/^\d{4}-\d{2}-\d{2}$/|after:today',
                     ]);
                 
-                    $passport_types = "";  $i = 1;
-                    foreach(config('constants.PASSPORT_TYPE') as $k => $passport_type) {
-                        $passport_types .= $k . (($i != count(config('constants.PASSPORT_TYPE'))) ? "," : "");
-                        $i++;
-                    }
-                    $rules["passport_type"] = 'required|in:' . $passport_types;
+                    $rules["passport_type"] = ['required', Rule::in(config('constants.PASSPORT_TYPE'))];
                     break;
                 }
 
