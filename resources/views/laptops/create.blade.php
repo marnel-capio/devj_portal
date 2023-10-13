@@ -26,7 +26,7 @@
                 </div>
                 <div class="row mb-2 ps-5 pe-3">
                     <div class="col-lg-3 col-md-6 g-3 form-floating">
-                        <input type="text" name="peza_form_number" class="form-control" id="form-number" placeholder="Form Number" value="{{ old('peza_form_number', !empty($laptop) ? $laptop->peza_form_number : '') }}" required>
+                        <input type="text" name="peza_form_number" class="form-control" id="form-number" placeholder="Form Number" value="{{ old('peza_form_number', !empty($laptop) ? $laptop->peza_form_number : '') }}">
                         <label for="form-number" class="text-center">Form Number</label>
                         @if ($errors->has('peza_form_number'))
                         <p class="text-danger">{{ $errors->first('peza_form_number') }}</p>
@@ -35,7 +35,7 @@
                 </div>
                 <div class="row mb-2 ps-5 pe-3">
                     <div class="col-lg-3 col-md-6 g-3 form-floating">
-                        <input type="text" name="peza_permit_number" class="form-control" id="permit-number" placeholder="Permit Number" value="{{ old('peza_permit_number', !empty($laptop) ? $laptop->peza_permit_number : '') }}" required>
+                        <input type="text" name="peza_permit_number" class="form-control" id="permit-number" placeholder="Permit Number" value="{{ old('peza_permit_number', !empty($laptop) ? $laptop->peza_permit_number : '') }}">
                         <label for="permit-number" class="text-center">Permit Number</label>
                         @if ($errors->has('peza_permit_number'))
                         <p class="text-danger">{{ $errors->first('peza_permit_number') }}</p>

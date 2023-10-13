@@ -60,14 +60,14 @@
                                         </div>
                                         <div class="row mb-2 ps-5 pe-3">
                                             <div class="col-6 g-3 form-floating">
-                                                <input type="text" name="peza_form_number" class="form-control" id="form-number" placeholder="Form Number" value="{{ $detail->peza_form_number }}" required>
+                                                <input type="text" name="peza_form_number" class="form-control" id="form-number" placeholder="Form Number" value="{{ $detail->peza_form_number }}">
                                                 <label for="form-number" class="text-center">Form Number</label>
                                                 <p class="text-danger" id="peza_form_number-error"></p>
                                              </div>
                                         </div>
                                         <div class="row mb-2 ps-5 pe-3">
                                             <div class="col-6 g-3 form-floating">
-                                                <input type="text" name="peza_permit_number" class="form-control" id="permit-number" placeholder="Permit Number" value="{{ $detail->peza_permit_number }}" required>
+                                                <input type="text" name="peza_permit_number" class="form-control" id="permit-number" placeholder="Permit Number" value="{{ $detail->peza_permit_number }}">
                                                 <label for="permit-number" class="text-center">Permit Number</label>
                                                 <p class="text-danger" id="peza_permit_number-error"></p>
                                              </div>
@@ -423,7 +423,7 @@
                         @foreach ($history as $data)
                         <?php $id = $data["employee_id"]; ?>
                             <tr>
-                                <td id="name-col"><a href='{!! url("/employees/$id"); !!}'>{{ $data['employee_name'] }}</a></td>
+                                <td id="name-col"><a href='{!! url("/employees/$id") !!}'>{{ $data['employee_name'] }}</a></td>
                                 <td id="vpn-col">{{ $data['vpn_flag'] }}</td>
                                 <td id="bhf-col">{{ $data['brought_home_flag'] }}</td>
                                 <td id="remarks-col">{{ $data['remarks'] }}</td>
@@ -476,16 +476,16 @@
                     @foreach ($linkageRequest as $request)
                         <?php $id = $request["employee_id"]; ?>
                         <tr>
-                            <td><a href='{!! url("/employees/$id"); !!}'>{{ $request['employee_name'] }}</a></td>
+                            <td><a href='{!! url("/employees/$id") !!}'>{{ $request['employee_name'] }}</a></td>
                             <td>{{ $request['vpn_flag'] }}</td>
                             <td>{{ $request['brought_home_flag'] }}</td>
                             @if (!empty($linkageData))
                                 <td>{{ $request['surrender_flag'] }}</td>
-                                <td>{{ !empty($request['surrender_date']) ? date('Y-m-d', strtotime($request['surrender_date'])) : "";}}</td>
+                                <td>{{ !empty($request['surrender_date']) ? date('Y-m-d', strtotime($request['surrender_date'])) : "" }}</td>
                             @endif
                             <td>{{ $request['remarks'] }}</td>
                             @if (empty($linkageData))
-                                <td>{{ date('Y-m-d', strtotime($request['request_date'])); }}</td>
+                                <td>{{ date('Y-m-d', strtotime($request['request_date'])) }}</td>
                             @endif
                             @if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE') )
                                 <td>
