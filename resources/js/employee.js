@@ -972,6 +972,8 @@ $(document).ready(function () {
 
 	
 	$("#emp-reg-submit").click(function(e){
+		$('#reg-form').validation();
+
 		$("#employee-reg-submit-spinner").show();
 		$("#emp-reg-submit").prop('disabled', true);
 		$("#emp-reg-back").prop('disabled', true);
@@ -987,11 +989,13 @@ $(document).ready(function () {
 			$("#cur-add-prov").prop("readonly", true);
 			$("#cur-add-postal").prop("readonly", true);
 		}
-		
+		//check
+
 		$("#reg-form").submit();
 	});
 
 	$("#emp-update-submit").click(function(e){
+		$('#emp-update-form').validation();
 		$("#emp-update-submit").prop('disabled', true);
 		$(".text-danger").hide();
 
