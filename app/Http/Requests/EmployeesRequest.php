@@ -135,10 +135,14 @@ class EmployeesRequest extends FormRequest
 
 
             // Required based on `Positions` from config file
-            $rules["position"] = ['required', Rule::in(config('constants.POSITIONS'))];
+            $rules["position"] = ['required', Rule::in(array_keys(config('constants.POSITIONS')))];
 
             // Required based on `Passport status` from config file
-            $rules["passport_status"] = ['required', Rule::in(array_keys(config('constants.PASSPORT_STATUS_LIST')))];
+            $passport_status = [];
+            foreach(config('constants.PASSPORT_STATUS_LIST') as $status) {
+                array_push($passport_status, $status["val"]);
+            }
+            $rules["passport_status"] = ['required', Rule::in($passport_status)];
             
 
             // If suffix field is not empty
@@ -162,7 +166,7 @@ class EmployeesRequest extends FormRequest
                         'passport_expiration_date' => 'required|date|regex:/^\d{4}-\d{2}-\d{2}$/|after:today',
                     ]);
                 
-                    $rules["passport_type"] = ['required', Rule::in(config('constants.PASSPORT_TYPE'))];
+                    $rules["passport_type"] = ['required', Rule::in(array_keys(config('constants.PASSPORT_TYPE')))];
                     break;
                 }
 
