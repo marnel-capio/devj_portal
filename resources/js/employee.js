@@ -326,20 +326,14 @@ $(document).ready(function () {
 	//disable submit button if not all required fields have value
 
 
-
-	$("#reg-form > :input").change(function(){
-		checkRequiredFields();
-	});
-
-
 	// Password check : 1. on Key up
 	$("#emp-confirm-password, #emp-password").keyup(() => {
-		checkRequiredFields(true);
+		checkPasswordComplexity();
 	});
 
 	// Password check : 2. on change
 	$("#emp-confirm-password, #emp-password").change(() => {
-		checkRequiredFields(true);
+		checkPasswordComplexity();
 	});
 
 	
@@ -458,39 +452,7 @@ $(document).ready(function () {
 		$(".correct-pass-number").css("display", "none");
 	}
 
-	currUrl = window.location.href;
-	if(currUrl.includes('employees/create')) {
-		checkRequiredFields(true);
-	}
-    /**
-     * Test if all fields with property: 'required' are not empty.
-	 * Edit: Test if entries are valid
-     * @param boolean entriesValid = DEFAULT true
-	 * 
-     * @return void
-     */
-	function checkRequiredFields(checkPassword = false){
-		var entriesValid = true;
-		if (checkPassword) {
-			entriesValid = checkPasswordComplexity();
-		}
-		
-
-		var empty = false;
-		$(":input[required]").each(function(){
-			if($(this).val() == ''){
-				empty = true;
-			}
-		})
-
-		// If required inputs are empty OR if entries are not valid
-		// entriesValid is utilized on: checkPasswordComplexity()
-		if(empty || entriesValid === false){
-			$("#emp-reg-submit").prop('disabled', true);
-		}else{
-			$("#emp-reg-submit").prop('disabled', false);
-		}
-	}
+    
 
 	$('.btn-prevent-multiple-submit').on('submit', function(){
 		e.preventDefault()
@@ -544,7 +506,6 @@ $(document).ready(function () {
 			$("#cur-add-prov").val($("#perm-add-prov").val());
 			$("#cur-add-postal").val($("#perm-add-postal").val());
 		}
-		checkRequiredFields();
 	})
 
 	$(".permanent-address").keyup(function(){
@@ -555,7 +516,6 @@ $(document).ready(function () {
 			$("#cur-add-prov").val($("#perm-add-prov").val());
 			$("#cur-add-postal").val($("#perm-add-postal").val());
 		}
-		checkRequiredFields();
 	})
 
 	//end for employee registration
