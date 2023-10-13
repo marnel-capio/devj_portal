@@ -87,14 +87,14 @@ class LaptopsRequest extends FormRequest
 
         if(strpos($this->header('referer'), route('laptops.create')) !== FALSE){
 
-            $rules['tag_number'] = 'required|unique:laptops,tag_number';
-            $rules['peza_form_number'] = 'required|unique:laptops,peza_form_number';
-            $rules['peza_permit_number'] = 'required|unique:laptops,peza_permit_number';
+            $rules['tag_number'] = 'required|max:80|unique:laptops,tag_number';
+            $rules['peza_form_number'] = 'max:80|unique:laptops,peza_form_number';
+            $rules['peza_permit_number'] = 'max:80|unique:laptops,peza_permit_number';
 
             if(!empty($this->input('id'))){
                 $referer = $this->header('referer');
                 $rejectCode = substr($referer, strripos($referer, '/') + 1);
-                $rules['tag_number'] = ['required', 
+                $rules['tag_number'] = ['required','max:80', 
                     function($attribute, $value, $fail) use ($rejectCode){
                         $detail = Laptops::where('tag_number', $value)->get()->toArray();
                         if(!empty($detail) && $detail[0]['reject_code'] != $rejectCode){
@@ -102,7 +102,7 @@ class LaptopsRequest extends FormRequest
                         }
                     }
                 ];
-                $rules['peza_form_number'] = ['required', 
+                $rules['peza_form_number'] = ['max:80', 
                     function($attribute, $value, $fail) use ($rejectCode){
                         $detail = Laptops::where('peza_form_number', $value)->get()->toArray();
                         if(!empty($detail) && $detail[0]['reject_code'] != $rejectCode){
@@ -110,7 +110,7 @@ class LaptopsRequest extends FormRequest
                         }
                     }
                 ];
-                $rules['peza_permit_number'] = ['required', 
+                $rules['peza_permit_number'] = ['max:80', 
                     function($attribute, $value, $fail) use ($rejectCode){
                         $detail = Laptops::where('peza_permit_number', $value)->get()->toArray();
                         if(!empty($detail) && $detail[0]['reject_code'] != $rejectCode){
