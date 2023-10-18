@@ -88,9 +88,13 @@ class LaptopsRequest extends FormRequest
         if(strpos($this->header('referer'), route('laptops.create')) !== FALSE){
 
             $rules['tag_number'] = 'required|max:80|unique:laptops,tag_number';
-            $rules['peza_form_number'] = 'max:80|unique:laptops,peza_form_number';
-            $rules['peza_permit_number'] = 'max:80|unique:laptops,peza_permit_number';
-
+            if(empty($this->input('peza_form_number')) and empty($this->input('peza_permit_number'))){
+                $rules['peza_form_number'] = 'max:80';
+                $rules['peza_permit_number'] = 'max:80';
+            } else {
+                $rules['peza_form_number'] = 'max:80|required_with:peza_permit_number|unique:laptops,peza_form_number';
+                $rules['peza_permit_number'] = 'max:80|required_with:peza_form_number|unique:laptops,peza_permit_number';
+            }
             if(!empty($this->input('id'))){
                 $referer = $this->header('referer');
                 $rejectCode = substr($referer, strripos($referer, '/') + 1);
