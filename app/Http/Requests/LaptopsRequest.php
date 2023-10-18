@@ -140,16 +140,47 @@ class LaptopsRequest extends FormRequest
                     }
                 ];
             }
-        // 2. If request is from Update a Laptop
-        } else {
+        } else if(strpos($this->header('referer'), "/laptops") !== FALSE){
+        // 2. If request is not from Laptop Create (e.g. Laptop Details>Update Laptop)
+            $referer = $this->header('referer');
+            $laptop_id = substr($referer, strripos($referer, '/') + 1);
 
-            $rules['tag_number'] = ['required','max:80'];
+            $rules['tag_number'] = [
+                'required',
+                'max:80', 
+                function($attribute, $value, $fail) use ($laptop_id){
+                    // Test if tag_number is unique from laptop table, and not self
+                    $detail = Laptops::where('tag_number', $value)->where('id','<>',$laptop_id)->get()->toArray();
+                    if(!empty($detail)){
+                        $fail($this->messages()['tag_number.unique']);
+                    }
+                }
+                
+            ];
             if(empty($this->input('peza_form_number')) and empty($this->input('peza_permit_number'))){
                 $rules['peza_form_number'] = 'max:80';
                 $rules['peza_permit_number'] = 'max:80';
             } else {
-                $rules['peza_form_number'] = 'max:80|required_with:peza_permit_number';
-                $rules['peza_permit_number'] = 'max:80|required_with:peza_form_number';
+                $rules['peza_form_number'] = [
+                    'max:80',
+                    'required_with:peza_permit_number',
+                    function($attribute, $value, $fail) use ($laptop_id){
+                        // Test if peza_form_number is unique from laptop table, and not self
+                        $detail = Laptops::where('peza_form_number', $value)->where('id','<>',$laptop_id)->get()->toArray();
+                        if(!empty($detail)){
+                            $fail($this->messages()['peza_form_number.unique']);
+                        }
+                    }];
+                $rules['peza_permit_number'] = [
+                    'max:80',
+                    'required_with:peza_form_number',
+                    function($attribute, $value, $fail) use ($laptop_id){
+                        // Test if peza_permit_number is unique from laptop table, and not self
+                        $detail = Laptops::where('peza_permit_number', $value)->where('id','<>',$laptop_id)->get()->toArray();
+                        if(!empty($detail)){
+                            $fail($this->messages()['peza_permit_number.unique']);
+                        }
+                    }];
             }
         }
 
