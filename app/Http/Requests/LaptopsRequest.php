@@ -85,6 +85,7 @@ class LaptopsRequest extends FormRequest
             'linkage.remarks' => 'max:1024',
         ];
 
+        // 1. If request is from Create Laptop
         if(strpos($this->header('referer'), route('laptops.create')) !== FALSE){
 
             $rules['tag_number'] = 'required|max:80|unique:laptops,tag_number';
@@ -95,6 +96,8 @@ class LaptopsRequest extends FormRequest
                 $rules['peza_form_number'] = 'max:80|required_with:peza_permit_number|unique:laptops,peza_form_number';
                 $rules['peza_permit_number'] = 'max:80|required_with:peza_form_number|unique:laptops,peza_permit_number';
             }
+
+            // 1.1 If request is from viewing a rejected laptop registration
             if(!empty($this->input('id'))){
                 $referer = $this->header('referer');
                 $rejectCode = substr($referer, strripos($referer, '/') + 1);
@@ -106,22 +109,27 @@ class LaptopsRequest extends FormRequest
                         }
                     }
                 ];
-                $rules['peza_form_number'] = ['max:80', 
-                    function($attribute, $value, $fail) use ($rejectCode){
-                        $detail = Laptops::where('peza_form_number', $value)->get()->toArray();
-                        if(!empty($detail) && $detail[0]['reject_code'] != $rejectCode){
-                            $fail("The PEZA form number is already registered.");
-                        }
-                    }
-                ];
-                $rules['peza_permit_number'] = ['max:80', 
-                    function($attribute, $value, $fail) use ($rejectCode){
-                        $detail = Laptops::where('peza_permit_number', $value)->get()->toArray();
-                        if(!empty($detail) && $detail[0]['reject_code'] != $rejectCode){
-                            $fail("The PEZA permit number is already registered.");
-                        }
-                    }
-                ];
+                
+                if(!empty($this->input('peza_form_number')) or !empty($this->input('peza_permit_number'))){
+                    $rules['peza_form_number'] = ['max:80',
+                                                    function($attribute, $value, $fail) use ($rejectCode){
+                                                        $detail = Laptops::where('peza_form_number', $value)->get()->toArray();
+                                                        if(!empty($detail) && $detail[0]['reject_code'] != $rejectCode){
+                                                            $fail("The PEZA form number is already registered.");
+                                                        }
+                                                    }, 
+                                                    'required_with:peza_permit_number'
+                    ];
+                    $rules['peza_permit_number'] = ['max:80',
+                                                    function($attribute, $value, $fail) use ($rejectCode){
+                                                        $detail = Laptops::where('peza_permit_number', $value)->get()->toArray();
+                                                        if(!empty($detail) && $detail[0]['reject_code'] != $rejectCode){
+                                                            $fail("The PEZA permit number is already registered.");
+                                                        }
+                                                    }, 
+                                                    'required_with:peza_form_number'
+                    ];
+                }
                 
                 $rules['id'] = [
                     function($attribute, $value, $fail) use ($rejectCode){
@@ -131,6 +139,17 @@ class LaptopsRequest extends FormRequest
                         }
                     }
                 ];
+            }
+        // 2. If request is from Update a Laptop
+        } else {
+
+            $rules['tag_number'] = ['required','max:80'];
+            if(empty($this->input('peza_form_number')) and empty($this->input('peza_permit_number'))){
+                $rules['peza_form_number'] = 'max:80';
+                $rules['peza_permit_number'] = 'max:80';
+            } else {
+                $rules['peza_form_number'] = 'max:80|required_with:peza_permit_number';
+                $rules['peza_permit_number'] = 'max:80|required_with:peza_form_number';
             }
         }
 
