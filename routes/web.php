@@ -53,6 +53,7 @@ Route::middleware(['auth', 'web', 'isActive'])->group(function(){
         Route::post('/store', 'store')->name('employees.store');
         Route::post('/reject', 'reject')->name('employees.reject');
         Route::post('/update', 'update')->name('employees.update');
+        Route::post('/approve', 'approveAccount')->name('employees.approve');
         Route::get('/sendNotification',  'sendNotification')->name('employees.sendNotification');
         Route::post('/download',  'download')->name('employees.download');
         Route::get('/update/complete', function(){

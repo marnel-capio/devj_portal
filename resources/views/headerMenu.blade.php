@@ -4,7 +4,7 @@
 
 <nav class="navbar navbar-expand-md p-2 pe-2 ps-2" style="background-color:#1746A2;padding: 0!important;">
     <div class="container-fluid">
-        <a class="navbar-brand text-white fw-bold" id="home-link" href="{{ route('home') }}">DEV J PORTAL </br><p style="font-size: 10px;margin: 0px">v1.1.0</p></a>
+        <a class="navbar-brand text-white fw-bold" id="home-link" href="{{ route('home') }}">DEV J PORTAL </br><p style="font-size: 10px;margin: 0px">v1.2.0</p></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#headerMenu" aria-controls="headerMenu" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>

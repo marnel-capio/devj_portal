@@ -360,7 +360,12 @@ class EmployeesController extends Controller
 
 
         $requestor = Employees::selectRaw('first_name, last_name, name_suffix')->where('id', $employeeDetails->updated_by)->first();
-
+        if ($employeeDetails->approved_status == config('constants.APPROVED_STATUS_PENDING')) {
+            return view('employees.regist')
+                ->with([
+                    'employee' => $employeeDetails,
+                ]);
+        }
         return view('employees.details')
         ->with([
             'allowedToEdit' => false,
@@ -371,6 +376,78 @@ class EmployeesController extends Controller
             'employee' => $employeeDetails,
             'requestor' => $this->getFullName($requestor, false),
         ]);
+    }
+
+
+    /**
+     * Process the approval of employee request
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function approveAccount(EmployeesRequest $request){
+        $id = $request->input('id');
+
+        $error = $this->validateRequest($id);
+        if($error){
+            //id is not included in the request, show error page
+            return view('error.requestError')
+                        ->with([
+                            'error' => $error
+                        ]);
+        }
+
+        $employee = Employees::where('id',$id)->first();
+
+        $request->validated();
+        $updateData = $this->getEmployeeData($request);
+        unset($updateData['id']);
+        unset($updateData['created_by']);
+        unset($updateData['password']);
+        unset($updateData['copy_permanent_address']);
+        unset($updateData['user_role']);
+        unset($updateData['approved_status']);
+
+        $arChanges = [
+                'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
+                'active_status' => 1,
+                'reasons' => NULL,
+                'updated_by' => Auth::user()->id,
+                'approved_by' => Auth::user()->id,
+            ];
+
+        $roleBasedOnPosition = $this->getRoleBasedOnPosition($updateData['position']);
+        $rolebasedOnadminFlag = $request->input('is_admin', 0) ? config('constants.ADMIN_ROLE_VALUE') : config('constants.ENGINEER_ROLE_VALUE');
+        if($roleBasedOnPosition == config('constants.MANAGER_ROLE_VALUE')){
+            $arChanges['roles'] = $roleBasedOnPosition;
+        }else if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
+            $arChanges['roles'] = $rolebasedOnadminFlag;
+        }
+
+        
+        // check if their changes
+        foreach ($updateData as $key => $value) {
+            if ($updateData[$key] != $employee->$key) {
+                $arChanges[$key] = $value;
+            }
+        }
+        
+        // if new registration
+        Employees::where('id', $employee['id'])
+            ->update($arChanges);
+
+        //send mail
+        $this->sendMail($employee->email, 
+                        [
+                            'first_name' => $employee->first_name,
+                            'currentUserId' => Auth::user()->id,
+                            'module' => "Employee",
+                        ], 
+                        config('constants.MAIL_NEW_REGISTRATION_APPROVAL'));
+
+        Logs::createLog("Employee", "{$this->getFullName($employee, false)}'s account  has been approved.");
+
+        return redirect(route('home'));
     }
 
     /**
@@ -392,64 +469,38 @@ class EmployeesController extends Controller
         }
 
         $employee = Employees::where('id',$id)->first();
-        
-        //if no error, update employee details
-        if(!$employee->active_status && $employee->approved_status == config('constants.APPROVED_STATUS_PENDING')){
-            //if new registration
-            Employees::where('id', $employee['id'])
-                ->update([
-                    'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
-                    'active_status' => 1,
-                    'reasons' => NULL,
-                    'updated_by' => Auth::user()->id,
-                    'approved_by' => Auth::user()->id,
-                ]);
+        $ownAccount = true;
+        //get requestor
+        if($employee->id != $employee->updated_by){
+            $ownAccount = false;
+            $requestorData = Employees::where('id', $employee->updated_by)->first();
+            $requestor = !empty($requestorData) ? $this->getFullName($requestorData, false) : 'unknown';
+        }
 
-            //send mail
-            $this->sendMail($employee->email, 
-                            [
+        //update only
+        $employeeUpdate = json_decode($employee->update_data, true);
+        $employeeUpdate['updated_by'] = Auth::user()->id;
+        $employeeUpdate['approved_by'] = Auth::user()->id;
+        $employeeUpdate['update_data'] = NULL;
+        $employeeUpdate['reasons'] = NULL;
+        $employeeUpdate['approved_status'] = config('constants.APPROVED_STATUS_APPROVED');
+
+        Employees::where('id', $employee['id'])->update($employeeUpdate);
+        
+        //send mail
+        $this->sendMail($employee->email, 
+                            [   
                                 'first_name' => $employee->first_name,
                                 'currentUserId' => Auth::user()->id,
                                 'module' => "Employee",
+                                'ownAccount' => $ownAccount,
+                                'link' => route('employees.details', ['id' => $employee->id]),
+                                'updater' => !empty($requestor) ? $requestor : '',
                             ], 
-                            config('constants.MAIL_NEW_REGISTRATION_APPROVAL'));
+                            config('constants.MAIL_EMPLOYEE_UPDATE_APPROVAL'));
 
-            Logs::createLog("Employee", "{$this->getFullName($employee, false)}'s account  has been approved.");
-        
-        }else{
-            $ownAccount = true;
-            //get requestor
-            if($employee->id != $employee->updated_by){
-                $ownAccount = false;
-                $requestorData = Employees::where('id', $employee->updated_by)->first();
-                $requestor = !empty($requestorData) ? $this->getFullName($requestorData, false) : 'unknown';
-            }
-
-            //update only
-            $employeeUpdate = json_decode($employee->update_data, true);
-            $employeeUpdate['updated_by'] = Auth::user()->id;
-            $employeeUpdate['approved_by'] = Auth::user()->id;
-            $employeeUpdate['update_data'] = NULL;
-            $employeeUpdate['reasons'] = NULL;
-            $employeeUpdate['approved_status'] = config('constants.APPROVED_STATUS_APPROVED');
-
-            Employees::where('id', $employee['id'])->update($employeeUpdate);
-            
-            //send mail
-            $this->sendMail($employee->email, 
-                                [   
-                                    'first_name' => $employee->first_name,
-                                    'currentUserId' => Auth::user()->id,
-                                    'module' => "Employee",
-                                    'ownAccount' => $ownAccount,
-                                    'link' => route('employees.details', ['id' => $employee->id]),
-                                    'updater' => !empty($requestor) ? $requestor : '',
-                                ], 
-                                config('constants.MAIL_EMPLOYEE_UPDATE_APPROVAL'));
-
-            //logs
-            Logs::createLog("Employee", "Approved the update details of {$employee->first_name} {$employee->last_name}");
-        }
+        //logs
+        Logs::createLog("Employee", "Approved the update details of {$employee->first_name} {$employee->last_name}");
 
         return redirect(route('home'));
     }

@@ -82,6 +82,17 @@ $(document).ready(function () {
 	}
 	getCity("permanent",$("#perm-prov").val(),$("#perm-city").val());
 	getCity("current",$("#cur-prov").val(),$("#cur-city").val());
+
+	function onload() {
+		var user_role = $("#user_role").val();
+		var approved_status = $("#approved_status").val();
+
+		if (user_role == 2 && approved_status == 3) {
+			$("#email").prop('readonly',true);
+		}
+	}
+
+	onload();
     /**
      * Set header alert 
 	 * message   : message string
@@ -767,6 +778,19 @@ $(document).ready(function () {
 		}else {
 			$('#reject-sub').prop('disabled', true);
 		}
+	});
+
+	$("#approve-request-regist").on("click",function(){
+		$("#employee_approve_spinner").show();
+		$('#approve-request-regist').prop('disabled', true);
+		if($("#server-manage-flag").is(':checked')){
+			$("#server-manage-flag-hidden").prop('disabled', true);
+		}
+		if($("#is-admin-detail").is(':checked')){
+			$("#is-admin-hidden").prop('disabled', true);
+		}
+		$("#reg-form").submit();
+
 	});
 
 	// Approve Employee Detail Update/Creation request

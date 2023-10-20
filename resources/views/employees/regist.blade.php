@@ -1,10 +1,21 @@
+@php
+    $userInfo = Auth::user();
+@endphp
 @include('header')
 <link rel="stylesheet" href="{{ asset(mix('css/employee.min.css')) }}">
 <script src="{{ asset(mix('js/employee.min.js')) }}" defer></script>
-<div class="container text-center ps-3 pe-3 pt-5">
-    <h3 class="text-start">Account Registration</h3>
+<div class="container text-center ps-3 pe-3 pt-5"> 
+    @if (empty($userInfo))
+        <h3 class="text-start">Account Registration</h3>
+    @else 
+        <h3 class="text-start">Account Registration Request</h3>
+    @endif
     <div class="pt-4">
+        @if (empty($userInfo))
         <form action="{{ route('employees.regist') }}" id="reg-form" method="POST">
+        @else 
+        <form action="{{ route('employees.approve') }}" id="reg-form" method="POST">
+        @endif
             @csrf
             <input type="text" name="id" value="{{ isset($employee->id) ? $employee->id : '' }}" hidden >
             <div class="emp-regist-category p-3 mb-4 rounded-3">
@@ -83,6 +94,31 @@
                         @endif
                     </div>
                 </div>
+                @if (isset($userInfo) && isset($employee) && !empty($userInfo) && $userInfo->roles == config('constants.MANAGER_ROLE_VALUE') && $employee->approved_status == config('constants.APPROVED_STATUS_PENDING'))
+                <div class="row mb-2 ps-3 pe-3">
+                    <div class="col-lg-2 col-4 g-3 ps-1">
+                        <div class="d-flex align-items-center">
+                            <div class="form-check ">
+                                <label class="form-check-label" for="server-manage-flag">Manage Server</label>
+                                <input type="checkBox" class="form-check-input" name="server_manage_flag" id="server-manage-flag" value="1" {{ $employee->server_manage_flag == 1 ? "checked" : "" }}>
+                                <input type="text" hidden value="0" name="server_manage_flag" id="server-manage-flag-hidden">
+                            </div>
+                            @if ($errors->has('server_manage_flag'))
+                            <p class="text-danger">{{ $errors->first('server_manage_flag') }}</p>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-4 g-3 ps-1" id="admin-detail">
+                        <div class="d-flex align-items-center" style="height: 100%">
+                            <div class="form-check ">
+                                <label class="form-check-label" for="is-admin-detail">Admin</label>
+                                <input type="checkBox" class="form-check-input" name="is_admin" id="is-admin-detail" value="1" {{ $employee->roles == config('constants.ADMIN_ROLE_VALUE') ? "checked" : "" }}>
+                                <input type="text" hidden value="0" name="is_admin" id="is-admin-hidden">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endif
             </div>
 
 {{-- Contact Details --}}
@@ -124,6 +160,7 @@
 </div>
 
 {{-- Password --}}
+@if (empty($userInfo))
 <div class="emp-regist-category mb-4 p-3 rounded-3">
     <div class="col col-12 col-md-8"  style="width: 100%">
         <h4 class="text-start">Portal Password</h4>
@@ -186,7 +223,7 @@
 
     </div>
 </div>
-            
+@endif           
             {{-- Passport Details section --}}
             <div class="emp-regist-category mb-4 p-3 rounded-3">
                 <h4 class="text-start">Passport Information</h4>
@@ -420,17 +457,61 @@
                     </div>
                 </div>
             </div>
-            <div class="text-center p-2">
-                <button class="btn btn-primary btn-lg mb-5 btn-prevent-multiple-submit" id="emp-reg-back">
-                    <span>Back</span>
-                </button>
-                <button class="btn btn-primary btn-lg mb-5 btn-prevent-multiple-submit" id="emp-reg-submit" type="submit">
-                    <span>Register</span>
-                    <div id="employee-reg-submit-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
-                        <span class="sr-only"></span>
+            @if (isset($userInfo) && isset($employee) && !empty($userInfo) && $userInfo->roles == config('constants.MANAGER_ROLE_VALUE') && $employee->approved_status == config('constants.APPROVED_STATUS_PENDING'))
+
+                <input type="text" hidden name="user_role" id="user_role" value="{{ $userInfo->roles }}">
+                <input type="text" hidden name="approved_status" id="approved_status" value="{{ $employee->approved_status }}">
+                <div class="text-center p-4">
+                    <button class="btn btn-danger btn-lg mb-5 ms-4 rqst-btn"  data-bs-target="#rejectRequestModal" data-bs-toggle="modal" id="reject-request" style="width: 150px">
+                        Reject  <div id="employee_reject_spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                            <span class="sr-only"></span>
+                        </div>
+                    </button>
+                    <button class="btn btn-success btn-lg mb-5 ms-4 rqst-btn" id="approve-request-regist"  form="approve-request-form" style="width: 150px">
+                        Approve <div id="employee_approve_spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                            <span class="sr-only"></span>
+                        </div>
+                    </button>
+                </div>
+                <div class="modal fade" tabindex="-1" id="rejectRequestModal">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <div class="p-2">
+                                    <form action="{{ route('employees.reject') }}" method="POST" id="reject-request-form">
+                                        @csrf
+                                        <input type="text" name="id" value="{{ $employee->id }}" hidden>
+                                        <div class="mb-2">
+                                            <textarea class="form-control" name="reason" placeholder="Reason" rows="5" id="reject-reason" required></textarea>
+                                        </div>
+                                        <p id="reject-reason-error"></p>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button class="btn btn-danger" id="reject-sub" type="submit" form="reject-request-form">
+                                    Reject <div id="employee_reject_submit_spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                                        <span class="sr-only"></span>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                </button>
-            </div>
+                </div>
+            @else
+                <div class="text-center p-2">
+                    <button class="btn btn-primary btn-lg mb-5 btn-prevent-multiple-submit" id="emp-reg-back">
+                        <span>Back</span>
+                    </button>
+                    <button class="btn btn-primary btn-lg mb-5 btn-prevent-multiple-submit" id="emp-reg-submit" type="submit">
+                        <span>Register</span>
+                        <div id="employee-reg-submit-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                            <span class="sr-only"></span>
+                        </div>
+                    </button>
+                </div>
+            @endif
         </form>
     </div>
 </div>
