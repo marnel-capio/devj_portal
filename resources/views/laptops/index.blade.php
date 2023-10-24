@@ -7,6 +7,12 @@
 	  {{session('message')}}
 	</div>
 @endif
+@if(!empty(session('laptop_alert')))
+<div class="alert alert-success" role="alert">
+    {{session()->pull('laptop_alert')}}
+</div>
+<div class="container-md ps-md-3 pe-md-3 pt-2">
+@endif
 
 {{-- Notif for Alert Banner --}}
 <div class="alert d-none" role="alert" id="header-alert">

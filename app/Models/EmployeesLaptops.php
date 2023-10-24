@@ -182,7 +182,8 @@ class EmployeesLaptops extends Model
                                 concat(employees2.first_name, " ", employees2.last_name) as requestor_name,
                                 concat(employees.first_name, " ", employees.last_name) as assignee_name,
                                 laptops.tag_number,
-                                employees_laptops.update_data
+                                employees_laptops.update_data,
+                                employees_laptops.approved_status as el_approved_status
                             ')
                         ->leftJoin('laptops', 'laptops.id', 'employees_laptops.laptop_id')
                         ->leftJoin('employees', 'employees.id', 'employees_laptops.employee_id')

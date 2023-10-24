@@ -14,14 +14,28 @@
 @else
 <div class="container-md ps-md-3 pe-md-3 pt-5">
 @endif
+<form action="#" id="regist-request">
+@csrf
+</form>
     <div class="d-flex justify-content-between mb-2">
         <div class="text-primary d-flex align-items-center">
             @if (!empty($detailNote))
             <i class="bi bi-info-circle-fill"></i>&nbsp;{{ $detailNote }}
             @endif
         </div>
+        
         @if ($detailOnly)
         <div class="">
+            @if($userInfo->id == $detail->updated_by && $detail->approved_status == config("constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE"))
+            <div>
+                <a id="cancel-update" class="btn btn-primary" type="button" style="float: right;">Cancel Update
+                    <div id="react-cancel-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                        <span class="sr-only"></span>
+                    </div>
+                </a>
+                <input hidden name="id" id="laptopId" value="{{ $detail->id }}" type="text">
+            </div>
+            @endif
             @if (!empty($detail) && $detail->approved_status == config('constants.APPROVED_STATUS_APPROVED'))
             <button type="button" class="btn btn-primary  ms-1" data-bs-toggle="modal" data-bs-target="#editLaptopModal" >Edit</button>
             <div class="modal modal-lg fade" tabindex='-1' id="editLaptopModal">
@@ -141,6 +155,16 @@
                         <h6 class="text-danger">※Requested by {{ $requestor }}</h6>
                     </div>
                 </div>
+                 @if($userInfo->id == $detail->created_by && $detail->approved_status == config("constants.APPROVED_STATUS_PENDING"))
+                <div class="col-6 g-3">
+                    <a id="cancel-register" class="btn btn-primary" type="button" style="float: right;">Cancel Register
+                        <div id="react-cancel-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                            <span class="sr-only"></span>
+                        </div>
+                    </a>
+                    <input hidden name="id" id="laptopId" value="{{ $detail->id }}" type="text">
+                </div>
+                @endif
             </div>
             @endif
             <div class="group-category p-3 mb-4 rounded-3">
@@ -504,7 +528,28 @@
                                     </button>
                                 </td>
                             @else
-                                <td></td>
+                                <td>
+                                    @if (Auth::user()->id == $request['employee_id'] && $request['el_approved_status'] == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE'))
+                                        <div>
+                                            <a id="cancel-update-link" class="btn btn-primary" type="button" style="float: right;">Cancel Update
+                                                <div id="react-cancel-link-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                                                    <span class="sr-only"></span>
+                                                </div>
+                                            </a>
+                                            <input hidden name="employeeLaptopId" id="employeeLaptopId" value="{{ $request['id'] }}" type="text">
+                                        </div>
+                                    @endif
+                                    @if (Auth::user()->id == $request['employee_id'] && $request['el_approved_status'] == config('constants.APPROVED_STATUS_PENDING'))
+                                        <div>
+                                            <a id="cancel-link" class="btn btn-primary" type="button" style="float: right;">Cancel Link
+                                                <div id="react-cancel-link-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                                                    <span class="sr-only"></span>
+                                                </div>
+                                            </a>
+                                            <input hidden name="employeeLaptopId" id="employeeLaptopId" value="{{ $request['id'] }}" type="text">
+                                        </div>
+                                    @endif
+                                </td>
                             @endif
                         </tr>
                     @endforeach

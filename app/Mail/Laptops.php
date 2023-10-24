@@ -26,6 +26,10 @@ class Laptops extends Mailable
     const MAIL_12 = '【DEV J PORTAL】Laptop Linkage Update Approval';
     const MAIL_13 = '【DEV J PORTAL】Laptop Linkage Update Rejection';
     const MAIL_14 = '【DEV J PORTAL】Laptop Linkage Update';
+    const MAIL_15 = '【DEV J PORTAL】Laptop Registration Cancellation';
+    const MAIL_16 = '【DEV J PORTAL】Laptop Detail Update Cancellation';
+    const MAIL_17 = '【DEV J PORTAL】Laptop Linkage Cancellation';
+    const MAIL_18 = '【DEV J PORTAL】Laptop Linkage Update Cancellation';
 
     
     /**

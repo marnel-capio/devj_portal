@@ -27,6 +27,11 @@ Route::middleware('auth:sanctum')->controller(ApiController::class)->group(funct
     Route::post('/softwarelinkProject', 'softwarelinkProject')->name('api.softwarelinkProject');
     Route::get('/employees/search', 'getEmployeeByFilter')->name('api.filterEmployee');
     Route::post('/deactivateEmployee', 'deactivateEmployee');
+    Route::post('/cancelEmployeeDetails', 'cancelEmployeeDetails');
+    Route::post('/cancelLaptopRegister', 'cancelLaptopRegister');
+    Route::post('/cancelLaptopUpdate', 'cancelLaptopUpdate');
+    Route::post('/cancelEmployeeLaptopUpdate', 'cancelEmployeeLaptopUpdate');
+    Route::post('/cancelEmployeeLaptopLink', 'cancelEmployeeLaptopLink');
     Route::post('/reactivateEmployee', 'reactivateEmployee');
     Route::post('/transferEmployee', 'transferEmployee');
     Route::post('/reinstateEmployee', 'reinstateEmployee');

@@ -53,6 +53,17 @@
             @if($detailOnly && $userInfo->id == $employee->id)
             <button type="button" class="btn btn-success  ms-2" data-bs-toggle="modal" data-bs-target="#changePasswordModal" >Change Password</button>
             @endif
+            @if($detailOnly && $userInfo->id == $employee->id && $employee->approved_status == config("constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE"))
+            <a id="cancel-update" class="btn btn-primary" type="button">Cancel Update
+                <div id="react-cancel-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                            <span class="sr-only"></span>
+                        </div>
+            </a>
+            <form action="#" id="cancel-react-form">
+                    @csrf
+                    <input hidden name="id" value="{{ $employee->id }}" type="text">
+                </form>
+            @endif
             @if ($detailOnly && $userInfo->roles == config('constants.MANAGER_ROLE_VALUE'))
                 @if ($employee->active_status == 0)
                     <button class="btn btn-success ms-2" id="employee-reactivate">Reactivate

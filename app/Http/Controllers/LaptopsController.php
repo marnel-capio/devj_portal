@@ -223,7 +223,9 @@ class LaptopsController extends Controller
                                         'laptop_clock_speed',
                                         'laptop_ram',
                                         'remarks',
-                                        'status'
+                                        'status',
+                                        'created_by',
+                                        'updated_by'
                                     )
                                     ->where('id', $id)
                                     ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'),config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])

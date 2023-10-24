@@ -6,6 +6,11 @@ const REGISTER_LINKAGE_LINK = '/api/laptops/registLinkage';
 const LAPTOP_CREATE_LINK = '/laptops/create'
 const LAPTOP_DOWNLOAD_LINK = '/laptops/download'
 
+const CANCEL_LAPTOP_REGIST = '/api/cancelLaptopRegister';
+const CANCEL_LAPTOP_UPDATE = '/api/cancelLaptopUpdate';
+const CANCEL_LAPTOP_LINK_UPDATE = '/api/cancelEmployeeLaptopUpdate';
+const CANCEL_LAPTOP_LINK = '/api/cancelEmployeeLaptopLink';
+
 $(document).ready(function(){
 
     //laptop list
@@ -62,6 +67,98 @@ $(document).ready(function(){
 		}
 		
 	}
+
+    $("#cancel-register").click(function(e){
+        
+        $(".alert").remove();
+        if (!confirm("Continue with the cancellation of laptop registration?")) {
+            return false;
+        }
+        $("#react-cancel-spinner").show();
+        $.ajax({
+            type: "POST",
+            url: CANCEL_LAPTOP_REGIST,
+            data: {id: $("#laptopId").val(), _token: $("#regist-request > input[name=_token").val()},
+            dataType: "json",
+            encode: true,
+        }).done(function(data){
+            if(data.success){
+                window.location.href = "/laptops";
+            }
+            $("#react-cancel-spinner").hide();
+        }).fail(function(){
+            console.log('error');
+        })
+    });
+
+    $("#cancel-update").click(function(e){
+        
+        $(".alert").remove();
+        if (!confirm("Continue with the cancellation of laptop update?")) {
+            return false;
+        }
+        $("#react-cancel-spinner").show();
+        $.ajax({
+            type: "POST",
+            url: CANCEL_LAPTOP_UPDATE,
+            data: {id: $("#laptopId").val(), _token: $("#regist-request > input[name=_token").val()},
+            dataType: "json",
+            encode: true,
+        }).done(function(data){
+            if(data.success){
+                location.reload(true);
+            }
+            $("#react-cancel-spinner").hide();
+        }).fail(function(){
+            console.log('error');
+        })
+    });
+
+    $("#cancel-update-link").click(function(e){
+        
+        $(".alert").remove();
+        if (!confirm("Continue with the cancellation of laptop link update?")) {
+            return false;
+        }
+        $("#react-cancel-link-spinner").show();
+        $.ajax({
+            type: "POST",
+            url: CANCEL_LAPTOP_LINK_UPDATE,
+            data: {id: $("#employeeLaptopId").val(), _token: $("#regist-request > input[name=_token").val()},
+            dataType: "json",
+            encode: true,
+        }).done(function(data){
+            if(data.success){
+                location.reload(true);
+            }
+            $("#react-cancel-link-spinner").hide();
+        }).fail(function(){
+            console.log('error');
+        })
+    });
+
+    $("#cancel-link").click(function(e){
+        
+        $(".alert").remove();
+        if (!confirm("Continue with the cancellation of laptop link update?")) {
+            return false;
+        }
+        $("#react-cancel-link-spinner").show();
+        $.ajax({
+            type: "POST",
+            url: CANCEL_LAPTOP_LINK,
+            data: {id: $("#employeeLaptopId").val(), _token: $("#regist-request > input[name=_token").val()},
+            dataType: "json",
+            encode: true,
+        }).done(function(data){
+            if(data.success){
+                location.reload(true);
+            }
+            $("#react-cancel-link-spinner").hide();
+        }).fail(function(){
+            console.log('error');
+        })
+    });
 
 
 	// Create button is clicked

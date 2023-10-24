@@ -10,6 +10,7 @@ const APPROVE_EMPLOYEE_LINK = '/employees/store';
 const SEND_NOTIFICATION_LINK = '/employees/sendNotification';
 const EMPLOYEE_DOWNLOAD_LINK = '/employees/download';
 const GET_CITY = '/api/getCities';
+const CANCEL_EMPLOYEE_UPDATE = '/api/cancelEmployeeDetails';
 const BU_LIST = {
     '1'  : 'Dev A',
     '2'  : 'Dev B',
@@ -30,6 +31,9 @@ const BU_LIST = {
     '17'  : 'Dev 6',
     '18'  : 'C4I',
 };
+
+const MANAGER_ROLE_VALUE = 99;
+const ASSISTANT_MANAGER_ROLE_VALUE = 98;
 
 $(document).ready(function () {
 
@@ -834,7 +838,7 @@ $(document).ready(function () {
 	});
 
 	function hideAdminCheck(){
-		if($('#position').val() == 8 || $('#position').val() == 9){
+		if($('#position').val() == ASSISTANT_MANAGER_ROLE_VALUE || $('#position').val() == MANAGER_ROLE_VALUE){
 			$('#admin-check').hide();
 			$('#admin-detail').hide();
 			$('#is-admin').prop('disabled', true);
@@ -867,6 +871,29 @@ $(document).ready(function () {
 		});
 	}
 
+	$("#cancel-update").click(function(e){
+		
+		$(".alert").remove();
+		if (!confirm("Continue with the cancellation of employee updates?")) {
+			return false;
+		}
+		$("#react-cancel-spinner").show();
+		$.ajax({
+			type: "POST",
+			url: CANCEL_EMPLOYEE_UPDATE,
+			data: {id: $("#cancel-react-form > input[name=id").val(), _token: $("#cancel-react-form > input[name=_token").val()},
+			dataType: "json",
+			encode: true,
+		}).done(function(data){
+			if(data.success){
+				location.reload();
+			}
+			$("#react-cancel-spinner").hide();
+		}).fail(function(){
+			console.log('error');
+		})
+	});
+
 	//start for employee deactivation/reactivation
 
 	$("#employee-deactivate").click(function(e){
@@ -884,10 +911,7 @@ $(document).ready(function () {
 		}).done(function(data){
 			if(data.success){
 				location.reload();
-			}else{
-				//display error 
-				$("#deact-react-alert").remove();
-				$("#alert-div").append('<div id="deact-react-alert" class="alert alert-danger" role="alert"><span class="ms-2">' + data.message + '</span></div>');
+
 			}
 			$("#react-deact-spinner").hide();
 		}).fail(function(){

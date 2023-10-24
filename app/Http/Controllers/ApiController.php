@@ -1180,4 +1180,303 @@ class ApiController extends Controller
             'cities' => config("provinces_cities.PROVINCES_CITIES")[$province]
         ]);
     }
+
+    /**
+     * Cancel employee update
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function cancelEmployeeDetails(Request $request){
+        $employeeId = $request->input('id');
+        $message = '';
+        $success = false;
+
+        if(empty($employeeId)){
+            $message = 'Invalid Request!';
+        }else{
+            $employee = Employees::where('id', $employeeId)
+                                ->whereIn('approved_status', [config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+                                ->first();
+            if(empty($employee)){
+                $message = 'Invalid Request!';
+            } else {
+                $message = 'The employee update has already been cancelled.';
+                //check if employee has no linked laptops
+                $success = true;
+                    //changes
+                    $arChanges = [
+                            'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
+                            'update_data' => NULL,
+                            'updated_by' => Auth::user()->id,
+                        ];
+
+                    // if new registration
+                    Employees::where('id', $employee['id'])->update($arChanges);
+                    //create logs
+                    Logs::createLog("Employee", 'Cancel Update Employee Details Request');
+
+                    //send mail to managers
+                    $recipients = Employees::getEmailOfManagers();
+
+                    $mailData = [
+                        'employeeName' => $employee->first_name . " " . $employee->last_name,
+                        'module' => "Employee",
+                        'currentUserId' => Auth::user()->id,
+                    ];
+
+                    $this->sendMailForEmployeeUpdate($recipients, $mailData, config('constants.MAIL_EMPLOYEE_CANCEL_UPDATE'));
+                    session(['success' => $success, 'message'=> $message]);
+            }
+        }
+
+        return response()->json([
+            'success' => $success,
+            'message' => $message,
+        ]);
+    }
+
+    /**
+     * Cancel laptop registration
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function cancelLaptopRegister(Request $request){
+        $laptopId = $request->input('id');
+        $message = '';
+        $success = false;
+
+        if(empty($laptopId)){
+            $message = 'Invalid Request!';
+        }else{
+            $laptop = Laptops::where('id', $laptopId)
+                                ->whereIn('approved_status', [config('constants.APPROVED_STATUS_PENDING')])
+                                ->first();
+            if(empty($laptop)){
+                $message = 'Invalid Request!';
+            } else {
+                $message = 'Laptop registration has already been cancelled.';
+                //check if employee has no linked laptops
+                $success = true;
+                    //changes
+                    $arChanges = [
+                            'approved_status' => config('constants.CANCEL_REGIST'),
+                            'updated_by' => Auth::user()->id,
+                        ];
+
+                    // if new registration
+                    Laptops::where('id', $laptop->id)
+                        ->update($arChanges);
+
+                    $employee = Employees::where('id', $laptop->created_by)
+                            ->first();
+
+                    //create logs
+                    Logs::createLog("Laptop", 'Cancel Laptop Registration Request');
+
+                    //send mail to managers
+                    $recipients = Employees::getEmailOfManagers();
+
+                    $mailData = [
+                        'employeeName' => $employee->first_name . " " . $employee->last_name,
+                        'module' => "Employee",
+                        'laptopDetails' => $laptop,
+                        'currentUserId' => Auth::user()->id,
+                    ];
+
+                    $this->sendMailForLaptop($recipients, $mailData, config('constants.MAIL_LAPTOP_CANCEL_REGIST'));
+                    session(['laptop_alert'=> $message]);
+            }
+        }
+
+        return response()->json([
+            'success' => $success,
+            'message' => $message,
+        ]);
+    }
+
+    /**
+     * Cancel employee update
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function cancelLaptopUpdate(Request $request){
+        $laptopId = $request->input('id');
+        $message = '';
+        $success = false;
+
+        if(empty($laptopId)){
+            $message = 'Invalid Request!';
+        }else{
+            $laptop = Laptops::where('id', $laptopId)
+                                ->whereIn('approved_status', [config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+                                ->first();
+            if(empty($laptop)){
+                $message = 'Invalid Request!';
+            } else {
+                $message = 'The laptop update has already been cancelled.';
+                //check if employee has no linked laptops
+                $success = true;
+                    //changes
+                    $arChanges = [
+                            'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
+                            'update_data' => NULL,
+                            'updated_by' => Auth::user()->id,
+                        ];
+
+                    // if new registration
+                    Laptops::where('id', $laptop->id)
+                        ->update($arChanges);
+
+                    $employee = Employees::where('id', $laptop->updated_by)
+                            ->first();
+
+                    //create logs
+                    Logs::createLog("Laptop", 'Cancel Laptop Update Request');
+
+                    //send mail to managers
+                    $recipients = Employees::getEmailOfManagers();
+
+                    $mailData = [
+                        'employeeName' => $employee->first_name . " " . $employee->last_name,
+                        'module' => "Employee",
+                        'laptopDetails' => $laptop,
+                        'currentUserId' => Auth::user()->id,
+                    ];
+
+                    $this->sendMailForLaptop($recipients, $mailData, config('constants.MAIL_LAPTOP_CANCEL_UPDATE'));
+                    session(['l_alert'=> $message]);
+            }
+        }
+
+        return response()->json([
+            'success' => $success,
+            'message' => $message,
+        ]);
+    }
+
+    /**
+     * Cancel employee update
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function cancelEmployeeLaptopUpdate(Request $request){
+        $id = $request->input('id');
+        $message = '';
+        $success = false;
+
+        if(empty($id)){
+            $message = 'Invalid Request!';
+        }else{
+            $employeeLaptop = EmployeesLaptops::where('id', $id)
+                                ->whereIn('approved_status', [config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+                                ->first();
+            if(empty($employeeLaptop)){
+                $message = 'Invalid Request!';
+            } else {
+                $message = 'The linkage update for employees and laptops has already been cancelled.';
+                //check if employee has no linked laptops
+                $success = true;
+                //changes
+                $arChanges = [
+                        'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
+                        'update_data' => NULL,
+                        'updated_by' => Auth::user()->id,
+                    ];
+
+                // if new registration
+                EmployeesLaptops::where('id', $employeeLaptop->id)
+                    ->update($arChanges);
+
+                $employee = Employees::where('id', $employeeLaptop->updated_by)->first();
+
+                $laptop = Laptops::where('id', $employeeLaptop->laptop_id)->first();
+
+                //create logs
+                Logs::createLog("Laptop", 'Cancel Linkage Update for Employee and Laptop Request');
+
+                //send mail to managers
+                $recipients = Employees::getEmailOfManagers();
+
+                $mailData = [
+                    'employeeName' => $employee->first_name . " " . $employee->last_name,
+                    'module' => "Employee",
+                    'laptopDetails' => $laptop,
+                    'currentUserId' => Auth::user()->id,
+                ];
+
+                $this->sendMailForLaptop($recipients, $mailData, config('constants.MAIL_LAPTOP_CANCEL_LINK_UPDATE'));
+                session(['l_alert'=> $message]);
+            }
+        }
+
+        return response()->json([
+            'success' => $success,
+            'message' => $message,
+        ]);
+    }
+
+    /**
+     * Cancel employee update
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function cancelEmployeeLaptopLink(Request $request){
+        $id = $request->input('id');
+        $message = '';
+        $success = false;
+
+        if(empty($id)){
+            $message = 'Invalid Request!';
+        }else{
+            $employeeLaptop = EmployeesLaptops::where('id', $id)
+                                ->whereIn('approved_status', [config('constants.APPROVED_STATUS_PENDING')])
+                                ->first();
+            if(empty($employeeLaptop)){
+                $message = 'Invalid Request!';
+            } else {
+                $message = 'The linkage for employees and laptops has already been cancelled.';
+                //check if employee has no linked laptops
+                $success = true;
+                //changes
+                $arChanges = [
+                        'approved_status' => config('constants.CANCEL_LINK'),
+                        'updated_by' => Auth::user()->id,
+                    ];
+
+                // if new registration
+                EmployeesLaptops::where('id', $employeeLaptop->id)
+                    ->update($arChanges);
+
+                $employee = Employees::where('id', $employeeLaptop->updated_by)->first();
+
+                $laptop = Laptops::where('id', $employeeLaptop->laptop_id)->first();
+
+                //create logs
+                Logs::createLog("Laptop", 'Cancel Linkage for Employee and Laptop Request');
+
+                //send mail to managers
+                $recipients = Employees::getEmailOfManagers();
+
+                $mailData = [
+                    'employeeName' => $employee->first_name . " " . $employee->last_name,
+                    'module' => "Employee",
+                    'laptopDetails' => $laptop,
+                    'currentUserId' => Auth::user()->id,
+                ];
+
+                $this->sendMailForLaptop($recipients, $mailData, config('constants.MAIL_LAPTOP_CANCEL_LINK'));
+                session(['l_alert'=> $message]);
+            }
+        }
+
+        return response()->json([
+            'success' => $success,
+            'message' => $message,
+        ]);
+    }
 }

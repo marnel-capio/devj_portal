@@ -1,5 +1,5 @@
 
-@if (in_array($mailType, [config('constants.MAIL_LAPTOP_NEW_REGISTRATION_REQUEST'), config('constants.MAIL_LAPTOP_DETAIL_UPDATE_REQUEST'), config('constants.MAIL_LAPTOP_NEW_LINKAGE_BY_NON_MANAGER_REQUEST'), config('constants.MAIL_LAPTOP_LINKAGE_UPDATE_BY_NON_MANAGER_REQUEST')]))
+@if (in_array($mailType, [config('constants.MAIL_LAPTOP_NEW_REGISTRATION_REQUEST'), config('constants.MAIL_LAPTOP_DETAIL_UPDATE_REQUEST'), config('constants.MAIL_LAPTOP_NEW_LINKAGE_BY_NON_MANAGER_REQUEST'), config('constants.MAIL_LAPTOP_LINKAGE_UPDATE_BY_NON_MANAGER_REQUEST'), config('constants.MAIL_LAPTOP_CANCEL_REGIST'), config('constants.MAIL_LAPTOP_CANCEL_UPDATE'), config('constants.MAIL_LAPTOP_CANCEL_LINK_UPDATE'), config('constants.MAIL_LAPTOP_CANCEL_LINK')]))
 Hi Managers,<br>
 @else
 Hi {{ $mailData['firstName'] }},<br>
@@ -124,6 +124,22 @@ Request Summary: <br>
 &nbsp;&nbsp;Laptop Tag Number: {{ $mailData['tagNumber'] }} <br>
 <br>
 Reason for rejection: {{ $mailData['reason'] }}
+
+@elseif ($mailType == config('constants.MAIL_LAPTOP_CANCEL_REGIST'))
+
+This is to inform you that the request for laptop registration with tag number {{ $mailData['laptopDetails']['tag_number']}} by {{$mailData['employeeName']}} has been cancelled.
+
+@elseif ($mailType == config('constants.MAIL_LAPTOP_CANCEL_UPDATE'))
+
+This is to inform you that the request for laptop updates with tag number {{ $mailData['laptopDetails']['tag_number']}} by {{$mailData['employeeName']}} has been cancelled.
+
+@elseif ($mailType == config('constants.MAIL_LAPTOP_CANCEL_LINK_UPDATE'))
+
+This is to inform you that the request for laptop link updates with tag number {{ $mailData['laptopDetails']['tag_number']}} by {{$mailData['employeeName']}} has been cancelled.
+
+@elseif ($mailType == config('constants.MAIL_LAPTOP_CANCEL_LINK'))
+
+This is to inform you that the request for laptop link with tag number {{ $mailData['laptopDetails']['tag_number']}} by {{$mailData['employeeName']}} has been cancelled.
 
 @endif
 

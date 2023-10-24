@@ -88,7 +88,14 @@ class LaptopsRequest extends FormRequest
         // 1. If request is from Create Laptop
         if(strpos($this->header('referer'), route('laptops.create')) !== FALSE){
 
-            $rules['tag_number'] = 'required|max:80|unique:laptops,tag_number';
+            $rules['tag_number'] = ['required','max:80', 
+                    function($attribute, $value, $fail){
+                        $detail = Laptops::where('tag_number', $value)->where('approved_status',"!=", config("constants.CANCEL_REGIST"))->get()->toArray();
+                        if(!empty($detail)){
+                            $fail("The tag number is already registered.");
+                        }
+                    }
+                ];
             if(empty($this->input('peza_form_number')) and empty($this->input('peza_permit_number'))){
                 $rules['peza_form_number'] = 'max:80';
                 $rules['peza_permit_number'] = 'max:80';
@@ -103,7 +110,7 @@ class LaptopsRequest extends FormRequest
                 $rejectCode = substr($referer, strripos($referer, '/') + 1);
                 $rules['tag_number'] = ['required','max:80', 
                     function($attribute, $value, $fail) use ($rejectCode){
-                        $detail = Laptops::where('tag_number', $value)->get()->toArray();
+                        $detail = Laptops::where('tag_number', $value)->where('approved_status',"!=", config("constants.CANCEL_REGIST"))->get()->toArray();
                         if(!empty($detail) && $detail[0]['reject_code'] != $rejectCode){
                             $fail("The tag number is already registered.");
                         }
@@ -150,7 +157,7 @@ class LaptopsRequest extends FormRequest
                 'max:80', 
                 function($attribute, $value, $fail) use ($laptop_id){
                     // Test if tag_number is unique from laptop table, and not self
-                    $detail = Laptops::where('tag_number', $value)->where('id','<>',$laptop_id)->get()->toArray();
+                    $detail = Laptops::where('tag_number', $value)->where('id','<>',$laptop_id)->where('approved_status',"!=", config("constants.CANCEL_REGIST"))->get()->toArray();
                     if(!empty($detail)){
                         $fail($this->messages()['tag_number.unique']);
                     }

@@ -1,5 +1,7 @@
 
-@if (in_array($mailType, [config('constants.MAIL_NEW_REGISTRATION_REQUEST'), config('constants.MAIL_EMPLOYEE_UPDATE_REQUEST'), config('constants.MAIL_EMPLOYEE_LAPTOP_LINK_REQUEST'), config('constants.MAIL_EMPLOYEE_PROJECT_LINK_REQUEST'), config('constants.MAIL_EMPLOYEE_SURRENDER_LAPTOP_WHEN_USER_IS_DEACTIVATED')]))
+@if (in_array($mailType, [config('constants.MAIL_NEW_REGISTRATION_REQUEST'), config('constants.MAIL_EMPLOYEE_UPDATE_REQUEST'), config('constants.MAIL_EMPLOYEE_LAPTOP_LINK_REQUEST'), config('constants.MAIL_EMPLOYEE_PROJECT_LINK_REQUEST'), config('constants.MAIL_EMPLOYEE_SURRENDER_LAPTOP_WHEN_USER_IS_DEACTIVATED'),
+config('constants.MAIL_EMPLOYEE_CANCEL_UPDATE'),
+]))
     Hi Managers,<br>
 @else
     Hi {{ $mailData['first_name'] }},<br>
@@ -132,6 +134,10 @@
 @elseif ($mailType == config('constants.MAIL_EMPLOYEE_REACTIVATION'))
 
     This is to inform you that your Dev J Portal account has been reactivated.
+
+@elseif ($mailType == config('constants.MAIL_EMPLOYEE_CANCEL_UPDATE'))
+
+    This is to inform you that the request for employee detail updates by {{$mailData['employeeName']}} has been cancelled.
 
 @endif
 @if ($mailType != config('constants.MAIL_EMPLOYEE_SURRENDER_LAPTOP_NOTIFICATION'))
