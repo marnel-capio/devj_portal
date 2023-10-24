@@ -1479,4 +1479,188 @@ class ApiController extends Controller
             'message' => $message,
         ]);
     }
+
+
+    /**
+     * Cancel software registration
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function cancelSoftwareRegister(Request $request){
+        $id = $request->input('id');
+        $message = '';
+        $success = false;
+
+        if(empty($id)){
+            $message = 'Invalid Request!';
+        }else{
+            $software = Softwares::where('id', $id)
+                                ->whereIn('approved_status', [config('constants.APPROVED_STATUS_PENDING')])
+                                ->first();
+            if(empty($software)){
+                $message = 'Invalid Request!';
+            } else {
+                $message = 'Software registration has already been cancelled.';
+                //check if employee has no linked laptops
+                $success = true;
+                    //changes
+                    $arChanges = [
+                            'approved_status' => config('constants.CANCEL_REGIST'),
+                            'updated_by' => Auth::user()->id,
+                        ];
+
+                    // if new registration
+                    Softwares::where('id', $software->id)
+                        ->update($arChanges);
+
+                    $employee = Employees::where('id', $software->created_by)
+                            ->first();
+
+                    //create logs
+                    Logs::createLog("Software", 'Cancel Software Registration Request');
+
+                    //send mail to managers
+                    $recipients = Employees::getEmailOfManagers();
+
+                    $mailData = [
+                        'employeeName' => $employee->first_name . " " . $employee->last_name,
+                        'module' => "Employee",
+                        'softwareDetails' => $software,
+                        'currentUserId' => Auth::user()->id,
+                    ];
+
+                    $this->sendMailForSoftwareUpdate($recipients, $mailData, config('constants.MAIL_SOFTWARE_REGIST_CANCEL'));
+                    session(['software_alert'=> $message]);
+            }
+        }
+
+        return response()->json([
+            'success' => $success,
+            'message' => $message,
+        ]);
+    }
+
+
+    /**
+     * Cancel software registration
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function cancelEmployeeProjectLinkage(Request $request){
+        $id = $request->input('id');
+        $message = '';
+        $success = false;
+
+        if(empty($id)){
+            $message = 'Invalid Request!';
+        }else{
+            $employeeProject = EmployeesProjects::where('id', $id)
+                                ->whereIn('approved_status', [config('constants.APPROVED_STATUS_PENDING')])
+                                ->first();
+            if(empty($employeeProject)){
+                $message = 'Invalid Request!';
+            } else {
+                $message = 'Linkage of employee and project has already been cancelled.';
+                //check if employee has no linked laptops
+                $success = true;
+                    //changes
+                    $arChanges = [
+                            'approved_status' => config('constants.CANCEL_LINK'),
+                            'updated_by' => Auth::user()->id,
+                        ];
+
+                    // if new registration
+                    EmployeesProjects::where('id', $employeeProject->id)
+                        ->update($arChanges);
+
+                    $employee = Employees::where('id', $employeeProject->created_by)
+                            ->first();
+
+                    $project = Projects::where('id', $employeeProject->project_id)
+                            ->first();
+
+                    //create logs
+                    Logs::createLog("Employee", 'Cancel Linkage of Employee and Project');
+
+                    $mailData = [
+                        'employeeName' => $employee->first_name . " " . $employee->last_name,
+                        'module' => "Employee",
+                        'projectDetails' => $project,
+                        'currentUserId' => Auth::user()->id,
+                    ];
+
+                    Mail::to(Employees::getEmailOfManagers())->send(new Project($mailData, config('constants.MAIL_PROJECT_NEW_LINKAGE_CANCELLATION')));
+                    session(['proj_alert'=> $message]);
+            }
+        }
+
+        return response()->json([
+            'success' => $success,
+            'message' => $message,
+        ]);
+    }
+
+
+    /**
+     * Cancel software registration
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function cancelEmployeeProjectUpdateLinkage(Request $request){
+        $id = $request->input('id');
+        $message = '';
+        $success = false;
+
+        if(empty($id)){
+            $message = 'Invalid Request!';
+        }else{
+            $employeeProject = EmployeesProjects::where('id', $id)
+                                ->whereIn('approved_status', [config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+                                ->first();
+            if(empty($employeeProject)){
+                $message = 'Invalid Request!';
+            } else {
+                $message = 'Update linkage of employee and project has already been cancelled.';
+                //check if employee has no linked laptops
+                $success = true;
+                    //changes
+                    $arChanges = [
+                            'approved_status' => config('constants.APPROVED_STATUS_APPROVED'),
+                            'update_data' => null,
+                            'updated_by' => Auth::user()->id,
+                        ];
+
+                    // if new registration
+                    EmployeesProjects::where('id', $employeeProject->id)
+                        ->update($arChanges);
+
+                    $employee = Employees::where('id', $employeeProject->created_by)
+                            ->first();
+
+                    $project = Projects::where('id', $employeeProject->project_id)
+                            ->first();
+
+                    //create logs
+                    Logs::createLog("Employee", 'Cancel Linkage of Employee and Project');
+
+                    $mailData = [
+                        'employeeName' => $employee->first_name . " " . $employee->last_name,
+                        'module' => "Employee",
+                        'projectDetails' => $project,
+                        'currentUserId' => Auth::user()->id,
+                    ];
+
+                    Mail::to(Employees::getEmailOfManagers())->send(new Project($mailData, config('constants.MAIL_PROJECT_EMPLOYEE_LINKAGE_UPDATE_CANCELLATION')));
+                    session(['proj_alert'=> $message]);
+            }
+        }
+
+        return response()->json([
+            'success' => $success,
+            'message' => $message,
+        ]);
+    }
 }

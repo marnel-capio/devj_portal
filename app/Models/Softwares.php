@@ -70,7 +70,7 @@ class Softwares extends Model
                                 softwares.reject_code,
                                 softwares.approve_time
                             ')
-                        ->leftJoin('software_types', 'software_types.id',  'softwares.software_type_id')->where('softwares.is_deleted',"!=",1);
+                        ->leftJoin('software_types', 'software_types.id',  'softwares.software_type_id')->where('softwares.is_deleted',"!=",1)->where('softwares.approved_status',"!=",config("constants.CANCEL_REGIST"));
 
         if (!empty($keyword)) {
             $query=  $query->where('softwares.software_name','LIKE','%'.$keyword.'%');
@@ -145,6 +145,7 @@ class Softwares extends Model
                         softwares.update_time,
                         softwares.reject_code,
                         softwares.approve_time,
+                        softwares.updated_by,
                         softwares.software_type_id,
                         CONCAT(e1.last_name, ", ", e1.first_name) AS creator,
                         CONCAT(e2.last_name, ", ", e2.first_name) AS updater,

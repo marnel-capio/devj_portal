@@ -1,6 +1,8 @@
 const LINK_EMPLOYEE_PROJECT_LINK = '/api/linkEmployeeToProject';
 const LINK_SOFTWARE_TO_PROJECT_LINK = '/api/linkSoftwareToProject';
 const UPDATE_EMPLOYEE_PROJECT_LINKAGE_LINK = '/api/updateEmployeeProjectLinkage';
+const CANCEL_PROJECT_EMPLOYEE_LINK = "/api/cancelEmployeeProjectLinkage";
+const CANCEL_PROJECT_EMPLOYEE_UPDATE_LINK = "/api/cancelEmployeeProjectUpdateLinkage";
 
 
 const PROJECT_ROLES = [
@@ -57,6 +59,52 @@ $(document).ready( function () {
                 .search($('#show_hist').is(":checked") ? '' : '1')
                 .draw();
     }
+
+    $("#cancel-link").click(function(e){
+        
+        $(".alert").remove();
+        if (!confirm("Continue with the cancellation of the employee link?")) {
+            return false;
+        }
+        $("#react-cancel-link-spinner").show();
+        $.ajax({
+            type: "POST",
+            url: CANCEL_PROJECT_EMPLOYEE_LINK,
+            data: {id: $("#employeeProjectId").val(), _token: $("#regist-request > input[name=_token").val()},
+            dataType: "json",
+            encode: true,
+        }).done(function(data){
+            if(data.success){
+                location.reload(true);
+            }
+            $("#react-cancel-link-spinner").hide();
+        }).fail(function(){
+            console.log('error');
+        })
+    });
+
+    $("#cancel-update-link").click(function(e){
+        
+        $(".alert").remove();
+        if (!confirm("Continue with the cancellation of the employee update link?")) {
+            return false;
+        }
+        $("#react-cancel-link-spinner").show();
+        $.ajax({
+            type: "POST",
+            url: CANCEL_PROJECT_EMPLOYEE_UPDATE_LINK,
+            data: {id: $("#employeeProjectId").val(), _token: $("#regist-request > input[name=_token").val()},
+            dataType: "json",
+            encode: true,
+        }).done(function(data){
+            if(data.success){
+                location.reload(true);
+            }
+            $("#react-cancel-link-spinner").hide();
+        }).fail(function(){
+            console.log('error');
+        })
+    });
 
     
     $("#link_request_tbl").DataTable({

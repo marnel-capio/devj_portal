@@ -8,6 +8,12 @@
 	</div>
 @endif
 
+@if (session('software_alert')) 
+	<div class="alert alert-success " role="alert">
+	   {{session()->pull('software_alert')}}
+	</div>
+@endif
+
 {{-- Notif for Alert Banner --}}
 <div class="alert d-none" role="alert" id="header-alert">
 	<div id="header-alert-content">&nbsp;.</div>

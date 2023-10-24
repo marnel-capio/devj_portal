@@ -72,7 +72,7 @@ class EmployeesProjects extends Model
     static function checkIfProjectIsOngoing($projectId, $employeeId){
         $detail = self::where('project_id', $projectId)
                         ->where('employee_id', $employeeId)
-                        ->where('approved_status',"!=", config('constants.APPROVED_STATUS_REJECTED'))
+                        ->whereNotIn('approved_status',[config('constants.APPROVED_STATUS_REJECTED'),config('constants.CANCEL_LINK')])
                         ->where(function($query){
                             $query->whereNull('end_date')
                                 ->orWhere('end_date', '0000-00-00 00:00:00');
@@ -191,7 +191,7 @@ class EmployeesProjects extends Model
         $isAllowedToAddRemoveSoftware = false;
         $allowedEmployee = EmployeesProjects::where('project_id',  $projectId)
                 ->where('employee_id', Auth::user()->id)
-                ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'),config('constants.APPROVED_STATUS_PENDING'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+                ->whereIn('approved_status', [config('constants.APPROVED_STATUS_APPROVED'), config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
                 ->where(function($query){
                 $query->whereNull('end_date')
                     ->orWhere('end_date', '0000-00-00 00:00:00')

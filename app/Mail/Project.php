@@ -21,6 +21,8 @@ class Project extends Mailable
     const MAIL_6 = '【DEV J PORTAL】 Employee-Project Linkage Approval';
     const MAIL_7 = '【DEV J PORTAL】 Employee-Project Linkage Update Rejection';
     const MAIL_8 = '【DEV J PORTAL】 Employee-Project Linkage Update Approval';
+    const MAIL_9 = '【DEV J PORTAL】 Employee-Project Linkage Cancellation';
+    const MAIL_10 = '【DEV J PORTAL】 Employee-Project Linkage Update Cancellation';
     
     /**
      * Create a new message instance.

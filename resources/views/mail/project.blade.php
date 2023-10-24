@@ -1,4 +1,4 @@
-@if (in_array($mailType, [config('constants.MAIL_PROJECT_EMPLOYEE_LINKAGE_REQUEST'), config('constants.MAIL_PROJECT_EMPLOYEE_LINKAGE_UPDATE_REQUEST')]))
+@if (in_array($mailType, [config('constants.MAIL_PROJECT_EMPLOYEE_LINKAGE_REQUEST'), config('constants.MAIL_PROJECT_EMPLOYEE_LINKAGE_UPDATE_REQUEST'), config('constants.MAIL_PROJECT_NEW_LINKAGE_CANCELLATION'), config('constants.MAIL_PROJECT_EMPLOYEE_LINKAGE_UPDATE_CANCELLATION')]))
 Hi Managers,<br>
 @else
 Hi {{ $mailData['firstName'] }},<br>
@@ -113,6 +113,14 @@ Request summary:<br>
 &nbsp;&nbsp;Member: {{ $mailData['assignee'] }}<br>
 <br>
 Check the details <a href="{{ url($mailData['link']) }}">here</a>.
+
+@elseif ($mailType == config('constants.MAIL_PROJECT_NEW_LINKAGE_CANCELLATION'))
+
+This is to inform you that the linkage request between employee ({{$mailData['employeeName']}}) and project ({{$mailData['projectDetails']['name']}}) has been cancelled.
+
+@elseif ($mailType == config('constants.MAIL_PROJECT_EMPLOYEE_LINKAGE_UPDATE_CANCELLATION'))
+
+This is to inform you that the linkage update request between employee ({{$mailData['employeeName']}}) and project ({{$mailData['projectDetails']['name']}}) has been cancelled.
 
 @endif
 

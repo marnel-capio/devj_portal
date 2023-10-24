@@ -19,6 +19,7 @@ class Software extends Mailable
     const MAIL_5 = '【DEV J PORTAL】Software Update Request Approved';
     const MAIL_6 = '【DEV J PORTAL】Software Update Request Rejected';
     const MAIL_7 = '【DEV J PORTAL】Project Link to Software Request';
+    const MAIL_8 = '【DEV J PORTAL】Software Registration Cancellation';
 
     /**
      * Create a new message instance.

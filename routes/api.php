@@ -32,6 +32,9 @@ Route::middleware('auth:sanctum')->controller(ApiController::class)->group(funct
     Route::post('/cancelLaptopUpdate', 'cancelLaptopUpdate');
     Route::post('/cancelEmployeeLaptopUpdate', 'cancelEmployeeLaptopUpdate');
     Route::post('/cancelEmployeeLaptopLink', 'cancelEmployeeLaptopLink');
+    Route::post('/cancelSoftwareRegister', 'cancelSoftwareRegister');
+    Route::post('/cancelEmployeeProjectLinkage', 'cancelEmployeeProjectLinkage');
+    Route::post('/cancelEmployeeProjectUpdateLinkage', 'cancelEmployeeProjectUpdateLinkage');
     Route::post('/reactivateEmployee', 'reactivateEmployee');
     Route::post('/transferEmployee', 'transferEmployee');
     Route::post('/reinstateEmployee', 'reinstateEmployee');

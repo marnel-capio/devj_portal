@@ -113,10 +113,11 @@ class ProjectsController extends Controller
             //check if current user is already a member of the project
             $employeeProjectData = EmployeesProjects::where('employee_id', Auth::user()->id)
                                                         ->where('project_id', $id)
-                                                        ->where('approved_status', "!=",config('constants.APPROVED_STATUS_REJECTED'))
+                                                        ->whereNotIn('approved_status', [config('constants.APPROVED_STATUS_REJECTED'),config('constants.CANCEL_LINK')])
                                                         ->whereRaw('(end_date IS NULL or end_date > CURDATE())')
                                                         ->get()
                                                         ->toArray();
+
             if ( empty($employeeProjectData) ) {
                 $employeeDropdown = [[
                     'id' => Auth::user()->id,
@@ -180,7 +181,6 @@ class ProjectsController extends Controller
                 }
             }
         }
-
 
         return view('projects.details', [
             'projectData' => $projectData,

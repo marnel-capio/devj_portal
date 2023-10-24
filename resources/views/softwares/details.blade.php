@@ -12,7 +12,9 @@
         <span class="ms-2">{{ session('message') }}</span>
 	</div>
 @endif
-
+<form action="#" id="regist-request">
+@csrf
+</form>
 <div class="container text-center ps-md-3 pe-md-3 pt-5">
     <div class="d-flex justify-content-between mb-2">
         <div class="text-primary d-flex align-items-center">
@@ -28,6 +30,16 @@
             @if ($userInfo->roles == config('constants.MANAGER_ROLE_VALUE') && $software->approved_status != config('constants.APPROVED_STATUS_REJECTED'))
                 <a href="{{ route('softwares.delete', ['id' => $software->id]) }}" class="btn btn-danger  me-1" id="software-delete" type="button">Delete</a>
                 <input type="text" name="software_id" id="software_id" hidden value="{{ $software->id }}">
+            @endif
+            @if($userInfo->id == $software->updated_by && $software->approved_status == config("constants.APPROVED_STATUS_PENDING"))
+            <div>
+                <a id="cancel-register" class="btn btn-primary" type="button" style="float: right;">Cancel Register
+                    <div id="react-cancel-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                        <span class="sr-only"></span>
+                    </div>
+                </a>
+                <input hidden name="id" id="softwareId" value="{{ $software->id }}" type="text">
+            </div>
             @endif
         </div>
         

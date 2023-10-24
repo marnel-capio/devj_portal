@@ -1,5 +1,5 @@
 
-@if (in_array($mailType, [config('constants.MAIL_SOFTWARE_NEW_REQUEST'), config('constants.MAIL_SOFTWARE_UPDATE_REQUEST'), config('constants.MAIL_SOFTWARE_PROJECT_LINK_REQUEST'), config('constants.MAIL_SOFTWARE_UPDATE_PROJECT_LINK_REQUEST')]))
+@if (in_array($mailType, [config('constants.MAIL_SOFTWARE_NEW_REQUEST'), config('constants.MAIL_SOFTWARE_UPDATE_REQUEST'), config('constants.MAIL_SOFTWARE_PROJECT_LINK_REQUEST'), config('constants.MAIL_SOFTWARE_UPDATE_PROJECT_LINK_REQUEST'), config('constants.MAIL_SOFTWARE_REGIST_CANCEL')]))
 Hi Managers,<br>
 @else
 Hi {{ $mailData['first_name'] }},<br>
@@ -40,6 +40,11 @@ Check the details <a href="{{ url($mailData['link']) }}">here</a>.
 @elseif ($mailType == config('constants.MAIL_SOFTWARE_PROJECT_LINK_REQUEST'))
 There has been a request for project to be link on a software. 
 Check the details <a href="{{ url($mailData['link']) }}">here</a>.
+
+@elseif ($mailType == config('constants.MAIL_SOFTWARE_REGIST_CANCEL'))
+
+This is to inform you that the request for software registration of {{ $mailData['softwareDetails']['software_name']}} by {{$mailData['employeeName']}} has been cancelled.
+
 
 @endif
 

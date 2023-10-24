@@ -531,7 +531,7 @@
                                 <td>
                                     @if (Auth::user()->id == $request['employee_id'] && $request['el_approved_status'] == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE'))
                                         <div>
-                                            <a id="cancel-update-link" class="btn btn-primary" type="button" style="float: right;">Cancel Update
+                                            <a id="cancel-update-link" class="btn btn-primary" type="button">Cancel Update
                                                 <div id="react-cancel-link-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
                                                     <span class="sr-only"></span>
                                                 </div>
@@ -541,7 +541,7 @@
                                     @endif
                                     @if (Auth::user()->id == $request['employee_id'] && $request['el_approved_status'] == config('constants.APPROVED_STATUS_PENDING'))
                                         <div>
-                                            <a id="cancel-link" class="btn btn-primary" type="button" style="float: right;">Cancel Link
+                                            <a id="cancel-link" class="btn btn-primary" type="button">Cancel Link
                                                 <div id="react-cancel-link-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
                                                     <span class="sr-only"></span>
                                                 </div>

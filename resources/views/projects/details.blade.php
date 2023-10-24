@@ -4,6 +4,11 @@
 <link rel="stylesheet" href="{{ asset(mix('css/project.min.css')) }}">
 <script src="{{ asset(mix('js/project.min.js')) }}" defer></script>
 @include('headerMenu')
+@if (session('proj_alert')) 
+    <div class="alert alert-success " role="alert">
+       {{session()->pull('proj_alert')}}
+    </div>
+@endif
 @if(!empty(session('regist_update_alert')))
 <div class="alert alert-success" role="alert">
     {{ session()->pull('regist_update_alert') }}
@@ -12,6 +17,9 @@
 @else
 <div class="container-md ps-md-3 pe-md-3 pt-5">
 @endif
+<form action="#" id="regist-request">
+@csrf
+</form>
     <div class="d-flex justify-content-between mb-2">
         <div class="text-primary d-flex align-items-center">
             @if (!empty($detailNote))
@@ -289,7 +297,6 @@
         </div>
     </div>
 
-    @if (auth()->user()->roles == config('constants.MANAGER_ROLE_VALUE'))
     <div class="group-category mb-4 p-3 rounded-3" id="requests">
         <h4>Employee Linkage Requests</h4>
         <div class="ms-3">
@@ -382,7 +389,28 @@
                                         </button>
                                     </td>
                                 @else
-                                    <td></td>
+                                    <td>
+                                        @if (Auth::user()->id == $member['employee_id'] && $member['approved_status'] == config('constants.APPROVED_STATUS_PENDING'))
+                                            <div>
+                                            <a id="cancel-link" class="btn btn-primary" type="button">Cancel Link
+                                                <div id="react-cancel-link-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                                                    <span class="sr-only"></span>
+                                                </div>
+                                            </a>
+                                            <input hidden name="employeeProjectId" id="employeeProjectId" value="{{ $member['id'] }}" type="text">
+                                        </div>
+                                        @endif
+                                        @if (Auth::user()->id == $member['employee_id'] && $member['approved_status'] == config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE'))
+                                            <div>
+                                            <a id="cancel-update-link" class="btn btn-primary" type="button">Cancel Update
+                                                <div id="react-cancel-link-spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                                                    <span class="sr-only"></span>
+                                                </div>
+                                            </a>
+                                            <input hidden name="employeeProjectId" id="employeeProjectId" value="{{ $member['id'] }}" type="text">
+                                        </div>
+                                        @endif
+                                    </td>
                                 @endif
                             </tr>
                         @endforeach
@@ -391,7 +419,6 @@
             </table>
         </div>
     </div>
-    @endif
 
     @if (Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE') )
         <div class="modal fade" tabindex="-1" id="rejectLinkageRequestModal">

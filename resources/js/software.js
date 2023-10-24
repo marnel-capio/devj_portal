@@ -10,10 +10,12 @@ const SOFTWARE_TYPE_UTIL = "System Utilities";
 const SOFTWARE_TYPE_PROJECT_SPECIFIC = "Project Specific Softwares";
 const SOFTWARE_TYPE_DRIVERS = "Phone Drivers";
 
-const SOFTWARE_CREATE_LINK = '/softwares/create'
-const SOFTWARE_REGIST_LINK = '/softwares/regist'
-const SOFTWARE_DOWNLOAD_LINK = '/softwares/download'
-const LINK_PROJECT_LINK = '/api/softwarelinkProject'
+const SOFTWARE_CREATE_LINK = '/softwares/create';
+const SOFTWARE_REGIST_LINK = '/softwares/regist';
+const SOFTWARE_DOWNLOAD_LINK = '/softwares/download';
+const LINK_PROJECT_LINK = '/api/softwarelinkProject';
+
+const CANCEL_SOFTWARE_REGIST = '/api/cancelSoftwareRegister';
 
 
 $(document).ready(function () {
@@ -84,6 +86,29 @@ $(document).ready(function () {
 		}
 
 	});
+
+    $("#cancel-register").click(function(e){
+        
+        $(".alert").remove();
+        if (!confirm("Continue with the cancellation of software registration?")) {
+            return false;
+        }
+        $("#react-cancel-spinner").show();
+        $.ajax({
+            type: "POST",
+            url: CANCEL_SOFTWARE_REGIST,
+            data: {id: $("#softwareId").val(), _token: $("#regist-request > input[name=_token").val()},
+            dataType: "json",
+            encode: true,
+        }).done(function(data){
+            if(data.success){
+                window.location.href = "/softwares";
+            }
+            $("#react-cancel-spinner").hide();
+        }).fail(function(){
+            console.log('error');
+        })
+    });
 	
 	// Create button is clicked
 	$("#create-software").on("click", function() {
