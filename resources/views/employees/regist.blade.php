@@ -294,7 +294,7 @@
                             <p class="text-danger">{{ $errors->first('passport_expiration_date') }}</p>
                             @endif
                         </div>
-                        <div class="col-12 col-md-4 g-3 form-floating" data-bs-toggle="tooltip" data-bs-placement="top" title="optional: Place of issue is usually found at the back cover of the passport">
+                        <div class="col-12 col-md-4 g-3 form-floating" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top" data-bs-html="true" title="<em>optional</em>" data-bs-content="Place of issue is usually found at the back cover of the passport">
                             <input type="text" class="form-control" name="place_of_issue" id="place_of_issue" placeholder="Issuing Authority" value="{{ old('place_of_issue', $employee ? $employee->place_of_issue : '') }}">
                             <label for="place_of_issue" class="text-center">Place of Issue <em>(optional)</em></label>
                             @if ($errors->has('place_of_issue'))

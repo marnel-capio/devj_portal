@@ -256,6 +256,19 @@ class EmployeesController extends Controller
             $updatedDetails .= "admin flag: {$origData} -> {$updatedData},";
         }
         $updatedDetails = rtrim($updatedDetails,",");
+
+        // Verify if changes are made. Return to Employee detail page if no change found
+        $json = [];
+        foreach($updateData as $key => $value){
+            if($value != $originalData[$key] && !in_array($key, ['updated_by', 'password'])){
+                $json[$key] = $value;
+            }
+        }
+
+        if(empty($json)) {
+            return redirect(route('employees.details', ['id' => $id]))->with(['info' => 1, "message" => "Employee update submitted. No change found."]);
+        }
+
         //check logined employee role
         if(Auth::user()->roles == config('constants.MANAGER_ROLE_VALUE')){
             //save directly in DB in db
@@ -287,12 +300,6 @@ class EmployeesController extends Controller
             }
 
         }else{
-            $json = [];
-            foreach($updateData as $key => $value){
-                if($value != $originalData[$key] && !in_array($key, ['updated_by', 'password'])){
-                    $json[$key] = $value;
-                }
-            }
             Employees::where('id', $id)
                         ->update([
                             'updated_by' => Auth::user()->id,
@@ -326,6 +333,7 @@ class EmployeesController extends Controller
     public function request($id){
 
         $employeeDetails = Employees::where('id', $id)->first();
+        $employeeOriginalData = Employees::where('id', $id)->first();
 
         abort_if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE'), 403);   //can only be accessed by manager
 
@@ -374,6 +382,7 @@ class EmployeesController extends Controller
             'detailNote' => $detailNote,
             'showRejectCodeModal' => 1,
             'employee' => $employeeDetails,
+            'employeeOriginalData' => $employeeOriginalData,
             'requestor' => $this->getFullName($requestor, false),
         ]);
     }

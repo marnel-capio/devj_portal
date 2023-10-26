@@ -38,7 +38,7 @@
                         <p class="text-danger">{{ $errors->first('first_name') }}</p>
                         @endif
                     </div>
-                    <div class="col-12 col-md-3 g-3 form-floating" tabindex="0" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top" data-bs-html="true" title="<em>optional</em>" data-bs-content="Middle name">
+                    <div class="col-12 col-md-3 g-3 form-floating" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top" data-bs-html="true" title="<em>optional</em>" data-bs-content="Middle name">
                         <input type="text" class="form-control" name="middle_name" id="middle_name" placeholder="Middle Name" value="{{ old('middle_name', $employee->middle_name) }}">
                         <label  class="text-center" for="middle_name"><em>Middle Name</em></label>
                         @if ($errors->has('middle_name'))
@@ -52,7 +52,7 @@
                         <p class="text-danger">{{ $errors->first('last_name') }}</p>
                         @endif
                     </div>
-                    <div class="col-12 col-md-1 g-3 form-floating" tabindex="0" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top" data-bs-html="true" title="<em>optional</em>" data-bs-content="Suffix (Jr, II, III, etc.)">
+                    <div class="col-12 col-md-1 g-3 form-floating" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top" data-bs-html="true" title="<em>optional</em>" data-bs-content="Suffix (Jr, II, III, etc.)">
                         <input type="text" class="form-control" name="name_suffix" id="name_suffix" placeholder="*Suffix" value="{{ old('name_suffix', $employee->name_suffix) }}">
                         <label  class="text-center small" for="name_suffix"><em>Suffix</em></label>
                         @if ($errors->has('name_suffix'))
@@ -239,7 +239,7 @@
                             @endif
                         </div>
                         
-                        <div class="col-12 col-md-4 g-3 form-floating" tabindex="0" data-bs-placement="bottom" data-bs-html="true"  data-bs-toggle="popover" data-bs-trigger="focus" title="Place of issue <em>(optional)</em>" data-bs-content="Place of issue is usually found at the back cover of the passport">
+                        <div class="col-12 col-md-4 g-3 form-floating" data-bs-placement="bottom" data-bs-html="true"  data-bs-toggle="popover" data-bs-trigger="focus" title="Place of issue <em>(optional)</em>" data-bs-content="Place of issue is usually found at the back cover of the passport">
                             <input type="text" class="form-control" name="place_of_issue" id="place_of_issue" placeholder="Place of Issue"  value="{{ old('place_of_issue', $employee->place_of_issue) }}">
                             <label for="place_of_issue" class="text-center">Place of Issue <em>(optional)</em></label>
                             @if ($errors->has('place_of_issue'))
