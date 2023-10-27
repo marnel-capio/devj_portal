@@ -427,6 +427,7 @@ class SoftwaresController extends Controller
     public function request($id)
     {
         $softwaresDetails = Softwares::getSoftwareDetail($id);
+        $originalData = Softwares::getSoftwareDetail($id);
 
         $is_display_approver = false;
 
@@ -475,6 +476,7 @@ class SoftwaresController extends Controller
             'detailNote' => $detailNote,
             'showRejectCodeModal' => 1,
             'software' => $softwaresDetails,
+            'originalData' => $originalData,
             'current_status' => $this->transformStatusToText($softwaresDetails),
             'is_display_approver' => $is_display_approver,
             'is_display_new_software_type' => $is_display_new_software_type,            

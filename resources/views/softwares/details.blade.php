@@ -63,6 +63,9 @@
                     <div class="col-4 g-3 form-floating">
                         <input type="text" class="form-control" name="software_name" id="software_name" placeholder="Software Name" value="{{ $software->software_name }}" required disabled>
                         <label class="text-center" for="software_name">Software Name</label>
+                        @if (isset($originalData) && ($originalData->software_name != $software->software_name))
+                            <div class="text-secondary px-3 py-1 fs-6 fst-italic text-start">old value: {{ !empty($originalData->software_name) ? $originalData->software_name : "''" }}</div>
+                        @endif
                         @if ($errors->has('software_name'))
                         <p class="text-danger">{{ $errors->first('software_name') }}</p>
                         @endif
@@ -78,6 +81,9 @@
                             @endif
                         </select>
                         <label  class="text-center" for="type">Software Type</label>
+                        @if (isset($originalData) && ($originalData->type != $software->type))
+                            <div class="text-secondary px-3 py-1 fs-6 fst-italic text-start">old value: {{ !empty($originalData->type) ? $originalData->type : "''" }}</div>
+                        @endif
                         @if ($errors->has('type'))
                         <p class="text-danger">{{ $errors->first('type') }}</p>
                         @endif
@@ -96,6 +102,9 @@
                     <div class="col-4 g-3 form-floating">
                         <textarea class="form-control" name="remarks" id="remarks" placeholder="Purpose" required disabled> {{ $software->remarks }} </textarea>
                         <label class="text-center" for="remarks">Purpose</label>
+                        @if (isset($originalData) && ($originalData->remarks != $software->remarks))
+                            <div class="text-secondary px-3 py-1 fs-6 fst-italic text-start">old value: {{ !empty($originalData->remarks) ? $originalData->remarks : "''" }}</div>
+                        @endif
                         @if ($errors->has('remarks'))
                         <p class="text-danger">{{ $errors->first('remarks') }}</p>
                         @endif

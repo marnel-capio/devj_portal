@@ -321,6 +321,9 @@ class LaptopsController extends Controller
         $laptopDetails = Laptops::where('id', $id)
             ->whereIn('approved_status', [config('constants.APPROVED_STATUS_PENDING'),config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
             ->first();
+        $originalData = Laptops::where('id', $id)
+            ->whereIn('approved_status', [config('constants.APPROVED_STATUS_PENDING'),config('constants.APPROVED_STATUS_PENDING_APPROVAL_FOR_UPDATE')])
+            ->first();
 
         abort_if(empty($laptopDetails), 404);
         $detailNote = $this->getDetailNote($laptopDetails);
@@ -347,6 +350,7 @@ class LaptopsController extends Controller
 
         return view('laptops.details')->with([
             'detail' => $laptopDetails,
+            'originalData' => $originalData,
             'requestor' => $requestor,
             'detailNote' => $detailNote,
             'detailOnly' => false,

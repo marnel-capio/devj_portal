@@ -333,7 +333,7 @@ class EmployeesController extends Controller
     public function request($id){
 
         $employeeDetails = Employees::where('id', $id)->first();
-        $employeeOriginalData = Employees::where('id', $id)->first();
+        $originalData = Employees::where('id', $id)->first();
 
         abort_if(Auth::user()->roles != config('constants.MANAGER_ROLE_VALUE'), 403);   //can only be accessed by manager
 
@@ -382,7 +382,7 @@ class EmployeesController extends Controller
             'detailNote' => $detailNote,
             'showRejectCodeModal' => 1,
             'employee' => $employeeDetails,
-            'employeeOriginalData' => $employeeOriginalData,
+            'original$originalData' => $originalData,
             'requestor' => $this->getFullName($requestor, false),
         ]);
     }

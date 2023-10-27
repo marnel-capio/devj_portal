@@ -177,12 +177,21 @@
                     <div class="col-md-3 col-6 g-3 form-floating">
                        <input type="text" name="tag_number" class="form-control" id="tag-number" placeholder="Tag Number" value="{{ $detail->tag_number }}" disabled>
                        <label for="tag-number" class="text-center">Tag Number</label>
+                        @if (isset($originalData) && ($originalData->tag_number != $detail->tag_number))
+                            <div class="text-secondary px-3 py-1 fs-6 fst-italic text-start">old value: {{ !empty($originalData->tag_number) ? $originalData->tag_number : "''" }}</div>
+                        @endif
                     </div>
                     <div class="col-6 g-3">
                         <div class="d-flex align-items-center" style="height: 100%">
                             <div class="form-check ">
-                                <label class="form-check-label" for="laptop-status">Active Status</label>
+                                
+                                @if (isset($originalData) && ($originalData->status != $detail->status))
+                                <input type="checkBox" class="form-check-input {{ $detail->status ? 'bg-primary' : 'bg-danger' }}" name="status" id="laptop-status" value="0" {{ $detail->status ? "checked" : "" }} disabled>
+                                <label class="form-check-label {{ $detail->status ? 'text-primary fw-bold' : 'text-danger' }}" for="laptop-status">Active Status</label>
+                                @else
                                 <input type="checkBox" class="form-check-input" name="status" id="laptop-status" value="0" {{ $detail->status ? "checked" : "" }} disabled>
+                                <label class="form-check-label" for="laptop-status">Active Status</label>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -194,12 +203,18 @@
                     <div class="col-md-3 col-6 g-3 form-floating">
                         <input type="text" name="peza_form_number" class="form-control" id="form-number" placeholder="Form Number" value="{{ $detail->peza_form_number }}" disabled>
                         <label for="form-number" class="text-center">Form Number</label>
+                        @if (isset($originalData) && ($originalData->peza_form_number != $detail->peza_form_number))
+                            <div class="text-secondary px-3 py-1 fs-6 fst-italic text-start">old value: {{ !empty($originalData->peza_form_number) ? $originalData->peza_form_number : "''" }}</div>
+                        @endif
                      </div>
                 </div>
                 <div class="row mb-2 ps-5 pe-3">
                     <div class="col-md-3 col-6 g-3 form-floating">
                         <input type="text" name="peza_permit_number" class="form-control" id="permit-number" placeholder="Permit Number" value="{{ $detail->peza_permit_number }}" disabled>
                         <label for="permit-number" class="text-center">Permit Number</label>
+                        @if (isset($originalData) && ($originalData->peza_permit_number != $detail->peza_permit_number))
+                            <div class="text-secondary px-3 py-1 fs-6 fst-italic text-start">old value: {{ !empty($originalData->peza_permit_number) ? $originalData->peza_permit_number : "''" }}</div>
+                        @endif
                      </div>
                 </div>
                 <div class="row pt-4 ps-3 pe-3">
@@ -209,24 +224,39 @@
                     <div class="col-md-3 col-6 g-3 form-floating">
                         <input type="text" name="laptop_make" class="form-control" id="make" placeholder="Make" value="{{ $detail->laptop_make }}" disabled>
                         <label for="make" class="text-center">Make</label>
+                        @if (isset($originalData) && ($originalData->laptop_make != $detail->laptop_make))
+                            <div class="text-secondary px-3 py-1 fs-6 fst-italic text-start">old value: {{ !empty($originalData->laptop_make) ? $originalData->laptop_make : "''" }}</div>
+                        @endif
                      </div>
                      <div class="col-md-3 col-6 g-3 form-floating">
                         <input type="text" name="laptop_model" class="form-control" id="model" placeholder="Model" value="{{ $detail->laptop_model }}" disabled>
                         <label for="model" class="text-center">Model</label>
+                        @if (isset($originalData) && ($originalData->laptop_model != $detail->laptop_model))
+                            <div class="text-secondary px-3 py-1 fs-6 fst-italic text-start">old value: {{ !empty($originalData->laptop_model) ? $originalData->laptop_model : "''" }}</div>
+                        @endif
                      </div>
                 </div>
                 <div class="row mb-2 ps-5 pe-3">
                     <div class="col-md-2 col-4 g-3 form-floating">
                         <input type="text" name="laptop_cpu" class="form-control" id="cpu" placeholder="CPU" value="{{ $detail->laptop_cpu }}" disabled>
                         <label for="cpu" class="text-center">CPU</label>
+                        @if (isset($originalData) && ($originalData->laptop_cpu != $detail->laptop_cpu))
+                            <div class="text-secondary px-3 py-1 fs-6 fst-italic text-start">old value: {{ !empty($originalData->laptop_cpu) ? $originalData->laptop_cpu : "''" }}</div>
+                        @endif
                      </div>
                      <div class="col-md-2 col-4 g-3 form-floating">
                         <input type="text" name="laptop_clock_speed" class="form-control" id="clock-speed" placeholder="Clock Speed (GHz)" value="{{ $detail->laptop_clock_speed }}" disabled>
                         <label for="clock-speed" class="text-center">Clock Speed (GHz)</label>
+                        @if (isset($originalData) && ($originalData->laptop_clock_speed != $detail->laptop_clock_speed))
+                            <div class="text-secondary px-3 py-1 fs-6 fst-italic text-start">old value: {{ !empty($originalData->laptop_clock_speed) ? $originalData->laptop_clock_speed : "''" }}</div>
+                        @endif
                      </div>
                      <div class="col-md-2 col-4 g-3 form-floating">
                         <input type="text" name="laptop_ram" class="form-control" id="ram" placeholder="RAM (GB)" value="{{ $detail->laptop_ram }}" disabled>
                         <label for="ram" class="text-center">RAM (GB)</label>
+                        @if (isset($originalData) && ($originalData->laptop_ram != $detail->laptop_ram))
+                            <div class="text-secondary px-3 py-1 fs-6 fst-italic text-start">old value: {{ !empty($originalData->laptop_ram) ? $originalData->laptop_ram : "''" }}</div>
+                        @endif
                      </div>
                 </div>
                 <div class="row pt-4 ps-3 pe-3">
@@ -236,6 +266,9 @@
                     <div class="col-md-6 g-3">
                         <textarea class="form-control" name="remarks"  rows="3" id="remarks" disabled>{{ $detail->remarks }}</textarea>
                     </div>
+                    @if (isset($originalData) && ($originalData->remarks != $detail->remarks))
+                        <div class="text-secondary px-3 py-1 fs-6 fst-italic text-start">old value: {{ !empty($originalData->remarks) ? $originalData->remarks : "''" }}</div>
+                    @endif
                 </div>
             </div>
         </form>
