@@ -382,7 +382,7 @@ class EmployeesController extends Controller
             'detailNote' => $detailNote,
             'showRejectCodeModal' => 1,
             'employee' => $employeeDetails,
-            'original$originalData' => $originalData,
+            'originalData' => $originalData,
             'requestor' => $this->getFullName($requestor, false),
         ]);
     }
