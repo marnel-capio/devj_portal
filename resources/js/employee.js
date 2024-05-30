@@ -478,10 +478,10 @@ $(document).ready(function () {
 	function isSame_PermanentAndCurrentAddress () {
 		var isSame = $("#copy-permanent-address").prop('checked');
 		
-		$("#cur-add-strt").prop("disabled", isSame);
-		$("#cur-add-town").prop("disabled", isSame);
-		$("#cur-add-prov").prop("disabled", isSame);
-		$("#cur-add-postal").prop("disabled", isSame);
+		$("#cur-add-strt").prop("readonly", isSame);
+		$("#cur-add-town").prop("readonly", isSame);
+		$("#cur-add-prov").prop("readonly", isSame);
+		$("#cur-add-postal").prop("readonly", isSame);
 		if(isSame)
 		{
 			$("#cur-add-strt").addClass("is-disabled");

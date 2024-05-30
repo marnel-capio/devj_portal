@@ -47,5 +47,11 @@ mix.js('resources/js/app.js', 'public/js')
     .postCss('resources/css/software_export.css', 'public/css', [
         //
     ])
+    .js('resources/js/bug.js', 'public/js')
+    .minify('public/js/bug.js')
+    .postCss('resources/css/bug.css', 'public/css', [
+        //
+    ])
+    .minify('public/css/bug.css')
 
 

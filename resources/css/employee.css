@@ -46,3 +46,8 @@ table#project-tbl  > thead > tr > th{
     color: green;
     display: none;
 }
+
+
+.fs-1 > .bi-check-circle-fill{
+    display: block !important;
+}

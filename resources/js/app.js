@@ -42,7 +42,7 @@ $(document).ready(function () {
 		}
 	});
 
-	// Fucntion for Scroll to top button
+	// Function for Scroll to top button
 	$("#btnTop").click(function() {
 		$(window).scrollTop(0);
 	})

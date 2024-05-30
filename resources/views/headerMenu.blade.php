@@ -52,6 +52,14 @@
                         </ul>
                     </li>
                 @endif
+                @if ($userInfo->roles === config('constants.MANAGER_ROLE_VALUE') || $userInfo->roles === config('constants.ADMIN_ROLE_VALUE'))
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link text-white"  role="button" style="pointer-events: none;">Bug Reports</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{ route('bugs.index') }}" class="dropdown-item small text-white">View List</a></li>
+                        </ul>
+                    </li>
+                @endif
             </ul>
             <ul class="navbar-nav mb-2 mb-lg-0">
                 <li class="nav-item dropdown">

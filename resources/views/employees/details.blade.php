@@ -959,7 +959,60 @@
         </div>
     </div>
     @endif
-	<button id="btnTop" title="Go to top"><i class="bi bi-arrow-up"></i></button> 
+	<button id="btnTop" class="button-floating"  title="Go to top"><i class="bi bi-arrow-up"></i></button> 
+	<button id="btnReport" class="button-floating" title="Submit Report"  data-bs-target="#bug_report" data-bs-toggle="modal"><i class="bi bi-bug"></i></button> 
+    <div class="modal modal fade" tabindex='-1' id="bug_report">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        Bug report
+                    </h5>
+                </div>
+
+                <div class="modal-body">
+                    <div class="p-2">
+                        <div id="ue_success_msg"></div>
+                        <form action="#" id="update_employee_linkage_form">
+                            @csrf
+                            <input type="text" name="employee_role" value="{{ Auth::user()->roles }}" hidden>
+                            <div class="row text-start">
+                                <div class="col-12 mb-4 g-3 form-floating">
+                                    <select name="bug_type_id" class="form-select" id="bug_type" required>
+                                        <option value="1">Functional Bug</option>
+                                        <option value="2">Syntax/Design Error</option>
+                                        <option value="3">Suggestion</option>
+                                    </select>
+                                    <label for="bug_type" class="text-center">Bug Type</label>
+                                </div>
+                                <div class="form-floating mb-4">
+                                    <input type="text" name="bug_title" class="form-control" id="bug_title" placeholder="Title" value="Link does not redirect.">
+                                    <label for="bug_title" class="text-center">Title</label>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="bug_details" class="text-center">Details</label>
+                                    <textarea name="bug_details" id="bug_details" rows="3" class="form-control"></textarea>
+                                    <span id="bug_details_error"></span>
+                                </div>
+                                <div class="form-floating mb-4">
+                                    <input type="text" name="current_url" class="form-control" id="current_url" placeholder="URL" value="{{ Request::url() }}" disabled>
+                                    <label for="current_url" class="text-center">URL</label>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button class="btn btn-primary" type="submit"  id="pj_submit_btn" form="link_employee_form">Submit
+                        <div id="link_create_spinner" class="spinner-border text-light spinner-border-sm" role="status" style="display: none">
+                            <span class="sr-only"></span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 @include('footer')

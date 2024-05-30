@@ -12,7 +12,7 @@
 						<div class="col col-12  col-md-12 col-lg-7">
 							<h3> Welcome, {{ auth()->user()->first_name }}</h3>
 						</div>
-						<div class="col col-12  col-md-12 col-lg-5">
+						<div class="col col-12  col-md-12 col-lg-5 text-muted small">
 							<span> Today is {{ $date }} </span>
 						</div>
 					</div>
@@ -153,7 +153,7 @@
 	</div>
 	<button id="btnTop" title="Go to top"><i class="bi bi-arrow-up"></i></button> 
 
-	@if(auth()->user()->roles == config('constants.MANAGER_ROLE_VALUE'))
+	@if(auth()->user()->roles == config('constants.MANAGER_ROLE_VALUE') && count($employee_request) > 0)
 	<div id="div-employee-request" class="row-req-table row group-category-home p-2">
 		<div class="col table-avoid-overflow">
 		<h3 class="mb-4"> Employee Request </h3>

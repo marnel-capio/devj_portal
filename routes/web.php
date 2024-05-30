@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Employees;
+use App\Http\Controllers\BugController;
 use App\Http\Controllers\EmployeesController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\EmployeeController;
@@ -134,6 +135,18 @@ Route::middleware(['auth', 'web', 'isActive'])->group(function(){
             //input guide
             return view('servers.help');
         })->name('servers.help');
+    });
+
+    
+
+    Route::prefix('/bugs')->controller(BugController::class)->group(function(){
+
+        Route::get('/', 'index')->name('bugs.index');
+        Route::get('/create', 'create')->name('bugs.create');
+        Route::post('/regist', 'regist')->name('bugs.regist');
+        Route::get('/{id}', 'details')->name('bugs.details')->whereNumber('id');
+        Route::get('/{id}/edit', 'edit')->name('bugs.edit')->whereNumber('id');
+        Route::post('/store', 'store')->name('bugs.store');
     });
 
 });
