@@ -1,5 +1,15 @@
 @php
     $userInfo = Auth::user();
+
+$text1 = <<<HEREDOC
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Lorem ipsum:
+1. Lorem ipsumasdf
+2. Lorem ipsum
+3. Lorem ipsum
+Lorem ipsum dolor sit amet
+HEREDOC;
+
 @endphp
 
 @include('header')
@@ -991,7 +1001,7 @@
                                 </div>
                                 <div class="mb-4">
                                     <label for="bug_details" class="text-center">Details</label>
-                                    <textarea name="bug_details" id="bug_details" rows="3" class="form-control"></textarea>
+                                    <textarea name="bug_details" id="bug_details" rows="3" class="form-control">{!! $text1 !!}</textarea>
                                     <span id="bug_details_error"></span>
                                 </div>
                                 <div class="form-floating mb-4">
