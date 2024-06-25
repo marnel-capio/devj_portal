@@ -31,6 +31,7 @@
         @csrf
 		@if(auth()->user()->roles == config('constants.MANAGER_ROLE_VALUE'))
         <div class="row row-list">
+			{{-- TODO: Edit resources/employee.js for Employee filter. --}}
         	<div class="col-1 filter-employee">
 				Status: 
 			</div>
@@ -128,10 +129,8 @@
 						<th>BU Assignment</th>
 		                <th>Account Status</th>
 		                @if(auth()->user()->roles == config('constants.MANAGER_ROLE_VALUE'))
-			                <th>Passport Valid Until</th>
-			                <th>Passport Appointment Date</th>
-			                <th>Passport Expected Delivery Date</th>
-			                <th>No Appointment Reason</th>
+			                <th>Passport Status</th>
+			                <th>Details</th>
 		                @endif
 		            </tr>
 		        </thead>
@@ -149,6 +148,7 @@
 		                <td>{{$user['current_address_province']}}</td>
 						<td>{{ $user['bu_transfer_flag'] == 1 ? config('constants.BU_LIST.' . $user['bu_transfer_assignment']) : config('constants.DEPARTMENT') }}</td>
 		                <td>
+							{{-- Other way to display (e.g. Green Check - Active ; Red Cross - Deactivated ; Gray circle - Pending Approval) --}}
 		                	@if($user['active_status'] == 0)
 		                		@if($user['approved_status'] == 1 || $user['approved_status'] == 2 || $user['approved_status'] == 4)
 		                			Deactivated
@@ -167,10 +167,64 @@
 		                </td>
 
 		                @if(auth()->user()->roles == config('constants.MANAGER_ROLE_VALUE'))
-			                <td>{{$user['passport_expiration_date']}}</td>
-			                <td>{{$user['date_of_appointment']}}</td>
-			                <td>{{$user['date_of_delivery']}}</td>
-			                <td>{{$user['no_appointment_reason']}}</td>
+						<td>
+							@switch($user['passport_status'])
+							@case(config('constants.PASSPORT_STATUS_WITH_PASSPORT_VALUE'))
+							{{-- TODO: Update controller to get user['passport_expiration_date'] if passport is expired. --}}
+							{{-- If: expired, display: badge bg-warning Expired--}}
+							{{-- If: expiring in 6 months, display: badge bg-warning For Renewal--}}
+							{{-- Else: display: badge bg-info --}}
+							<span class="badge bg-info">{{config('constants.PASSPORT_STATUS_1_NAME')}}</span>
+							@break
+
+							@case(config('constants.PASSPORT_STATUS_WITH_APPOINTMENT_VALUE'))
+							<span class="badge bg-warning">{{config('constants.PASSPORT_STATUS_2_NAME')}}</span>
+							@break
+
+							@case(config('constants.PASSPORT_STATUS_WITHOUT_PASSPORT_VALUE'))
+							<span class="badge bg-danger">{{config('constants.PASSPORT_STATUS_3_NAME')}}</span>
+							@break
+
+							@case(config('constants.PASSPORT_STATUS_WAITING_FOR_DELIVERY_VALUE'))
+							<span class="badge bg-warning">{{config('constants.PASSPORT_STATUS_4_NAME')}}</span>
+							@break
+
+							@default
+							<span class="badge bg-light text-dark">Unspecified</span>
+							
+							@endswitch
+						</td>
+						<td>
+							@switch($user['passport_status'])
+							@case(config('constants.PASSPORT_STATUS_WITH_PASSPORT_VALUE'))
+							<span class="small">Valid until: </span> <br>
+							{{$user['passport_expiration_date']}}
+							@break
+
+							@case(config('constants.PASSPORT_STATUS_WITH_APPOINTMENT_VALUE'))
+							<span class="small">Appointment date: </span> <br>
+							{{$user['date_of_appointment']}}
+							@break
+
+							@case(config('constants.PASSPORT_STATUS_WITHOUT_PASSPORT_VALUE'))
+							<span class="small">Reason: </span> <br>
+			                {{$user['no_appointment_reason']}}
+							@break
+
+							@case(config('constants.PASSPORT_STATUS_WAITING_FOR_DELIVERY_VALUE'))
+							<span class="small">Delivery date: </span> <br>
+							{{$user['date_of_delivery']}}
+							@break
+
+							@default
+							@endswitch
+						</td>
+						<!--
+			                
+			                
+			                
+			                {{$user['no_appointment_reason']}}
+						-->
 		                @endif
 		            </tr>
 		            @endforeach
