@@ -85,7 +85,7 @@ return [
     'PASSPORT_STATUS_1_NAME' => 'With Passport',
     'PASSPORT_STATUS_2_NAME' => 'With Appointment',
     'PASSPORT_STATUS_3_NAME' => 'Without Passport',
-    'PASSPORT_STATUS_4_NAME' => 'Waiting for Delivery',
+    'PASSPORT_STATUS_4_NAME' => 'For Delivery',
 
     'PASSPORT_STATUS_WITH_PASSPORT_VALUE' => 1,
     'PASSPORT_STATUS_WITH_APPOINTMENT_VALUE' => 2,
@@ -98,7 +98,7 @@ return [
                             "val" => 1,
                         ],
         'waitingDelivery' => [
-                            "name" => 'Waiting for Delivery',
+                            "name" => 'For Delivery',
                             "val" => 4,
                         ],
         'withAppointment' => [
@@ -106,7 +106,7 @@ return [
                             "val" => 2,
                         ],
         'withoutPassport' => [
-                            "name" => 'Without Appointment',
+                            "name" => 'Without Passport',
                             "val" => 3,
                         ],
     ],
