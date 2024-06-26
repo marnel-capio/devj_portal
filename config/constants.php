@@ -115,7 +115,7 @@ return [
     // 1. As Information notification
     'PASSPORT_STATUS_1_INFO_START' => [
         'unit' => 'months',
-        'value' => 6,
+        'value' => 12,
     ],
     'PASSPORT_STATUS_2_INFO_START' => ($info_2_and_4 = [
         'unit' => 'months',
@@ -130,7 +130,7 @@ return [
     // 2. As Warning notification
     'PASSPORT_STATUS_1_WARNING_START' => [
         'unit' => 'months',
-        'value' => 3,
+        'value' => 6,
     ],
     'PASSPORT_STATUS_2_WARNING_START' => ($warning_2_and_4 = [
         'unit' => 'days',

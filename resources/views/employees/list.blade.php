@@ -174,7 +174,12 @@
 							{{-- If: expired, display: badge bg-warning Expired--}}
 							{{-- If: expiring in 6 months, display: badge bg-warning For Renewal--}}
 							{{-- Else: display: badge bg-info --}}
-							<span class="badge bg-info">{{config('constants.PASSPORT_STATUS_1_NAME')}}</span>
+								@if(strlen($user['passport_isWarning']) == 0)
+									<span class="badge bg-info">{{config('constants.PASSPORT_STATUS_1_NAME')}}</span>
+								@else
+									<span class="badge bg-danger">Passport Expired</span>
+								@endif
+
 							@break
 
 							@case(config('constants.PASSPORT_STATUS_WITH_APPOINTMENT_VALUE'))
@@ -219,12 +224,6 @@
 							@default
 							@endswitch
 						</td>
-						<!--
-			                
-			                
-			                
-			                {{$user['no_appointment_reason']}}
-						-->
 		                @endif
 		            </tr>
 		            @endforeach
